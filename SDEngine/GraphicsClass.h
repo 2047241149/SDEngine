@@ -2,6 +2,7 @@
 #ifndef _GRAPHICS_CLASS_H
 #define _GRAPHICS_CLASS_H
 
+#define POST_EFFECT
 
 #include"D3DClass.h"
 #include"GameObject.h"
@@ -49,6 +50,9 @@ private:
 
 	shared_ptr<ColorBufferRT> mDownSampleRT;
 	shared_ptr<ColorBufferRT> mUpSampleRT;
+	shared_ptr<ColorBufferRT> mSrcRT;
+	shared_ptr<ColorBufferRT> mFirstBlurRT;
+	shared_ptr<ColorBufferRT> mSceondBlurRT;
 
 	//GeometryBuffer
 	shared_ptr<GeometryBuffer> mGeometryBuffer;

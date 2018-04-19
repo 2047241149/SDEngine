@@ -54,10 +54,19 @@ bool GraphicsClass::Initialize(int ScreenWidth, int ScreenHeight, HWND hwnd,HINS
 	mInputClass = shared_ptr<Input>(new Input(hinstance, hwnd, ScreenWidth, ScreenHeight));
 
 	mDownSampleRT = shared_ptr<ColorBufferRT>(
-		new ColorBufferRT(256, 256, SCREEN_FAR, SCREEN_NEAR));
+		new ColorBufferRT(512, 512, SCREEN_FAR, SCREEN_NEAR));
+
+	mFirstBlurRT = shared_ptr<ColorBufferRT>(
+		new ColorBufferRT(512, 512, SCREEN_FAR, SCREEN_NEAR));
+
+	mSceondBlurRT = shared_ptr<ColorBufferRT>(
+		new ColorBufferRT(512, 512, SCREEN_FAR, SCREEN_NEAR));
 
 	mUpSampleRT = shared_ptr<ColorBufferRT>(
 		new ColorBufferRT(1024, 1024, SCREEN_FAR, SCREEN_NEAR));
+
+	mSrcRT = shared_ptr<ColorBufferRT>(
+		new ColorBufferRT(ScreenWidth, ScreenHeight, SCREEN_FAR, SCREEN_NEAR));
 
 	mGeometryBuffer = shared_ptr<GeometryBuffer>(new 
 		GeometryBuffer(ScreenWidth,ScreenHeight,SCREEN_FAR,SCREEN_NEAR));
@@ -194,7 +203,11 @@ void GraphicsClass::Render()
 
 	RenderLightingPass();
 
-	RenderPostEffectPass();
+	#if defined(POST_EFFECT)
+		RenderPostEffectPass();
+	#endif // POST_EFFECT
+
+
 
 	RenderDebugWindow();
 
@@ -242,8 +255,7 @@ void GraphicsClass::RenderGeometryPass()
 
 void GraphicsClass::RenderLightingPass()
 {
-	D3DClass::GetInstance()->SetBackBufferRender();
-	D3DClass::GetInstance()->SetViewPort();
+	mSrcRT->SetRenderTarget();
 	D3DClass::GetInstance()->TurnOffZBuffer();
 	ID3D11ShaderResourceView* shaderResourceView[4];
 	shaderResourceView[0] = mGeometryBuffer->GetGBufferSRV(GBufferType::Diffuse);
@@ -253,13 +265,53 @@ void GraphicsClass::RenderLightingPass()
 	ShaderManager::GetInstance()->SetDefferLighingShader(shaderResourceView);
 	mQuad->Render();
 
+	D3DClass::GetInstance()->SetBackBufferRender();
+	D3DClass::GetInstance()->SetViewPort();
+	ShaderManager::GetInstance()->SetGraphcisBlitShader(mSrcRT->GetShaderResourceView());
+	mQuad->Render();
+
 	D3DClass::GetInstance()->TurnOnZBuffer();
 }
 
 
+
 void GraphicsClass::RenderPostEffectPass()
 {
+	/*********************/
+	//1.降采样
+	//2.两次模糊
+	//3.升采样
+	/********************/
+	D3DClass::GetInstance()->TurnOffZBuffer();
+	//将srcRT变为downSampleRT
+	mDownSampleRT->SetRenderTarget();
+	ShaderManager::GetInstance()->SetGraphcisBlitShader(mSrcRT->GetShaderResourceView());
+	mQuad->Render();
 
+	//将downSampleRT变为mFirstBlurRT
+	mFirstBlurRT->SetRenderTarget();
+	ShaderManager::GetInstance()->SetBlurShader(mDownSampleRT->GetShaderResourceView());
+	mQuad->Render();
+
+	//将mFirstBlurRT变为mSecondBlurRT
+	mSceondBlurRT->SetRenderTarget();
+	ShaderManager::GetInstance()->SetBlurShader(mFirstBlurRT->GetShaderResourceView());
+	mQuad->Render();
+
+	//将blurSampleRT变为upSampleRT
+	mUpSampleRT->SetRenderTarget();
+	ShaderManager::GetInstance()->SetGraphcisBlitShader(mSceondBlurRT->GetShaderResourceView());
+	mQuad->Render();
+
+	//将UpSample作为BlurRT
+	D3DClass::GetInstance()->SetBackBufferRender();
+	D3DClass::GetInstance()->SetViewPort();
+	ShaderManager::GetInstance()->SetDOFShader(mSrcRT->GetShaderResourceView(),
+		mUpSampleRT->GetShaderResourceView()
+	,mGeometryBuffer->GetGBufferSRV(GBufferType::Depth),15.0f,50.0f,SCREEN_FAR,SCREEN_NEAR);
+	mQuad->Render();
+
+	D3DClass::GetInstance()->TurnOnZBuffer();
 }
 
 

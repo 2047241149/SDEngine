@@ -262,16 +262,18 @@ void GeometryBuffer::ClearRenderTarget(XMFLOAT3 backColor)
 	ClearGBuffer(backColor);
 }
 
-// 将“被渲染模型到纹理的纹理”作为ShaderResourceView资源返回，这个资源将会跟其它的ShaderResourceView资源一样被送入Shader里计算.
+//
 ID3D11ShaderResourceView* GeometryBuffer::GetGBufferSRV(GBufferType gBufferType)
 {
-	return mGBufferSRV[gBufferType];
-}
-
-
-ID3D11ShaderResourceView* GeometryBuffer::GetDepthBufferSRV()
-{
-	return mDepthBufferSRV;
+	if (gBufferType == GBufferType::Depth)
+	{
+		return mDepthBufferSRV;
+	}
+	else
+	{
+		return mGBufferSRV[gBufferType];
+	}
+	
 }
 
 ID3D11ShaderResourceView* GeometryBuffer::GetRandomRTSRV()

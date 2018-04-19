@@ -14,7 +14,8 @@ enum GBufferType
 	Diffuse,
 	Pos,
 	Normal,
-	Specular
+	Specular,
+	Depth,
 };
 
 
@@ -57,7 +58,6 @@ public:
 	void ClearGBuffer(XMFLOAT3 backColor);
 	void ClearRenderTarget(XMFLOAT3 backColor);
 	ID3D11ShaderResourceView* GetGBufferSRV(GBufferType gBufferType);
-	ID3D11ShaderResourceView* GetDepthBufferSRV();
 	ID3D11ShaderResourceView* GetRandomRTSRV();
 
 };
