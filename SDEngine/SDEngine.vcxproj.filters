@@ -96,6 +96,15 @@
     <ClCompile Include="DefferLightingShader.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="GraphicsBlitShader.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="DOFShader.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="BlurShader.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Camera.h">
@@ -191,6 +200,15 @@
     <ClInclude Include="DefferLightingShader.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="GraphicsBlitShader.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="DOFShader.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="BlurShader.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="libfbxsdk.dll" />
@@ -203,5 +221,8 @@
     <None Include="Shader\PureColorShader.fx" />
     <None Include="Shader\UIShader.fx" />
     <None Include="Shader\DefferLightingShader.fx" />
+    <None Include="Shader\GraphicsBlitShader.fx" />
+    <None Include="Shader\DOFShader.fx" />
+    <None Include="Shader\BlurShader.fx" />
   </ItemGroup>
 </Project>

@@ -135,6 +135,9 @@ void ColorBufferRT::SetRenderTarget()
 
 	//设置相应的视口
 	deviceContext->RSSetViewports(1, &md3dViewport);
+
+	ClearRenderTarget(0.0, 0.0, 0.0, 1.0f);
+	ClearDepthBuffer();
 }
 
 
