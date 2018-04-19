@@ -9,6 +9,9 @@
 #include"DepthShader.h"
 #include "PureColorShader.h"
 #include "DiffuseSpecShader.h"
+#include "GraphicsBlitShader.h"
+#include "DOFShader.h"
+#include "BlurShader.h"
 #include<memory>
 #include"Macro.h"
 using namespace std;
@@ -26,6 +29,9 @@ private:
 	shared_ptr<DiffuseNormalSpecShader> mDiffuseNormalSpecShader;
 	shared_ptr<DiffuseSpecShader> mDiffuseSpecShader;
 	shared_ptr<DefferLighingShader> mDefferLightingShader;
+	shared_ptr<GraphcisBlitShader> mGraphcisBlitShader;
+	shared_ptr<DOFShader> mDOFShader;
+	shared_ptr<BlurShader> mBlurShader;
 public:
 	static shared_ptr<ShaderManager> mShaderManager;
 
@@ -60,6 +66,14 @@ public:
 	bool SetDiffuseSpecShader(CXMMATRIX worldMatrix,
 		ID3D11ShaderResourceView* diffuseSRV, ID3D11ShaderResourceView* specSRV);
 
+	bool SetGraphcisBlitShader(ID3D11ShaderResourceView* screenRT);
+
+	bool SetDOFShader(ID3D11ShaderResourceView* screenRT, ID3D11ShaderResourceView* screenBlurRT,
+		ID3D11ShaderResourceView* depthRT,
+		float dofStart, float dofRange, float farPlane, float nearPlane);
+
+	bool SetBlurShader(ID3D11ShaderResourceView* screenRT);
+
 public:
 	DepthShader* GetDepthShader() { return mDepthShader.get(); }
 	DiffuseShader* GetDiffuseShader() { return mDiffuseShader.get(); }
@@ -69,6 +83,9 @@ public:
 	UIShader* GetUIShader() { return mUIShader.get(); }
 	PureColorShader* GetPureColorShader() { return mPureColorShader.get(); }
 	DiffuseSpecShader* GetDiffuseSpecShader() { return mDiffuseSpecShader.get(); }
+	GraphcisBlitShader* GetGraphcisBlitShader() { return mGraphcisBlitShader.get(); }
+	DOFShader* GetDOFShader() { return mDOFShader.get(); }
+	BlurShader* GetBlurShader() { return mBlurShader.get(); }
 };
 #endif // !_SHADER_MANAGER_CLASS
 

@@ -116,6 +116,9 @@
     <ClCompile Include="ColorBufferRT.cpp" />
     <ClCompile Include="D3DClass.cpp" />
     <ClCompile Include="Debugwindow.cpp" />
+    <ClCompile Include="BlurShader.cpp" />
+    <ClCompile Include="DOFShader.cpp" />
+    <ClCompile Include="GraphicsBlitShader.cpp" />
     <ClCompile Include="GeometryBuffer.cpp" />
     <ClCompile Include="DepthShader.cpp" />
     <ClCompile Include="DiffuseNormalShader.cpp" />
@@ -148,6 +151,9 @@
     <ClInclude Include="CommonFunction.h" />
     <ClInclude Include="D3DClass.h" />
     <ClInclude Include="Debugwindow.h" />
+    <ClInclude Include="BlurShader.h" />
+    <ClInclude Include="DOFShader.h" />
+    <ClInclude Include="GraphicsBlitShader.h" />
     <ClInclude Include="GeometryBuffer.h" />
     <ClInclude Include="DepthShader.h" />
     <ClInclude Include="DiffuseNormalShader.h" />
@@ -212,6 +218,21 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Shader\DefferLightingShader.fx">
+      <FileType>Document</FileType>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Shader\GraphicsBlitShader.fx">
+      <FileType>Document</FileType>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Shader\DOFShader.fx">
+      <FileType>Document</FileType>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Shader\BlurShader.fx">
       <FileType>Document</FileType>
     </None>
   </ItemGroup>

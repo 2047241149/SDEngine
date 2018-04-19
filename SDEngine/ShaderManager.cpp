@@ -19,8 +19,6 @@ ShaderManager::ShaderManager(const ShaderManager& other)
 bool ShaderManager::Initialize()
 {
 
-
-
 	mDiffuseNormalShader = shared_ptr<DiffuseNormalShader>(new
 		DiffuseNormalShader(L"Shader/DiffuseNormalShader.fx", L"Shader/DiffuseNormalShader.fx"));
 
@@ -44,6 +42,16 @@ bool ShaderManager::Initialize()
 
 	mUIShader = shared_ptr<UIShader>(new
 		UIShader(L"Shader/UIShader.fx", L"Shader/UIShader.fx"));
+
+	mGraphcisBlitShader = shared_ptr<GraphcisBlitShader>(new
+		GraphcisBlitShader(L"Shader/GraphicsBlitShader.fx", L"Shader/GraphicsBlitShader.fx"));
+	
+	mDOFShader = shared_ptr<DOFShader>(new
+		DOFShader(L"Shader/DOFShader.fx", L"Shader/DOFShader.fx"));
+
+
+	mBlurShader = shared_ptr<BlurShader>(new
+		BlurShader(L"Shader/BlurShader.fx", L"Shader/BlurShader.fx"));
 
 	return true;
 }
@@ -181,6 +189,52 @@ bool ShaderManager::SetDiffuseSpecShader(CXMMATRIX worldMatrix,
 	return true;
 }
 
+
+bool ShaderManager::SetGraphcisBlitShader(ID3D11ShaderResourceView* screenRT)
+{
+	bool result;
+
+	result = mGraphcisBlitShader->SetShaderParams(screenRT);
+	if (!result)
+	{
+		MessageBox(NULL, L"mGraphcisBlitShader render Ê§°Ü", NULL, MB_OK);
+		return false;
+	}
+
+	return true;
+}
+
+bool ShaderManager::SetDOFShader(ID3D11ShaderResourceView* screenRT, ID3D11ShaderResourceView* screenBlurRT,
+	ID3D11ShaderResourceView* depthRT,
+	float dofStart, float dofRange, float farPlane, float nearPlane)
+{
+	bool result;
+
+	result = mDOFShader->SetShaderParams(screenRT, screenBlurRT, depthRT, 
+		dofStart, dofRange, farPlane,nearPlane);
+	if (!result)
+	{
+		MessageBox(NULL, L"DOFShader render Ê§°Ü", NULL, MB_OK);
+		return false;
+	}
+
+	return true;
+}
+
+
+bool ShaderManager::SetBlurShader(ID3D11ShaderResourceView* screenRT)
+{
+	bool result;
+
+	result = mBlurShader->SetShaderParams(screenRT);
+	if (!result)
+	{
+		MessageBox(NULL, L"mBlurShader render Ê§°Ü", NULL, MB_OK);
+		return false;
+	}
+
+	return true;
+}
 
 shared_ptr<ShaderManager> ShaderManager::mShaderManager = nullptr;
 
