@@ -233,8 +233,10 @@ void GraphicsClass::RenderFBXMesh()
 	mHeadObject->Render(materialType);
 
 	//äÖÈ¾SponzaBottom(ÓÃÓÚSSR·´Éä)
+	D3DClass::GetInstance()->TurnOnMaskReflectDSS();
 	mSponzaBottom->mTransform->localPosition = XMFLOAT3(0.0f, 0.0f, 0.0f);
 	mSponzaBottom->Render(MaterialType::DIFFUSE);
+	D3DClass::GetInstance()->TurnOnZBuffer();//»Ö¸´Ä¬ÈÏµÄDSS
 
 	//äÖÈ¾SponzaNoBottm
 	mSponzaNoBottom->mTransform->localPosition = XMFLOAT3(0.0f, 0.0f, 0.0f);
@@ -365,12 +367,13 @@ void GraphicsClass::RenderSSRPass()
 	d3dDeviceContext->OMSetRenderTargets(1, &backRTV, opacityDSV);
 	D3DClass::GetInstance()->SetViewPort();
 	D3DClass::GetInstance()->TurnOnAlphaBlend();
+	D3DClass::GetInstance()->TurnOnEnableReflectDSS();
 	
 	XMMATRIX worldMatrix = mSponzaBottom->GetWorldMatrix();
 	
 	float viewAngleThresshold = 0.05f;
 	float edgeDistThresshold = 0.45;
-	float depthBias = 0.0f;
+	float depthBias = 0.5f;
 	float reflectScale = 1.0f;
 	XMMATRIX projMatrix = Camera::GetInstance()->GetProjectionMatrix();
 	XMFLOAT4X4 projFloat4X4;
@@ -388,6 +391,7 @@ void GraphicsClass::RenderSSRPass()
 	mSponzaBottom->RenderMesh();
 
 	D3DClass::GetInstance()->TurnOffAlphaBlend();
+	D3DClass::GetInstance()->TurnOnZBuffer();
 }
 
 void GraphicsClass::RenderOpacity()
