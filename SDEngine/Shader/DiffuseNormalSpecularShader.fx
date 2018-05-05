@@ -1,7 +1,8 @@
 Texture2D DiffuseTexture:register(t0);  //纹理资源
 Texture2D NormalTexture:register(t1);  //纹理资源
 Texture2D SpecularTexture:register(t2);  //纹理资源
-SamplerState SampleType:register(s0);   //采样方式
+SamplerState SampleWrapLinear:register(s0);
+SamplerState SampleClampPoint:register(s1);
 
 cbuffer CBMatrix:register(b0)
 {
@@ -70,13 +71,13 @@ PixelOut PS(VertexOut outa) : SV_Target
 	float3 normal;
 
 	//diffuse
-	pixelOut.diffuse = DiffuseTexture.Sample(SampleType, outa.Tex);
+	pixelOut.diffuse = DiffuseTexture.Sample(SampleWrapLinear, outa.Tex);
 
 	//worldPos
 	pixelOut.worldPos = float4(outa.worldPos, 1.0);
 
 	//worldNormal
-	normal = NormalTexture.Sample(SampleType, outa.Tex).xyz;
+	normal = NormalTexture.Sample(SampleWrapLinear, outa.Tex).xyz;
 	normal.xyz = normal.xyz * 2.0 - 1.0;
 	float3 N = normalize(outa.W_Normal);
 	float3 T = normalize(outa.W_Tangent);
@@ -91,7 +92,7 @@ PixelOut PS(VertexOut outa) : SV_Target
 
 	pixelOut.worldNormal = float4(worldNormal, 1.0);
 	//specular
-	pixelOut.specular = SpecularTexture.Sample(SampleType, outa.Tex);
+	pixelOut.specular = SpecularTexture.Sample(SampleWrapLinear, outa.Tex);
 
 	return pixelOut;
 }

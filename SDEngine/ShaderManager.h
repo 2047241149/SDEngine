@@ -12,6 +12,7 @@
 #include "GraphicsBlitShader.h"
 #include "DOFShader.h"
 #include "BlurShader.h"
+#include "ScreenSpaceReflectShader.h"
 #include<memory>
 #include"Macro.h"
 using namespace std;
@@ -32,6 +33,8 @@ private:
 	shared_ptr<GraphcisBlitShader> mGraphcisBlitShader;
 	shared_ptr<DOFShader> mDOFShader;
 	shared_ptr<BlurShader> mBlurShader;
+	shared_ptr<SSRShader> mSSRShader;
+	shared_ptr<PureColorShader> mForwardPureColorShader;
 public:
 	static shared_ptr<ShaderManager> mShaderManager;
 
@@ -63,6 +66,8 @@ public:
 
 	bool SetPureColorShader(CXMMATRIX worldMatrix, FXMVECTOR surfaceColor);
 
+	bool SetForwardPureColorShader(CXMMATRIX worldMatrix, FXMVECTOR surfaceColor);
+
 	bool SetDiffuseSpecShader(CXMMATRIX worldMatrix,
 		ID3D11ShaderResourceView* diffuseSRV, ID3D11ShaderResourceView* specSRV);
 
@@ -73,6 +78,11 @@ public:
 		float dofStart, float dofRange, float farPlane, float nearPlane);
 
 	bool SetBlurShader(ID3D11ShaderResourceView* screenRT);
+
+	bool SetSSRShader(CXMMATRIX worldMatrix, ID3D11ShaderResourceView* diffuseTex,
+		ID3D11ShaderResourceView* depthTex,
+		float viewAngleThresshold, float edgeDistThresshold,
+		float depthBias, float reflectScale, XMFLOAT4 perspectiveValues);
 
 public:
 	DepthShader* GetDepthShader() { return mDepthShader.get(); }
@@ -86,6 +96,8 @@ public:
 	GraphcisBlitShader* GetGraphcisBlitShader() { return mGraphcisBlitShader.get(); }
 	DOFShader* GetDOFShader() { return mDOFShader.get(); }
 	BlurShader* GetBlurShader() { return mBlurShader.get(); }
+	SSRShader* GetSSRShader() { return mSSRShader.get(); }
+	PureColorShader* GetForwardPureColor() { return mForwardPureColorShader.get(); }
 };
 #endif // !_SHADER_MANAGER_CLASS
 

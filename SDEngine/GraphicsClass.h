@@ -2,7 +2,7 @@
 #ifndef _GRAPHICS_CLASS_H
 #define _GRAPHICS_CLASS_H
 
-#define POST_EFFECT
+//#define POST_EFFECT
 
 #include"D3DClass.h"
 #include"GameObject.h"
@@ -46,13 +46,16 @@ private:
 
 	shared_ptr<GameObject> mHeadObject;
 
-	shared_ptr<GameObject> mSponzaObject;
+	shared_ptr<GameObject> mSponzaNoBottom;
+	shared_ptr<GameObject> mSponzaBottom;
 
 	shared_ptr<ColorBufferRT> mDownSampleRT;
 	shared_ptr<ColorBufferRT> mUpSampleRT;
 	shared_ptr<ColorBufferRT> mSrcRT;
 	shared_ptr<ColorBufferRT> mFirstBlurRT;
 	shared_ptr<ColorBufferRT> mSceondBlurRT;
+
+	shared_ptr<ColorBufferRT> mSSRRT;
 
 	//GeometryBuffer
 	shared_ptr<GeometryBuffer> mGeometryBuffer;
@@ -68,10 +71,14 @@ private:
 
 private:
 	void RenderFBXMesh();
+	void RenderOpacity();
+	void RenderTransparency();
+	void RenderGeneralTransparency();
 	void RenderGeometryPass();
 	void RenderLightingPass();
 	void RenderPostEffectPass();
 	void RenderDebugWindow();
+	void RenderSSRPass();
 public:
 	GraphicsClass(int ScreenWidth, int ScreenHeight, HWND hwnd, HINSTANCE hinstance);
 	GraphicsClass(const GraphicsClass&);

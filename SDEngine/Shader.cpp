@@ -21,10 +21,12 @@ Shader::~Shader()
 bool Shader::Initialize(WCHAR* vsFilenPath, WCHAR* psFilenPath)
 {
 	//置空指针
-	md3dVertexShader = NULL;
-	md3dPixelShader = NULL;
-	md3dInputLayout = NULL;
-	mCBCommon = NULL;
+	md3dVertexShader = nullptr;
+	md3dPixelShader = nullptr;
+	md3dInputLayout = nullptr;
+	mWrapLinearSampler = nullptr;
+	mClampPointSampler = nullptr;
+	mCBCommon = nullptr;
 
 	bool result;
 	result = InitializeShader(vsFilenPath, psFilenPath);
@@ -157,8 +159,13 @@ bool Shader::InitializeShader(WCHAR* VSFileName, WCHAR* PSFileName)
 	samplerDesc.MinLOD = 0;
 	samplerDesc.MaxLOD = D3D11_FLOAT32_MAX;
 
-	HR(d3dDevice->CreateSamplerState(&samplerDesc, &mSamplerState));
+	HR(d3dDevice->CreateSamplerState(&samplerDesc, &mWrapLinearSampler));
+	samplerDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_POINT;
+	samplerDesc.AddressU = D3D11_TEXTURE_ADDRESS_CLAMP;
+	samplerDesc.AddressV = D3D11_TEXTURE_ADDRESS_CLAMP;
+	samplerDesc.AddressW = D3D11_TEXTURE_ADDRESS_CLAMP;
 
+	HR(d3dDevice->CreateSamplerState(&samplerDesc, &mClampPointSampler));
 	return true;
 }
 
@@ -170,6 +177,8 @@ void Shader::ShutDown()
 	ReleaseCOM(md3dInputLayout);
 	ReleaseCOM(md3dPixelShader);
 	ReleaseCOM(md3dVertexShader);
+	ReleaseCOM(mWrapLinearSampler);
+	ReleaseCOM(mClampPointSampler);
 }
 
 void Shader::OutputShaderErrorMessage(ID3D10Blob* errorMessage, WCHAR* shaderFilename)
@@ -256,8 +265,8 @@ bool Shader::SetShaderState()
 	deviceContext->PSSetShader(md3dPixelShader, NULL, 0);
 
 	//设置采样状态
-	deviceContext->PSSetSamplers(0, 1, &mSamplerState);  //S0注册 对应0
-
+	deviceContext->PSSetSamplers(0, 1, &mWrapLinearSampler); 
+	deviceContext->PSSetSamplers(1, 1, &mClampPointSampler);
 	return true;
 }
 
