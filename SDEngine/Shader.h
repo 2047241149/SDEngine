@@ -25,8 +25,8 @@ private:
 	ID3D11PixelShader* md3dPixelShader;
 	ID3D11InputLayout* md3dInputLayout; 
 	ID3D11Buffer* mCBCommon; //变换矩阵(常量)缓存,顶点索引
-	ID3D11SamplerState *mSamplerState; //采样状态(采样方式)
-
+	ID3D11SamplerState *mWrapLinearSampler; 
+	ID3D11SamplerState *mClampPointSampler;
 public:
 	bool virtual Initialize(WCHAR* vsFilenPath, WCHAR* psFilenPath);
 

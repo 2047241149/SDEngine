@@ -1,6 +1,7 @@
 Texture2D DiffuseTexture:register(t0); 
 Texture2D SpecularTexture:register(t1);
-SamplerState SampleType:register(s0);   
+SamplerState SampleWrapLinear:register(s0);
+SamplerState SampleClampPoint:register(s1);
 
 cbuffer CBMatrix:register(b0)
 {
@@ -64,7 +65,7 @@ float4 PS(VertexOut outa) : SV_Target
 	PixelOut pixelOut;
 
 	//diffuse
-	pixelOut.diffuse = DiffuseTexture.Sample(SampleType, outa.Tex);
+	pixelOut.diffuse = DiffuseTexture.Sample(SampleWrapLinear, outa.Tex);
 	
 	//worldPos
 	pixelOut.worldPos = float4(outa.worldPos, 1.0);
@@ -73,7 +74,7 @@ float4 PS(VertexOut outa) : SV_Target
 	float3 worldNormal = normalize(outa.W_Normal);
 
 	//specular
-	pixelOut.specular = SpecularTexture.Sample(SampleType, outa.Tex);
+	pixelOut.specular = SpecularTexture.Sample(SampleWrapLinear, outa.Tex);
 
 	return pixelOut;
 }

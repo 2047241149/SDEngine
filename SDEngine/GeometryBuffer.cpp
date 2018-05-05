@@ -280,3 +280,8 @@ ID3D11ShaderResourceView* GeometryBuffer::GetRandomRTSRV()
 {
 	return mRandomSRV;
 }
+
+ID3D11DepthStencilView* GeometryBuffer::GetDSV()
+{
+	return mDepthStencilView;
+}

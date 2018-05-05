@@ -59,6 +59,7 @@ public:
 	void ClearRenderTarget(XMFLOAT3 backColor);
 	ID3D11ShaderResourceView* GetGBufferSRV(GBufferType gBufferType);
 	ID3D11ShaderResourceView* GetRandomRTSRV();
+	ID3D11DepthStencilView* GetDSV();
 
 };
 #endif // !_RENDER_3D_MODEL_TO_TEXTURE_H

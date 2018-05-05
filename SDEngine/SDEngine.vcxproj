@@ -136,6 +136,7 @@
     <ClCompile Include="Quad.cpp" />
     <ClCompile Include="RenderDepthToTexure.cpp" />
     <ClCompile Include="DefferLightingShader.cpp" />
+    <ClCompile Include="ScreenSpaceReflectShader.cpp" />
     <ClCompile Include="Shader.cpp" />
     <ClCompile Include="ShaderManager.cpp" />
     <ClCompile Include="SystemClass.cpp" />
@@ -173,6 +174,7 @@
     <ClInclude Include="Quad.h" />
     <ClInclude Include="RenderDepthToTexure.h" />
     <ClInclude Include="DefferLightingShader.h" />
+    <ClInclude Include="ScreenSpaceReflectShader.h" />
     <ClInclude Include="Shader.h" />
     <ClInclude Include="ShaderManager.h" />
     <ClInclude Include="SystemClass.h" />
@@ -233,6 +235,16 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Shader\BlurShader.fx">
+      <FileType>Document</FileType>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Shader\ScreenSpaceReflectShader.fx">
+      <FileType>Document</FileType>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Shader\ForwardPureColorShader.fx">
       <FileType>Document</FileType>
     </None>
   </ItemGroup>
