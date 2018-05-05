@@ -166,7 +166,7 @@ float4 PS(VertexOut outa) : SV_Target
 		}
 	}
 
-	reflectColor.a = 0.5;
+	reflectColor.a = 0.4;
 
 	return reflectColor;
 }

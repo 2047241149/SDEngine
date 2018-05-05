@@ -43,7 +43,7 @@ bool D3DClass::Initialize(int ScreenWidth, int ScreenHeight, bool vsync, HWND hw
 	md3dWireFrameRS = NULL;
 
 	//--------------------------------------------------------------
-	//第一,获取显示模式信息和显卡信息
+	//获取显示模式信息和显卡信息
 	//---------------------------------------------------------------
 
 	IDXGIAdapter* adpter;//适配器
@@ -112,7 +112,7 @@ bool D3DClass::Initialize(int ScreenWidth, int ScreenHeight, bool vsync, HWND hw
 
 
 	//-----------------------------------------------------
-	//第二,填充交换链形容结构体
+	//填充交换链形容结构体
 	//-----------------------------------------------------
 	DXGI_SWAP_CHAIN_DESC sd;
 	ZeroMemory(&sd, sizeof(sd));
@@ -154,7 +154,7 @@ bool D3DClass::Initialize(int ScreenWidth, int ScreenHeight, bool vsync, HWND hw
 
 
 	//---------------------------------------------------------------
-	//第三,创建交换链和D3D设备和D3D设备上下文
+	//创建交换链和D3D设备和D3D设备上下文
 	//---------------------------------------------------------------
 	D3D_FEATURE_LEVEL featureLevel;
 	featureLevel = D3D_FEATURE_LEVEL_11_0;
@@ -172,7 +172,7 @@ bool D3DClass::Initialize(int ScreenWidth, int ScreenHeight, bool vsync, HWND hw
 
 
 	//--------------------------------------------------------------
-	//第五,填充2DTexture深度缓存(模板缓存)形容结构体，创建深度缓存(模板缓存)
+	//填充2DTexture深度缓存(模板缓存)形容结构体，创建深度缓存(模板缓存)
 	//--------------------------------------------------------------
 	D3D11_TEXTURE2D_DESC depthStencilDesc;
 	ZeroMemory(&depthStencilDesc, sizeof(depthStencilDesc));
@@ -193,7 +193,7 @@ bool D3DClass::Initialize(int ScreenWidth, int ScreenHeight, bool vsync, HWND hw
 
 
 	//-------------------------------------------------------------
-	//第六,创建并设定深度缓存(模板缓存)状态，指示如何使用Depth和stencil(Test)
+	//创建并设定深度缓存(模板缓存)状态，指示如何使用Depth和stencil(Test)
 	//-------------------------------------------------------------
 	D3D11_DEPTH_STENCIL_DESC DSDESC;
 	ZeroMemory(&DSDESC, sizeof(DSDESC));
@@ -205,19 +205,22 @@ bool D3DClass::Initialize(int ScreenWidth, int ScreenHeight, bool vsync, HWND hw
 	DSDESC.StencilWriteMask = 0xff;
 	//前面设定
 	DSDESC.FrontFace.StencilFailOp = D3D11_STENCIL_OP_KEEP;
-	DSDESC.FrontFace.StencilDepthFailOp = D3D11_STENCIL_OP_INCR;
-	DSDESC.FrontFace.StencilPassOp = D3D11_STENCIL_OP_KEEP;
+	DSDESC.FrontFace.StencilDepthFailOp = D3D11_STENCIL_OP_KEEP;
+	DSDESC.FrontFace.StencilPassOp = D3D11_STENCIL_OP_REPLACE;
 	DSDESC.FrontFace.StencilFunc = D3D11_COMPARISON_ALWAYS;
 	//背面设定,在光栅化状态剔除背面时这个设定没用,但是依然要设定,不然无法创建深度(模板)状态
 	DSDESC.BackFace.StencilFailOp = D3D11_STENCIL_OP_KEEP;
-	DSDESC.BackFace.StencilDepthFailOp = D3D11_STENCIL_OP_DECR;
+	DSDESC.BackFace.StencilDepthFailOp = D3D11_STENCIL_OP_KEEP;
 	DSDESC.BackFace.StencilPassOp = D3D11_STENCIL_OP_KEEP;
 	DSDESC.BackFace.StencilFunc = D3D11_COMPARISON_ALWAYS;
 	HR(md3dDevice->CreateDepthStencilState(&DSDESC, &md3dDepthStencilState));
-	md3dImmediateContext->OMSetDepthStencilState(md3dDepthStencilState, 1);
+	md3dImmediateContext->OMSetDepthStencilState(md3dDepthStencilState, 0);
+
+
+
 
 	//--------------------------------------------------------------
-	//第七,创建深度缓存(模板缓存)视图
+	//创建深度缓存(模板缓存)视图
 	//--------------------------------------------------------------
 
 	HR(md3dDevice->CreateDepthStencilView(
@@ -227,13 +230,13 @@ bool D3DClass::Initialize(int ScreenWidth, int ScreenHeight, bool vsync, HWND hw
 
 
 	//-------------------------------------------------------------
-	//第八,把那些视图绑定到输出合并阶段
+	//把那些视图绑定到输出合并阶段
 	//-------------------------------------------------------------
 	md3dImmediateContext->OMSetRenderTargets(1, &md3dRenderTargetView, md3dDepthStencilView);
 
 
 	//-------------------------------------------------------------
-	//第九,创建并设定光栅化状态,用于控制如何渲染目标(以线框还是实体模式等等)
+	//创建并设定光栅化状态,用于控制如何渲染目标(以线框还是实体模式等等)
 	//-------------------------------------------------------------
 	D3D11_RASTERIZER_DESC rasterDesc;
 	rasterDesc.AntialiasedLineEnable = false;
@@ -257,7 +260,7 @@ bool D3DClass::Initialize(int ScreenWidth, int ScreenHeight, bool vsync, HWND hw
 	
 
 	//-------------------------------------------------------------
-	//第十,创建并设定视口
+	//创建并设定视口
 	//-------------------------------------------------------------
 	mViewport.Width = static_cast<float>(ScreenWidth);
 	mViewport.Height = static_cast<float>(ScreenHeight);
@@ -278,7 +281,7 @@ bool D3DClass::Initialize(int ScreenWidth, int ScreenHeight, bool vsync, HWND hw
 
 
 
-	//第十三,创建一个使ZBuffer无效的DepthStencilState状态
+	//创建一个使ZBuffer无效的DepthStencilState状态
 	D3D11_DEPTH_STENCIL_DESC DisableDepthDESC;
 	ZeroMemory(&DisableDepthDESC, sizeof(DisableDepthDESC));
 	DisableDepthDESC.DepthEnable = false;
@@ -287,22 +290,62 @@ bool D3DClass::Initialize(int ScreenWidth, int ScreenHeight, bool vsync, HWND hw
 	DisableDepthDESC.StencilEnable = true;
 	DisableDepthDESC.StencilReadMask = 0xff;
 	DisableDepthDESC.StencilWriteMask = 0xff;
-	//前面设定
 	DisableDepthDESC.FrontFace.StencilFailOp = D3D11_STENCIL_OP_KEEP;
-	DisableDepthDESC.FrontFace.StencilDepthFailOp = D3D11_STENCIL_OP_INCR;
+	DisableDepthDESC.FrontFace.StencilDepthFailOp = D3D11_STENCIL_OP_KEEP;
 	DisableDepthDESC.FrontFace.StencilPassOp = D3D11_STENCIL_OP_KEEP;
 	DisableDepthDESC.FrontFace.StencilFunc = D3D11_COMPARISON_ALWAYS;
-	//背面设定,在光栅化状态剔除背面时这个设定没用,但是依然要设定,不然无法创建深度(模板)状态
 	DisableDepthDESC.BackFace.StencilFailOp = D3D11_STENCIL_OP_KEEP;
-	DisableDepthDESC.BackFace.StencilDepthFailOp = D3D11_STENCIL_OP_DECR;
+	DisableDepthDESC.BackFace.StencilDepthFailOp = D3D11_STENCIL_OP_KEEP;
 	DisableDepthDESC.BackFace.StencilPassOp = D3D11_STENCIL_OP_KEEP;
 	DisableDepthDESC.BackFace.StencilFunc = D3D11_COMPARISON_ALWAYS;
 	HR(md3dDevice->CreateDepthStencilState(&DisableDepthDESC, &md3dDisableDepthStencilState));
 
-	//第十四,创建alpha混合开启的混合状态
-	D3D11_BLEND_DESC blendStateDescription;
+	//创建一个标记反射面的DepthStencilState状态
+	D3D11_DEPTH_STENCIL_DESC MaskReflectDESC;
+	ZeroMemory(&MaskReflectDESC, sizeof(MaskReflectDESC));
+	MaskReflectDESC.DepthEnable = true;
+	MaskReflectDESC.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL;
+	MaskReflectDESC.DepthFunc = D3D11_COMPARISON_LESS;
+	MaskReflectDESC.StencilEnable = true;
+	MaskReflectDESC.StencilReadMask = 0xff;
+	MaskReflectDESC.StencilWriteMask = 0xff;
+	MaskReflectDESC.FrontFace.StencilFailOp = D3D11_STENCIL_OP_KEEP;
+	MaskReflectDESC.FrontFace.StencilDepthFailOp = D3D11_STENCIL_OP_KEEP;
+	MaskReflectDESC.FrontFace.StencilPassOp = D3D11_STENCIL_OP_REPLACE;
+	MaskReflectDESC.FrontFace.StencilFunc = D3D11_COMPARISON_ALWAYS;
 
-	//初始化混合形容结构体
+	MaskReflectDESC.BackFace.StencilFailOp = D3D11_STENCIL_OP_KEEP;
+	MaskReflectDESC.BackFace.StencilDepthFailOp = D3D11_STENCIL_OP_KEEP;
+	MaskReflectDESC.BackFace.StencilPassOp = D3D11_STENCIL_OP_KEEP;
+	MaskReflectDESC.BackFace.StencilFunc = D3D11_COMPARISON_ALWAYS;
+	HR(md3dDevice->CreateDepthStencilState(&MaskReflectDESC, &md3dDSSMaskReflect));
+
+
+
+	//创建一个标记反射面的DepthStencilState状态
+	D3D11_DEPTH_STENCIL_DESC EnableReflectDESC;
+	ZeroMemory(&EnableReflectDESC, sizeof(EnableReflectDESC));
+	EnableReflectDESC.DepthEnable = false;
+	EnableReflectDESC.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL;
+	EnableReflectDESC.DepthFunc = D3D11_COMPARISON_ALWAYS;
+	EnableReflectDESC.StencilEnable = true;
+	EnableReflectDESC.StencilReadMask = 0xff;
+	EnableReflectDESC.StencilWriteMask = 0xff;
+	EnableReflectDESC.FrontFace.StencilFailOp = D3D11_STENCIL_OP_KEEP;
+	EnableReflectDESC.FrontFace.StencilDepthFailOp = D3D11_STENCIL_OP_KEEP;
+	EnableReflectDESC.FrontFace.StencilPassOp = D3D11_STENCIL_OP_KEEP;
+	EnableReflectDESC.FrontFace.StencilFunc = D3D11_COMPARISON_EQUAL;
+
+	EnableReflectDESC.BackFace.StencilFailOp = D3D11_STENCIL_OP_KEEP;
+	EnableReflectDESC.BackFace.StencilDepthFailOp = D3D11_STENCIL_OP_KEEP;
+	EnableReflectDESC.BackFace.StencilPassOp = D3D11_STENCIL_OP_KEEP;
+	EnableReflectDESC.BackFace.StencilFunc = D3D11_COMPARISON_EQUAL;
+	HR(md3dDevice->CreateDepthStencilState(&EnableReflectDESC, &md3dDSSEnableReflect));
+
+
+
+	//创建alpha混合开启的混合状态
+	D3D11_BLEND_DESC blendStateDescription;
 	ZeroMemory(&blendStateDescription, sizeof(D3D11_BLEND_DESC));
 	blendStateDescription.RenderTarget[0].BlendEnable = TRUE;
 	blendStateDescription.RenderTarget[0].SrcBlend = D3D11_BLEND_SRC_ALPHA;
@@ -314,7 +357,7 @@ bool D3DClass::Initialize(int ScreenWidth, int ScreenHeight, bool vsync, HWND hw
 	blendStateDescription.RenderTarget[0].RenderTargetWriteMask = 0x0f;
 	HR(md3dDevice->CreateBlendState(&blendStateDescription, &md3dEnableBlendState));
 
-	//第十五,创建alpha混合关闭的混合状态
+	//创建alpha混合关闭的混合状态
 	blendStateDescription.RenderTarget[0].BlendEnable = false;
 	HR(md3dDevice->CreateBlendState(&blendStateDescription, &md3dDisableBlendState));
 
@@ -407,7 +450,7 @@ void D3DClass::SetViewPort()
 
 void D3DClass::TurnOnZBuffer()
 {
-	md3dImmediateContext->OMSetDepthStencilState(md3dDepthStencilState, 1);
+	md3dImmediateContext->OMSetDepthStencilState(md3dDepthStencilState, 0);
 }
 void D3DClass::ShutDown()
 {
@@ -437,6 +480,18 @@ void D3DClass::TurnOnSolidRender()
 void D3DClass::TurnOnWireFrameRender()
 {
 	md3dImmediateContext->RSSetState(md3dWireFrameRS);
+}
+
+
+void D3DClass::TurnOnMaskReflectDSS()
+{
+	md3dImmediateContext->OMSetDepthStencilState(md3dDSSMaskReflect, 1);
+}
+
+
+void D3DClass::TurnOnEnableReflectDSS()
+{
+	md3dImmediateContext->OMSetDepthStencilState(md3dDSSEnableReflect, 1);
 }
 
 shared_ptr<D3DClass> D3DClass::mD3D = nullptr;
