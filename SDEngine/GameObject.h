@@ -70,5 +70,8 @@ public:
 	void Shutdown();
 
 	void Render(MaterialType renderMode = MaterialType::PURE_COLOR, FXMVECTOR surfaceColor = XMVectorSet(1.0f,1.0f,1.0f,1.0f));
+
+	void RenderMesh();
+	XMMATRIX GetWorldMatrix();
 };
 #endif 

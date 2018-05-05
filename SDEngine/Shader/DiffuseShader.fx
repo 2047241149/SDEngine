@@ -1,5 +1,6 @@
 Texture2D DiffuseTexture:register(t0);  //纹理资源
-SamplerState SampleType:register(s0);   //采样方式
+SamplerState SampleWrapLinear:register(s0); 
+SamplerState SampleClampPoint:register(s1); 
 
 cbuffer CBMatrix:register(b0)
 {
@@ -63,7 +64,7 @@ PixelOut PS(VertexOut outa) : SV_Target
 	PixelOut pixelOut;;
 	
 	//diffuse
-	pixelOut.diffuse = DiffuseTexture.Sample(SampleType, outa.Tex);
+	pixelOut.diffuse = DiffuseTexture.Sample(SampleWrapLinear, outa.Tex);
 
 	//worldPos
 	pixelOut.worldPos = float4(outa.worldPos, 1.0);

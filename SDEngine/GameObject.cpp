@@ -182,15 +182,7 @@ void GameObject::Render(MaterialType renderMode ,FXMVECTOR surfaceColor)
 	XMVECTOR lightDir = dirLight->GetLightDirection();
 	XMVECTOR lightColor = dirLight->GetLightColor();
 
-	XMMATRIX scale = XMMatrixScaling(mTransform->localScale.x, mTransform->localScale.y, mTransform->localScale.z);
-
-	XMMATRIX rotation = XMMatrixRotationX(mTransform->localRotation.x / 180.0f * XM_PI)
-		* XMMatrixRotationY(mTransform->localRotation.y / 180.0f * XM_PI)
-		* XMMatrixRotationZ(mTransform->localRotation.z / 180.0f * XM_PI);
-
-	XMMATRIX translation = XMMatrixTranslation(mTransform->localPosition.x, mTransform->localPosition.y, mTransform->localPosition.z);
-
-	XMMATRIX worldMatrix = scale * rotation * translation;
+	XMMATRIX worldMatrix = this->GetWorldMatrix();
 
 	XMVECTOR errorShaderColor = XMVectorSet(1.0f, 0.0f, 0.0f, 1.0f);
 
@@ -295,6 +287,41 @@ void GameObject::Render(MaterialType renderMode ,FXMVECTOR surfaceColor)
 
 }
 
+void GameObject::RenderMesh()
+{
+	ID3D11DeviceContext* d3dDeviceContext = D3DClass::GetInstance()->GetDeviceContext();
+	//三角形片元
+	d3dDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+
+	vector<Model>& mModelList = mFBXModel->mModelList;
+	for (UINT index = 0; index < mModelList.size(); ++index)
+	{
+
+		Model* mModelData = &mModelList[index];
+
+		vector<Mesh>& mMeshList = mModelData->mMeshList;
+
+		for (UINT i = 0; i < mMeshList.size(); ++i)
+		{
+
+			//根据材质Id设置相应的VertexShader,PixelShader
+			Mesh& mesh = mMeshList[i];
+
+			//设置顶点缓存
+			UINT stride = sizeof(mesh.mVertexData[0]); //每个顶点元素的跨度大小，或者说每个顶点元素的大小
+			UINT offset = 0;
+			d3dDeviceContext->IASetVertexBuffers(0, 1, &mesh.mVertexBuffer, &stride, &offset);
+
+			//设置索引缓存
+			d3dDeviceContext->IASetIndexBuffer(mesh.mIndexBuffer, DXGI_FORMAT_R16_UINT, 0); //Word为两个字节																		  //设置拓扑方式
+
+			d3dDeviceContext->DrawIndexed(mesh.mIndexData.size(), 0, 0);
+		}
+	}
+
+
+}
+
 void GameObject::ShutdownSRV()
 {
 	map<string, ID3D11ShaderResourceView*>& mSRVMap = mFBXModel->mSRVMap;
@@ -303,4 +330,19 @@ void GameObject::ShutdownSRV()
 	{
 		ReleaseCOM(iter->second);
 	}
+}
+
+XMMATRIX GameObject::GetWorldMatrix()
+{
+	XMMATRIX scale = XMMatrixScaling(mTransform->localScale.x, mTransform->localScale.y, mTransform->localScale.z);
+
+	XMMATRIX rotation = XMMatrixRotationX(mTransform->localRotation.x / 180.0f * XM_PI)
+		* XMMatrixRotationY(mTransform->localRotation.y / 180.0f * XM_PI)
+		* XMMatrixRotationZ(mTransform->localRotation.z / 180.0f * XM_PI);
+
+	XMMATRIX translation = XMMatrixTranslation(mTransform->localPosition.x, mTransform->localPosition.y, mTransform->localPosition.z);
+
+	XMMATRIX worldMatrix = scale * rotation * translation;
+
+	return worldMatrix;
 }

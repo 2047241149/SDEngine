@@ -53,6 +53,12 @@ bool ShaderManager::Initialize()
 	mBlurShader = shared_ptr<BlurShader>(new
 		BlurShader(L"Shader/BlurShader.fx", L"Shader/BlurShader.fx"));
 
+	mSSRShader = shared_ptr<SSRShader>(new
+		SSRShader(L"Shader/ScreenSpaceReflectShader.fx", L"Shader/ScreenSpaceReflectShader.fx"));
+
+	mForwardPureColorShader = shared_ptr<PureColorShader>(new
+		PureColorShader(L"Shader/ForwardPureColorShader.fx", 
+			L"Shader/ForwardPureColorShader.fx"));
 	return true;
 }
 
@@ -173,6 +179,18 @@ bool ShaderManager::SetPureColorShader(CXMMATRIX worldMatrix,  FXMVECTOR surface
 	return true;
 }
 
+bool ShaderManager::SetForwardPureColorShader(CXMMATRIX worldMatrix, FXMVECTOR surfaceColor)
+{
+	bool result;
+	result = mForwardPureColorShader->SetShaderParamsExtern(worldMatrix, surfaceColor);
+	if (!result)
+	{
+		MessageBox(NULL, L" mForwardPureColorShader render Ê§°Ü", NULL, MB_OK);
+		return false;
+	}
+	return true;
+}
+
 bool ShaderManager::SetDiffuseSpecShader(CXMMATRIX worldMatrix,
 	ID3D11ShaderResourceView* diffuseSRV, ID3D11ShaderResourceView* specSRV)
 {
@@ -230,6 +248,25 @@ bool ShaderManager::SetBlurShader(ID3D11ShaderResourceView* screenRT)
 	if (!result)
 	{
 		MessageBox(NULL, L"mBlurShader render Ê§°Ü", NULL, MB_OK);
+		return false;
+	}
+
+	return true;
+}
+
+bool ShaderManager::SetSSRShader(CXMMATRIX worldMatrix, ID3D11ShaderResourceView* diffuseTex,
+	ID3D11ShaderResourceView* depthTex,
+	float viewAngleThresshold, float edgeDistThresshold,
+	float depthBias, float reflectScale, XMFLOAT4 perspectiveValues)
+{
+
+	bool result;
+
+	result = mSSRShader->SetShaderParamsExtern(worldMatrix, diffuseTex,depthTex, viewAngleThresshold,
+		edgeDistThresshold,depthBias,reflectScale,perspectiveValues);
+	if (!result)
+	{
+		MessageBox(NULL, L"mSSRShader render Ê§°Ü", NULL, MB_OK);
 		return false;
 	}
 

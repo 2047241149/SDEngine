@@ -305,7 +305,7 @@ bool D3DClass::Initialize(int ScreenWidth, int ScreenHeight, bool vsync, HWND hw
 	//初始化混合形容结构体
 	ZeroMemory(&blendStateDescription, sizeof(D3D11_BLEND_DESC));
 	blendStateDescription.RenderTarget[0].BlendEnable = TRUE;
-	blendStateDescription.RenderTarget[0].SrcBlend = D3D11_BLEND_ONE;
+	blendStateDescription.RenderTarget[0].SrcBlend = D3D11_BLEND_SRC_ALPHA;
 	blendStateDescription.RenderTarget[0].DestBlend = D3D11_BLEND_INV_SRC_ALPHA;
 	blendStateDescription.RenderTarget[0].BlendOp = D3D11_BLEND_OP_ADD;
 	blendStateDescription.RenderTarget[0].SrcBlendAlpha = D3D11_BLEND_ONE;
