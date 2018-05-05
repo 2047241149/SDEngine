@@ -105,6 +105,9 @@
     <ClCompile Include="BlurShader.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="ScreenSpaceReflectShader.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Camera.h">
@@ -209,6 +212,9 @@
     <ClInclude Include="BlurShader.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="ScreenSpaceReflectShader.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="libfbxsdk.dll" />
@@ -224,5 +230,7 @@
     <None Include="Shader\GraphicsBlitShader.fx" />
     <None Include="Shader\DOFShader.fx" />
     <None Include="Shader\BlurShader.fx" />
+    <None Include="Shader\ScreenSpaceReflectShader.fx" />
+    <None Include="Shader\ForwardPureColorShader.fx" />
   </ItemGroup>
 </Project>
