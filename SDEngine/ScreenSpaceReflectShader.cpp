@@ -36,9 +36,7 @@ void SSRShader::CreateBuffer()
 }
 
 bool SSRShader::SetShaderCBExtern(CXMMATRIX worldMatrix, ID3D11ShaderResourceView* diffuseTex,
-	ID3D11ShaderResourceView* depthTex,
-	float viewAngleThresshold, float edgeDistThresshold,
-	float depthBias, float reflectScale, XMFLOAT4 perspectiveValues)
+	ID3D11ShaderResourceView* depthTex, XMFLOAT2 perspectiveValue)
 {
 	ID3D11DeviceContext* d3dDeviceContext = D3DClass::GetInstance()->GetDeviceContext();
 	Shader::SetShaderCB(worldMatrix);
@@ -46,16 +44,14 @@ bool SSRShader::SetShaderCBExtern(CXMMATRIX worldMatrix, ID3D11ShaderResourceVie
 	D3D11_MAPPED_SUBRESOURCE mappedSubresource;
 	HR(d3dDeviceContext->Map(mCBSSR, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedSubresource));
 	auto pCBSSR = reinterpret_cast<CBSSR*>(mappedSubresource.pData);
-	pCBSSR->depthBias = depthBias;
-	pCBSSR->edgeDistThresshold = edgeDistThresshold;
-	pCBSSR->reflectScale = reflectScale;
-	pCBSSR->pectiveValues = perspectiveValues;
-	pCBSSR->viewAngleThresshold = viewAngleThresshold;
+	pCBSSR->farPlane = Camera::GetInstance()->GetFarPlane();
+	pCBSSR->nearPlane = Camera::GetInstance()->GetNearPlane();
+	pCBSSR->perspectiveValue = perspectiveValue;
 	d3dDeviceContext->Unmap(mCBSSR, 0);
 
 	d3dDeviceContext->PSSetConstantBuffers(1, 1, &mCBSSR);
 	d3dDeviceContext->PSSetShaderResources(0, 1, &diffuseTex);
-	d3dDeviceContext->PSSetShaderResources(1, 1, &depthTex);
+	d3dDeviceContext->PSSetShaderResources(5, 1, &depthTex);
 
 
 	return true;
@@ -63,17 +59,13 @@ bool SSRShader::SetShaderCBExtern(CXMMATRIX worldMatrix, ID3D11ShaderResourceVie
 
 
 bool SSRShader::SetShaderParamsExtern(CXMMATRIX worldMatrix, ID3D11ShaderResourceView* diffuseTex,
-	ID3D11ShaderResourceView* depthTex,
-	float viewAngleThresshold, float edgeDistThresshold,
-	float depthBias, float reflectScale, XMFLOAT4 perspectiveValues)
+	ID3D11ShaderResourceView* depthTex, XMFLOAT2 perspectiveValue)
 {
 
 	bool result;
 
 	//设置Shader常量缓存和纹理资源
-	result = SetShaderCBExtern(worldMatrix, diffuseTex,depthTex, 
-		viewAngleThresshold, edgeDistThresshold,
-		depthBias, reflectScale,perspectiveValues);
+	result = SetShaderCBExtern(worldMatrix, diffuseTex,depthTex, perspectiveValue);
 	if (!result)
 		return false;
 

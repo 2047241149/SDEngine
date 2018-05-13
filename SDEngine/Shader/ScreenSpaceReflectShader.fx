@@ -1,8 +1,10 @@
 Texture2D DiffuseTex:register(t0);  
-Texture2D DepthTex:register(t1);
+Texture2D WorldPosTex:register(t5);
 SamplerState SampleWrapLinear:register(s0);
 SamplerState SampleClampPoint:register(s1);
 
+#define MAX_STEPS 500
+#define MAX_INTERSECT_DIST 0.02
 
 cbuffer CBMatrix:register(b0)
 {
@@ -22,12 +24,9 @@ cbuffer CBMatrix:register(b0)
 
 cbuffer CBSSR:register(b1)
 {
-	//观察角度阀值(一定角度下观察不到反射现象)
-	float viewAngleThresshold;
-	float edgeDistThresshold;
-	float depthBias;
-	float reflectScale;
-	float4 perspectiveValues;
+	float farPlane;
+	float nearPlane;
+	float2 perspectiveValues;
 };
 
 struct VertexIn
@@ -50,26 +49,26 @@ struct VertexOut
 
 float DepthBufferConvertToViewDepth(float depth)
 {
-	float viewDepth = perspectiveValues.z / (depth + perspectiveValues.w);
+	float viewDepth = perspectiveValues.x / (depth + perspectiveValues.y);
 	return viewDepth;
 };
 
 
-static const int nNumSteps = 800;
-
-float3 CalcViewPos(float2 csPos, float viewDepth)
-{
-	float3 position;
-	position.xy = csPos.xy * perspectiveValues.xy * viewDepth;
-	position.z = viewDepth;
-	return position;
-};
 
 float2 texSize(Texture2D tex)
 {
 	uint texWidth, texHeight;
 	tex.GetDimensions(texWidth, texHeight);
 	return float2(texWidth, texHeight);
+}
+
+//转换为屏幕空间坐标
+float2 NormalizedDeviceCoordToScreenCoord(float2 ndc, float2 screenSize)
+{
+	float2 screenCoord;
+	screenCoord.x = screenSize.x * (0.5 * ndc.x + 0.5);
+	screenCoord.y = screenSize.y * (-0.5 * ndc.y + 0.5);
+	return screenCoord;
 }
 
 
@@ -95,78 +94,86 @@ VertexOut VS(VertexIn ina)
 
 float4 PS(VertexOut outa) : SV_Target
 {
-	//相机空间的位置和法线
-	float3 vsPos = outa.viewPos.xyz;
+	//初始化反射的颜色
+	float4 reflectColor = float4(0.0, 0.0, 0.0, 0.0f);
+
+	float2 screenSize = texSize(DiffuseTex);
+
+	float2 texcoord;
+
+	float t = 1;
+	float4 csPos = mul(float4(outa.viewPos, 1.0), Proj);
+
+	csPos /= csPos.w;
+	texcoord.x = csPos.x * 0.5 + 0.5;
+	texcoord.y = -csPos.y * 0.5 + 0.5;
+
+	int2 origin = texcoord * screenSize;
+	int2 coord;
+
+	//像素在相机空间的位置(光线起点)和法线
+	float3 v0 = outa.viewPos.xyz;
 	float3 vsNormal = outa.viewNormal.xyz;
 
-	//计算相机到像素的方向
-	float3 eyeToPixel = normalize(vsPos);
+	//相机到像素的方向
+	float3 eyeToPixel = normalize(v0);
 
-	//计算反射的方向
-	float3 vsReflect = reflect(eyeToPixel, vsNormal);
-
-	//初始化反射的颜色
-	float4 reflectColor = float4(0.0, 0.0, 0.0, 1.0f);
+	//光线反射的方向
+	float3 reflRay = normalize(reflect(eyeToPixel, vsNormal));
 
 
-	//大于一定的角度才产生SSR反射
-	if (vsReflect.z >= viewAngleThresshold)
+	//反射光线终点
+	float3 v1 = v0 + reflRay * farPlane;
+
+
+	//屏幕空间的坐标
+	float4 p0 = mul(float4(v0, 1.0), Proj);
+	float4 p1 = mul(float4(v1, 1.0), Proj);
+	
+
+	//这里参考软光栅器 纹理坐标 世界空间坐标的插值原理(透视纠正)
+	float k0 = 1.0 / p0.w;
+	float k1 = 1.0 / p1.w;
+
+	p0 *= k0;
+	p1 *= k1;
+
+	v0 *= k0;
+	v1 *= k1;
+
+	
+	p0.xy = NormalizedDeviceCoordToScreenCoord(p0.xy, screenSize.xy);
+	p1.xy = NormalizedDeviceCoordToScreenCoord(p1.xy, screenSize.xy);
+
+
+	float divisions = length(p1.xy - p0.xy);
+	float3 dV = (v1 - v0) / divisions;
+	float dK = (k1 - k0) / divisions;
+	float2 traceDir = (p1 - p0) / divisions;
+
+	float maxSteps = min(divisions, MAX_STEPS);
+
+	while (t < maxSteps)
 	{
-		//计算反射影像的混合值
-		float viewAngleThresholdInv = 1.0 - viewAngleThresshold;
-		float viewAngleFade = saturate(3.0 * (vsReflect.z - viewAngleThresshold) / viewAngleThresholdInv);
-
-		//将反射点从相机空间变换到NDC空间,以求出ndc空间的反射向量
-		float3 vsPosReflect = vsPos + vsReflect;
-		float3 ndcPosReflect = mul(float4(vsPosReflect, 1.0), Proj).xyz / vsPosReflect.z;
-		float3 ndcReflect = ndcPosReflect - outa.ndcPos;
-
-
-		//将ndcReflect (xy)变为一个合适的大小
-		float pixelSize = 2.0 / 600.0;
-		float ndcReflectScale = pixelSize / length(ndcReflect.xy);
-		ndcReflect = ndcReflect * ndcReflectScale;
-
-		//计算在屏幕空间(ScrrenSpace)的第一个(反射方向)采样点
-		float2 ssSamPos = (outa.ndcPos + ndcReflect).xy;
-		ssSamPos = ssSamPos * float2(0.5, -0.5) + float2(0.5,0.5);
-
-		//在屏幕空间反射光线每一步移动的距离(更确切的说是两步，对应于 2.0 / texRes.y)
-		float2 ssStep = ndcReflect.xy * float2(0.5, -0.5);
-
-		float4 rayPlane;
-		float3 vRight = cross(eyeToPixel, vsReflect);
-		rayPlane.xyz = normalize(cross(vsReflect, vRight));
-		rayPlane.w = dot(rayPlane.xyz, vsPos);
-		
-
-		//在屏幕空间进行位移，并将在屏幕空间得到的数据还原到相机空间而进行光线求交
-		for (int nStep = 0; nStep < 1024; nStep++)
+		coord = origin + traceDir * t;
+		if (coord.x > screenSize.x || coord.y > screenSize.y || coord.x < 0 || coord.y < 0)
 		{
-			//目前的深度
-			float curDepth = DepthTex.SampleLevel(SampleClampPoint, ssSamPos, 0).x;
-
-			float curViewDepth = DepthBufferConvertToViewDepth(curDepth);
-			float2 curNdcPos = outa.ndcPos.xy + ndcReflect.xy * ((float)nStep + 1.0);
-			float3 curViewPos = CalcViewPos(curNdcPos, curViewDepth);
-
-
-			if (rayPlane.w >= dot(rayPlane.xyz, curViewPos) + depthBias)
-			{
-				float3 vsFinalPos = vsPos + (vsReflect / abs(vsReflect.z)) * abs(curViewDepth - vsPos.z + depthBias);
-				float2 ndcFinalPos = vsFinalPos.xy / perspectiveValues.xy / vsFinalPos.z;
-				ssSamPos = ndcFinalPos.xy * float2(0.5, -0.5) + float2(0.5, 0.5);
-
-				reflectColor.xyz = DiffuseTex.SampleLevel(SampleWrapLinear, ssSamPos, 0).xyz;
-
-				break;
-			}
-
-			ssSamPos = ssSamPos + ssStep;
+			break;
 		}
+
+		float curDepth = (v0 + dV * t).z;
+		float k = k0 + dK * t;
+		curDepth /= k;
+		texcoord = float2(coord) / screenSize;
+		float3 worldPos = WorldPosTex[coord].xyz;
+		float storeDepth = mul(float4(worldPos, 1.0), View).z;
+		if ((curDepth > storeDepth) && (curDepth - storeDepth) < MAX_INTERSECT_DIST)
+		{
+			reflectColor = DiffuseTex.SampleLevel(SampleClampPoint, texcoord, 0);	
+			break;
+		}
+		t++;
 	}
-
-	reflectColor.a = 0.5;
-
+	reflectColor.a = 0.6;
 	return reflectColor;
 }

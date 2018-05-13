@@ -216,7 +216,7 @@ void GeometryBuffer::ClearDepthBuffer()
 	ID3D11DeviceContext* deviceContext = D3DClass::GetInstance()->GetDeviceContext();
 
 	//清除深度缓存和模板缓存
-	deviceContext->ClearDepthStencilView(mDepthStencilView, D3D11_CLEAR_DEPTH, 1.0f, 0);
+	deviceContext->ClearDepthStencilView(mDepthStencilView, D3D11_CLEAR_DEPTH|D3D11_CLEAR_STENCIL, 1.0f, 0);
 }
 
 

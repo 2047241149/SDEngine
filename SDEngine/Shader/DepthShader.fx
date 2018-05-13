@@ -1,11 +1,15 @@
 Texture2D ShaderTexture:register(t0);  //纹理资源
 SamplerState SampleType:register(s0);   //采样方式
 
+
 //VertexShader
 cbuffer CBMatrix:register(b0)
 {
 	matrix UIView;
 	matrix UIOrtho;
+	float farPlane;
+	float nearPlane;
+	float2 pad;
 };
 
 struct VertexIn
@@ -22,6 +26,12 @@ struct VertexOut
 	float2 Tex:TEXCOORD0;
 };
 
+float DepthBufferConvertToLinear(float depth)
+{
+	float a = 1.0 / (nearPlane - farPlane);
+	return (nearPlane*farPlane * a) / (depth + farPlane * a);
+};
+
 
 VertexOut VS(VertexIn ina)
 {
@@ -36,9 +46,9 @@ VertexOut VS(VertexIn ina)
 
 float4 PS(VertexOut outa) : SV_Target
 {
-	float4 color;
 
-	color = ShaderTexture.Sample(SampleType, outa.Tex);
-	return float4(color.r, color.r, color.r, 1.0f);
-
+	float depth = ShaderTexture.Sample(SampleType, outa.Tex).r;
+	depth = DepthBufferConvertToLinear(depth);
+	depth = depth / farPlane;
+	return float4(depth, depth, depth, 1.0f);
 }

@@ -10,6 +10,7 @@
 #include<fstream>
 #include"MathTool.h"
 #include"D3DClass.h"
+#include "Camera.h"
 using namespace std;
 using namespace DirectX;
 
@@ -43,6 +44,9 @@ public:
 	{
 		XMMATRIX mUIViewMatrix;
 		XMMATRIX mUIOrthoMatrix;
+		float farPlane;
+		float nearPlane;
+		XMFLOAT2 pad;
 	};
 
 
@@ -52,11 +56,9 @@ public:
 	virtual ~DepthShader();
 
 public:
-	bool SetShaderCB(CXMMATRIX uiViewMatrix, CXMMATRIX uiOrhoMatrix, 
-		ID3D11ShaderResourceView* diffuseTexture);
+	bool SetShaderCB(ID3D11ShaderResourceView* diffuseTexture);
 	bool SetShaderState();
-	bool SetShaderParams(CXMMATRIX uiViewMatrix, CXMMATRIX uiOrhoMatrix, 
-		ID3D11ShaderResourceView* diffuseTexture);
+	bool SetShaderParams(ID3D11ShaderResourceView* diffuseTexture);
 
 };
 #endif 
