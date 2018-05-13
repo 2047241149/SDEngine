@@ -35,6 +35,7 @@ private:
 	shared_ptr<BlurShader> mBlurShader;
 	shared_ptr<SSRShader> mSSRShader;
 	shared_ptr<PureColorShader> mForwardPureColorShader;
+	shared_ptr<Shader> mDepthGetShader;
 public:
 	static shared_ptr<ShaderManager> mShaderManager;
 
@@ -81,6 +82,8 @@ public:
 	bool SetSSRShader(CXMMATRIX worldMatrix, ID3D11ShaderResourceView* diffuseTex,
 		ID3D11ShaderResourceView* depthTex,XMFLOAT2 perspectiveValues);
 
+	bool SetDepthGetShader(CXMMATRIX worldMatrix);
+
 public:
 	DepthShader* GetDepthShader() { return mDepthShader.get(); }
 	DiffuseShader* GetDiffuseShader() { return mDiffuseShader.get(); }
@@ -95,6 +98,7 @@ public:
 	BlurShader* GetBlurShader() { return mBlurShader.get(); }
 	SSRShader* GetSSRShader() { return mSSRShader.get(); }
 	PureColorShader* GetForwardPureColor() { return mForwardPureColorShader.get(); }
+	Shader* GetDepthGetShader() { return mDepthGetShader.get(); }
 };
 #endif // !_SHADER_MANAGER_CLASS
 

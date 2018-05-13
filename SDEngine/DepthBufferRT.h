@@ -5,8 +5,9 @@
 #include<Windows.h>
 #include<d3d11_1.h>
 #include"Macro.h"
+#include "D3DClass.h"
 
-class RenderDepthToTexture
+class DepthBufferRT
 {
 private:
 	ID3D11ShaderResourceView* mShaderResourceView;  //Shader◊ ‘¥ ”Õº
@@ -16,14 +17,14 @@ private:
 
 
 public:
-	RenderDepthToTexture();
-	RenderDepthToTexture(const RenderDepthToTexture&other);
-	~RenderDepthToTexture();
-	bool Initialize(ID3D11Device* d3dDevice,int TextureSize);
+	DepthBufferRT(int TextureWidth, int TextureHeight);
+	DepthBufferRT(const DepthBufferRT&other);
+	~DepthBufferRT();
+	bool Initialize(int TextureWidth, int TextureHeight);
 	void ShutDown();
 
-	void SetRenderTarget(ID3D11DeviceContext* deviceContext);
-	void ClearDepth(ID3D11DeviceContext* deviceContext);
+	void SetRenderTarget();
+	void ClearDepth();
 	ID3D11ShaderResourceView* GetShaderResourceView();
 
 };

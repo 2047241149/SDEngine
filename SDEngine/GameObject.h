@@ -30,6 +30,7 @@ enum MaterialType
 	DIFFUSE_SPECULAR,
 	DIFFUSE_NORMAL_SPECULAR,
 	WIRE_FRAME,
+	DEPTH_BUFFER
 };
 
 class GameObject

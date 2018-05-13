@@ -80,6 +80,8 @@ bool GraphicsClass::Initialize(int ScreenWidth, int ScreenHeight, HWND hwnd,HINS
 
 	mDebugWindow = shared_ptr<DebugWindow>(new DebugWindow(ScreenWidth,ScreenHeight,120,120));
 
+	mBackDepthBufferRT = shared_ptr<DepthBufferRT>(new DepthBufferRT(ScreenWidth, ScreenHeight));
+
 	return true;
 }
 
@@ -206,6 +208,9 @@ void GraphicsClass::Render()
 	//绘制不透明物体
 	RenderOpacity();
 
+	//获取整个场景的BackDepthBuffer
+	RenderSceneBackDepthBuffer();
+
 	//绘制透明物体(普通的透明物体，SSR)
 	RenderTransparency();
 
@@ -251,7 +256,7 @@ void GraphicsClass::RenderFBXMesh()
 	mSphereObject->Render(MaterialType::PURE_COLOR, XMVectorSet(1.0f, 1.0f, 0.0f, 1.0f));
 	
 	//原点球
-	mSphereObject->mTransform->localPosition = XMFLOAT3(0.0f, 2.0f, 0.0f);
+	mSphereObject->mTransform->localPosition = XMFLOAT3(0.0f, 0.0f, 0.0f);
 	mSphereObject->Render(MaterialType::PURE_COLOR,XMVectorSet(1.0f,1.0f,0.0f,1.0f));
 
 }
@@ -355,6 +360,11 @@ void GraphicsClass::RenderDebugWindow()
 	(mGeometryBuffer->GetGBufferSRV(GBufferType::Depth));
 	mDebugWindow->Render(490, 600);
 
+
+	ShaderManager::GetInstance()->SetDepthShader
+	(mBackDepthBufferRT->GetShaderResourceView());
+	mDebugWindow->Render(610, 600);
+
 	D3DClass::GetInstance()->TurnOnZBuffer();
 }
 
@@ -410,6 +420,7 @@ void GraphicsClass::RenderGeneralTransparency()
 	ID3D11DepthStencilView* opacityDSV = mGeometryBuffer->GetDSV();
 	d3dDeviceContext->OMSetRenderTargets(1, &backRTV, opacityDSV);
 	D3DClass::GetInstance()->SetViewPort();
+	D3DClass::GetInstance()->TurnOnDisbleZWriteDSS();
 	D3DClass::GetInstance()->TurnOnAlphaBlend();
 
 
@@ -419,5 +430,42 @@ void GraphicsClass::RenderGeneralTransparency()
 	ShaderManager::GetInstance()->SetForwardPureColorShader(worldMatrix, XMVectorSet(1.0f, 0.0f, 0.0f, 1.0f));
 	mSphereObject->RenderMesh();
 	D3DClass::GetInstance()->TurnOffAlphaBlend();
+	D3DClass::GetInstance()->RecoverDefaultDSS();
+}
+
+
+void GraphicsClass::RenderSceneBackDepthBuffer()
+{
+	mBackDepthBufferRT->SetRenderTarget();
+	D3DClass::GetInstance()->TurnOnCullFront();
+
+	//渲染头
+	mHeadObject->mTransform->localScale = XMFLOAT3(5.0f, 5.0f, 5.0f);
+	mHeadObject->mTransform->localPosition = XMFLOAT3(0.0f, 10.0f, 0.0f);
+	mHeadObject->mTransform->localRotation = XMFLOAT3(0.0f, 90.0f, 0.0f);
+	mHeadObject->Render(MaterialType::DEPTH_BUFFER);
+
+	//渲染SponzaBottom
+	mSponzaBottom->mTransform->localPosition = XMFLOAT3(0.0f, 0.0f, 0.0f);
+	mSponzaBottom->Render(MaterialType::DEPTH_BUFFER);
+
+    //渲染SponzaNoBottm
+	mSponzaNoBottom->mTransform->localPosition = XMFLOAT3(0.0f, 0.0f, 0.0f);
+	mSponzaNoBottom->Render(MaterialType::DEPTH_BUFFER);
+
+	//球渲染
+	mSphereObject->mTransform->localScale = XMFLOAT3(1.0f, 1.0f, 1.0f);
+
+	//平行光源球
+	XMStoreFloat3(&mSphereObject->mTransform->localPosition,
+		-Light::GetInstnce()->GetLightDirection());
+	mSphereObject->Render(MaterialType::DEPTH_BUFFER);
+
+	//原点球
+	mSphereObject->mTransform->localPosition = XMFLOAT3(0.0f, 0.0f, 0.0f);
+	mSphereObject->Render(MaterialType::DEPTH_BUFFER);
+
+	//恢复默认的RS
+	D3DClass::GetInstance()->TurnOnSolidRender();
 
 }
