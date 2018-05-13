@@ -272,6 +272,12 @@ void GameObject::Render(MaterialType renderMode ,FXMVECTOR surfaceColor)
 				mShaderManager->SetPureColorShader(worldMatrix, XMVectorSet(1.0f, 1.0f, 1.0f, 1.0f));
 			} 
 
+			//仅仅获取深度缓存
+			else if (renderMode == MaterialType::DEPTH_BUFFER)
+			{
+				mShaderManager->SetDepthGetShader(worldMatrix);
+			}
+
 	
 			//设置顶点缓存
 			UINT stride = sizeof(mesh.mVertexData[0]); //每个顶点元素的跨度大小，或者说每个顶点元素的大小

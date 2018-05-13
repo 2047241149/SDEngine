@@ -59,6 +59,11 @@ bool ShaderManager::Initialize()
 	mForwardPureColorShader = shared_ptr<PureColorShader>(new
 		PureColorShader(L"Shader/ForwardPureColorShader.fx", 
 			L"Shader/ForwardPureColorShader.fx"));
+
+	mDepthGetShader = shared_ptr<Shader>(new Shader(L"Shader/DepthGetShader.fx",
+		L"Shader/DepthGetShader.fx"));
+
+
 	return true;
 }
 
@@ -265,6 +270,19 @@ bool ShaderManager::SetSSRShader(CXMMATRIX worldMatrix, ID3D11ShaderResourceView
 	if (!result)
 	{
 		MessageBox(NULL, L"mSSRShader render Ê§°Ü", NULL, MB_OK);
+		return false;
+	}
+
+	return true;
+}
+
+bool ShaderManager::SetDepthGetShader(CXMMATRIX worldMatrix)
+{
+	bool result;
+	result = mDepthGetShader->SetShaderParams(worldMatrix);
+	if (!result)
+	{
+		MessageBox(NULL, L"DepthGetShader render Ê§°Ü", NULL, MB_OK);
 		return false;
 	}
 

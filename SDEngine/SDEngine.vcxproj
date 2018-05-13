@@ -134,7 +134,7 @@
     <ClCompile Include="MathTool.cpp" />
     <ClCompile Include="PureColorShader.cpp" />
     <ClCompile Include="Quad.cpp" />
-    <ClCompile Include="RenderDepthToTexure.cpp" />
+    <ClCompile Include="DepthBufferRT.cpp" />
     <ClCompile Include="DefferLightingShader.cpp" />
     <ClCompile Include="ScreenSpaceReflectShader.cpp" />
     <ClCompile Include="Shader.cpp" />
@@ -172,7 +172,7 @@
     <ClInclude Include="MathTool.h" />
     <ClInclude Include="PureColorShader.h" />
     <ClInclude Include="Quad.h" />
-    <ClInclude Include="RenderDepthToTexure.h" />
+    <ClInclude Include="DepthBufferRT.h" />
     <ClInclude Include="DefferLightingShader.h" />
     <ClInclude Include="ScreenSpaceReflectShader.h" />
     <ClInclude Include="Shader.h" />
@@ -245,6 +245,11 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Shader\ForwardPureColorShader.fx">
+      <FileType>Document</FileType>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Shader\DepthGetShader.fx">
       <FileType>Document</FileType>
     </None>
   </ItemGroup>
