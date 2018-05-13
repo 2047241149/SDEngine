@@ -36,12 +36,12 @@ bool DepthShader::Initialize(WCHAR* vsFilenPath, WCHAR* psFilenPath)
 
 
 
-bool DepthShader::SetShaderParams(CXMMATRIX uiViewMatrix, CXMMATRIX uiOrhoMatrix, ID3D11ShaderResourceView* diffuseTexture)
+bool DepthShader::SetShaderParams(ID3D11ShaderResourceView* diffuseTexture)
 {
 	bool result;
 
 	//设置Shader常量缓存和纹理资源
-	result = SetShaderCB(uiViewMatrix, uiOrhoMatrix, diffuseTexture);
+	result = SetShaderCB(diffuseTexture);
 	if (!result)
 		return false;
 
@@ -205,11 +205,12 @@ void DepthShader::OutputShaderErrorMessage(ID3D10Blob* errorMessage, WCHAR* shad
 }
 
 
-bool DepthShader::SetShaderCB(CXMMATRIX uiViewMatrix, CXMMATRIX uiOrhoMatrix, ID3D11ShaderResourceView* diffuseTexture)
+bool DepthShader::SetShaderCB(ID3D11ShaderResourceView* diffuseTexture)
 {
 
 	ID3D11DeviceContext* d3dDeviceContext = D3DClass::GetInstance()->GetDeviceContext();
-
+	XMMATRIX uiViewMatrix = Camera::GetInstance()->GetUIViewMatrix();
+	XMMATRIX uiOrhoMatrix = Camera::GetInstance()->GetUIOrthoMatrix();
 	//第一，更新变换矩阵常量缓存的值
 	//将矩阵转置,在传入常量缓存前进行转置,因为GPU对矩阵数据会自动进行一次转置
 	D3D11_MAPPED_SUBRESOURCE mappedSubresource1;
@@ -219,12 +220,15 @@ bool DepthShader::SetShaderCB(CXMMATRIX uiViewMatrix, CXMMATRIX uiOrhoMatrix, ID
 	XMMATRIX uiOrthoMa = XMMatrixTranspose(uiOrhoMatrix);
 	pCBMatrix->mUIViewMatrix = uiViewMa;
 	pCBMatrix->mUIOrthoMatrix = uiOrthoMa;
+	pCBMatrix->farPlane = Camera::GetInstance()->GetFarPlane();
+	pCBMatrix->nearPlane = Camera::GetInstance()->GetNearPlane();
+	pCBMatrix->pad = XMFLOAT2(0.0f, 0.0f);
 	d3dDeviceContext->Unmap(mCBMatrixBuffer, 0);
 
 
 	//第三,设置在VertexShader的常量缓存的值(带着更新的值)
 	d3dDeviceContext->VSSetConstantBuffers(0, 1, &mCBMatrixBuffer);
-
+	d3dDeviceContext->PSSetConstantBuffers(0, 1, &mCBMatrixBuffer);
 	d3dDeviceContext->PSSetShaderResources(0, 1, &diffuseTexture);
 
 	return true;
