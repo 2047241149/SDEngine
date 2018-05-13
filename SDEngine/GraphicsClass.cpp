@@ -28,7 +28,7 @@ bool GraphicsClass::Initialize(int ScreenWidth, int ScreenHeight, HWND hwnd,HINS
 
 	//创建相机
 	Camera* mainCamera = Camera::GetInstance();
-	mainCamera->SetProjParams(XM_PI / 3.0f, (float)ScreenWidth / (float)ScreenHeight, 0.1f, 400.0f);
+	mainCamera->SetProjParams(XM_PI / 3.0f, (float)ScreenWidth / (float)ScreenHeight, SCREEN_NEAR, SCREEN_FAR);
 	mainCamera->SetUIOrthoParams(ScreenWidth, ScreenHeight);
 
 	//创建Shader管理器
@@ -233,8 +233,10 @@ void GraphicsClass::RenderFBXMesh()
 	mHeadObject->Render(materialType);
 
 	//渲染SponzaBottom(用于SSR反射)
+	D3DClass::GetInstance()->TurnOnMaskReflectDSS();
 	mSponzaBottom->mTransform->localPosition = XMFLOAT3(0.0f, 0.0f, 0.0f);
 	mSponzaBottom->Render(MaterialType::DIFFUSE);
+	D3DClass::GetInstance()->TurnOnZBuffer();//恢复默认的DSS
 
 	//渲染SponzaNoBottm
 	mSponzaNoBottom->mTransform->localPosition = XMFLOAT3(0.0f, 0.0f, 0.0f);
@@ -249,7 +251,7 @@ void GraphicsClass::RenderFBXMesh()
 	mSphereObject->Render(MaterialType::PURE_COLOR, XMVectorSet(1.0f, 1.0f, 0.0f, 1.0f));
 	
 	//原点球
-	mSphereObject->mTransform->localPosition = XMFLOAT3(0.0f, 0.0f, 0.0f);
+	mSphereObject->mTransform->localPosition = XMFLOAT3(0.0f, 2.0f, 0.0f);
 	mSphereObject->Render(MaterialType::PURE_COLOR,XMVectorSet(1.0f,1.0f,0.0f,1.0f));
 
 }
@@ -349,8 +351,8 @@ void GraphicsClass::RenderDebugWindow()
 	(mGeometryBuffer->GetGBufferSRV(GBufferType::Specular));
 	mDebugWindow->Render(370, 600);
 
-	ShaderManager::GetInstance()->SetUIShader
-	(mSSRRT->GetShaderResourceView());
+	ShaderManager::GetInstance()->SetDepthShader
+	(mGeometryBuffer->GetGBufferSRV(GBufferType::Depth));
 	mDebugWindow->Render(490, 600);
 
 	D3DClass::GetInstance()->TurnOnZBuffer();
@@ -365,29 +367,26 @@ void GraphicsClass::RenderSSRPass()
 	d3dDeviceContext->OMSetRenderTargets(1, &backRTV, opacityDSV);
 	D3DClass::GetInstance()->SetViewPort();
 	D3DClass::GetInstance()->TurnOnAlphaBlend();
+	D3DClass::GetInstance()->TurnOnEnableReflectDSS();
 	
 	XMMATRIX worldMatrix = mSponzaBottom->GetWorldMatrix();
 	
-	float viewAngleThresshold = 0.05f;
-	float edgeDistThresshold = 0.45;
-	float depthBias = 0.0f;
-	float reflectScale = 1.0f;
+
 	XMMATRIX projMatrix = Camera::GetInstance()->GetProjectionMatrix();
 	XMFLOAT4X4 projFloat4X4;
 	XMStoreFloat4x4(&projFloat4X4, projMatrix);
-	XMFLOAT4 perspectiveValues;
-	perspectiveValues.x = 1.0f / projFloat4X4.m[0][0];
-	perspectiveValues.y = 1.0f / projFloat4X4.m[1][1];
-	perspectiveValues.z = projFloat4X4.m[3][2];
-	perspectiveValues.w = -projFloat4X4.m[2][2];
+	XMFLOAT2 perspectiveValues;
+	perspectiveValues.x = projFloat4X4.m[3][2];
+	perspectiveValues.y = -projFloat4X4.m[2][2];
 
 	ShaderManager::GetInstance()->SetSSRShader(worldMatrix,
-		mSrcRT->GetShaderResourceView(), mGeometryBuffer->GetGBufferSRV(GBufferType::Depth),
-		viewAngleThresshold,edgeDistThresshold,depthBias,reflectScale,perspectiveValues);
+		mSrcRT->GetShaderResourceView(), 
+		mGeometryBuffer->GetGBufferSRV(GBufferType::Pos),perspectiveValues);
 
 	mSponzaBottom->RenderMesh();
 
 	D3DClass::GetInstance()->TurnOffAlphaBlend();
+	D3DClass::GetInstance()->TurnOnZBuffer();
 }
 
 void GraphicsClass::RenderOpacity()
