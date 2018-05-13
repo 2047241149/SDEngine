@@ -61,8 +61,7 @@ public:
 	bool SetUIShader(ID3D11ShaderResourceView* diffuseTexture);
 
 
-	bool SetDepthShader(CXMMATRIX uiViewMatrix, CXMMATRIX uiOrhoMatrix,
-		ID3D11ShaderResourceView* depthTexture);
+	bool SetDepthShader(ID3D11ShaderResourceView* depthTexture);
 
 	bool SetPureColorShader(CXMMATRIX worldMatrix, FXMVECTOR surfaceColor);
 
@@ -80,9 +79,7 @@ public:
 	bool SetBlurShader(ID3D11ShaderResourceView* screenRT);
 
 	bool SetSSRShader(CXMMATRIX worldMatrix, ID3D11ShaderResourceView* diffuseTex,
-		ID3D11ShaderResourceView* depthTex,
-		float viewAngleThresshold, float edgeDistThresshold,
-		float depthBias, float reflectScale, XMFLOAT4 perspectiveValues);
+		ID3D11ShaderResourceView* depthTex,XMFLOAT2 perspectiveValues);
 
 public:
 	DepthShader* GetDepthShader() { return mDepthShader.get(); }

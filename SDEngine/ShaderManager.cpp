@@ -142,10 +142,10 @@ bool ShaderManager::SetUIShader(ID3D11ShaderResourceView* diffuseTexture)
 
 
 
-bool ShaderManager::SetDepthShader(CXMMATRIX uiViewMatrix, CXMMATRIX uiOrhoMatrix, ID3D11ShaderResourceView* depthTexture)
+bool ShaderManager::SetDepthShader(ID3D11ShaderResourceView* depthTexture)
 {
 	bool result;
-	result = mDepthShader->SetShaderParams(uiViewMatrix, uiOrhoMatrix, depthTexture);
+	result = mDepthShader->SetShaderParams(depthTexture);
 	if (!result)
 	{
 		MessageBox(NULL, L" depth shader render Ê§°Ü", NULL, MB_OK);
@@ -255,15 +255,13 @@ bool ShaderManager::SetBlurShader(ID3D11ShaderResourceView* screenRT)
 }
 
 bool ShaderManager::SetSSRShader(CXMMATRIX worldMatrix, ID3D11ShaderResourceView* diffuseTex,
-	ID3D11ShaderResourceView* depthTex,
-	float viewAngleThresshold, float edgeDistThresshold,
-	float depthBias, float reflectScale, XMFLOAT4 perspectiveValues)
+	ID3D11ShaderResourceView* depthTex, XMFLOAT2 perspectiveValues)
 {
 
 	bool result;
 
-	result = mSSRShader->SetShaderParamsExtern(worldMatrix, diffuseTex,depthTex, viewAngleThresshold,
-		edgeDistThresshold,depthBias,reflectScale,perspectiveValues);
+	result = mSSRShader->SetShaderParamsExtern(worldMatrix, diffuseTex,depthTex,
+		perspectiveValues);
 	if (!result)
 	{
 		MessageBox(NULL, L"mSSRShader render Ê§°Ü", NULL, MB_OK);
