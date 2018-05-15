@@ -27,10 +27,12 @@ public:
 
 public:
 	bool SetShaderCBExtern(CXMMATRIX worldMatrix, ID3D11ShaderResourceView* diffuseTex,
-		ID3D11ShaderResourceView* depthTex,XMFLOAT2 perspectiveValue);
+		ID3D11ShaderResourceView* frontDepthTex, ID3D11ShaderResourceView* backDepthTex, 
+		XMFLOAT2 perspectiveValue);
 
 	bool SetShaderParamsExtern(CXMMATRIX worldMatrix, ID3D11ShaderResourceView* diffuseTex, 
-		ID3D11ShaderResourceView* depthTex, XMFLOAT2 perspectiveValue);
+		ID3D11ShaderResourceView* frontDepthTex, ID3D11ShaderResourceView* backDepthTex, 
+		XMFLOAT2 perspectiveValue);
 	
 };
 #endif 

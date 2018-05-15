@@ -1,5 +1,6 @@
-Texture2D DiffuseTex:register(t0);  
-Texture2D WorldPosTex:register(t5);
+Texture2D<float4> DiffuseTex:register(t0);
+Texture2D<float4> FrontDepthTex:register(t1);
+Texture2D<float4> BackDepthTex:register(t2);
 SamplerState SampleWrapLinear:register(s0);
 SamplerState SampleClampPoint:register(s1);
 
@@ -165,15 +166,18 @@ float4 PS(VertexOut outa) : SV_Target
 		float k = k0 + dK * t;
 		curDepth /= k;
 		texcoord = float2(coord) / screenSize;
-		float3 worldPos = WorldPosTex[coord].xyz;
-		float storeDepth = mul(float4(worldPos, 1.0), View).z;
-		if ((curDepth > storeDepth) && (curDepth - storeDepth) < MAX_INTERSECT_DIST)
+		float storeFrontDepth = FrontDepthTex.SampleLevel(SampleClampPoint, texcoord, 0).r;
+		storeFrontDepth = DepthBufferConvertToViewDepth(storeFrontDepth);
+		float storeBackDepth = BackDepthTex.SampleLevel(SampleClampPoint, texcoord, 0).r;
+		storeBackDepth = DepthBufferConvertToViewDepth(storeBackDepth);
+		if ((curDepth > storeFrontDepth) && ((curDepth - storeFrontDepth) <= (storeBackDepth - storeFrontDepth)))
 		{
 			reflectColor = DiffuseTex.SampleLevel(SampleClampPoint, texcoord, 0);	
-			break;
+			reflectColor.a = 0.4;
+			break;	
 		}
 		t++;
 	}
-	reflectColor.a = 0.6;
+
 	return reflectColor;
 }

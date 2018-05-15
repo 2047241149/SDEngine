@@ -353,7 +353,7 @@ bool D3DClass::Initialize(int ScreenWidth, int ScreenHeight, bool vsync, HWND hw
 	D3D11_DEPTH_STENCIL_DESC EnableReflectDESC;
 	ZeroMemory(&EnableReflectDESC, sizeof(EnableReflectDESC));
 	EnableReflectDESC.DepthEnable = false;
-	EnableReflectDESC.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL;
+	EnableReflectDESC.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ZERO;
 	EnableReflectDESC.DepthFunc = D3D11_COMPARISON_ALWAYS;
 	EnableReflectDESC.StencilEnable = true;
 	EnableReflectDESC.StencilReadMask = 0xff;
