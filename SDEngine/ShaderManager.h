@@ -80,7 +80,8 @@ public:
 	bool SetBlurShader(ID3D11ShaderResourceView* screenRT);
 
 	bool SetSSRShader(CXMMATRIX worldMatrix, ID3D11ShaderResourceView* diffuseTex,
-		ID3D11ShaderResourceView* depthTex,XMFLOAT2 perspectiveValues);
+		ID3D11ShaderResourceView* frontDepthTex, ID3D11ShaderResourceView* backDepthTex,
+		XMFLOAT2 perspectiveValue);
 
 	bool SetDepthGetShader(CXMMATRIX worldMatrix);
 

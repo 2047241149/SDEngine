@@ -373,11 +373,12 @@ void GraphicsClass::RenderSSRPass()
 	//mSSRRT->SetRenderTarget();
 	ID3D11DeviceContext* d3dDeviceContext = D3DClass::GetInstance()->GetDeviceContext();
 	ID3D11RenderTargetView* backRTV = D3DClass::GetInstance()->GetRTV();
-	ID3D11DepthStencilView* opacityDSV = mGeometryBuffer->GetDSV();
-	d3dDeviceContext->OMSetRenderTargets(1, &backRTV, opacityDSV);
+	//靠模板緩存值來判斷
+	d3dDeviceContext->OMSetRenderTargets(1, &backRTV, nullptr);
 	D3DClass::GetInstance()->SetViewPort();
-	D3DClass::GetInstance()->TurnOnAlphaBlend();
 	D3DClass::GetInstance()->TurnOnEnableReflectDSS();
+	D3DClass::GetInstance()->TurnOnAlphaBlend();
+	
 	
 	XMMATRIX worldMatrix = mSponzaBottom->GetWorldMatrix();
 	
@@ -391,12 +392,14 @@ void GraphicsClass::RenderSSRPass()
 
 	ShaderManager::GetInstance()->SetSSRShader(worldMatrix,
 		mSrcRT->GetShaderResourceView(), 
-		mGeometryBuffer->GetGBufferSRV(GBufferType::Pos),perspectiveValues);
+		mGeometryBuffer->GetGBufferSRV(GBufferType::Depth),
+		mBackDepthBufferRT->GetShaderResourceView(),
+		perspectiveValues);
 
 	mSponzaBottom->RenderMesh();
 
 	D3DClass::GetInstance()->TurnOffAlphaBlend();
-	D3DClass::GetInstance()->TurnOnZBuffer();
+	D3DClass::GetInstance()->RecoverDefaultDSS();
 }
 
 void GraphicsClass::RenderOpacity()
@@ -409,7 +412,8 @@ void GraphicsClass::RenderOpacity()
 //绘制透明物体分为绘制透明
 void GraphicsClass::RenderTransparency()
 {
-	RenderGeneralTransparency();
+
+	//RenderGeneralTransparency();
 	RenderSSRPass();
 }
 
@@ -422,7 +426,6 @@ void GraphicsClass::RenderGeneralTransparency()
 	D3DClass::GetInstance()->SetViewPort();
 	D3DClass::GetInstance()->TurnOnDisbleZWriteDSS();
 	D3DClass::GetInstance()->TurnOnAlphaBlend();
-
 
 	mSphereObject->mTransform->localPosition = XMFLOAT3(3.0, 9.0, 0.0);
 	mSphereObject->mTransform->localScale = XMFLOAT3(3.0, 3.0, 3.0);

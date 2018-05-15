@@ -36,7 +36,8 @@ void SSRShader::CreateBuffer()
 }
 
 bool SSRShader::SetShaderCBExtern(CXMMATRIX worldMatrix, ID3D11ShaderResourceView* diffuseTex,
-	ID3D11ShaderResourceView* depthTex, XMFLOAT2 perspectiveValue)
+	ID3D11ShaderResourceView* frontDepthTex, ID3D11ShaderResourceView* backDepthTex,
+	XMFLOAT2 perspectiveValue)
 {
 	ID3D11DeviceContext* d3dDeviceContext = D3DClass::GetInstance()->GetDeviceContext();
 	Shader::SetShaderCB(worldMatrix);
@@ -51,21 +52,22 @@ bool SSRShader::SetShaderCBExtern(CXMMATRIX worldMatrix, ID3D11ShaderResourceVie
 
 	d3dDeviceContext->PSSetConstantBuffers(1, 1, &mCBSSR);
 	d3dDeviceContext->PSSetShaderResources(0, 1, &diffuseTex);
-	d3dDeviceContext->PSSetShaderResources(5, 1, &depthTex);
-
-
+	d3dDeviceContext->PSSetShaderResources(1, 1, &frontDepthTex);
+	d3dDeviceContext->PSSetShaderResources(2, 1, &backDepthTex);
 	return true;
 }
 
 
 bool SSRShader::SetShaderParamsExtern(CXMMATRIX worldMatrix, ID3D11ShaderResourceView* diffuseTex,
-	ID3D11ShaderResourceView* depthTex, XMFLOAT2 perspectiveValue)
+	ID3D11ShaderResourceView* frontDepthTex, ID3D11ShaderResourceView* backDepthTex,
+	XMFLOAT2 perspectiveValue)
 {
 
 	bool result;
 
 	//设置Shader常量缓存和纹理资源
-	result = SetShaderCBExtern(worldMatrix, diffuseTex,depthTex, perspectiveValue);
+	result = SetShaderCBExtern(worldMatrix, diffuseTex, frontDepthTex, backDepthTex,
+		perspectiveValue);
 	if (!result)
 		return false;
 

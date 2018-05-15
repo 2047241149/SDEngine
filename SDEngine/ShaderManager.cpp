@@ -260,13 +260,14 @@ bool ShaderManager::SetBlurShader(ID3D11ShaderResourceView* screenRT)
 }
 
 bool ShaderManager::SetSSRShader(CXMMATRIX worldMatrix, ID3D11ShaderResourceView* diffuseTex,
-	ID3D11ShaderResourceView* depthTex, XMFLOAT2 perspectiveValues)
+	ID3D11ShaderResourceView* frontDepthTex, ID3D11ShaderResourceView* backDepthTex,
+	XMFLOAT2 perspectiveValue)
 {
 
 	bool result;
 
-	result = mSSRShader->SetShaderParamsExtern(worldMatrix, diffuseTex,depthTex,
-		perspectiveValues);
+	result = mSSRShader->SetShaderParamsExtern(worldMatrix, diffuseTex, frontDepthTex,
+		backDepthTex, perspectiveValue);
 	if (!result)
 	{
 		MessageBox(NULL, L"mSSRShader render Ê§°Ü", NULL, MB_OK);
