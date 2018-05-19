@@ -117,6 +117,8 @@
     <ClCompile Include="D3DClass.cpp" />
     <ClCompile Include="Debugwindow.cpp" />
     <ClCompile Include="BlurShader.cpp" />
+    <ClCompile Include="ScreenSpaceReflectShader.cpp" />
+    <ClCompile Include="SSRGBufferShader.cpp" />
     <ClCompile Include="DOFShader.cpp" />
     <ClCompile Include="GraphicsBlitShader.cpp" />
     <ClCompile Include="GeometryBuffer.cpp" />
@@ -134,11 +136,11 @@
     <ClCompile Include="MathTool.cpp" />
     <ClCompile Include="PureColorShader.cpp" />
     <ClCompile Include="Quad.cpp" />
-    <ClCompile Include="RenderDepthToTexure.cpp" />
+    <ClCompile Include="DepthBufferRT.cpp" />
     <ClCompile Include="DefferLightingShader.cpp" />
-    <ClCompile Include="ScreenSpaceReflectShader.cpp" />
     <ClCompile Include="Shader.cpp" />
     <ClCompile Include="ShaderManager.cpp" />
+    <ClCompile Include="SSRGBuffer.cpp" />
     <ClCompile Include="SystemClass.cpp" />
     <ClCompile Include="Texture.cpp" />
     <ClCompile Include="UIShader.cpp" />
@@ -153,6 +155,8 @@
     <ClInclude Include="D3DClass.h" />
     <ClInclude Include="Debugwindow.h" />
     <ClInclude Include="BlurShader.h" />
+    <ClInclude Include="ScreenSpaceReflectShader.h" />
+    <ClInclude Include="SSRGBufferShader.h" />
     <ClInclude Include="DOFShader.h" />
     <ClInclude Include="GraphicsBlitShader.h" />
     <ClInclude Include="GeometryBuffer.h" />
@@ -172,11 +176,11 @@
     <ClInclude Include="MathTool.h" />
     <ClInclude Include="PureColorShader.h" />
     <ClInclude Include="Quad.h" />
-    <ClInclude Include="RenderDepthToTexure.h" />
+    <ClInclude Include="DepthBufferRT.h" />
     <ClInclude Include="DefferLightingShader.h" />
-    <ClInclude Include="ScreenSpaceReflectShader.h" />
     <ClInclude Include="Shader.h" />
     <ClInclude Include="ShaderManager.h" />
+    <ClInclude Include="SSRGBuffer.h" />
     <ClInclude Include="SystemClass.h" />
     <ClInclude Include="Texture.h" />
     <ClInclude Include="UIShader.h" />
@@ -245,6 +249,16 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Shader\ForwardPureColorShader.fx">
+      <FileType>Document</FileType>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Shader\DepthGetShader.fx">
+      <FileType>Document</FileType>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Shader\SSRGBuffer.fx">
       <FileType>Document</FileType>
     </None>
   </ItemGroup>

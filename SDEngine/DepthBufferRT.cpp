@@ -1,33 +1,35 @@
-#include "RenderDepthToTexure.h"
+#include "DepthBufferRT.h"
 
-RenderDepthToTexture::RenderDepthToTexture()
+DepthBufferRT::DepthBufferRT(int TextureWidth, int TextureHeight)
 {
 	mShaderResourceView = NULL;
 	mDepthStencilTexture = NULL;
 	mDepthStencilView = NULL;
 	
+	Initialize(TextureWidth, TextureHeight);
 }
 
 
-RenderDepthToTexture::RenderDepthToTexture(const RenderDepthToTexture&other)
+DepthBufferRT::DepthBufferRT(const DepthBufferRT&other)
 {
 
 }
 
-RenderDepthToTexture::~RenderDepthToTexture()
+DepthBufferRT::~DepthBufferRT()
 {
 	ShutDown();
 }
 
 
-bool RenderDepthToTexture::Initialize(ID3D11Device* d3dDevice, int TextureSize)
+bool DepthBufferRT::Initialize(int TextureWidth, int TextureHeight)
 {
+	ID3D11Device* d3dDevice = D3DClass::GetInstance()->GetDevice();
 
 	//第一,填充深度视图的2D纹理形容结构体,并创建2D渲染纹理
 	D3D11_TEXTURE2D_DESC depthBufferDesc;
 	ZeroMemory(&depthBufferDesc, sizeof(depthBufferDesc));
-	depthBufferDesc.Width = TextureSize;
-	depthBufferDesc.Height = TextureSize;
+	depthBufferDesc.Width = TextureWidth;
+	depthBufferDesc.Height = TextureHeight;
 	depthBufferDesc.MipLevels = 1;
 	depthBufferDesc.ArraySize = 1;
 	depthBufferDesc.Format = DXGI_FORMAT_R24G8_TYPELESS; //24位是为了深度缓存，8位是为了模板缓存
@@ -58,8 +60,8 @@ bool RenderDepthToTexture::Initialize(ID3D11Device* d3dDevice, int TextureSize)
 	HR(d3dDevice->CreateShaderResourceView(mDepthStencilTexture, &shaderResourceViewDesc, &mShaderResourceView));
     
 	//第四，设置视口的属性
-	mViewPort.Width = (float)TextureSize;
-	mViewPort.Height = (float)TextureSize;
+	mViewPort.Width = (float)TextureWidth;
+	mViewPort.Height = (float)TextureHeight;
 	mViewPort.MinDepth = 0.0f;
 	mViewPort.MaxDepth = 1.0f;
 	mViewPort.TopLeftX = 0.0f;
@@ -71,7 +73,7 @@ bool RenderDepthToTexture::Initialize(ID3D11Device* d3dDevice, int TextureSize)
 }
 
 
-void RenderDepthToTexture::ShutDown()
+void DepthBufferRT::ShutDown()
 {
 	ReleaseCOM(mDepthStencilTexture);
 	ReleaseCOM(mDepthStencilView);
@@ -80,9 +82,12 @@ void RenderDepthToTexture::ShutDown()
 
 
 //让此时所有图形渲染到这个目前渲染的位置
-void RenderDepthToTexture::SetRenderTarget(ID3D11DeviceContext* deviceContext)
+void DepthBufferRT::SetRenderTarget()
 {
-	ID3D11RenderTargetView* renderTarget[1] = { 0 };
+	this->ClearDepth();
+
+	ID3D11DeviceContext* deviceContext = D3DClass::GetInstance()->GetDeviceContext();
+	ID3D11RenderTargetView* renderTarget[1] = { nullptr };
 
 	//绑定渲染目标视图和深度模板视图到输出渲染管线
 	deviceContext->OMSetRenderTargets(1,renderTarget, mDepthStencilView);
@@ -93,16 +98,18 @@ void RenderDepthToTexture::SetRenderTarget(ID3D11DeviceContext* deviceContext)
 
 
 //不用清除背后缓存,因为不需要进颜色写(ColorWrite),仅仅进行深度写
-void RenderDepthToTexture::ClearDepth(ID3D11DeviceContext* deviceContext)
+void DepthBufferRT::ClearDepth()
 {
+	ID3D11DeviceContext* deviceContext = D3DClass::GetInstance()->GetDeviceContext();
 
 	//清除深度缓存和模板缓存
 	deviceContext->ClearDepthStencilView(mDepthStencilView, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
 }
 
 // 将“被渲染模型到纹理的纹理”作为ShaderResourceView资源返回，这个资源将会跟其它的ShaderResourceView资源一样被送入Shader里计算.
-ID3D11ShaderResourceView* RenderDepthToTexture::GetShaderResourceView()
+ID3D11ShaderResourceView* DepthBufferRT::GetShaderResourceView()
 {
 	return mShaderResourceView;
 }
+
 

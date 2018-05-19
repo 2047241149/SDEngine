@@ -16,11 +16,13 @@
 #include<DXUT.h>
 #include<DXUTgui.h>
 #include"GeometryBuffer.h"
+#include "DepthBufferRT.h"
 #include<memory>
 #include"Quad.h"
 #include"Debugwindow.h"
 #include"ColorBufferRT.h"
 #include "Camera.h"
+#include "SSRGBuffer.h"
 
 //全局变量
 const bool FULL_SCREEN = false;
@@ -54,16 +56,21 @@ private:
 	shared_ptr<ColorBufferRT> mSrcRT;
 	shared_ptr<ColorBufferRT> mFirstBlurRT;
 	shared_ptr<ColorBufferRT> mSceondBlurRT;
-
 	shared_ptr<ColorBufferRT> mSSRRT;
+
 
 	//GeometryBuffer
 	shared_ptr<GeometryBuffer> mGeometryBuffer;
+
+	//SSRGBuffer
+	shared_ptr<SSRGBuffer> mSSRBuffer;
 	
 	MaterialType materialType = MaterialType::DIFFUSE;
 	MaterialType preMaterialType = MaterialType::DIFFUSE;
 
 	shared_ptr<DebugWindow> mDebugWindow;
+
+	shared_ptr<DepthBufferRT>  mBackDepthBufferRT;
 
 private:
 	bool Initialize(int ScreenWidth, int ScreenHeight, HWND hwnd, HINSTANCE hinstance);
@@ -79,6 +86,8 @@ private:
 	void RenderPostEffectPass();
 	void RenderDebugWindow();
 	void RenderSSRPass();
+	void RenderSSRBufferPass();
+	void RenderSceneBackDepthBuffer();
 public:
 	GraphicsClass(int ScreenWidth, int ScreenHeight, HWND hwnd, HINSTANCE hinstance);
 	GraphicsClass(const GraphicsClass&);

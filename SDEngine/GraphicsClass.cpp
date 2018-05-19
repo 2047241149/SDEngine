@@ -80,6 +80,11 @@ bool GraphicsClass::Initialize(int ScreenWidth, int ScreenHeight, HWND hwnd,HINS
 
 	mDebugWindow = shared_ptr<DebugWindow>(new DebugWindow(ScreenWidth,ScreenHeight,120,120));
 
+	mBackDepthBufferRT = shared_ptr<DepthBufferRT>(new DepthBufferRT(ScreenWidth, ScreenHeight));
+
+	mSSRBuffer = shared_ptr<SSRGBuffer>(new 
+		SSRGBuffer(ScreenWidth, ScreenHeight, SCREEN_FAR, SCREEN_NEAR));
+
 	return true;
 }
 
@@ -206,6 +211,9 @@ void GraphicsClass::Render()
 	//绘制不透明物体
 	RenderOpacity();
 
+	//获取整个场景的BackDepthBuffer
+	RenderSceneBackDepthBuffer();
+
 	//绘制透明物体(普通的透明物体，SSR)
 	RenderTransparency();
 
@@ -251,7 +259,7 @@ void GraphicsClass::RenderFBXMesh()
 	mSphereObject->Render(MaterialType::PURE_COLOR, XMVectorSet(1.0f, 1.0f, 0.0f, 1.0f));
 	
 	//原点球
-	mSphereObject->mTransform->localPosition = XMFLOAT3(0.0f, 2.0f, 0.0f);
+	mSphereObject->mTransform->localPosition = XMFLOAT3(0.0f, 0.0f, 0.0f);
 	mSphereObject->Render(MaterialType::PURE_COLOR,XMVectorSet(1.0f,1.0f,0.0f,1.0f));
 
 }
@@ -355,6 +363,19 @@ void GraphicsClass::RenderDebugWindow()
 	(mGeometryBuffer->GetGBufferSRV(GBufferType::Depth));
 	mDebugWindow->Render(490, 600);
 
+
+	ShaderManager::GetInstance()->SetDepthShader
+	(mBackDepthBufferRT->GetShaderResourceView());
+	mDebugWindow->Render(610, 600);
+
+	ShaderManager::GetInstance()->SetUIShader
+	(mSSRBuffer->GetGBufferSRV(SSRBufferType::VIEW_NORMAL));
+	mDebugWindow->Render(10, 480);
+
+	ShaderManager::GetInstance()->SetUIShader
+	(mSSRBuffer->GetGBufferSRV(SSRBufferType::VIEW_POS));
+	mDebugWindow->Render(10, 360);
+
 	D3DClass::GetInstance()->TurnOnZBuffer();
 }
 
@@ -363,30 +384,28 @@ void GraphicsClass::RenderSSRPass()
 	//mSSRRT->SetRenderTarget();
 	ID3D11DeviceContext* d3dDeviceContext = D3DClass::GetInstance()->GetDeviceContext();
 	ID3D11RenderTargetView* backRTV = D3DClass::GetInstance()->GetRTV();
-	ID3D11DepthStencilView* opacityDSV = mGeometryBuffer->GetDSV();
-	d3dDeviceContext->OMSetRenderTargets(1, &backRTV, opacityDSV);
+	//靠模板緩存值來判斷
+	d3dDeviceContext->OMSetRenderTargets(1, &backRTV, nullptr);
 	D3DClass::GetInstance()->SetViewPort();
 	D3DClass::GetInstance()->TurnOnAlphaBlend();
-	D3DClass::GetInstance()->TurnOnEnableReflectDSS();
-	
+	D3DClass::GetInstance()->TurnOffZBuffer();
 	XMMATRIX worldMatrix = mSponzaBottom->GetWorldMatrix();
-	
-
 	XMMATRIX projMatrix = Camera::GetInstance()->GetProjectionMatrix();
 	XMFLOAT4X4 projFloat4X4;
 	XMStoreFloat4x4(&projFloat4X4, projMatrix);
 	XMFLOAT2 perspectiveValues;
 	perspectiveValues.x = projFloat4X4.m[3][2];
 	perspectiveValues.y = -projFloat4X4.m[2][2];
-
-	ShaderManager::GetInstance()->SetSSRShader(worldMatrix,
-		mSrcRT->GetShaderResourceView(), 
-		mGeometryBuffer->GetGBufferSRV(GBufferType::Pos),perspectiveValues);
-
-	mSponzaBottom->RenderMesh();
-
-	D3DClass::GetInstance()->TurnOffAlphaBlend();
+	ID3D11ShaderResourceView* arraySRV[5];
+	arraySRV[0] = mSrcRT->GetShaderResourceView();
+	arraySRV[1] = mGeometryBuffer->GetGBufferSRV(GBufferType::Depth);
+	arraySRV[2] = mBackDepthBufferRT->GetShaderResourceView();
+	arraySRV[3] = mSSRBuffer->GetGBufferSRV(SSRBufferType::VIEW_POS);
+	arraySRV[4] = mSSRBuffer->GetGBufferSRV(SSRBufferType::VIEW_NORMAL);
+	ShaderManager::GetInstance()->SetSSRShader(worldMatrix,arraySRV,perspectiveValues);
+	mQuad->Render();
 	D3DClass::GetInstance()->TurnOnZBuffer();
+	D3DClass::GetInstance()->TurnOffAlphaBlend();
 }
 
 void GraphicsClass::RenderOpacity()
@@ -399,7 +418,9 @@ void GraphicsClass::RenderOpacity()
 //绘制透明物体分为绘制透明
 void GraphicsClass::RenderTransparency()
 {
-	RenderGeneralTransparency();
+
+	//RenderGeneralTransparency();
+	RenderSSRBufferPass();
 	RenderSSRPass();
 }
 
@@ -410,8 +431,8 @@ void GraphicsClass::RenderGeneralTransparency()
 	ID3D11DepthStencilView* opacityDSV = mGeometryBuffer->GetDSV();
 	d3dDeviceContext->OMSetRenderTargets(1, &backRTV, opacityDSV);
 	D3DClass::GetInstance()->SetViewPort();
+	D3DClass::GetInstance()->TurnOnDisbleZWriteDSS();
 	D3DClass::GetInstance()->TurnOnAlphaBlend();
-
 
 	mSphereObject->mTransform->localPosition = XMFLOAT3(3.0, 9.0, 0.0);
 	mSphereObject->mTransform->localScale = XMFLOAT3(3.0, 3.0, 3.0);
@@ -419,5 +440,56 @@ void GraphicsClass::RenderGeneralTransparency()
 	ShaderManager::GetInstance()->SetForwardPureColorShader(worldMatrix, XMVectorSet(1.0f, 0.0f, 0.0f, 1.0f));
 	mSphereObject->RenderMesh();
 	D3DClass::GetInstance()->TurnOffAlphaBlend();
+	D3DClass::GetInstance()->RecoverDefaultDSS();
+}
 
+
+void GraphicsClass::RenderSceneBackDepthBuffer()
+{
+	mBackDepthBufferRT->SetRenderTarget();
+	D3DClass::GetInstance()->TurnOnCullFront();
+
+	//渲染头
+	mHeadObject->mTransform->localScale = XMFLOAT3(5.0f, 5.0f, 5.0f);
+	mHeadObject->mTransform->localPosition = XMFLOAT3(0.0f, 10.0f, 0.0f);
+	mHeadObject->mTransform->localRotation = XMFLOAT3(0.0f, 90.0f, 0.0f);
+	mHeadObject->Render(MaterialType::DEPTH_BUFFER);
+
+	//渲染SponzaBottom
+	mSponzaBottom->mTransform->localPosition = XMFLOAT3(0.0f, 0.0f, 0.0f);
+	mSponzaBottom->Render(MaterialType::DEPTH_BUFFER);
+
+    //渲染SponzaNoBottm
+	mSponzaNoBottom->mTransform->localPosition = XMFLOAT3(0.0f, 0.0f, 0.0f);
+	mSponzaNoBottom->Render(MaterialType::DEPTH_BUFFER);
+
+	//球渲染
+	mSphereObject->mTransform->localScale = XMFLOAT3(1.0f, 1.0f, 1.0f);
+
+	//平行光源球
+	XMStoreFloat3(&mSphereObject->mTransform->localPosition,
+		-Light::GetInstnce()->GetLightDirection());
+	mSphereObject->Render(MaterialType::DEPTH_BUFFER);
+
+	//原点球
+	mSphereObject->mTransform->localPosition = XMFLOAT3(0.0f, 0.0f, 0.0f);
+	mSphereObject->Render(MaterialType::DEPTH_BUFFER);
+
+	//恢复默认的RS
+	D3DClass::GetInstance()->TurnOnSolidRender();
+
+}
+
+void GraphicsClass::RenderSSRBufferPass()
+{
+	ID3D11DepthStencilView* backDSV = mGeometryBuffer->GetDSV();
+	mSSRBuffer->SetRenderTarget(backDSV);
+	D3DClass::GetInstance()->TurnOnEnableReflectDSS();
+	ID3D11ShaderResourceView* arraySRV[2];
+	arraySRV[0] = mGeometryBuffer->GetGBufferSRV(GBufferType::Pos);
+	arraySRV[1] = mGeometryBuffer->GetGBufferSRV(GBufferType::Normal);
+	ShaderManager::GetInstance()->SetSSRGBufferShader(arraySRV);
+	mQuad->Render();
+	D3DClass::GetInstance()->RecoverDefaultDSS();
+	D3DClass::GetInstance()->SetBackBufferRender();
 }
