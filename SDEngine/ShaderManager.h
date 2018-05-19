@@ -13,6 +13,7 @@
 #include "DOFShader.h"
 #include "BlurShader.h"
 #include "ScreenSpaceReflectShader.h"
+#include "SSRGBufferShader.h"
 #include<memory>
 #include"Macro.h"
 using namespace std;
@@ -36,6 +37,7 @@ private:
 	shared_ptr<SSRShader> mSSRShader;
 	shared_ptr<PureColorShader> mForwardPureColorShader;
 	shared_ptr<Shader> mDepthGetShader;
+	shared_ptr<SSRGBufferShader> mSSRGBufferShader;
 public:
 	static shared_ptr<ShaderManager> mShaderManager;
 
@@ -79,11 +81,12 @@ public:
 
 	bool SetBlurShader(ID3D11ShaderResourceView* screenRT);
 
-	bool SetSSRShader(CXMMATRIX worldMatrix, ID3D11ShaderResourceView* diffuseTex,
-		ID3D11ShaderResourceView* frontDepthTex, ID3D11ShaderResourceView* backDepthTex,
+	bool SetSSRShader(CXMMATRIX worldMatrix, ID3D11ShaderResourceView* arraySRV[5],
 		XMFLOAT2 perspectiveValue);
 
 	bool SetDepthGetShader(CXMMATRIX worldMatrix);
+
+	bool SetSSRGBufferShader(ID3D11ShaderResourceView* gBuffer[2]);
 
 public:
 	DepthShader* GetDepthShader() { return mDepthShader.get(); }
@@ -100,6 +103,7 @@ public:
 	SSRShader* GetSSRShader() { return mSSRShader.get(); }
 	PureColorShader* GetForwardPureColor() { return mForwardPureColorShader.get(); }
 	Shader* GetDepthGetShader() { return mDepthGetShader.get(); }
+	SSRGBufferShader* GetSSRGBufferShader() { return mSSRGBufferShader.get(); }
 };
 #endif // !_SHADER_MANAGER_CLASS
 
