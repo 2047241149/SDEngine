@@ -22,6 +22,7 @@
 #include"Debugwindow.h"
 #include"ColorBufferRT.h"
 #include "Camera.h"
+#include "SSRGBuffer.h"
 
 //全局变量
 const bool FULL_SCREEN = false;
@@ -60,6 +61,9 @@ private:
 
 	//GeometryBuffer
 	shared_ptr<GeometryBuffer> mGeometryBuffer;
+
+	//SSRGBuffer
+	shared_ptr<SSRGBuffer> mSSRBuffer;
 	
 	MaterialType materialType = MaterialType::DIFFUSE;
 	MaterialType preMaterialType = MaterialType::DIFFUSE;
@@ -82,6 +86,7 @@ private:
 	void RenderPostEffectPass();
 	void RenderDebugWindow();
 	void RenderSSRPass();
+	void RenderSSRBufferPass();
 	void RenderSceneBackDepthBuffer();
 public:
 	GraphicsClass(int ScreenWidth, int ScreenHeight, HWND hwnd, HINSTANCE hinstance);

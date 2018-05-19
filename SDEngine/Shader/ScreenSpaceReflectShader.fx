@@ -1,11 +1,12 @@
 Texture2D<float4> DiffuseTex:register(t0);
 Texture2D<float4> FrontDepthTex:register(t1);
 Texture2D<float4> BackDepthTex:register(t2);
+Texture2D<float4> ViewPosTex:register(t3);
+Texture2D<float4> ViewNormalTex:register(t4);
 SamplerState SampleWrapLinear:register(s0);
 SamplerState SampleClampPoint:register(s1);
 
 #define MAX_STEPS 500
-#define MAX_INTERSECT_DIST 0.02
 
 cbuffer CBMatrix:register(b0)
 {
@@ -33,19 +34,13 @@ cbuffer CBSSR:register(b1)
 struct VertexIn
 {
 	float3 Pos:POSITION;
-	float3 Color:COLOR;
-	float3 Normal:NORMAL;
-	float3 Tangent:TANGENT;
 	float2 Tex:TEXCOORD;
 };
-
 
 struct VertexOut
 {
 	float4 Pos:SV_POSITION;
-	float3 viewPos:TEXCOORD0;
-	float3 viewNormal:TEXCOORD1;
-	float3 ndcPos:TEXCOORD2;
+	float2 Tex:TEXCOORD0;
 };
 
 float DepthBufferConvertToViewDepth(float depth)
@@ -53,7 +48,6 @@ float DepthBufferConvertToViewDepth(float depth)
 	float viewDepth = perspectiveValues.x / (depth + perspectiveValues.y);
 	return viewDepth;
 };
-
 
 
 float2 texSize(Texture2D tex)
@@ -77,18 +71,8 @@ VertexOut VS(VertexIn ina)
 {
 	VertexOut outa;
 
-	outa.Pos = mul(float4(ina.Pos,1.0f), World);
-	outa.Pos = mul(outa.Pos, View);
-
-	outa.viewPos = outa.Pos.xyz;
-
-	outa.Pos = mul(outa.Pos, Proj);
-
-	outa.viewNormal = mul(ina.Normal, (float3x3)World);
-	outa.viewNormal = mul(outa.viewNormal, (float3x3)View);
-
-	outa.ndcPos = outa.Pos.xyz / outa.Pos.w;
-
+	outa.Pos = float4(ina.Pos.xy,1.0f,1.0f);
+	outa.Tex = ina.Tex;
 	return outa;
 }
 
@@ -97,24 +81,18 @@ float4 PS(VertexOut outa) : SV_Target
 {
 	//初始化反射的颜色
 	float4 reflectColor = float4(0.0, 0.0, 0.0, 0.0f);
-
 	float2 screenSize = texSize(DiffuseTex);
-
-	float2 texcoord;
-
+	float2 texcoord = outa.Tex;
+	float3 viewPos = ViewPosTex.Sample(SampleClampPoint, outa.Tex).xyz;
+	float3 viewNormal= ViewNormalTex.Sample(SampleClampPoint, outa.Tex).xyz;
 	float t = 1;
-	float4 csPos = mul(float4(outa.viewPos, 1.0), Proj);
-
-	csPos /= csPos.w;
-	texcoord.x = csPos.x * 0.5 + 0.5;
-	texcoord.y = -csPos.y * 0.5 + 0.5;
-
 	int2 origin = texcoord * screenSize;
 	int2 coord;
 
+
 	//像素在相机空间的位置(光线起点)和法线
-	float3 v0 = outa.viewPos.xyz;
-	float3 vsNormal = outa.viewNormal.xyz;
+	float3 v0 = viewPos;
+	float3 vsNormal = viewNormal;
 
 	//相机到像素的方向
 	float3 eyeToPixel = normalize(v0);

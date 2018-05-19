@@ -82,6 +82,9 @@ bool GraphicsClass::Initialize(int ScreenWidth, int ScreenHeight, HWND hwnd,HINS
 
 	mBackDepthBufferRT = shared_ptr<DepthBufferRT>(new DepthBufferRT(ScreenWidth, ScreenHeight));
 
+	mSSRBuffer = shared_ptr<SSRGBuffer>(new 
+		SSRGBuffer(ScreenWidth, ScreenHeight, SCREEN_FAR, SCREEN_NEAR));
+
 	return true;
 }
 
@@ -365,6 +368,14 @@ void GraphicsClass::RenderDebugWindow()
 	(mBackDepthBufferRT->GetShaderResourceView());
 	mDebugWindow->Render(610, 600);
 
+	ShaderManager::GetInstance()->SetUIShader
+	(mSSRBuffer->GetGBufferSRV(SSRBufferType::VIEW_NORMAL));
+	mDebugWindow->Render(10, 480);
+
+	ShaderManager::GetInstance()->SetUIShader
+	(mSSRBuffer->GetGBufferSRV(SSRBufferType::VIEW_POS));
+	mDebugWindow->Render(10, 360);
+
 	D3DClass::GetInstance()->TurnOnZBuffer();
 }
 
@@ -376,30 +387,25 @@ void GraphicsClass::RenderSSRPass()
 	//¿¿Ä£°å¾´æÖµíÅÐ”à
 	d3dDeviceContext->OMSetRenderTargets(1, &backRTV, nullptr);
 	D3DClass::GetInstance()->SetViewPort();
-	D3DClass::GetInstance()->TurnOnEnableReflectDSS();
 	D3DClass::GetInstance()->TurnOnAlphaBlend();
-	
-	
+	D3DClass::GetInstance()->TurnOffZBuffer();
 	XMMATRIX worldMatrix = mSponzaBottom->GetWorldMatrix();
-	
-
 	XMMATRIX projMatrix = Camera::GetInstance()->GetProjectionMatrix();
 	XMFLOAT4X4 projFloat4X4;
 	XMStoreFloat4x4(&projFloat4X4, projMatrix);
 	XMFLOAT2 perspectiveValues;
 	perspectiveValues.x = projFloat4X4.m[3][2];
 	perspectiveValues.y = -projFloat4X4.m[2][2];
-
-	ShaderManager::GetInstance()->SetSSRShader(worldMatrix,
-		mSrcRT->GetShaderResourceView(), 
-		mGeometryBuffer->GetGBufferSRV(GBufferType::Depth),
-		mBackDepthBufferRT->GetShaderResourceView(),
-		perspectiveValues);
-
-	mSponzaBottom->RenderMesh();
-
+	ID3D11ShaderResourceView* arraySRV[5];
+	arraySRV[0] = mSrcRT->GetShaderResourceView();
+	arraySRV[1] = mGeometryBuffer->GetGBufferSRV(GBufferType::Depth);
+	arraySRV[2] = mBackDepthBufferRT->GetShaderResourceView();
+	arraySRV[3] = mSSRBuffer->GetGBufferSRV(SSRBufferType::VIEW_POS);
+	arraySRV[4] = mSSRBuffer->GetGBufferSRV(SSRBufferType::VIEW_NORMAL);
+	ShaderManager::GetInstance()->SetSSRShader(worldMatrix,arraySRV,perspectiveValues);
+	mQuad->Render();
+	D3DClass::GetInstance()->TurnOnZBuffer();
 	D3DClass::GetInstance()->TurnOffAlphaBlend();
-	D3DClass::GetInstance()->RecoverDefaultDSS();
 }
 
 void GraphicsClass::RenderOpacity()
@@ -414,6 +420,7 @@ void GraphicsClass::RenderTransparency()
 {
 
 	//RenderGeneralTransparency();
+	RenderSSRBufferPass();
 	RenderSSRPass();
 }
 
@@ -471,4 +478,18 @@ void GraphicsClass::RenderSceneBackDepthBuffer()
 	//»Ö¸´Ä¬ÈÏµÄRS
 	D3DClass::GetInstance()->TurnOnSolidRender();
 
+}
+
+void GraphicsClass::RenderSSRBufferPass()
+{
+	ID3D11DepthStencilView* backDSV = mGeometryBuffer->GetDSV();
+	mSSRBuffer->SetRenderTarget(backDSV);
+	D3DClass::GetInstance()->TurnOnEnableReflectDSS();
+	ID3D11ShaderResourceView* arraySRV[2];
+	arraySRV[0] = mGeometryBuffer->GetGBufferSRV(GBufferType::Pos);
+	arraySRV[1] = mGeometryBuffer->GetGBufferSRV(GBufferType::Normal);
+	ShaderManager::GetInstance()->SetSSRGBufferShader(arraySRV);
+	mQuad->Render();
+	D3DClass::GetInstance()->RecoverDefaultDSS();
+	D3DClass::GetInstance()->SetBackBufferRender();
 }

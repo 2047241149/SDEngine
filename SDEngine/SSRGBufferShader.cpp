@@ -1,24 +1,24 @@
-#include "ScreenSpaceReflectShader.h"
+#include"SSRGBufferShader.h"
 
-SSRShader::SSRShader(WCHAR* vsFilenPath, WCHAR* psFilenPath)
+SSRGBufferShader::SSRGBufferShader(WCHAR* vsFilenPath, WCHAR* psFilenPath)
 {
 	Initialize(vsFilenPath, psFilenPath);
 }
 
 
-SSRShader::SSRShader(const SSRShader& other)
+SSRGBufferShader::SSRGBufferShader(const SSRGBufferShader& other)
 {
 
 }
 
 
-SSRShader::~SSRShader()
+SSRGBufferShader::~SSRGBufferShader()
 {
 	ShutDown();
 }
 
 
-bool SSRShader::Initialize(WCHAR* vsFilenPath, WCHAR* psFilenPath)
+bool SSRGBufferShader::Initialize(WCHAR* vsFilenPath, WCHAR* psFilenPath)
 {
 	//置空指针
 	md3dVertexShader = NULL;
@@ -36,12 +36,11 @@ bool SSRShader::Initialize(WCHAR* vsFilenPath, WCHAR* psFilenPath)
 
 
 
-bool SSRShader::SetShaderParams(const CXMMATRIX& worldMatrix, ID3D11ShaderResourceView* arraySRV[5],
-	XMFLOAT2 perspectiveValue)
+bool SSRGBufferShader::SetShaderParams(ID3D11ShaderResourceView* gBuffer[2])
 {
 	bool result;
 	//设置Shader常量缓存和纹理资源
-	result = SetShaderCB(worldMatrix, arraySRV,perspectiveValue);
+	result = SetShaderCB(gBuffer);
 	if (!result)
 		return false;
 
@@ -54,7 +53,7 @@ bool SSRShader::SetShaderParams(const CXMMATRIX& worldMatrix, ID3D11ShaderResour
 
 
 
-bool SSRShader::InitializeShader(WCHAR* VSFileName, WCHAR* PSFileName)
+bool SSRGBufferShader::InitializeShader(WCHAR* VSFileName, WCHAR* PSFileName)
 {
 	HRESULT result;
 	ID3D10Blob* errorMessage;
@@ -139,16 +138,6 @@ bool SSRShader::InitializeShader(WCHAR* VSFileName, WCHAR* PSFileName)
 
 	HR(d3dDevice->CreateBuffer(&commonBufferDesc, NULL, &mCBCommon));
 
-
-	D3D11_BUFFER_DESC ssrBufferDesc;
-	ZeroMemory(&ssrBufferDesc, sizeof(ssrBufferDesc));
-	ssrBufferDesc.Usage = D3D11_USAGE_DYNAMIC;
-	ssrBufferDesc.ByteWidth = sizeof(CBSSR);   //结构体大小,必须为16字节倍数
-	ssrBufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
-	ssrBufferDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
-
-	HR(d3dDevice->CreateBuffer(&ssrBufferDesc, NULL, &mCBSSR));
-
 	//第七,填充采样形容结构体,并且创建采样状态
 	D3D11_SAMPLER_DESC samplerDesc;
 	samplerDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;  //都是线性插值(三种方式,点过滤,线性过滤,异性过滤)
@@ -177,7 +166,7 @@ bool SSRShader::InitializeShader(WCHAR* VSFileName, WCHAR* PSFileName)
 
 
 
-void SSRShader::ShutDown()
+void SSRGBufferShader::ShutDown()
 {
 	ReleaseCOM(mCBCommon);
 	ReleaseCOM(md3dInputLayout);
@@ -185,7 +174,7 @@ void SSRShader::ShutDown()
 	ReleaseCOM(md3dVertexShader);
 }
 
-void SSRShader::OutputShaderErrorMessage(ID3D10Blob* errorMessage, WCHAR* shaderFilename)
+void SSRGBufferShader::OutputShaderErrorMessage(ID3D10Blob* errorMessage, WCHAR* shaderFilename)
 {
 	char* compileErrors;
 	unsigned long bufferSize, i;
@@ -220,8 +209,7 @@ void SSRShader::OutputShaderErrorMessage(ID3D10Blob* errorMessage, WCHAR* shader
 }
 
 
-bool SSRShader::SetShaderCB(const CXMMATRIX& worldMatrix, ID3D11ShaderResourceView* arraySRV[5],
-	XMFLOAT2 perspectiveValue)
+bool SSRGBufferShader::SetShaderCB(ID3D11ShaderResourceView* gBuffer[2])
 {
 
 	ID3D11DeviceContext* d3dDeviceContext = D3DClass::GetInstance()->GetDeviceContext();
@@ -230,9 +218,9 @@ bool SSRShader::SetShaderCB(const CXMMATRIX& worldMatrix, ID3D11ShaderResourceVi
 
 	//第一，更新变换矩阵常量缓存的值
 	//将矩阵转置,在传入常量缓存前进行转置,因为GPU对矩阵数据会自动进行一次转置
-	D3D11_MAPPED_SUBRESOURCE mappedSubresource1;
-	HR(d3dDeviceContext->Map(mCBCommon, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedSubresource1));
-	auto pCBCommon = reinterpret_cast<CBCommmon*>(mappedSubresource1.pData);
+	D3D11_MAPPED_SUBRESOURCE mappedSubresource;
+	HR(d3dDeviceContext->Map(mCBCommon, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedSubresource));
+	auto pCBCommon = reinterpret_cast<CBCommmon*>(mappedSubresource.pData);
 	XMMATRIX worldMa = XMMatrixIdentity();
 	XMMATRIX viewMa = XMMatrixTranspose(viewMatrix);
 	XMMATRIX ProjMa = XMMatrixTranspose(ProjMatrix);
@@ -243,31 +231,20 @@ bool SSRShader::SetShaderCB(const CXMMATRIX& worldMatrix, ID3D11ShaderResourceVi
 	XMStoreFloat4(&pCBCommon->dirLightColor, Light::GetInstnce()->GetLightColor());
 	XMStoreFloat3(&pCBCommon->dirLightDir, Light::GetInstnce()->GetLightDirection());
 	XMStoreFloat3(&pCBCommon->ambientLight, Light::GetInstnce()->GetAmbientLight());
+
 	pCBCommon->cameraPos = Camera::GetInstance()->GetPosition();
+
+
 	d3dDeviceContext->Unmap(mCBCommon, 0);
-
-
-	D3D11_MAPPED_SUBRESOURCE mappedSubresource2;
-	HR(d3dDeviceContext->Map(mCBSSR, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedSubresource2));
-	auto pCBSSR = reinterpret_cast<CBSSR*>(mappedSubresource2.pData);
-	pCBSSR->farPlane = Camera::GetInstance()->GetFarPlane();
-	pCBSSR->nearPlane = Camera::GetInstance()->GetNearPlane();
-	pCBSSR->perspectiveValue = perspectiveValue;
-	d3dDeviceContext->Unmap(mCBSSR, 0);
-
 
 	//第三,设置在VertexShader的常量缓存的值(带着更新的值)
 	d3dDeviceContext->VSSetConstantBuffers(0, 1, &mCBCommon);
 	d3dDeviceContext->PSSetConstantBuffers(0, 1, &mCBCommon);
-
-	d3dDeviceContext->PSSetConstantBuffers(1, 1, &mCBSSR);
-
-	d3dDeviceContext->PSSetShaderResources(0, 5, arraySRV);
-
+	d3dDeviceContext->PSSetShaderResources(0, 2, gBuffer);
 	return true;
 }
 
-bool SSRShader::SetShaderState()
+bool SSRGBufferShader::SetShaderState()
 {
 
 	ID3D11DeviceContext* deviceContext = D3DClass::GetInstance()->GetDeviceContext();

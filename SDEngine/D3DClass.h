@@ -71,7 +71,7 @@ public:
 	ID3D11Device* GetDevice() { return md3dDevice; }
 	ID3D11DeviceContext* GetDeviceContext(){ return md3dImmediateContext; }
 	ID3D11RenderTargetView* GetRTV() { return md3dRenderTargetView; }
-	ID3D11DepthStencilView* GetSDV() { return md3dDepthStencilView; }
+	ID3D11DepthStencilView* GetDSV() { return md3dDepthStencilView; }
 	D3D11_VIEWPORT GetViewPort() { return mViewport; }
 
 	void GetVideoCardInfo(char*, int&); //获取显卡信息
