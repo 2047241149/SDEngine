@@ -254,6 +254,12 @@ bool D3DClass::Initialize(int ScreenWidth, int ScreenHeight, bool vsync, HWND hw
 	md3dImmediateContext->RSSetState(md3dRasterizerState);
 
 
+	//剔除前面
+	rasterDesc.CullMode = D3D11_CULL_FRONT; //前面剔除
+	HR(md3dDevice->CreateRasterizerState(&rasterDesc, &md3dCullFrontRS));
+
+	//线框绘制
+	rasterDesc.CullMode = D3D11_CULL_BACK;
 	rasterDesc.FillMode = D3D11_FILL_WIREFRAME; 
 
 	HR(md3dDevice->CreateRasterizerState(&rasterDesc, &md3dWireFrameRS));
@@ -300,6 +306,27 @@ bool D3DClass::Initialize(int ScreenWidth, int ScreenHeight, bool vsync, HWND hw
 	DisableDepthDESC.BackFace.StencilFunc = D3D11_COMPARISON_ALWAYS;
 	HR(md3dDevice->CreateDepthStencilState(&DisableDepthDESC, &md3dDisableDepthStencilState));
 
+	//创建一个使得ZBuffer写无效的DSS
+	D3D11_DEPTH_STENCIL_DESC DisableDepthWriteDESC;
+	ZeroMemory(&DisableDepthWriteDESC, sizeof(DisableDepthWriteDESC));
+	DisableDepthWriteDESC.DepthEnable = true;
+	DisableDepthWriteDESC.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ZERO;
+	DisableDepthWriteDESC.DepthFunc = D3D11_COMPARISON_LESS;
+	DisableDepthWriteDESC.StencilEnable = true;
+	DisableDepthWriteDESC.StencilReadMask = 0xff;
+	DisableDepthWriteDESC.StencilWriteMask = 0xff;
+	DisableDepthWriteDESC.FrontFace.StencilFailOp = D3D11_STENCIL_OP_KEEP;
+	DisableDepthWriteDESC.FrontFace.StencilDepthFailOp = D3D11_STENCIL_OP_KEEP;
+	DisableDepthWriteDESC.FrontFace.StencilPassOp = D3D11_STENCIL_OP_REPLACE;
+	DisableDepthWriteDESC.FrontFace.StencilFunc = D3D11_COMPARISON_ALWAYS;
+	DisableDepthWriteDESC.BackFace.StencilFailOp = D3D11_STENCIL_OP_KEEP;
+	DisableDepthWriteDESC.BackFace.StencilDepthFailOp = D3D11_STENCIL_OP_KEEP;
+	DisableDepthWriteDESC.BackFace.StencilPassOp = D3D11_STENCIL_OP_KEEP;
+	DisableDepthWriteDESC.BackFace.StencilFunc = D3D11_COMPARISON_ALWAYS;
+	HR(md3dDevice->CreateDepthStencilState(&DisableDepthWriteDESC, &md3dDisableZWriteDSS));
+
+
+
 	//创建一个标记反射面的DepthStencilState状态
 	D3D11_DEPTH_STENCIL_DESC MaskReflectDESC;
 	ZeroMemory(&MaskReflectDESC, sizeof(MaskReflectDESC));
@@ -326,7 +353,7 @@ bool D3DClass::Initialize(int ScreenWidth, int ScreenHeight, bool vsync, HWND hw
 	D3D11_DEPTH_STENCIL_DESC EnableReflectDESC;
 	ZeroMemory(&EnableReflectDESC, sizeof(EnableReflectDESC));
 	EnableReflectDESC.DepthEnable = false;
-	EnableReflectDESC.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL;
+	EnableReflectDESC.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ZERO;
 	EnableReflectDESC.DepthFunc = D3D11_COMPARISON_ALWAYS;
 	EnableReflectDESC.StencilEnable = true;
 	EnableReflectDESC.StencilReadMask = 0xff;
@@ -492,6 +519,26 @@ void D3DClass::TurnOnMaskReflectDSS()
 void D3DClass::TurnOnEnableReflectDSS()
 {
 	md3dImmediateContext->OMSetDepthStencilState(md3dDSSEnableReflect, 1);
+}
+
+
+void D3DClass::TurnOnCullFront()
+{
+	md3dImmediateContext->RSSetState(md3dCullFrontRS);
+}
+
+
+
+//恢复默认的
+void D3DClass::RecoverDefaultDSS()
+{
+	md3dImmediateContext->OMSetDepthStencilState(md3dDepthStencilState, 0);
+}
+
+//关掉ZBuffer写
+void D3DClass::TurnOnDisbleZWriteDSS()
+{
+	md3dImmediateContext->OMSetDepthStencilState(md3dDisableZWriteDSS, 0);
 }
 
 shared_ptr<D3DClass> D3DClass::mD3D = nullptr;

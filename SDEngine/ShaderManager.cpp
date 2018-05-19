@@ -59,6 +59,12 @@ bool ShaderManager::Initialize()
 	mForwardPureColorShader = shared_ptr<PureColorShader>(new
 		PureColorShader(L"Shader/ForwardPureColorShader.fx", 
 			L"Shader/ForwardPureColorShader.fx"));
+
+	mDepthGetShader = shared_ptr<Shader>(new Shader(L"Shader/DepthGetShader.fx",
+		L"Shader/DepthGetShader.fx"));
+
+	mSSRGBufferShader = shared_ptr<SSRGBufferShader>(new SSRGBufferShader(L"Shader/SSRGBuffer.fx",
+		L"Shader/SSRGBuffer.fx"));
 	return true;
 }
 
@@ -254,17 +260,42 @@ bool ShaderManager::SetBlurShader(ID3D11ShaderResourceView* screenRT)
 	return true;
 }
 
-bool ShaderManager::SetSSRShader(CXMMATRIX worldMatrix, ID3D11ShaderResourceView* diffuseTex,
-	ID3D11ShaderResourceView* depthTex, XMFLOAT2 perspectiveValues)
+bool ShaderManager::SetSSRShader(CXMMATRIX worldMatrix, ID3D11ShaderResourceView* arraySRV[5],
+	XMFLOAT2 perspectiveValue)
 {
 
 	bool result;
 
-	result = mSSRShader->SetShaderParamsExtern(worldMatrix, diffuseTex,depthTex,
-		perspectiveValues);
+	result = mSSRShader->SetShaderParams(worldMatrix, arraySRV, perspectiveValue);
 	if (!result)
 	{
 		MessageBox(NULL, L"mSSRShader render Ê§°Ü", NULL, MB_OK);
+		return false;
+	}
+
+	return true;
+}
+
+bool ShaderManager::SetDepthGetShader(CXMMATRIX worldMatrix)
+{
+	bool result;
+	result = mDepthGetShader->SetShaderParams(worldMatrix);
+	if (!result)
+	{
+		MessageBox(NULL, L"DepthGetShader render Ê§°Ü", NULL, MB_OK);
+		return false;
+	}
+
+	return true;
+}
+
+bool ShaderManager::SetSSRGBufferShader(ID3D11ShaderResourceView* gBuffer[2])
+{
+	bool result;
+	result = mSSRGBufferShader->SetShaderParams(gBuffer);
+	if (!result)
+	{
+		MessageBox(NULL, L"SSRGBufferShader render Ê§°Ü", NULL, MB_OK);
 		return false;
 	}
 

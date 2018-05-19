@@ -69,9 +69,6 @@
     <ClCompile Include="Quad.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="RenderDepthToTexure.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
     <ClCompile Include="Shader.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
@@ -103,6 +100,15 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="BlurShader.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="DepthBufferRT.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="SSRGBuffer.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="SSRGBufferShader.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="ScreenSpaceReflectShader.cpp">
@@ -179,9 +185,6 @@
     <ClInclude Include="Quad.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="RenderDepthToTexure.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
     <ClInclude Include="Shader.h">
       <Filter>头文件</Filter>
     </ClInclude>
@@ -212,6 +215,15 @@
     <ClInclude Include="BlurShader.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="DepthBufferRT.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="SSRGBuffer.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="SSRGBufferShader.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
     <ClInclude Include="ScreenSpaceReflectShader.h">
       <Filter>头文件</Filter>
     </ClInclude>
@@ -232,5 +244,7 @@
     <None Include="Shader\BlurShader.fx" />
     <None Include="Shader\ScreenSpaceReflectShader.fx" />
     <None Include="Shader\ForwardPureColorShader.fx" />
+    <None Include="Shader\DepthGetShader.fx" />
+    <None Include="Shader\SSRGBuffer.fx" />
   </ItemGroup>
 </Project>
