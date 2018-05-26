@@ -221,7 +221,9 @@ void GraphicsClass::Render()
 		RenderPostEffectPass();
 	#endif // POST_EFFECT
 
+	#if defined(DEBUG_GBUFFER)
 	RenderDebugWindow();
+	#endif
 
 	//**************************************************************************
 	//结束绘制
@@ -418,10 +420,10 @@ void GraphicsClass::RenderOpacity()
 //绘制透明物体分为绘制透明
 void GraphicsClass::RenderTransparency()
 {
-
 	//RenderGeneralTransparency();
-	RenderSSRBufferPass();
-	RenderSSRPass();
+	//#if defined(SSR)
+	RenderSSR();
+	//#endif
 }
 
 void GraphicsClass::RenderGeneralTransparency()
@@ -492,4 +494,10 @@ void GraphicsClass::RenderSSRBufferPass()
 	mQuad->Render();
 	D3DClass::GetInstance()->RecoverDefaultDSS();
 	D3DClass::GetInstance()->SetBackBufferRender();
+}
+
+void  GraphicsClass::RenderSSR()
+{
+	RenderSSRBufferPass();
+	RenderSSRPass();
 }

@@ -3,6 +3,8 @@
 #define _GRAPHICS_CLASS_H
 
 //#define POST_EFFECT
+#define SSR
+//#define DEBUG_GBUFFER
 
 #include"D3DClass.h"
 #include"GameObject.h"
@@ -88,6 +90,7 @@ private:
 	void RenderSSRPass();
 	void RenderSSRBufferPass();
 	void RenderSceneBackDepthBuffer();
+	void RenderSSR();
 public:
 	GraphicsClass(int ScreenWidth, int ScreenHeight, HWND hwnd, HINSTANCE hinstance);
 	GraphicsClass(const GraphicsClass&);
