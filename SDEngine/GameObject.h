@@ -14,7 +14,7 @@
 #include<vector>
 #include"D3DClass.h"
 #include"CommomVertexFormat.h"
-#include"CommonFunction.h"
+#include "CommonFunction.h"
 #include "ImportFBX.h"
 #include "Light.h"
 #include "ShaderManager.h"

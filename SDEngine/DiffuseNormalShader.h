@@ -5,7 +5,7 @@
 #define _DIFFUSE_NORMAL_SHADER_H
 #include"Shader.h"
 
-class DiffuseNormalShader:Shader
+class DiffuseNormalShader:public Shader
 {
 private:
 	//灯光常量缓存结构体

@@ -5,7 +5,7 @@
 #define _DIFFUSE_SHADER_H
 #include"Shader.h"
 
-class DiffuseShader:Shader
+class DiffuseShader:public Shader
 {
 private:
 	virtual void ShutDown();

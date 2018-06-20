@@ -114,6 +114,24 @@
     <ClCompile Include="ScreenSpaceReflectShader.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="ComputerShader.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="CommonFunction.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Wave.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="WaveShader.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="DirectionWave.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="CircleWave.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Camera.h">
@@ -227,6 +245,21 @@
     <ClInclude Include="ScreenSpaceReflectShader.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="ComputerShader.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Wave.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="WaveShader.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="DirectionWave.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="CircleWave.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="libfbxsdk.dll" />
@@ -246,5 +279,7 @@
     <None Include="Shader\ForwardPureColorShader.fx" />
     <None Include="Shader\DepthGetShader.fx" />
     <None Include="Shader\SSRGBuffer.fx" />
+    <None Include="Shader\CSShader.fx" />
+    <None Include="Shader\WaveShader.fx" />
   </ItemGroup>
 </Project>

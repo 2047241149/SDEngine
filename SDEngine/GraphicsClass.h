@@ -3,6 +3,8 @@
 #define _GRAPHICS_CLASS_H
 
 //#define POST_EFFECT
+#define SSR
+#define DEBUG_GBUFFER
 
 #include"D3DClass.h"
 #include"GameObject.h"
@@ -23,6 +25,8 @@
 #include"ColorBufferRT.h"
 #include "Camera.h"
 #include "SSRGBuffer.h"
+#include "ComputerShader.h"
+#include "DirectionWave.h"
 
 //全局变量
 const bool FULL_SCREEN = false;
@@ -58,6 +62,8 @@ private:
 	shared_ptr<ColorBufferRT> mSceondBlurRT;
 	shared_ptr<ColorBufferRT> mSSRRT;
 
+	shared_ptr<Texture> mWaveDiffuseTex;
+	shared_ptr<Texture> mWaveNormalTexture;
 
 	//GeometryBuffer
 	shared_ptr<GeometryBuffer> mGeometryBuffer;
@@ -71,6 +77,10 @@ private:
 	shared_ptr<DebugWindow> mDebugWindow;
 
 	shared_ptr<DepthBufferRT>  mBackDepthBufferRT;
+
+	shared_ptr<ComputerShader> mComputerShader;
+
+	shared_ptr<Wave> mDirWave;
 
 private:
 	bool Initialize(int ScreenWidth, int ScreenHeight, HWND hwnd, HINSTANCE hinstance);
@@ -88,6 +98,11 @@ private:
 	void RenderSSRPass();
 	void RenderSSRBufferPass();
 	void RenderSceneBackDepthBuffer();
+
+	void RenderSSR();
+	void RenderWave();
+	void InitDebugConsole();
+	void CloseDebugConsole();
 public:
 	GraphicsClass(int ScreenWidth, int ScreenHeight, HWND hwnd, HINSTANCE hinstance);
 	GraphicsClass(const GraphicsClass&);

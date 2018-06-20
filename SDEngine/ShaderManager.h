@@ -14,6 +14,7 @@
 #include "BlurShader.h"
 #include "ScreenSpaceReflectShader.h"
 #include "SSRGBufferShader.h"
+#include "WaveShader.h"
 #include<memory>
 #include"Macro.h"
 using namespace std;
@@ -38,6 +39,7 @@ private:
 	shared_ptr<PureColorShader> mForwardPureColorShader;
 	shared_ptr<Shader> mDepthGetShader;
 	shared_ptr<SSRGBufferShader> mSSRGBufferShader;
+	shared_ptr<WaveShader> mWaveShader;
 public:
 	static shared_ptr<ShaderManager> mShaderManager;
 
@@ -87,6 +89,9 @@ public:
 	bool SetDepthGetShader(CXMMATRIX worldMatrix);
 
 	bool SetSSRGBufferShader(ID3D11ShaderResourceView* gBuffer[2]);
+
+	bool SetWaveShader(CXMMATRIX worldMatrix, FXMVECTOR surfaceColor, 
+		ID3D11ShaderResourceView* diffuse, ID3D11ShaderResourceView* normal);
 
 public:
 	DepthShader* GetDepthShader() { return mDepthShader.get(); }

@@ -1,4 +1,7 @@
 #pragma once
+#ifndef _COMMOM_VERTEX_FORMAT_H
+#define _COMMOM_VERTEX_FORMAT_H
+
 #include<d3d11_1.h>
 #include<DirectXMath.h>
 #include<iostream>
@@ -17,7 +20,6 @@ struct VertexPCNTT
 	XMFLOAT3 tangent;
 	XMFLOAT2 uv;
 };
-
 
 struct Triangle
 {
@@ -76,3 +78,6 @@ struct Transform
 	XMFLOAT3 localScale = XMFLOAT3(1.0f, 1.0f, 1.0f);
 	XMFLOAT3 localRotation = XMFLOAT3(0.0f, 0.0f, 0.0f);
 };
+
+
+#endif // !_COMMOM_VERTEX_FORMAT_H

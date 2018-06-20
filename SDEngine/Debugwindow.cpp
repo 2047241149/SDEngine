@@ -2,8 +2,8 @@
 
 DebugWindow::DebugWindow(int ScrrenWidth, int ScrrenHeight, int BitmapWidth, int BitmapHeight)
 {
-    md3dVertexBuffer=NULL; //¶¥µã»º´æ
-    md3dIndexBuffer=NULL;  //Ë÷Òý»º´æ
+    md3dVertexBuffer = NULL; //¶¥µã»º´æ
+    md3dIndexBuffer = NULL;  //Ë÷Òý»º´æ
 	mVertexCount = 0;
 	mIndexCount = 0;
 
