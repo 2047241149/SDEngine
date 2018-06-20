@@ -89,7 +89,7 @@ bool GraphicsClass::Initialize(int ScreenWidth, int ScreenHeight, HWND hwnd,HINS
 	mWaveDiffuseTex = shared_ptr<Texture>(new Texture(L"Texture\\waterDiffuse.jpg"));
 	mWaveNormalTexture = shared_ptr<Texture>(new Texture(L"Texture\\waterNormal.jpg"));
 
-	mDirWave = shared_ptr<DirectionWave>(new DirectionWave(60, 60, 1.0f, 4.0f, 2.0f, 20.0f, XMFLOAT2(1.0f, 1.0f)));
+	mDirWave = shared_ptr<DirectionWave>(new DirectionWave(60, 60, 1.0f, XMFLOAT2(1.0f, 1.0f), 4.0f, 2.0f, 20.0f));
 
 	//mComputerShader = shared_ptr<ComputerShader>(new ComputerShader(L"Shader/CSShader.fx"));
 	//mComputerShader->RunComputer(nullptr, nullptr, 0, DATA_ARRAY_SIZE, 1, 1);

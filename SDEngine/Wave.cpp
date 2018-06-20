@@ -311,7 +311,6 @@ void Wave::SetWaveParam(float amplitude, float speed, float waveLength, XMFLOAT2
 	mAmplitude = amplitude;
 	mSpeed = speed;
 	mWaveLength = waveLength;
-	mDirection = direction;
 	mUVTile = uvTile;
 }
 
