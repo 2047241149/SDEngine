@@ -5,7 +5,7 @@
 #define _DIFFUSE_NORMAL_SPEC_SHADER_H
 #include"Shader.h"
 
-class DiffuseNormalSpecShader:Shader
+class DiffuseNormalSpecShader:public Shader
 {
 private:
 

@@ -25,7 +25,6 @@ bool ShaderManager::Initialize()
 	mDiffuseNormalSpecShader = shared_ptr<DiffuseNormalSpecShader>(new
 		DiffuseNormalSpecShader(L"Shader/DiffuseNormalSpecularShader.fx", L"Shader/DiffuseNormalSpecularShader.fx"));
 
-
 	//创建以及初始化mPhongShader
 	mDiffuseShader = shared_ptr<DiffuseShader>(new
 		DiffuseShader(L"Shader/DiffuseShader.fx", L"Shader/DiffuseShader.fx"));
@@ -49,7 +48,6 @@ bool ShaderManager::Initialize()
 	mDOFShader = shared_ptr<DOFShader>(new
 		DOFShader(L"Shader/DOFShader.fx", L"Shader/DOFShader.fx"));
 
-
 	mBlurShader = shared_ptr<BlurShader>(new
 		BlurShader(L"Shader/BlurShader.fx", L"Shader/BlurShader.fx"));
 
@@ -65,6 +63,10 @@ bool ShaderManager::Initialize()
 
 	mSSRGBufferShader = shared_ptr<SSRGBufferShader>(new SSRGBufferShader(L"Shader/SSRGBuffer.fx",
 		L"Shader/SSRGBuffer.fx"));
+
+	mWaveShader = shared_ptr<WaveShader>(new
+		WaveShader(L"Shader/WaveShader.fx", L"Shader/WaveShader.fx"));
+
 	return true;
 }
 
@@ -299,6 +301,19 @@ bool ShaderManager::SetSSRGBufferShader(ID3D11ShaderResourceView* gBuffer[2])
 		return false;
 	}
 
+	return true;
+}
+
+bool ShaderManager::SetWaveShader(CXMMATRIX worldMatrix, FXMVECTOR surfaceColor,
+	ID3D11ShaderResourceView* diffuse, ID3D11ShaderResourceView* normal)
+{
+	bool result;
+	result = mWaveShader->SetShaderParamsExtern(worldMatrix, surfaceColor, diffuse, normal);
+	if (!result)
+	{
+		MessageBox(NULL, L"mWaveShader render 失败", NULL, MB_OK);
+		return false;
+	}
 	return true;
 }
 
