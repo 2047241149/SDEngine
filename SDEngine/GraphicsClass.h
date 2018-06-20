@@ -4,7 +4,7 @@
 
 //#define POST_EFFECT
 #define SSR
-#define DEBUG_GBUFFER
+//#define DEBUG_GBUFFER
 
 #include"D3DClass.h"
 #include"GameObject.h"
@@ -103,6 +103,7 @@ private:
 	void RenderWave();
 	void InitDebugConsole();
 	void CloseDebugConsole();
+
 public:
 	GraphicsClass(int ScreenWidth, int ScreenHeight, HWND hwnd, HINSTANCE hinstance);
 	GraphicsClass(const GraphicsClass&);
