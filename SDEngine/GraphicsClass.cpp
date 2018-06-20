@@ -433,10 +433,10 @@ void GraphicsClass::RenderOpacity()
 //绘制透明物体分为绘制透明
 void GraphicsClass::RenderTransparency()
 {
-
 	//RenderGeneralTransparency();
-	RenderSSRBufferPass();
-	RenderSSRPass();
+	//#if defined(SSR)
+	RenderSSR();
+	//#endif
 }
 
 void GraphicsClass::RenderGeneralTransparency()

@@ -66,6 +66,11 @@ float2 NormalizedDeviceCoordToScreenCoord(float2 ndc, float2 screenSize)
 	return screenCoord;
 }
 
+float distanceSquared(float2 a, float2 b)
+{
+	a -= b;
+	return dot(a, a);
+}
 
 VertexOut VS(VertexIn ina)
 {
@@ -111,6 +116,7 @@ float4 PS(VertexOut outa) : SV_Target
 	
 
 	//这里参考软光栅器 纹理坐标 世界空间坐标的插值原理(透视纠正)
+	//w为相机空间的Z值
 	float k0 = 1.0 / p0.w;
 	float k1 = 1.0 / p1.w;
 
@@ -125,7 +131,11 @@ float4 PS(VertexOut outa) : SV_Target
 	p1.xy = NormalizedDeviceCoordToScreenCoord(p1.xy, screenSize.xy);
 
 
+	//保证屏幕空间的光线起始点终点至少一个单位长度
+	float ds = distanceSquared(p1.xy, p0.xy);
+	p1 += ds < 0.0001 ? 0.01 : 0.0;
 	float divisions = length(p1.xy - p0.xy);
+	
 	float3 dV = (v1 - v0) / divisions;
 	float dK = (k1 - k0) / divisions;
 	float2 traceDir = (p1 - p0) / divisions;
