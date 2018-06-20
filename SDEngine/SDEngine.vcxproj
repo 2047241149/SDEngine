@@ -113,10 +113,15 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Camera.cpp" />
+    <ClCompile Include="CircleWave.cpp" />
     <ClCompile Include="ColorBufferRT.cpp" />
+    <ClCompile Include="CommonFunction.cpp" />
+    <ClCompile Include="ComputerShader.cpp" />
     <ClCompile Include="D3DClass.cpp" />
     <ClCompile Include="Debugwindow.cpp" />
     <ClCompile Include="BlurShader.cpp" />
+    <ClCompile Include="DirectionWave.cpp" />
+    <ClCompile Include="WaveShader.cpp" />
     <ClCompile Include="ScreenSpaceReflectShader.cpp" />
     <ClCompile Include="SSRGBufferShader.cpp" />
     <ClCompile Include="DOFShader.cpp" />
@@ -144,17 +149,22 @@
     <ClCompile Include="SystemClass.cpp" />
     <ClCompile Include="Texture.cpp" />
     <ClCompile Include="UIShader.cpp" />
+    <ClCompile Include="Wave.cpp" />
     <ClCompile Include="源.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Camera.h" />
+    <ClInclude Include="CircleWave.h" />
     <ClInclude Include="ColorBufferRT.h" />
     <ClInclude Include="CommomVertexFormat.h" />
     <ClInclude Include="CommonConstantBufferStruct.h" />
     <ClInclude Include="CommonFunction.h" />
+    <ClInclude Include="ComputerShader.h" />
     <ClInclude Include="D3DClass.h" />
     <ClInclude Include="Debugwindow.h" />
     <ClInclude Include="BlurShader.h" />
+    <ClInclude Include="DirectionWave.h" />
+    <ClInclude Include="WaveShader.h" />
     <ClInclude Include="ScreenSpaceReflectShader.h" />
     <ClInclude Include="SSRGBufferShader.h" />
     <ClInclude Include="DOFShader.h" />
@@ -184,6 +194,7 @@
     <ClInclude Include="SystemClass.h" />
     <ClInclude Include="Texture.h" />
     <ClInclude Include="UIShader.h" />
+    <ClInclude Include="Wave.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="libfbxsdk.dll" />
@@ -259,6 +270,16 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Shader\SSRGBuffer.fx">
+      <FileType>Document</FileType>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Shader\CSShader.fx">
+      <FileType>Document</FileType>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Shader\WaveShader.fx">
       <FileType>Document</FileType>
     </None>
   </ItemGroup>

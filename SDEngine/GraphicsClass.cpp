@@ -7,7 +7,7 @@ GraphicsClass::GraphicsClass(int ScreenWidth, int ScreenHeight, HWND hwnd, HINST
 
 GraphicsClass::~GraphicsClass()
 {
-
+	CloseDebugConsole();
 }
 
 GraphicsClass::GraphicsClass(const GraphicsClass&other)
@@ -25,6 +25,7 @@ bool GraphicsClass::Initialize(int ScreenWidth, int ScreenHeight, HWND hwnd,HINS
 
 	ID3D11Device* d3dDevice = D3DClass::GetInstance()->GetDevice();
 
+	InitDebugConsole();
 
 	//创建相机
 	Camera* mainCamera = Camera::GetInstance();
@@ -36,20 +37,20 @@ bool GraphicsClass::Initialize(int ScreenWidth, int ScreenHeight, HWND hwnd,HINS
 
 	//创建directionLight(游戏中仅仅存在一个方向光，用来模拟太阳光)
 	Light* dirLight = Light::GetInstnce();
-	XMVECTOR lightPos = XMVectorSet(6.0f, 6.0f, 6.0f, 0.0f);
+	XMVECTOR lightPos = XMVectorSet(6.0f, 6.0f, 0.0f, 0.0f);
 	XMVECTOR lookAtPos = XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f);
 	dirLight->SetViewParams(lightPos, lookAtPos);
 	dirLight->SetLightColor(XMVectorSet(1.0, 1.0f, 1.0f, 1.0f));
 	dirLight->SetAmbientLight(XMVectorSet(0.15f, 0.15f, 0.15f, 1.0f));
 
 	//创建ModelClasss
-	mHeadObject = shared_ptr<GameObject>(new GameObject("FBXModel\\head\\head.FBX"));
+	//mHeadObject = shared_ptr<GameObject>(new GameObject("FBXModel\\head\\head.FBX"));
 
 	mSphereObject = shared_ptr<GameObject>(new GameObject("FBXModel\\sphere\\sphere.FBX"));
 
-	mSponzaBottom = shared_ptr<GameObject>(new GameObject("FBXModel\\sponza\\sponza_bottom.FBX"));
+	//mSponzaBottom = shared_ptr<GameObject>(new GameObject("FBXModel\\sponza\\sponza_bottom.FBX"));
 
-	mSponzaNoBottom = shared_ptr<GameObject>(new GameObject("FBXModel\\sponza\\sponza_no_bottom.FBX"));
+	//mSponzaNoBottom = shared_ptr<GameObject>(new GameObject("FBXModel\\sponza\\sponza_no_bottom.FBX"));
 	
 	//创建输入类
 	mInputClass = shared_ptr<Input>(new Input(hinstance, hwnd, ScreenWidth, ScreenHeight));
@@ -84,7 +85,14 @@ bool GraphicsClass::Initialize(int ScreenWidth, int ScreenHeight, HWND hwnd,HINS
 
 	mSSRBuffer = shared_ptr<SSRGBuffer>(new 
 		SSRGBuffer(ScreenWidth, ScreenHeight, SCREEN_FAR, SCREEN_NEAR));
+	
+	mWaveDiffuseTex = shared_ptr<Texture>(new Texture(L"Texture\\waterDiffuse.jpg"));
+	mWaveNormalTexture = shared_ptr<Texture>(new Texture(L"Texture\\waterNormal.jpg"));
 
+	mDirWave = shared_ptr<DirectionWave>(new DirectionWave(60, 60, 1.0f, XMFLOAT2(1.0f, 1.0f), 4.0f, 2.0f, 20.0f));
+
+	//mComputerShader = shared_ptr<ComputerShader>(new ComputerShader(L"Shader/CSShader.fx"));
+	//mComputerShader->RunComputer(nullptr, nullptr, 0, DATA_ARRAY_SIZE, 1, 1);
 	return true;
 }
 
@@ -109,9 +117,12 @@ bool GraphicsClass::Frame()
 	int fps = fpsPtr->GetFPS();
 
 	deltaTime = fpsPtr->GetDeltaTime();
-
+	float currentTime = fpsPtr->GetTime();
 	mInputClass->GetMousePositionOffset(mouseXOffset, mouseYOffset);
 
+
+	//更新海浪的数据
+	mDirWave->UpdateWaveData(currentTime);
 
 	//鼠标右键处于按下的状态才能进行（左右移动）（前后移动）（旋转的操作）
 	if (mInputClass->IsMouseRightButtuonPressed()&& fps >=5&& fps <=1000000)
@@ -208,22 +219,24 @@ void GraphicsClass::Render()
 
 	d3dPtr->BeginScene(0.3f, 0.0f, 1.0f, 1.0f);
 
+	RenderWave();
 	//绘制不透明物体
-	RenderOpacity();
+	//RenderOpacity();
 
 	//获取整个场景的BackDepthBuffer
-	RenderSceneBackDepthBuffer();
+	//RenderSceneBackDepthBuffer();
 
 	//绘制透明物体(普通的透明物体，SSR)
-	RenderTransparency();
+	//RenderTransparency();
 
 	#if defined(POST_EFFECT)
 		RenderPostEffectPass();
 	#endif // POST_EFFECT
 
 	#if defined(DEBUG_GBUFFER)
-	RenderDebugWindow();
+	//RenderDebugWindow();
 	#endif
+
 
 	//**************************************************************************
 	//结束绘制
@@ -448,7 +461,7 @@ void GraphicsClass::RenderGeneralTransparency()
 
 void GraphicsClass::RenderSceneBackDepthBuffer()
 {
-	mBackDepthBufferRT->SetRenderTarget();
+	/*mBackDepthBufferRT->SetRenderTarget();
 	D3DClass::GetInstance()->TurnOnCullFront();
 
 	//渲染头
@@ -468,6 +481,7 @@ void GraphicsClass::RenderSceneBackDepthBuffer()
 	//球渲染
 	mSphereObject->mTransform->localScale = XMFLOAT3(1.0f, 1.0f, 1.0f);
 
+
 	//平行光源球
 	XMStoreFloat3(&mSphereObject->mTransform->localPosition,
 		-Light::GetInstnce()->GetLightDirection());
@@ -475,10 +489,11 @@ void GraphicsClass::RenderSceneBackDepthBuffer()
 
 	//原点球
 	mSphereObject->mTransform->localPosition = XMFLOAT3(0.0f, 0.0f, 0.0f);
-	mSphereObject->Render(MaterialType::DEPTH_BUFFER);
+	mSphereObject->Render(MaterialType::DEPTH_BUFFER);*/
+
 
 	//恢复默认的RS
-	D3DClass::GetInstance()->TurnOnSolidRender();
+	//D3DClass::GetInstance()->TurnOnSolidRender();
 
 }
 
@@ -494,10 +509,52 @@ void GraphicsClass::RenderSSRBufferPass()
 	mQuad->Render();
 	D3DClass::GetInstance()->RecoverDefaultDSS();
 	D3DClass::GetInstance()->SetBackBufferRender();
+
 }
 
 void  GraphicsClass::RenderSSR()
 {
 	RenderSSRBufferPass();
 	RenderSSRPass();
+}
+
+
+void GraphicsClass::InitDebugConsole()
+{
+	AllocConsole();
+	FILE* pf;
+	freopen_s(&pf, "CONOUT$", "w", stdout);   // 重定向输出
+}
+
+
+void GraphicsClass::CloseDebugConsole()
+{
+	FreeConsole();
+}
+
+void GraphicsClass::RenderWave()
+{
+	D3DClass::GetInstance()->SetBackBufferRender();
+
+	//平行光源球
+	XMStoreFloat3(&mSphereObject->mTransform->localPosition,
+		-Light::GetInstnce()->GetLightDirection());
+	ShaderManager::GetInstance()->SetForwardPureColorShader(mSphereObject->GetWorldMatrix(),
+		XMVectorSet(0.5f, 0.5f, 0.5f, 1.0f));
+	mSphereObject->RenderMesh();
+
+	//原点球
+	mSphereObject->mTransform->localPosition = XMFLOAT3(0.0f, 0.0f, 0.0f);
+	ShaderManager::GetInstance()->SetForwardPureColorShader(mSphereObject->GetWorldMatrix(),
+		XMVectorSet(1.0f, 0.0f, 0.0f, 1.0f));
+	mSphereObject->RenderMesh();
+
+	//波
+	//D3DClass::GetInstance()->TurnOnWireFrameRender();
+	XMFLOAT3 pos = mDirWave->mPosition;
+	XMMATRIX worldMatrix = XMMatrixTranslation(pos.x, pos.y, pos.z);
+	ShaderManager::GetInstance()->SetWaveShader(worldMatrix,
+		XMVectorSet(0.5f, 0.5f, 0.5f, 1.0f),mWaveDiffuseTex->GetTexture(),mWaveNormalTexture->GetTexture());
+	mDirWave->Render();
+
 }
