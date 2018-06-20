@@ -1,5 +1,6 @@
 #include"SystemClass.h"
 
+
 //全局变量
 static SystemClass* D3DAPP = NULL;
 
@@ -63,9 +64,6 @@ bool SystemClass::Initialize()
 
 	//------第一,针对窗口类------
 	/*初始化屏幕宽度和高度*/
-	ScreenWidth = 0;
-	ScreenHeight = 0;
-
 	/*初始化系统类的窗口*/
 	InitializeWindow(ScreenWidth, ScreenHeight);
 
@@ -77,6 +75,7 @@ bool SystemClass::Initialize()
 		MessageBox(NULL, L"mGraphicsClass initialzie failure", NULL, MB_OK);
 		return false;
 	}
+
 
 	return true;
 }
@@ -124,6 +123,12 @@ bool SystemClass::Frame()
 
 	//进行每帧的图形渲染
 	mGraphicsClass->Render();
+
+	int fps = FPS::GetInstance()->GetFPS();
+	string fpsStr;
+	int2str(fps, fpsStr);
+	string title = "SDENGINE     FPS = " + fpsStr;
+	SetWindowText(mHwnd, Str2Wstr(title).c_str());
 
 	return true;
 }

@@ -27,7 +27,9 @@ private:
 	ID3D11Buffer* mCBCommon; //变换矩阵(常量)缓存,顶点索引
 	ID3D11SamplerState *mWrapLinearSampler; 
 	ID3D11SamplerState *mClampPointSampler;
-public:
+
+//用于子类改写并访问
+protected:
 	bool virtual Initialize(WCHAR* vsFilenPath, WCHAR* psFilenPath);
 
 	//初始化Shader,用于创建InputLayout,VertexShader,PixelShader,常量缓存

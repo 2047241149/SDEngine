@@ -1,6 +1,7 @@
 #pragma once
 #ifndef _SYSTEM_CLASS_H
 #define _SYSTEM_CLASS_H
+
 #define WIN32_LEAN_AND_MEAN  //这个宏可以减少Win32头文件的大小
 
 #include<Windows.h>  
