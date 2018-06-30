@@ -88,7 +88,8 @@ void ComputerShader::CreateComputerShader(WCHAR* csFilenPath)
 		}
 	}
 
-	d3dDevice->CreateComputeShader(ComputerShaderBuffer->GetBufferPointer(), ComputerShaderBuffer->GetBufferSize(), NULL, &mComputerShader);
+	d3dDevice->CreateComputeShader(ComputerShaderBuffer->GetBufferPointer(), ComputerShaderBuffer->GetBufferSize(),
+		NULL, &mComputerShader);
 
 	ReleaseCOM(errorMessage);
 	ReleaseCOM(ComputerShaderBuffer);

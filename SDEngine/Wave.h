@@ -4,6 +4,61 @@
 #include "D3DClass.h"
 #include "CommomVertexFormat.h"
 
+struct WaveParam
+{
+public:
+	float fAmplitude;
+	float fSpeed;
+	float fWaveLength;
+
+	WaveParam::WaveParam(float amplitude, float speed, float waveLength):
+		fAmplitude(amplitude), fSpeed(speed), fWaveLength(waveLength)
+	{
+
+	}
+};
+
+struct DirectionSineWaveParam :public WaveParam
+{
+public:
+	XMFLOAT2 fDrection;
+
+	DirectionSineWaveParam::DirectionSineWaveParam(XMFLOAT2 direction,
+		float amplitude, float speed, float waveLength):
+		WaveParam(amplitude, speed, waveLength), fDrection(direction)
+	{
+
+	}
+};
+
+struct CircleSineWaveParam :public WaveParam
+{
+public:
+	XMFLOAT2 fCenter;
+
+	CircleSineWaveParam::CircleSineWaveParam(XMFLOAT2 center,
+		float amplitude, float speed, float waveLength) :
+		WaveParam(amplitude,speed,waveLength),fCenter(center)
+	{
+
+	}
+};
+
+
+struct GerstnerWaveParam : public DirectionSineWaveParam
+{
+public:
+	float fSteepness;
+
+	GerstnerWaveParam(XMFLOAT2 direction, float amplitude, float speed,
+		float waveLength, float steepness) :
+		DirectionSineWaveParam(direction, amplitude, speed, waveLength),
+		fSteepness(steepness)
+	{
+
+	}
+};
+
 class Wave
 {
 protected:
@@ -12,13 +67,7 @@ protected:
 
 	ID3D11Buffer* mVertexBuffer;
 	ID3D11Buffer* mIndexBuffer;
-
-	//海浪参数
-	float mAmplitude;
-	float mSpeed;
-	float mWaveLength;
-
-
+	
 	//UV的Tile长度，代表每mUVTile格子占据1.0的UV值
 	int mUVTile;
 
@@ -42,7 +91,7 @@ protected:
 
 	virtual float GetWaveVertexHeight(int x, int z, float time) = 0;
 
-	//计算位置（Wave的每个基类都重写此函数，因为每种波的计算位置方式都不一样）
+	//计算位置（波的计算位置方式可能不一样）
 	virtual void CalculateVertexPos(float time);
 
 	//计算切线
@@ -60,15 +109,14 @@ public:
 	virtual void UpdateWaveData(float time);
 	void Render();
 
-	Wave(int waveWidth, int waveHeight,float waveGridSize,
-		float amplitude = 4.0f, float speed = 2.0f, float waveLength = 20.0f,int mUVTile = 20);
+	Wave(int waveWidth, int waveHeight,float waveGridSize,int mUVTile = 20);
 
 	Wave(int waveWidth, int waveHeight, float waveGridSize);
 
 	Wave(const Wave& other);
 	~Wave();
 
-	void SetWaveParam(float amplitude, float speed, float waveLength, XMFLOAT2 direction, int uvTile);
+	void SetWaveParam(int uvTile);
 
 };
 #endif // ! _WAVE_H

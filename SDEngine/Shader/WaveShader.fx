@@ -93,7 +93,7 @@ float4 PS(VertexOut outa) : SV_Target
 	float spec = pow(saturate(dot(halfDir, worldNormal)), 32);
 	float3 specular = float3(spec, spec, spec);
 
-	color = float4((ambientLight + dirLightColor.xyz * diffuseFactor) * diffuse  + specular * 0.5, 1.0);
+	color = float4((ambientLight + dirLightColor.xyz * diffuseFactor) * diffuse  + specular * 0.1, 1.0);
 
 	
 	float correctGamma = 1.0 / 2.0;

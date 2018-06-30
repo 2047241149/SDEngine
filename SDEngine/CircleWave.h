@@ -7,7 +7,7 @@ class CircleWave:public Wave
 {
 
 private:
-	XMFLOAT2 mCircleCenter;
+	vector<CircleSineWaveParam> m_vecCircleWaveParam;
 
 protected:
 	//º∆À„Œª÷√
@@ -16,8 +16,7 @@ protected:
 
 public:
 	CircleWave(int waveWidth, int waveHeight, float waveGridSize,
-		XMFLOAT2 circleCenter = XMFLOAT2(0.0f,0.0f),float amplitude = 4.0f, 
-		float speed = 2.0f, float waveLength = 20.0f,int mUVTile = 20);
+		const vector<CircleSineWaveParam>& vecCircleWaveParam,int mUVTile = 20);
 	CircleWave(const CircleWave& other);
 	~CircleWave();
 

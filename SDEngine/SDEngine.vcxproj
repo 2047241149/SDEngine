@@ -121,6 +121,7 @@
     <ClCompile Include="Debugwindow.cpp" />
     <ClCompile Include="BlurShader.cpp" />
     <ClCompile Include="DirectionWave.cpp" />
+    <ClCompile Include="GerstnerWave.cpp" />
     <ClCompile Include="WaveShader.cpp" />
     <ClCompile Include="ScreenSpaceReflectShader.cpp" />
     <ClCompile Include="SSRGBufferShader.cpp" />
@@ -164,6 +165,7 @@
     <ClInclude Include="Debugwindow.h" />
     <ClInclude Include="BlurShader.h" />
     <ClInclude Include="DirectionWave.h" />
+    <ClInclude Include="GerstnerWave.h" />
     <ClInclude Include="WaveShader.h" />
     <ClInclude Include="ScreenSpaceReflectShader.h" />
     <ClInclude Include="SSRGBufferShader.h" />

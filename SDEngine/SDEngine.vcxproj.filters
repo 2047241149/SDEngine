@@ -132,6 +132,9 @@
     <ClCompile Include="CircleWave.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="GerstnerWave.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Camera.h">
@@ -258,6 +261,9 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="CircleWave.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="GerstnerWave.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>

@@ -1,9 +1,8 @@
 #include "DirectionWave.h"
 
-DirectionWave::DirectionWave(int waveWidth, int waveHeight, float waveGridSize, XMFLOAT2 direction,
-	float amplitude, float speed, float waveLength,
-	 int mUVTile):Wave(waveWidth, waveHeight, waveGridSize,
-		amplitude, speed,  waveLength,mUVTile),mDirection(direction)
+DirectionWave::DirectionWave(int waveWidth, int waveHeight, float waveGridSize,
+	const vector<DirectionSineWaveParam>& vecDirWaveParam,
+	int mUVTile):Wave(waveWidth, waveHeight, waveGridSize,mUVTile),m_vecDirWaveParam(vecDirWaveParam)
 {
 
 }
@@ -34,17 +33,26 @@ void DirectionWave::UpdateWaveData(float time)
 
 float DirectionWave::GetWaveVertexHeight(int x, int z, float time)
 {
-	float DdotXZ = mDirection.x * x + mDirection.y *z;
+	float fHeight = 0.0f;
 
-	//频率
-	float w = 2.0f * XM_PI / mWaveLength;
+	for (UINT iParamIndex = 0; iParamIndex < m_vecDirWaveParam.size(); ++iParamIndex)
+	{
 
-	//相位差常量
-	float phaseConstant = mSpeed * w;
+		DirectionSineWaveParam& dirWaveParam = m_vecDirWaveParam[iParamIndex];
+
+		float fDdotXZ = dirWaveParam.fDrection.x * x + dirWaveParam.fDrection.y * z;
+
+		//频率
+		float w = 2.0f * XM_PI / dirWaveParam.fWaveLength;
+
+		//相位差常量
+		float phaseConstant = dirWaveParam.fSpeed * w;
 
 
-	//posZ
-	float fWeightHeight = (float)mAmplitude * sin(DdotXZ * w + time * phaseConstant);
+		//posZ
+		fHeight += (float)dirWaveParam.fAmplitude * sin(fDdotXZ * w + time * phaseConstant);
 
-	return fWeightHeight;
+	}
+
+	return fHeight;
 }
