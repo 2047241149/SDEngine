@@ -7,7 +7,8 @@ class DirectionWave : public Wave
 {
 
 private:
-	XMFLOAT2 mDirection;
+	vector<DirectionSineWaveParam> m_vecDirWaveParam;
+
 protected:
 	//º∆À„Œª÷√
 	virtual void CalculateVertexPos(float time) override;
@@ -15,8 +16,7 @@ protected:
 
 public:
 	DirectionWave(int waveWidth, int waveHeight, float waveGridSize,
-		XMFLOAT2 direction = XMFLOAT2(1.0f, 0.0f),
-		float amplitude = 4.0f, float speed = 2.0f, float waveLength = 20.0f,
+		const vector<DirectionSineWaveParam>& vecDirWaveParam,
 		 int mUVTile = 20);
 
 	DirectionWave(const DirectionWave& other);
@@ -24,4 +24,5 @@ public:
 
 	virtual void UpdateWaveData(float time) override;
 };
+
 #endif

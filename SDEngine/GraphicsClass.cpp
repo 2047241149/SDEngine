@@ -89,10 +89,22 @@ bool GraphicsClass::Initialize(int ScreenWidth, int ScreenHeight, HWND hwnd,HINS
 	mWaveDiffuseTex = shared_ptr<Texture>(new Texture(L"Texture\\waterDiffuse.jpg"));
 	mWaveNormalTexture = shared_ptr<Texture>(new Texture(L"Texture\\waterNormal.jpg"));
 
-	mDirWave = shared_ptr<DirectionWave>(new DirectionWave(60, 60, 1.0f, XMFLOAT2(1.0f, 1.0f), 4.0f, 2.0f, 20.0f));
+	/*vector<DirectionSineWaveParam> vecDirWaveParam;
+	vecDirWaveParam.push_back(DirectionSineWaveParam(XMFLOAT2(1.0f, 1.0), 4.0f, 2.0f, 15.0f));
+	vecDirWaveParam.push_back(DirectionSineWaveParam(XMFLOAT2(1.0f, 0.0), 2.0f, 2.0f, 15.0f));
+	vecDirWaveParam.push_back(DirectionSineWaveParam(XMFLOAT2(0.0f, 1.0), 1.0f, 2.0f, 15.0f));
+	mDirWave = shared_ptr<DirectionWave>(new DirectionWave(60, 60, 1.0f, vecDirWaveParam, 20.0f));*/
+	//vector<CircleSineWaveParam> vecCircleWaveParam;
+	//vecCircleWaveParam.push_back(CircleSineWaveParam(XMFLOAT2(0.0f, 0.0), 4.0f, 2.0f, 15.0f));
+	//mCircleWave = shared_ptr<CircleWave>(new CircleWave(80, 80, 1.0f, vecCircleWaveParam,20.0f));
+	mComputerShader = shared_ptr<ComputerShader>(new ComputerShader(L"Shader/CSShader.fx"));
+	mComputerShader->RunComputer(nullptr, nullptr, 0, DATA_SIZE, DATA_SIZE, 1);
 
-	//mComputerShader = shared_ptr<ComputerShader>(new ComputerShader(L"Shader/CSShader.fx"));
-	//mComputerShader->RunComputer(nullptr, nullptr, 0, DATA_ARRAY_SIZE, 1, 1);
+	vector<GerstnerWaveParam> vecGerstnerWaveParam;
+	vecGerstnerWaveParam.push_back(GerstnerWaveParam(XMFLOAT2(0.7f, 0.7), 2.0f, 4.0f, 20.0f,0.3f));
+	vecGerstnerWaveParam.push_back(GerstnerWaveParam(XMFLOAT2(0.7f, -0.7), 1.5f, 5.0f, 30.0f, 0.4f));
+	vecGerstnerWaveParam.push_back(GerstnerWaveParam(XMFLOAT2(-0.7f, -0.3), 1.0f, 6.0f, 40.0f, 0.5f));
+	mGerstnerWave = shared_ptr<GerstnerWave>(new GerstnerWave(80, 80, 1.0f, vecGerstnerWaveParam, 20.0f));
 	return true;
 }
 
@@ -122,7 +134,7 @@ bool GraphicsClass::Frame()
 
 
 	//更新海浪的数据
-	mDirWave->UpdateWaveData(currentTime);
+	mGerstnerWave->UpdateWaveData(currentTime);
 
 	//鼠标右键处于按下的状态才能进行（左右移动）（前后移动）（旋转的操作）
 	if (mInputClass->IsMouseRightButtuonPressed()&& fps >=5&& fps <=1000000)
@@ -532,10 +544,11 @@ void GraphicsClass::CloseDebugConsole()
 	FreeConsole();
 }
 
+
 void GraphicsClass::RenderWave()
 {
 	D3DClass::GetInstance()->SetBackBufferRender();
-
+	
 	//平行光源球
 	XMStoreFloat3(&mSphereObject->mTransform->localPosition,
 		-Light::GetInstnce()->GetLightDirection());
@@ -551,10 +564,10 @@ void GraphicsClass::RenderWave()
 
 	//波
 	//D3DClass::GetInstance()->TurnOnWireFrameRender();
-	XMFLOAT3 pos = mDirWave->mPosition;
+	XMFLOAT3 pos = mGerstnerWave->mPosition;
 	XMMATRIX worldMatrix = XMMatrixTranslation(pos.x, pos.y, pos.z);
 	ShaderManager::GetInstance()->SetWaveShader(worldMatrix,
 		XMVectorSet(0.5f, 0.5f, 0.5f, 1.0f),mWaveDiffuseTex->GetTexture(),mWaveNormalTexture->GetTexture());
-	mDirWave->Render();
+	mGerstnerWave->Render();
 
 }

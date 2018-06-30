@@ -7,7 +7,8 @@
 #include<vector>
 #include "Macro.h"
 
-const int DATA_ARRAY_SIZE = 1024;
+const int DATA_SIZE = 32;
+const int DATA_ARRAY_SIZE = DATA_SIZE * DATA_SIZE;
 
 class ComputerShader
 {
