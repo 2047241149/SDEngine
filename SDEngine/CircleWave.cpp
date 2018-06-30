@@ -1,9 +1,9 @@
 #include "CircleWave.h"
 
 CircleWave::CircleWave(int waveWidth, int waveHeight, float waveGridSize,
-	XMFLOAT2 circleCenter,float amplitude, float speed, float waveLength,
-	 int mUVTile):Wave(waveWidth, waveHeight, waveGridSize,amplitude, speed, waveLength,mUVTile),
-	mCircleCenter(circleCenter)
+	const vector<CircleSineWaveParam>& vecCircleWaveParam,
+	 int uvTile):Wave(waveWidth, waveHeight, waveGridSize, uvTile),
+	m_vecCircleWaveParam(vecCircleWaveParam)
 {
 
 }
@@ -27,29 +27,40 @@ void CircleWave::CalculateVertexPos(float time)
 	Wave::CalculateVertexPos(time);
 }
 
+
 void CircleWave::UpdateWaveData(float time)
 {
 	Wave::UpdateWaveData(time);
 }
 
+
+//解決中心尖峰问题
 float CircleWave::GetWaveVertexHeight(int x, int z, float time)
 {
-	float offsetX = mCircleCenter.x - x;
-	float offsetZ = mCircleCenter.y - z;
-	float distanceToCenter = sqrt(offsetX * offsetX + offsetZ *offsetZ);
-	offsetX /= distanceToCenter;
-	offsetZ /= distanceToCenter;
-	float DdotXZ = offsetX * x + offsetZ * z;
+	float fHeight = 0.0f;
 
+	for (UINT iParamIndex = 0; iParamIndex < m_vecCircleWaveParam.size(); ++iParamIndex)
+	{
+		CircleSineWaveParam& circleWaveParam = m_vecCircleWaveParam[iParamIndex];
+		float fOffsetX = circleWaveParam.fCenter.x - x;
+		float fOffsetZ = circleWaveParam.fCenter.y - z;
 
-	//频率
-	float w = 2.0f * XM_PI / mWaveLength;
+		//+0.000001是为了保证分母不为0
+		float distanceToCenter = sqrt(fOffsetX * fOffsetX + fOffsetZ *fOffsetZ) + 0.000001f;
+		fOffsetX /= distanceToCenter;
+		fOffsetZ /= distanceToCenter;
+		float DdotXZ = fOffsetX * x + fOffsetZ * z;
 
-	//相位差常量
-	float phaseConstant = mSpeed * w;
+		//频率
+		float w = 2.0f * XM_PI / circleWaveParam.fWaveLength;
 
-	//posZ
-	float fWeightHeight = (float)mAmplitude * sin(DdotXZ * w + time * phaseConstant);
+		//相位差常量
+		float phaseConstant = circleWaveParam.fSpeed * w;
+		float sinParams = sin(DdotXZ * w + time * phaseConstant);
 
-	return fWeightHeight;
+		//posZ
+		fHeight += (float)circleWaveParam.fAmplitude * sinParams;
+	}
+
+	return fHeight;
 }

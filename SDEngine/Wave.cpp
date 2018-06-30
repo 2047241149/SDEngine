@@ -1,9 +1,7 @@
 #include "Wave.h"
 
-Wave::Wave(int waveWidth, int waveHeight, float waveGridSize,float amplitude, float speed,
-	float waveLength,int uvTile):
-	mWaveGridSize(waveGridSize),mAmplitude(amplitude),
-	mSpeed(speed),mWaveLength(waveLength),mUVTile(uvTile)
+Wave::Wave(int waveWidth, int waveHeight, float waveGridSize,int uvTile):
+	mWaveGridSize(waveGridSize),mUVTile(uvTile)
 {
 	mPosition = XMFLOAT3(0.0f, 0.0f, 0.0f);
 	//waveWidth waveHeight 变成 2 的偶数倍
@@ -306,11 +304,8 @@ void Wave::NormalizeFloat3(XMFLOAT3& normal)
 	normal.z /= length;
 }
 
-void Wave::SetWaveParam(float amplitude, float speed, float waveLength, XMFLOAT2 direction, int uvTile)
+void Wave::SetWaveParam(int uvTile)
 {
-	mAmplitude = amplitude;
-	mSpeed = speed;
-	mWaveLength = waveLength;
 	mUVTile = uvTile;
 }
 
@@ -448,25 +443,3 @@ float Wave::Dot(const XMFLOAT3& vec1, const XMFLOAT3& vec2)
 	return vec1.x * vec2.x + vec1.y * vec2.y + vec1.z * vec2.z;
 }
 
-/*XMFLOAT3 Wave::GetWaveVertexNormal(int x, int z, float t)
-{
-	float DdotXZ = mDirection.x * x + mDirection.y *z;
-
-	//频率
-	float w = 2.0f * XM_PI / mWaveLength;
-
-	//相位差常量
-	float phaseConstant = mSpeed * w;
-
-	float cosTemp = w * mAmplitude * (float)cos(DdotXZ * w + t * phaseConstant);
-	
-	XMFLOAT3 normalVec;
-	normalVec.z = 1.0f;
-
-	float binormalDerivative = mDirection.x * cosTemp;
-	float tangentDerivative = mDirection.y * cosTemp;
-	normalVec.x = -tangentDerivative;
-	normalVec.y = -binormalDerivative;
-
-	return normalVec;
-}*/

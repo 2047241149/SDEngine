@@ -27,6 +27,8 @@
 #include "SSRGBuffer.h"
 #include "ComputerShader.h"
 #include "DirectionWave.h"
+#include "CircleWave.h"
+#include "GerstnerWave.h"
 
 //全局变量
 const bool FULL_SCREEN = false;
@@ -81,6 +83,8 @@ private:
 	shared_ptr<ComputerShader> mComputerShader;
 
 	shared_ptr<Wave> mDirWave;
+	shared_ptr<Wave> mCircleWave;
+	shared_ptr<Wave> mGerstnerWave;
 
 private:
 	bool Initialize(int ScreenWidth, int ScreenHeight, HWND hwnd, HINSTANCE hinstance);
