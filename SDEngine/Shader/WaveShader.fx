@@ -81,11 +81,14 @@ float4 PS(VertexOut outa) : SV_Target
 	worldNormal.z = normal.x * T.z + normal.y * B.z + normal.z * N.z;
 	worldNormal = normalize(worldNormal);
 
+	//float3 worldNormal = normalize(outa.WorldNormal);
+
 	//º∆À„diffuseLight
 	float3 invLightDir = -normalize(dirLightDir);
 	float diffuseFactor = saturate(dot(worldNormal, invLightDir));
 	float3 diffuse = DiffuseTex.Sample(SampleWrapLinear, outa.Tex).xyz;
-	
+	diffuse = pow(diffuse, float4(2.0f, 2.0f, 2.0f, 0.0f));
+
 
 	//SpecularLight
 	float3 viewDir = normalize(cameraPos - outa.worldPos);
@@ -93,10 +96,11 @@ float4 PS(VertexOut outa) : SV_Target
 	float spec = pow(saturate(dot(halfDir, worldNormal)), 32);
 	float3 specular = float3(spec, spec, spec);
 
-	color = float4((ambientLight + dirLightColor.xyz * diffuseFactor) * diffuse  + specular * 0.1, 1.0);
+	color = float4((ambientLight + dirLightColor.xyz * diffuseFactor) * diffuse  + specular * 0.0f, 1.0);
 
-	
 	float correctGamma = 1.0 / 2.0;
+
 	color = pow(color, float4(correctGamma, correctGamma, correctGamma, 0.0));
+
 	return color;
 }
