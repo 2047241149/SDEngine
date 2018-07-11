@@ -32,11 +32,8 @@ bool ComputerShader::Initialize(WCHAR* csFilenPath)
 	mBufferDataB.resize(DATA_ARRAY_SIZE);
 	for (int index = 0; index < DATA_ARRAY_SIZE; ++index)
 	{
-		mBufferDataA[index].i = index;
-		mBufferDataA[index].f = (float)index;
-
-		mBufferDataB[index].i = index;
-		mBufferDataB[index].f = index;
+		mBufferDataA[index].i = 0;
+		mBufferDataB[index].i = 0;
 	}
 
 	//´´½¨Buffer
@@ -280,7 +277,7 @@ void ComputerShader::CreateAndCopyToDebugBuf()
 
 	for (int index = 0; index < DATA_ARRAY_SIZE; ++index)
 	{
-		std::cout << pData[index].f << "   " << pData[index].i << std::endl;
+		std::cout << "   " << pData[index].column<<"     "<< pData[index].row << "      "<<pData[index].i << std::endl;
 	}
 
 }

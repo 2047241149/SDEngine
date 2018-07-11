@@ -122,6 +122,7 @@
     <ClCompile Include="BlurShader.cpp" />
     <ClCompile Include="DirectionWave.cpp" />
     <ClCompile Include="GerstnerWave.cpp" />
+    <ClCompile Include="GerstnerWaveCS.cpp" />
     <ClCompile Include="WaveShader.cpp" />
     <ClCompile Include="ScreenSpaceReflectShader.cpp" />
     <ClCompile Include="SSRGBufferShader.cpp" />
@@ -166,6 +167,7 @@
     <ClInclude Include="BlurShader.h" />
     <ClInclude Include="DirectionWave.h" />
     <ClInclude Include="GerstnerWave.h" />
+    <ClInclude Include="GerstnerWaveCS.h" />
     <ClInclude Include="WaveShader.h" />
     <ClInclude Include="ScreenSpaceReflectShader.h" />
     <ClInclude Include="SSRGBufferShader.h" />
@@ -282,6 +284,11 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Shader\WaveShader.fx">
+      <FileType>Document</FileType>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Shader\WaveComputerShader.fx">
       <FileType>Document</FileType>
     </None>
   </ItemGroup>

@@ -12,7 +12,7 @@ Wave::Wave(int waveWidth, int waveHeight, float waveGridSize,int uvTile):
 	mWaveVertexData.resize((mWaveWidth + 1)* (mWaveHeight + 1));
 
 	//Ë÷ÒýÊý¾Ý
-	mWaveIndexData.resize(mWaveWidth* mWaveHeight * 6);
+	mWaveIndexData.resize(mWaveWidth * mWaveHeight * 6);
 	
 	Init();
 	
@@ -443,3 +443,7 @@ float Wave::Dot(const XMFLOAT3& vec1, const XMFLOAT3& vec2)
 	return vec1.x * vec2.x + vec1.y * vec2.y + vec1.z * vec2.z;
 }
 
+XMMATRIX Wave::GetWorldMatrix()
+{
+	return XMMatrixTranslation(mPosition.x, mPosition.y, mPosition.z);
+}
