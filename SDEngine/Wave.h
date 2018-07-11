@@ -76,7 +76,7 @@ protected:
 	int mWaveHeight;
 	float mWaveGridSize;
 
-public:
+private:
 	//Œª÷√
 	XMFLOAT3 mPosition;
 
@@ -117,6 +117,8 @@ public:
 	~Wave();
 
 	void SetWaveParam(int uvTile);
+
+	XMMATRIX GetWorldMatrix();
 
 };
 #endif // ! _WAVE_H

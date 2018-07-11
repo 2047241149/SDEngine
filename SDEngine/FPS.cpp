@@ -22,6 +22,7 @@ void FPS::Initialize()
 	mFPS = 0;
 	mCount = 0;
 	mStartTime = 0;
+	m_fFistStartTime = timeGetTime();
 }
 
 
@@ -61,7 +62,7 @@ FPS* FPS::GetInstance()
 
 float FPS::GetTime()
 {
-	return (float)timeGetTime() / 1000.0f;
+	return (float)(timeGetTime() - m_fFistStartTime)/ 1000.0f;
 }
 
 

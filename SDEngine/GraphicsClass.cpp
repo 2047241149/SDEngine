@@ -37,11 +37,11 @@ bool GraphicsClass::Initialize(int ScreenWidth, int ScreenHeight, HWND hwnd,HINS
 
 	//创建directionLight(游戏中仅仅存在一个方向光，用来模拟太阳光)
 	Light* dirLight = Light::GetInstnce();
-	XMVECTOR lightPos = XMVectorSet(6.0f, 6.0f, 0.0f, 0.0f);
+	XMVECTOR lightPos = XMVectorSet(12.0f, 12.0f, 12.0f, 0.0f);
 	XMVECTOR lookAtPos = XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f);
 	dirLight->SetViewParams(lightPos, lookAtPos);
 	dirLight->SetLightColor(XMVectorSet(1.0, 1.0f, 1.0f, 1.0f));
-	dirLight->SetAmbientLight(XMVectorSet(0.15f, 0.15f, 0.15f, 1.0f));
+	dirLight->SetAmbientLight(XMVectorSet(0.20f, 0.20f, 0.20f, 1.0f));
 
 	//创建ModelClasss
 	//mHeadObject = shared_ptr<GameObject>(new GameObject("FBXModel\\head\\head.FBX"));
@@ -97,14 +97,24 @@ bool GraphicsClass::Initialize(int ScreenWidth, int ScreenHeight, HWND hwnd,HINS
 	//vector<CircleSineWaveParam> vecCircleWaveParam;
 	//vecCircleWaveParam.push_back(CircleSineWaveParam(XMFLOAT2(0.0f, 0.0), 4.0f, 2.0f, 15.0f));
 	//mCircleWave = shared_ptr<CircleWave>(new CircleWave(80, 80, 1.0f, vecCircleWaveParam,20.0f));
-	mComputerShader = shared_ptr<ComputerShader>(new ComputerShader(L"Shader/CSShader.fx"));
-	mComputerShader->RunComputer(nullptr, nullptr, 0, DATA_SIZE, DATA_SIZE, 1);
+	//mComputerShader = shared_ptr<ComputerShader>(new ComputerShader(L"Shader/CSShader.fx"));
+	//mComputerShader->RunComputer(nullptr, nullptr, 0, DATA_SIZE, DATA_SIZE, 1);
 
-	vector<GerstnerWaveParam> vecGerstnerWaveParam;
+	/*vector<GerstnerWaveParam> vecGerstnerWaveParam;
 	vecGerstnerWaveParam.push_back(GerstnerWaveParam(XMFLOAT2(0.7f, 0.7), 2.0f, 4.0f, 20.0f,0.3f));
 	vecGerstnerWaveParam.push_back(GerstnerWaveParam(XMFLOAT2(0.7f, -0.7), 1.5f, 5.0f, 30.0f, 0.4f));
 	vecGerstnerWaveParam.push_back(GerstnerWaveParam(XMFLOAT2(-0.7f, -0.3), 1.0f, 6.0f, 40.0f, 0.5f));
-	mGerstnerWave = shared_ptr<GerstnerWave>(new GerstnerWave(80, 80, 1.0f, vecGerstnerWaveParam, 20.0f));
+	mGerstnerWave = shared_ptr<GerstnerWave>(new GerstnerWave(80, 80, 1.0f, vecGerstnerWaveParam, 20.0f));*/
+
+	CBGerstnerWaveNoUpdate cbGerstnerWave;
+	cbGerstnerWave.fWaveGridSize = 2.0f;
+	cbGerstnerWave.fUVTile = 100.0f;
+	cbGerstnerWave.fUVMoveSpeed = 0.03f;
+	cbGerstnerWave.gerstnerData[0] = GerstnerParam(XMFLOAT2(0.7f, 0.7), 2.0f, 15.0f, 60.0f, 0.6f);
+	cbGerstnerWave.gerstnerData[1] = GerstnerParam(XMFLOAT2(0.7f, -0.7), 1.2f, 15.0f, 40.0f, 0.6f);
+	cbGerstnerWave.gerstnerData[2] = GerstnerParam(XMFLOAT2(-0.9f, -0.5), 1.8f, 15.0f, 100.0f, 0.6f);
+
+	m_pGerstnerWaveCS = shared_ptr<GerstnerWaveCS>(new GerstnerWaveCS(16, 16, L"Shader/WaveComputerShader.fx", L"Shader/WaveComputerShader.fx", cbGerstnerWave));
 	return true;
 }
 
@@ -134,7 +144,8 @@ bool GraphicsClass::Frame()
 
 
 	//更新海浪的数据
-	mGerstnerWave->UpdateWaveData(currentTime);
+	m_pGerstnerWaveCS->UpdateWaveCB(currentTime);
+	//mGerstnerWave->UpdateWaveData(currentTime);
 
 	//鼠标右键处于按下的状态才能进行（左右移动）（前后移动）（旋转的操作）
 	if (mInputClass->IsMouseRightButtuonPressed()&& fps >=5&& fps <=1000000)
@@ -232,6 +243,7 @@ void GraphicsClass::Render()
 	d3dPtr->BeginScene(0.3f, 0.0f, 1.0f, 1.0f);
 
 	RenderWave();
+
 	//绘制不透明物体
 	//RenderOpacity();
 
@@ -564,10 +576,10 @@ void GraphicsClass::RenderWave()
 
 	//波
 	//D3DClass::GetInstance()->TurnOnWireFrameRender();
-	XMFLOAT3 pos = mGerstnerWave->mPosition;
-	XMMATRIX worldMatrix = XMMatrixTranslation(pos.x, pos.y, pos.z);
+	XMMATRIX worldMatrix = m_pGerstnerWaveCS->GetWorldMatrix();
 	ShaderManager::GetInstance()->SetWaveShader(worldMatrix,
 		XMVectorSet(0.5f, 0.5f, 0.5f, 1.0f),mWaveDiffuseTex->GetTexture(),mWaveNormalTexture->GetTexture());
-	mGerstnerWave->Render();
+	//mGerstnerWave->Render();
+	m_pGerstnerWaveCS->Render();
 
 }

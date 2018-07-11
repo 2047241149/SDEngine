@@ -14,6 +14,7 @@ private:
 	int mFPS;  //每秒运行的帧数
 	int mCount; //运来计算每秒帧数的计数器
 	unsigned long mStartTime;  
+	unsigned long m_fFistStartTime;
 
 private:
 	static shared_ptr<FPS> mInstance;

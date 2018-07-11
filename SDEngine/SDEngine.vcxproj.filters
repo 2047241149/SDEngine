@@ -135,6 +135,9 @@
     <ClCompile Include="GerstnerWave.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="GerstnerWaveCS.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Camera.h">
@@ -266,6 +269,9 @@
     <ClInclude Include="GerstnerWave.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="GerstnerWaveCS.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="libfbxsdk.dll" />
@@ -287,5 +293,6 @@
     <None Include="Shader\SSRGBuffer.fx" />
     <None Include="Shader\CSShader.fx" />
     <None Include="Shader\WaveShader.fx" />
+    <None Include="Shader\WaveComputerShader.fx" />
   </ItemGroup>
 </Project>
