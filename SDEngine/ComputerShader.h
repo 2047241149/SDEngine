@@ -17,7 +17,8 @@ private:
 	struct DataType
 	{
 		int i;
-		float f;
+		int row;
+		int column;
 	};
 
 private:

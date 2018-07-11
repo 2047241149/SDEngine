@@ -29,13 +29,14 @@
 #include "DirectionWave.h"
 #include "CircleWave.h"
 #include "GerstnerWave.h"
+#include "GerstnerWaveCS.h"
 
 //全局变量
 const bool FULL_SCREEN = false;
 const bool VSYNC_ENABLE = false;  //是尽可能快渲染还是限制帧渲染
 const float SCREEN_FAR = 200.0f;  //视截体远裁面
 const float SCREEN_NEAR = 1.0f;  //视截体近裁面
-const float CAMERA_SPEED = 3.0f;
+const float CAMERA_SPEED = 10.0f;
 
 class GraphicsClass
 {
@@ -85,6 +86,8 @@ private:
 	shared_ptr<Wave> mDirWave;
 	shared_ptr<Wave> mCircleWave;
 	shared_ptr<Wave> mGerstnerWave;
+
+	shared_ptr<GerstnerWaveCS> m_pGerstnerWaveCS;
 
 private:
 	bool Initialize(int ScreenWidth, int ScreenHeight, HWND hwnd, HINSTANCE hinstance);
