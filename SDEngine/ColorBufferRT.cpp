@@ -1,6 +1,8 @@
 #include "ColorBufferRT.h"
 
-ColorBufferRT::ColorBufferRT(int TextureWidth, int TexureHeight, float ScreenDepth, float ScreenNear)
+ColorBufferRT::ColorBufferRT(int TextureWidth, int TexureHeight, float ScreenDepth, float ScreenNear):
+	m_nTextureWidth(TextureWidth),
+	m_nTextureHeight(TexureHeight)
 {
 	mRenderTargetTexture = nullptr;
 	mDepthStencilBuffer = NULL;
@@ -26,6 +28,7 @@ ColorBufferRT::~ColorBufferRT()
 bool ColorBufferRT::Initialize(int TextureWidth, int TexureHeight, float ScreenDepth, float ScreenNear)
 {
 
+	
 	//第一,填充2D纹理形容结构体,并创建2D渲染目标纹理
 	D3D11_TEXTURE2D_DESC textureDesc;
 	ZeroMemory(&textureDesc, sizeof(textureDesc));
@@ -44,7 +47,7 @@ bool ColorBufferRT::Initialize(int TextureWidth, int TexureHeight, float ScreenD
 
 	ID3D11Device* d3dDevice = D3DClass::GetInstance()->GetDevice();
 
-	HR(d3dDevice->CreateTexture2D(&textureDesc, NULL, &mRenderTargetTexture));
+	HR(g_pDevice->CreateTexture2D(&textureDesc, NULL, &mRenderTargetTexture));
 	
 	
 
@@ -55,7 +58,7 @@ bool ColorBufferRT::Initialize(int TextureWidth, int TexureHeight, float ScreenD
 	renderTargetViewDesc.Texture2D.MipSlice = 0;
 
 
-	HR(d3dDevice->CreateRenderTargetView(mRenderTargetTexture, &renderTargetViewDesc, &mRenderTargetView));
+	HR(g_pDevice->CreateRenderTargetView(mRenderTargetTexture, &renderTargetViewDesc, &mRenderTargetView));
 	
 
 	//第三,填充着色器资源视图形容体,并进行创建着色器资源视图
@@ -65,7 +68,7 @@ bool ColorBufferRT::Initialize(int TextureWidth, int TexureHeight, float ScreenD
 	shaderResourceViewDesc.Texture2D.MostDetailedMip = 0;
 	shaderResourceViewDesc.Texture2D.MipLevels = 1;
 
-	HR(d3dDevice->CreateShaderResourceView(mRenderTargetTexture, &shaderResourceViewDesc, &mShaderResourceView));
+	HR(g_pDevice->CreateShaderResourceView(mRenderTargetTexture, &shaderResourceViewDesc, &mShaderResourceView));
 	
 
 	
@@ -83,7 +86,7 @@ bool ColorBufferRT::Initialize(int TextureWidth, int TexureHeight, float ScreenD
 	depthStencilDesc.BindFlags = D3D11_BIND_DEPTH_STENCIL;
 	depthStencilDesc.CPUAccessFlags = 0;
 	depthStencilDesc.MiscFlags = 0;
-	HR(d3dDevice->CreateTexture2D(&depthStencilDesc,//要创建的纹理的形容
+	HR(g_pDevice->CreateTexture2D(&depthStencilDesc,//要创建的纹理的形容
 		0,
 		&mDepthStencilBuffer)); //指向深度缓存的指针
 
@@ -95,7 +98,7 @@ bool ColorBufferRT::Initialize(int TextureWidth, int TexureHeight, float ScreenD
 	depthStencilViewDesc.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2D;
 	depthStencilViewDesc.Texture2D.MipSlice = 0;
 
-	HR(d3dDevice->CreateDepthStencilView(
+	HR(g_pDevice->CreateDepthStencilView(
 		mDepthStencilBuffer, //我们基于这个深度缓存/漏字板缓存创建一个视图
 		&depthStencilViewDesc,
 		&mDepthStencilView));//指向深度缓存/漏字板视图的指针

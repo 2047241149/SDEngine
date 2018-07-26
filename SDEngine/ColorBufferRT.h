@@ -18,7 +18,9 @@ private:
 	ID3D11Texture2D* mDepthStencilBuffer;
 	ID3D11DepthStencilView* mDepthStencilView;
 	D3D11_VIEWPORT md3dViewport;
-	int TextureWidth, TextureHeight;
+
+public:
+	int m_nTextureWidth, m_nTextureHeight;
 
 public:
 	ColorBufferRT(int TextureWidth, int TexureHeight, float ScreenDepth, float ScreenNear);
