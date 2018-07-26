@@ -8,6 +8,7 @@
 #include<memory>
 using namespace DirectX;
 using std::shared_ptr;
+
 //跟CameraClass的用法差不多
 class Light
 {

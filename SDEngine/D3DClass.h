@@ -108,3 +108,7 @@ public:
 	void TurnOnDisbleZWriteDSS();
 };
 #endif // !D3D_CLASS_H
+
+
+#define g_pDeviceContext D3DClass::GetInstance()->GetDeviceContext()
+#define g_pDevice D3DClass::GetInstance()->GetDevice() 

@@ -2,7 +2,7 @@
 #ifndef _GRAPHICS_CLASS_H
 #define _GRAPHICS_CLASS_H
 
-//#define POST_EFFECT
+#define POST_EFFECT
 #define SSR
 //#define DEBUG_GBUFFER
 
@@ -30,6 +30,8 @@
 #include "CircleWave.h"
 #include "GerstnerWave.h"
 #include "GerstnerWaveCS.h"
+#include "GrussianBlurCS.h"
+#include "RWRenderTexture.h"
 
 //全局变量
 const bool FULL_SCREEN = false;
@@ -65,9 +67,6 @@ private:
 	shared_ptr<ColorBufferRT> mSceondBlurRT;
 	shared_ptr<ColorBufferRT> mSSRRT;
 
-	shared_ptr<Texture> mWaveDiffuseTex;
-	shared_ptr<Texture> mWaveNormalTexture;
-
 	//GeometryBuffer
 	shared_ptr<GeometryBuffer> mGeometryBuffer;
 
@@ -81,13 +80,12 @@ private:
 
 	shared_ptr<DepthBufferRT>  mBackDepthBufferRT;
 
-	shared_ptr<ComputerShader> mComputerShader;
+	shared_ptr<GrussianBlurCS> mGrussianBlurCS;
 
-	shared_ptr<Wave> mDirWave;
-	shared_ptr<Wave> mCircleWave;
-	shared_ptr<Wave> mGerstnerWave;
+	shared_ptr<RWRenderTexture> m_pRWHoriBlurRT;
+	shared_ptr<RWRenderTexture> m_pRWVertBlurRT;
 
-	shared_ptr<GerstnerWaveCS> m_pGerstnerWaveCS;
+	int m_nScreenWidth, m_nScreenHeight;
 
 private:
 	bool Initialize(int ScreenWidth, int ScreenHeight, HWND hwnd, HINSTANCE hinstance);
@@ -107,7 +105,6 @@ private:
 	void RenderSceneBackDepthBuffer();
 
 	void RenderSSR();
-	void RenderWave();
 	void InitDebugConsole();
 	void CloseDebugConsole();
 

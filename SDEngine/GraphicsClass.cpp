@@ -19,7 +19,8 @@ bool GraphicsClass::Initialize(int ScreenWidth, int ScreenHeight, HWND hwnd,HINS
 {
 
 	mhwnd = hwnd;
-
+	m_nScreenWidth = ScreenWidth;
+	m_nScreenHeight = ScreenHeight;
 	//创建D3DClass类并且初始化,D3DClass应该是第一个被创建并且初始化
 	D3DClass::GetInstance()->Initialize(ScreenWidth, ScreenHeight, VSYNC_ENABLE, hwnd, FULL_SCREEN, SCREEN_NEAR, SCREEN_FAR);
 
@@ -44,13 +45,13 @@ bool GraphicsClass::Initialize(int ScreenWidth, int ScreenHeight, HWND hwnd,HINS
 	dirLight->SetAmbientLight(XMVectorSet(0.20f, 0.20f, 0.20f, 1.0f));
 
 	//创建ModelClasss
-	//mHeadObject = shared_ptr<GameObject>(new GameObject("FBXModel\\head\\head.FBX"));
+	mHeadObject = shared_ptr<GameObject>(new GameObject("FBXModel\\head\\head.FBX"));
 
 	mSphereObject = shared_ptr<GameObject>(new GameObject("FBXModel\\sphere\\sphere.FBX"));
 
-	//mSponzaBottom = shared_ptr<GameObject>(new GameObject("FBXModel\\sponza\\sponza_bottom.FBX"));
+	mSponzaBottom = shared_ptr<GameObject>(new GameObject("FBXModel\\sponza\\sponza_bottom.FBX"));
 
-	//mSponzaNoBottom = shared_ptr<GameObject>(new GameObject("FBXModel\\sponza\\sponza_no_bottom.FBX"));
+	mSponzaNoBottom = shared_ptr<GameObject>(new GameObject("FBXModel\\sponza\\sponza_no_bottom.FBX"));
 	
 	//创建输入类
 	mInputClass = shared_ptr<Input>(new Input(hinstance, hwnd, ScreenWidth, ScreenHeight));
@@ -85,36 +86,13 @@ bool GraphicsClass::Initialize(int ScreenWidth, int ScreenHeight, HWND hwnd,HINS
 
 	mSSRBuffer = shared_ptr<SSRGBuffer>(new 
 		SSRGBuffer(ScreenWidth, ScreenHeight, SCREEN_FAR, SCREEN_NEAR));
+
+	mGrussianBlurCS = shared_ptr<GrussianBlurCS>(new GrussianBlurCS(L"Shader/GaussianBlurShaderCS.fx"));
+
+	m_pRWHoriBlurRT = shared_ptr<RWRenderTexture>(new RWRenderTexture(ScreenWidth, ScreenHeight));
 	
-	mWaveDiffuseTex = shared_ptr<Texture>(new Texture(L"Texture\\waterDiffuse.jpg"));
-	mWaveNormalTexture = shared_ptr<Texture>(new Texture(L"Texture\\waterNormal.jpg"));
+	m_pRWVertBlurRT = shared_ptr<RWRenderTexture>(new RWRenderTexture(ScreenWidth, ScreenHeight));
 
-	/*vector<DirectionSineWaveParam> vecDirWaveParam;
-	vecDirWaveParam.push_back(DirectionSineWaveParam(XMFLOAT2(1.0f, 1.0), 4.0f, 2.0f, 15.0f));
-	vecDirWaveParam.push_back(DirectionSineWaveParam(XMFLOAT2(1.0f, 0.0), 2.0f, 2.0f, 15.0f));
-	vecDirWaveParam.push_back(DirectionSineWaveParam(XMFLOAT2(0.0f, 1.0), 1.0f, 2.0f, 15.0f));
-	mDirWave = shared_ptr<DirectionWave>(new DirectionWave(60, 60, 1.0f, vecDirWaveParam, 20.0f));*/
-	//vector<CircleSineWaveParam> vecCircleWaveParam;
-	//vecCircleWaveParam.push_back(CircleSineWaveParam(XMFLOAT2(0.0f, 0.0), 4.0f, 2.0f, 15.0f));
-	//mCircleWave = shared_ptr<CircleWave>(new CircleWave(80, 80, 1.0f, vecCircleWaveParam,20.0f));
-	//mComputerShader = shared_ptr<ComputerShader>(new ComputerShader(L"Shader/CSShader.fx"));
-	//mComputerShader->RunComputer(nullptr, nullptr, 0, DATA_SIZE, DATA_SIZE, 1);
-
-	/*vector<GerstnerWaveParam> vecGerstnerWaveParam;
-	vecGerstnerWaveParam.push_back(GerstnerWaveParam(XMFLOAT2(0.7f, 0.7), 2.0f, 4.0f, 20.0f,0.3f));
-	vecGerstnerWaveParam.push_back(GerstnerWaveParam(XMFLOAT2(0.7f, -0.7), 1.5f, 5.0f, 30.0f, 0.4f));
-	vecGerstnerWaveParam.push_back(GerstnerWaveParam(XMFLOAT2(-0.7f, -0.3), 1.0f, 6.0f, 40.0f, 0.5f));
-	mGerstnerWave = shared_ptr<GerstnerWave>(new GerstnerWave(80, 80, 1.0f, vecGerstnerWaveParam, 20.0f));*/
-
-	CBGerstnerWaveNoUpdate cbGerstnerWave;
-	cbGerstnerWave.fWaveGridSize = 2.0f;
-	cbGerstnerWave.fUVTile = 100.0f;
-	cbGerstnerWave.fUVMoveSpeed = 0.03f;
-	cbGerstnerWave.gerstnerData[0] = GerstnerParam(XMFLOAT2(0.7f, 0.7), 2.0f, 15.0f, 60.0f, 0.6f);
-	cbGerstnerWave.gerstnerData[1] = GerstnerParam(XMFLOAT2(0.7f, -0.7), 1.2f, 15.0f, 40.0f, 0.6f);
-	cbGerstnerWave.gerstnerData[2] = GerstnerParam(XMFLOAT2(-0.9f, -0.5), 1.8f, 15.0f, 100.0f, 0.6f);
-
-	m_pGerstnerWaveCS = shared_ptr<GerstnerWaveCS>(new GerstnerWaveCS(16, 16, L"Shader/WaveComputerShader.fx", L"Shader/WaveComputerShader.fx", cbGerstnerWave));
 	return true;
 }
 
@@ -142,10 +120,6 @@ bool GraphicsClass::Frame()
 	float currentTime = fpsPtr->GetTime();
 	mInputClass->GetMousePositionOffset(mouseXOffset, mouseYOffset);
 
-
-	//更新海浪的数据
-	m_pGerstnerWaveCS->UpdateWaveCB(currentTime);
-	//mGerstnerWave->UpdateWaveData(currentTime);
 
 	//鼠标右键处于按下的状态才能进行（左右移动）（前后移动）（旋转的操作）
 	if (mInputClass->IsMouseRightButtuonPressed()&& fps >=5&& fps <=1000000)
@@ -242,10 +216,8 @@ void GraphicsClass::Render()
 
 	d3dPtr->BeginScene(0.3f, 0.0f, 1.0f, 1.0f);
 
-	RenderWave();
-
 	//绘制不透明物体
-	//RenderOpacity();
+	RenderOpacity();
 
 	//获取整个场景的BackDepthBuffer
 	//RenderSceneBackDepthBuffer();
@@ -258,7 +230,7 @@ void GraphicsClass::Render()
 	#endif // POST_EFFECT
 
 	#if defined(DEBUG_GBUFFER)
-	//RenderDebugWindow();
+		RenderDebugWindow();
 	#endif
 
 
@@ -339,7 +311,7 @@ void GraphicsClass::RenderPostEffectPass()
 	//2.两次模糊
 	//3.升采样
 	/********************/
-	D3DClass::GetInstance()->TurnOffZBuffer();
+	/*D3DClass::GetInstance()->TurnOffZBuffer();
 	//将srcRT变为downSampleRT
 	mDownSampleRT->SetRenderTarget();
 	ShaderManager::GetInstance()->SetGraphcisBlitShader(mSrcRT->GetShaderResourceView());
@@ -368,7 +340,22 @@ void GraphicsClass::RenderPostEffectPass()
 	,mGeometryBuffer->GetGBufferSRV(GBufferType::Depth),35.0f,70.0f,SCREEN_FAR,SCREEN_NEAR);
 	mQuad->Render();
 
+	D3DClass::GetInstance()->TurnOnZBuffer();*/
+	//D3DClass::GetInstance()->TurnOffZBuffer();
+	//D3DClass::GetInstance()->TurnOnZBuffer();
+
+	mGrussianBlurCS->Run(m_nScreenWidth,
+		m_nScreenHeight, m_pRWHoriBlurRT.get(), 
+		m_pRWVertBlurRT.get(), mSrcRT->GetShaderResourceView());
+
+	D3DClass::GetInstance()->TurnOffZBuffer();
+	D3DClass::GetInstance()->SetBackBufferRender();
+	D3DClass::GetInstance()->SetViewPort();
+	ShaderManager::GetInstance()->SetGraphcisBlitShader(m_pRWVertBlurRT->GetSRV());
+	mQuad->Render();
+
 	D3DClass::GetInstance()->TurnOnZBuffer();
+
 }
 
 
@@ -459,7 +446,7 @@ void GraphicsClass::RenderTransparency()
 {
 	//RenderGeneralTransparency();
 	//#if defined(SSR)
-	RenderSSR();
+	//RenderSSR();
 	//#endif
 }
 
@@ -485,7 +472,7 @@ void GraphicsClass::RenderGeneralTransparency()
 
 void GraphicsClass::RenderSceneBackDepthBuffer()
 {
-	/*mBackDepthBufferRT->SetRenderTarget();
+	mBackDepthBufferRT->SetRenderTarget();
 	D3DClass::GetInstance()->TurnOnCullFront();
 
 	//渲染头
@@ -513,11 +500,11 @@ void GraphicsClass::RenderSceneBackDepthBuffer()
 
 	//原点球
 	mSphereObject->mTransform->localPosition = XMFLOAT3(0.0f, 0.0f, 0.0f);
-	mSphereObject->Render(MaterialType::DEPTH_BUFFER);*/
+	mSphereObject->Render(MaterialType::DEPTH_BUFFER);
 
 
 	//恢复默认的RS
-	//D3DClass::GetInstance()->TurnOnSolidRender();
+	D3DClass::GetInstance()->TurnOnSolidRender();
 
 }
 
@@ -554,32 +541,4 @@ void GraphicsClass::InitDebugConsole()
 void GraphicsClass::CloseDebugConsole()
 {
 	FreeConsole();
-}
-
-
-void GraphicsClass::RenderWave()
-{
-	D3DClass::GetInstance()->SetBackBufferRender();
-	
-	//平行光源球
-	XMStoreFloat3(&mSphereObject->mTransform->localPosition,
-		-Light::GetInstnce()->GetLightDirection());
-	ShaderManager::GetInstance()->SetForwardPureColorShader(mSphereObject->GetWorldMatrix(),
-		XMVectorSet(0.5f, 0.5f, 0.5f, 1.0f));
-	mSphereObject->RenderMesh();
-
-	//原点球
-	mSphereObject->mTransform->localPosition = XMFLOAT3(0.0f, 0.0f, 0.0f);
-	ShaderManager::GetInstance()->SetForwardPureColorShader(mSphereObject->GetWorldMatrix(),
-		XMVectorSet(1.0f, 0.0f, 0.0f, 1.0f));
-	mSphereObject->RenderMesh();
-
-	//波
-	//D3DClass::GetInstance()->TurnOnWireFrameRender();
-	XMMATRIX worldMatrix = m_pGerstnerWaveCS->GetWorldMatrix();
-	ShaderManager::GetInstance()->SetWaveShader(worldMatrix,
-		XMVectorSet(0.5f, 0.5f, 0.5f, 1.0f),mWaveDiffuseTex->GetTexture(),mWaveNormalTexture->GetTexture());
-	//mGerstnerWave->Render();
-	m_pGerstnerWaveCS->Render();
-
 }
