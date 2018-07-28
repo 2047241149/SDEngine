@@ -114,7 +114,7 @@
   <ItemGroup>
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="CircleWave.cpp" />
-    <ClCompile Include="ColorBufferRT.cpp" />
+    <ClCompile Include="RenderTexture.cpp" />
     <ClCompile Include="CommonFunction.cpp" />
     <ClCompile Include="D3DClass.cpp" />
     <ClCompile Include="Debugwindow.cpp" />
@@ -161,7 +161,7 @@
   <ItemGroup>
     <ClInclude Include="Camera.h" />
     <ClInclude Include="CircleWave.h" />
-    <ClInclude Include="ColorBufferRT.h" />
+    <ClInclude Include="RenderTexture.h" />
     <ClInclude Include="CommomVertexFormat.h" />
     <ClInclude Include="CommonConstantBufferStruct.h" />
     <ClInclude Include="CommonFunction.h" />

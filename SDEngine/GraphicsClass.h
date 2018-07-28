@@ -22,7 +22,7 @@
 #include<memory>
 #include"Quad.h"
 #include"Debugwindow.h"
-#include"ColorBufferRT.h"
+#include "RenderTexture.h"
 #include "Camera.h"
 #include "SSRGBuffer.h"
 #include "DirectionWave.h"
@@ -53,18 +53,11 @@ private:
 
 	//网格数据类
 	shared_ptr<GameObject> mSphereObject;
-
 	shared_ptr<GameObject> mHeadObject;
-
 	shared_ptr<GameObject> mSponzaNoBottom;
 	shared_ptr<GameObject> mSponzaBottom;
-
-	shared_ptr<ColorBufferRT> mDownSampleRT;
-	shared_ptr<ColorBufferRT> mUpSampleRT;
-	shared_ptr<ColorBufferRT> mSrcRT;
-	shared_ptr<ColorBufferRT> mFirstBlurRT;
-	shared_ptr<ColorBufferRT> mSceondBlurRT;
-	shared_ptr<ColorBufferRT> mSSRRT;
+	shared_ptr<RenderTexture> mSSRRT;
+	shared_ptr<RenderTexture> mSrcRT;
 
 	//GeometryBuffer
 	shared_ptr<GeometryBuffer> mGeometryBuffer;
