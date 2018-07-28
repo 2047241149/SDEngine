@@ -1,6 +1,7 @@
 #include"DiffuseSpecShader.h"
 
-DiffuseSpecShader::DiffuseSpecShader(WCHAR* vsFilenPath, WCHAR* psFilenPath):Shader(vsFilenPath, psFilenPath)
+DiffuseSpecShader::DiffuseSpecShader(WCHAR* vsFilenPath, WCHAR* psFilenPath):
+	Shader(vsFilenPath, psFilenPath)
 {
 	CreateBuffer();
 }
@@ -32,13 +33,13 @@ void DiffuseSpecShader::CreateBuffer()
 	D3D11_BUFFER_DESC cbufferDesc;
 	ZeroMemory(&cbufferDesc, sizeof(cbufferDesc));
 	cbufferDesc.Usage = D3D11_USAGE_DYNAMIC;
-	cbufferDesc.ByteWidth = sizeof(CBLight);   //结构体大小,必须为16字节倍数
+	cbufferDesc.ByteWidth = sizeof(CBLight);  
 	cbufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
 	cbufferDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
 
 	d3dDevice->CreateBuffer(&cbufferDesc, NULL, &mCBLightBuffer);
 
-	cbufferDesc.ByteWidth = sizeof(CBCamera);   //结构体大小,必须为16字节倍数
+	cbufferDesc.ByteWidth = sizeof(CBCamera);   
 	d3dDevice->CreateBuffer(&cbufferDesc, NULL, &mCBCamera);
 }
 
