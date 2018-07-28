@@ -114,9 +114,6 @@
     <ClCompile Include="ScreenSpaceReflectShader.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="ComputerShader.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
     <ClCompile Include="CommonFunction.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
@@ -136,6 +133,21 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="GerstnerWaveCS.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="GrussianBlurCS.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Log.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="RWRenderTexture.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="LoadTexture\DDSTextureLoader.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="LoadTexture\WICTextureLoader.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>
@@ -251,9 +263,6 @@
     <ClInclude Include="ScreenSpaceReflectShader.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="ComputerShader.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
     <ClInclude Include="Wave.h">
       <Filter>头文件</Filter>
     </ClInclude>
@@ -270,6 +279,21 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="GerstnerWaveCS.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="GrussianBlurCS.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Log.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="RWRenderTexture.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="LoadTexture\DDSTextureLoader.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="LoadTexture\WICTextureLoader.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
@@ -291,8 +315,8 @@
     <None Include="Shader\ForwardPureColorShader.fx" />
     <None Include="Shader\DepthGetShader.fx" />
     <None Include="Shader\SSRGBuffer.fx" />
-    <None Include="Shader\CSShader.fx" />
     <None Include="Shader\WaveShader.fx" />
     <None Include="Shader\WaveComputerShader.fx" />
+    <None Include="Shader\GaussianBlurShaderCS.fx" />
   </ItemGroup>
 </Project>

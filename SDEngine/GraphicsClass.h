@@ -3,7 +3,7 @@
 #define _GRAPHICS_CLASS_H
 
 #define POST_EFFECT
-#define SSR
+//#define SSR
 //#define DEBUG_GBUFFER
 
 #include"D3DClass.h"
@@ -25,7 +25,6 @@
 #include"ColorBufferRT.h"
 #include "Camera.h"
 #include "SSRGBuffer.h"
-#include "ComputerShader.h"
 #include "DirectionWave.h"
 #include "CircleWave.h"
 #include "GerstnerWave.h"
@@ -79,11 +78,6 @@ private:
 	shared_ptr<DebugWindow> mDebugWindow;
 
 	shared_ptr<DepthBufferRT>  mBackDepthBufferRT;
-
-	shared_ptr<GrussianBlurCS> mGrussianBlurCS;
-
-	shared_ptr<RWRenderTexture> m_pRWHoriBlurRT;
-	shared_ptr<RWRenderTexture> m_pRWVertBlurRT;
 
 	int m_nScreenWidth, m_nScreenHeight;
 

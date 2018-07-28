@@ -117,7 +117,6 @@ void SystemClass::Run()
 
 bool SystemClass::Frame()
 {
-	bool result;
 
 	mGraphicsClass->Frame();
 
