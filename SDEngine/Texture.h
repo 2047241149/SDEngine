@@ -12,10 +12,10 @@ using namespace DirectX;
 class Texture
 {
 private:
-	ID3D11ShaderResourceView* mTexture;
+	ID3D11ShaderResourceView* m_pSRV;
 
 private:
-	bool Initilize(WCHAR* TextureFilename);
+	bool Init(WCHAR* TextureFilename);
 
 public:
 	Texture(WCHAR* TextureFilename);
@@ -25,6 +25,9 @@ public:
 public:
 	void ShutDown();
 	ID3D11ShaderResourceView* GetTexture();
+
+public:
+	static ID3D11ShaderResourceView* LoadTexture(WCHAR* TextureFilename);
 
 };
 #endif // !_TEX_CLASS_H

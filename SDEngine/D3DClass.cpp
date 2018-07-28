@@ -98,11 +98,11 @@ bool D3DClass::Initialize(int ScreenWidth, int ScreenHeight, bool vsync, HWND hw
 	mVideoCardMemory = (int)(adapterDesc.DedicatedVideoMemory / 1024 / 1024);
 
 	//将显卡名字转存在字符数组
-	/*error = wcstombs_s(&stringLength, mVideoCardDescription, 128, adapterDesc.Description, 128);
+	error = wcstombs_s(&stringLength, mVideoCardDescription, 128, adapterDesc.Description, 128);
 	if (error != 0)
 	{
 		return false;
-	}*/
+	}
 
 	//释放显示模式列表
 	delete[] displayModeList;
