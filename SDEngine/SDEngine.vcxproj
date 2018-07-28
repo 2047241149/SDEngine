@@ -116,13 +116,17 @@
     <ClCompile Include="CircleWave.cpp" />
     <ClCompile Include="ColorBufferRT.cpp" />
     <ClCompile Include="CommonFunction.cpp" />
-    <ClCompile Include="ComputerShader.cpp" />
     <ClCompile Include="D3DClass.cpp" />
     <ClCompile Include="Debugwindow.cpp" />
     <ClCompile Include="BlurShader.cpp" />
     <ClCompile Include="DirectionWave.cpp" />
     <ClCompile Include="GerstnerWave.cpp" />
     <ClCompile Include="GerstnerWaveCS.cpp" />
+    <ClCompile Include="GrussianBlurCS.cpp" />
+    <ClCompile Include="LoadTexture\DDSTextureLoader.cpp" />
+    <ClCompile Include="LoadTexture\WICTextureLoader.cpp" />
+    <ClCompile Include="Log.cpp" />
+    <ClCompile Include="RWRenderTexture.cpp" />
     <ClCompile Include="WaveShader.cpp" />
     <ClCompile Include="ScreenSpaceReflectShader.cpp" />
     <ClCompile Include="SSRGBufferShader.cpp" />
@@ -161,13 +165,17 @@
     <ClInclude Include="CommomVertexFormat.h" />
     <ClInclude Include="CommonConstantBufferStruct.h" />
     <ClInclude Include="CommonFunction.h" />
-    <ClInclude Include="ComputerShader.h" />
     <ClInclude Include="D3DClass.h" />
     <ClInclude Include="Debugwindow.h" />
     <ClInclude Include="BlurShader.h" />
     <ClInclude Include="DirectionWave.h" />
     <ClInclude Include="GerstnerWave.h" />
     <ClInclude Include="GerstnerWaveCS.h" />
+    <ClInclude Include="GrussianBlurCS.h" />
+    <ClInclude Include="LoadTexture\DDSTextureLoader.h" />
+    <ClInclude Include="LoadTexture\WICTextureLoader.h" />
+    <ClInclude Include="Log.h" />
+    <ClInclude Include="RWRenderTexture.h" />
     <ClInclude Include="WaveShader.h" />
     <ClInclude Include="ScreenSpaceReflectShader.h" />
     <ClInclude Include="SSRGBufferShader.h" />
@@ -278,17 +286,17 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Shader\CSShader.fx">
-      <FileType>Document</FileType>
-    </None>
-  </ItemGroup>
-  <ItemGroup>
     <None Include="Shader\WaveShader.fx">
       <FileType>Document</FileType>
     </None>
   </ItemGroup>
   <ItemGroup>
     <None Include="Shader\WaveComputerShader.fx">
+      <FileType>Document</FileType>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Shader\GaussianBlurShaderCS.fx">
       <FileType>Document</FileType>
     </None>
   </ItemGroup>

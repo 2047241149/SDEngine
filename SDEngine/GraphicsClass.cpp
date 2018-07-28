@@ -87,12 +87,6 @@ bool GraphicsClass::Initialize(int ScreenWidth, int ScreenHeight, HWND hwnd,HINS
 	mSSRBuffer = shared_ptr<SSRGBuffer>(new 
 		SSRGBuffer(ScreenWidth, ScreenHeight, SCREEN_FAR, SCREEN_NEAR));
 
-	mGrussianBlurCS = shared_ptr<GrussianBlurCS>(new GrussianBlurCS(L"Shader/GaussianBlurShaderCS.fx"));
-
-	m_pRWHoriBlurRT = shared_ptr<RWRenderTexture>(new RWRenderTexture(ScreenWidth, ScreenHeight));
-	
-	m_pRWVertBlurRT = shared_ptr<RWRenderTexture>(new RWRenderTexture(ScreenWidth, ScreenHeight));
-
 	return true;
 }
 
@@ -223,7 +217,7 @@ void GraphicsClass::Render()
 	//RenderSceneBackDepthBuffer();
 
 	//绘制透明物体(普通的透明物体，SSR)
-	//RenderTransparency();
+	RenderTransparency();
 
 	#if defined(POST_EFFECT)
 		RenderPostEffectPass();
@@ -306,55 +300,6 @@ void GraphicsClass::RenderLightingPass()
 
 void GraphicsClass::RenderPostEffectPass()
 {
-	/*********************/
-	//1.降采样
-	//2.两次模糊
-	//3.升采样
-	/********************/
-	/*D3DClass::GetInstance()->TurnOffZBuffer();
-	//将srcRT变为downSampleRT
-	mDownSampleRT->SetRenderTarget();
-	ShaderManager::GetInstance()->SetGraphcisBlitShader(mSrcRT->GetShaderResourceView());
-	mQuad->Render();
-
-	//将downSampleRT变为mFirstBlurRT
-	mFirstBlurRT->SetRenderTarget();
-	ShaderManager::GetInstance()->SetBlurShader(mDownSampleRT->GetShaderResourceView());
-	mQuad->Render();
-
-	//将mFirstBlurRT变为mSecondBlurRT
-	mSceondBlurRT->SetRenderTarget();
-	ShaderManager::GetInstance()->SetBlurShader(mFirstBlurRT->GetShaderResourceView());
-	mQuad->Render();
-
-	//将blurSampleRT变为upSampleRT
-	mUpSampleRT->SetRenderTarget();
-	ShaderManager::GetInstance()->SetGraphcisBlitShader(mSceondBlurRT->GetShaderResourceView());
-	mQuad->Render();
-
-	//将UpSample作为BlurRT
-	D3DClass::GetInstance()->SetBackBufferRender();
-	D3DClass::GetInstance()->SetViewPort();
-	ShaderManager::GetInstance()->SetDOFShader(mSrcRT->GetShaderResourceView(),
-		mUpSampleRT->GetShaderResourceView()
-	,mGeometryBuffer->GetGBufferSRV(GBufferType::Depth),35.0f,70.0f,SCREEN_FAR,SCREEN_NEAR);
-	mQuad->Render();
-
-	D3DClass::GetInstance()->TurnOnZBuffer();*/
-	//D3DClass::GetInstance()->TurnOffZBuffer();
-	//D3DClass::GetInstance()->TurnOnZBuffer();
-
-	mGrussianBlurCS->Run(m_nScreenWidth,
-		m_nScreenHeight, m_pRWHoriBlurRT.get(), 
-		m_pRWVertBlurRT.get(), mSrcRT->GetShaderResourceView());
-
-	D3DClass::GetInstance()->TurnOffZBuffer();
-	D3DClass::GetInstance()->SetBackBufferRender();
-	D3DClass::GetInstance()->SetViewPort();
-	ShaderManager::GetInstance()->SetGraphcisBlitShader(m_pRWVertBlurRT->GetSRV());
-	mQuad->Render();
-
-	D3DClass::GetInstance()->TurnOnZBuffer();
 
 }
 
@@ -444,10 +389,10 @@ void GraphicsClass::RenderOpacity()
 //绘制透明物体分为绘制透明
 void GraphicsClass::RenderTransparency()
 {
-	//RenderGeneralTransparency();
-	//#if defined(SSR)
-	//RenderSSR();
-	//#endif
+	RenderGeneralTransparency();
+	#if defined(SSR)
+	RenderSSR();
+	#endif
 }
 
 void GraphicsClass::RenderGeneralTransparency()
