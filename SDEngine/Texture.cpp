@@ -1,8 +1,9 @@
 #include "Texture.h"
 
-Texture::Texture(WCHAR* TextureFilename)
+Texture::Texture(WCHAR* TextureFilename):
+	m_pSRV(nullptr)
 {
-	Initilize(TextureFilename);
+	Init(TextureFilename);
 }
 
 Texture::Texture(const Texture&other)
@@ -15,22 +16,25 @@ Texture::~Texture()
 	ShutDown();
 }
 
-bool Texture::Initilize(WCHAR* TextureFilename)
+bool Texture::Init(WCHAR* TextureFilename)
 {
 	//ÖÃ¿ÕÖ¸Õë
-	mTexture = NULL;
 	ID3D11Device* d3dDevice = D3DClass::GetInstance()->GetDevice();
-	HR(DXUTCreateShaderResourceViewFromFile(d3dDevice, TextureFilename, &mTexture));
+	HR(DXUTCreateShaderResourceViewFromFile(d3dDevice, TextureFilename, &m_pSRV));
 	return true;
 }
 
 void Texture::ShutDown()
 {
-	ReleaseCOM(mTexture);
+	ReleaseCOM(m_pSRV);
 }
 
 ID3D11ShaderResourceView* Texture::GetTexture()
 {
-	return mTexture;
+	return m_pSRV;
 }
 
+ID3D11ShaderResourceView* Texture::LoadTexture(WCHAR* TextureFilename)
+{
+	return nullptr;
+}
