@@ -21,23 +21,21 @@ class BlurShader
 {
 private:
 
-	ID3D11VertexShader* md3dVertexShader;
-	ID3D11PixelShader* md3dPixelShader;
-	ID3D11InputLayout* md3dInputLayout; 
-	ID3D11SamplerState *mSamplerLinearWrap;
-	ID3D11SamplerState *mSamplerLinearClamp;
+	ID3D11VertexShader* m_pVertexShader;
+	ID3D11PixelShader* m_pPixelShader;
+	ID3D11InputLayout* m_pInputLayout;
+	ID3D11Buffer* m_pCBCommon;
+	ID3D11SamplerState *m_pWrapLinearSampler;
+	ID3D11SamplerState *m_pClampPointSampler;
 
 public:
-	bool virtual Initialize(WCHAR* vsFilenPath, WCHAR* psFilenPath);
+	bool virtual Init(WCHAR* vsFilenPath, WCHAR* psFilenPath);
 
 	//初始化Shader,用于创建InputLayout,VertexShader,PixelShader,常量缓存
-	bool virtual InitializeShader(WCHAR*, WCHAR*);
+	bool virtual InitShader(WCHAR* vsFilenPath, WCHAR* psFilenPath);
 
 	//释放Shader
 	void virtual ShutDown();
-
-	//输出Shader编译文件的错误信息
-	void virtual OutputShaderErrorMessage(ID3D10Blob*, WCHAR*);
 
 public:
 	BlurShader(WCHAR* vsFilenPath, WCHAR* psFilenPath);

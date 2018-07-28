@@ -31,7 +31,7 @@ bool GraphicsClass::Initialize(int ScreenWidth, int ScreenHeight, HWND hwnd,HINS
 	//创建相机
 	Camera* mainCamera = Camera::GetInstance();
 	mainCamera->SetProjParams(XM_PI / 3.0f, (float)ScreenWidth / (float)ScreenHeight, SCREEN_NEAR, SCREEN_FAR);
-	mainCamera->SetUIOrthoParams(ScreenWidth, ScreenHeight);
+	mainCamera->SetUIOrthoParams((float)ScreenWidth, (float)ScreenHeight);
 
 	//创建Shader管理器
 	ShaderManager* mShaderManager = ShaderManager::GetInstance();
@@ -52,27 +52,16 @@ bool GraphicsClass::Initialize(int ScreenWidth, int ScreenHeight, HWND hwnd,HINS
 	mSponzaBottom = shared_ptr<GameObject>(new GameObject("FBXModel\\sponza\\sponza_bottom.FBX"));
 
 	mSponzaNoBottom = shared_ptr<GameObject>(new GameObject("FBXModel\\sponza\\sponza_no_bottom.FBX"));
-	
+
 	//创建输入类
 	mInputClass = shared_ptr<Input>(new Input(hinstance, hwnd, ScreenWidth, ScreenHeight));
 
-	mDownSampleRT = shared_ptr<ColorBufferRT>(
-		new ColorBufferRT(512, 512, SCREEN_FAR, SCREEN_NEAR));
 
-	mFirstBlurRT = shared_ptr<ColorBufferRT>(
-		new ColorBufferRT(512, 512, SCREEN_FAR, SCREEN_NEAR));
+	mSrcRT = shared_ptr<RenderTexture>(
+		new RenderTexture(ScreenWidth, ScreenHeight));
 
-	mSceondBlurRT = shared_ptr<ColorBufferRT>(
-		new ColorBufferRT(512, 512, SCREEN_FAR, SCREEN_NEAR));
-
-	mUpSampleRT = shared_ptr<ColorBufferRT>(
-		new ColorBufferRT(1024, 1024, SCREEN_FAR, SCREEN_NEAR));
-
-	mSrcRT = shared_ptr<ColorBufferRT>(
-		new ColorBufferRT(ScreenWidth, ScreenHeight, SCREEN_FAR, SCREEN_NEAR));
-
-	mSSRRT = shared_ptr<ColorBufferRT>(
-		new ColorBufferRT(ScreenWidth, ScreenHeight, SCREEN_FAR, SCREEN_NEAR));
+	mSSRRT = shared_ptr<RenderTexture>(
+		new RenderTexture(ScreenWidth, ScreenHeight));
 
 	mGeometryBuffer = shared_ptr<GeometryBuffer>(new 
 		GeometryBuffer(ScreenWidth,ScreenHeight,SCREEN_FAR,SCREEN_NEAR));
@@ -290,7 +279,7 @@ void GraphicsClass::RenderLightingPass()
 
 	D3DClass::GetInstance()->SetBackBufferRender();
 	D3DClass::GetInstance()->SetViewPort();
-	ShaderManager::GetInstance()->SetGraphcisBlitShader(mSrcRT->GetShaderResourceView());
+	ShaderManager::GetInstance()->SetGraphcisBlitShader(mSrcRT->GetSRV());
 	mQuad->Render();
 
 	D3DClass::GetInstance()->TurnOnZBuffer();
@@ -368,7 +357,7 @@ void GraphicsClass::RenderSSRPass()
 	perspectiveValues.x = projFloat4X4.m[3][2];
 	perspectiveValues.y = -projFloat4X4.m[2][2];
 	ID3D11ShaderResourceView* arraySRV[5];
-	arraySRV[0] = mSrcRT->GetShaderResourceView();
+	arraySRV[0] = mSrcRT->GetSRV();
 	arraySRV[1] = mGeometryBuffer->GetGBufferSRV(GBufferType::Depth);
 	arraySRV[2] = mBackDepthBufferRT->GetShaderResourceView();
 	arraySRV[3] = mSSRBuffer->GetGBufferSRV(SSRBufferType::VIEW_POS);

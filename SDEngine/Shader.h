@@ -13,6 +13,7 @@
 #include"Camera.h"
 #include"Light.h"
 #include "CommonConstantBufferStruct.h"
+#include "Log.h"
 using namespace std;
 using namespace DirectX;
 
@@ -21,25 +22,22 @@ class Shader
 {
 private:
 
-	ID3D11VertexShader* md3dVertexShader;
-	ID3D11PixelShader* md3dPixelShader;
-	ID3D11InputLayout* md3dInputLayout; 
-	ID3D11Buffer* mCBCommon; //变换矩阵(常量)缓存,顶点索引
-	ID3D11SamplerState *mWrapLinearSampler; 
-	ID3D11SamplerState *mClampPointSampler;
+	ID3D11VertexShader* m_pVertexShader;
+	ID3D11PixelShader* m_pPixelShader;
+	ID3D11InputLayout* m_pInputLayout; 
+	ID3D11Buffer* m_pCBCommon; 
+	ID3D11SamplerState *m_pWrapLinearSampler; 
+	ID3D11SamplerState *m_pClampPointSampler;
 
-//用于子类改写并访问
+
 protected:
-	bool virtual Initialize(WCHAR* vsFilenPath, WCHAR* psFilenPath);
+	bool virtual Init(WCHAR* vsFilenPath, WCHAR* psFilenPath);
 
 	//初始化Shader,用于创建InputLayout,VertexShader,PixelShader,常量缓存
-	bool virtual InitializeShader(WCHAR*, WCHAR*);
+	bool virtual InitShader(WCHAR*, WCHAR*);
 
 	//释放Shader
 	void virtual ShutDown();
-
-	//输出Shader编译文件的错误信息
-	void virtual OutputShaderErrorMessage(ID3D10Blob*, WCHAR*);
 
 public:
 	Shader(WCHAR* vsFilenPath, WCHAR* psFilenPath);

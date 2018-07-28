@@ -60,7 +60,7 @@ bool GameObject::InitializeBuffer()
 	{
 		Model* mModelData = &mModelList[index];
 
-		for (int i = 0; i < mModelData->mMeshList.size(); ++i)
+		for (int i = 0; i < (int)mModelData->mMeshList.size(); ++i)
 		{
 			//第一,填充(顶点)缓存形容结构体和子资源数据结构体,并创建顶点缓存
 
@@ -107,7 +107,7 @@ void GameObject::ShutdownBuffer()
 	for (UINT index = 0; index < mModelList.size(); ++index)
 	{
 		Model* mModelData = &mModelList[index];
-		for (int i = 0; i < mModelData->mMeshList.size(); ++i)
+		for (int i = 0; i < (int)mModelData->mMeshList.size(); ++i)
 		{
 			Mesh& mMesh = mModelData->mMeshList[i];
 			ReleaseCOM(mMesh.mVertexBuffer);

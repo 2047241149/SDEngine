@@ -1,8 +1,14 @@
 #include "BlurShader.h"
 
-BlurShader::BlurShader(WCHAR* vsFilenPath, WCHAR* psFilenPath)
+BlurShader::BlurShader(WCHAR* vsFilenPath, WCHAR* psFilenPath):
+	m_pVertexShader(nullptr),
+	m_pPixelShader(nullptr),
+	m_pInputLayout(nullptr),
+	m_pCBCommon(nullptr),
+	m_pWrapLinearSampler(nullptr),
+	m_pClampPointSampler(nullptr)
 {
-	Initialize(vsFilenPath, psFilenPath);
+	Init(vsFilenPath, psFilenPath);
 }
 
 
@@ -18,15 +24,11 @@ BlurShader::~BlurShader()
 }
 
 
-bool BlurShader::Initialize(WCHAR* vsFilenPath, WCHAR* psFilenPath)
+bool BlurShader::Init(WCHAR* vsFilenPath, WCHAR* psFilenPath)
 {
-	//置空指针
-	md3dVertexShader = NULL;
-	md3dPixelShader = NULL;
-	md3dInputLayout = NULL;
 
 	bool result;
-	result = InitializeShader(vsFilenPath, psFilenPath);
+	result = InitShader(vsFilenPath, psFilenPath);
 	if (!result)
 		return false;
 
@@ -38,6 +40,7 @@ bool BlurShader::Initialize(WCHAR* vsFilenPath, WCHAR* psFilenPath)
 bool BlurShader::SetShaderParams(ID3D11ShaderResourceView* screenRT)
 {
 	bool result;
+
 	//设置Shader常量缓存和纹理资源
 	result = SetShaderCB(screenRT);
 	if (!result)
@@ -52,20 +55,17 @@ bool BlurShader::SetShaderParams(ID3D11ShaderResourceView* screenRT)
 
 
 
-bool BlurShader::InitializeShader(WCHAR* VSFileName, WCHAR* PSFileName)
+bool BlurShader::InitShader(WCHAR* VSFileName, WCHAR* PSFileName)
 {
 	HRESULT result;
-	ID3D10Blob* errorMessage;
-	ID3D10Blob* VertexShaderBuffer;
-	ID3D10Blob* PixelShaderBuffer;
-	ID3D11Device* d3dDevice = D3DClass::GetInstance()->GetDevice();
-	ID3D11DeviceContext* d3dDeviceContext = D3DClass::GetInstance()->GetDeviceContext();
-
+	ID3D10Blob* pErrorMessage;
+	ID3D10Blob* pVertexShaderBlob;
+	ID3D10Blob* pPixelShaderBlob;
 
 	//第一,初始化参数
-	errorMessage = NULL;
-	VertexShaderBuffer = NULL;
-	PixelShaderBuffer = NULL;
+	pErrorMessage = NULL;
+	pVertexShaderBlob = NULL;
+	pPixelShaderBlob = NULL;
 	DWORD flag = D3DCOMPILE_ENABLE_STRICTNESS;
 
 	#if _DEBUG
@@ -73,13 +73,13 @@ bool BlurShader::InitializeShader(WCHAR* VSFileName, WCHAR* PSFileName)
 	#endif
 
 	//第二,编译VertexShader代码,并创建VertexShader
-	result = D3DCompileFromFile(VSFileName, NULL, NULL, "VS", "vs_5_0", flag, 0, &VertexShaderBuffer, &errorMessage);
+	result = D3DCompileFromFile(VSFileName, NULL, NULL, "VS", "vs_5_0", flag, 0, &pVertexShaderBlob, &pErrorMessage);
 	if (FAILED(result))
 	{
 		//存在错误信息
-		if (errorMessage)
+		if (pErrorMessage)
 		{
-			OutputShaderErrorMessage(errorMessage,VSFileName);
+			Log::LogShaderCompileInfo(pErrorMessage, VSFileName);
 		}
 		//不存在错误信息,也就是没有找到Shader文件
 		else
@@ -88,17 +88,20 @@ bool BlurShader::InitializeShader(WCHAR* VSFileName, WCHAR* PSFileName)
 		}
 	}
 
-	HR(d3dDevice->CreateVertexShader(VertexShaderBuffer->GetBufferPointer(), VertexShaderBuffer->GetBufferSize(), NULL, &md3dVertexShader));
+	HR(g_pDevice->CreateVertexShader(pVertexShaderBlob->GetBufferPointer(),
+		pVertexShaderBlob->GetBufferSize(), NULL, &m_pVertexShader));
 
 
 	//第三,编译PixelShader,并创建PixelShader
-	result = D3DCompileFromFile(PSFileName, NULL, NULL, "PS", "ps_5_0", flag, 0, &PixelShaderBuffer, &errorMessage);
+	result = D3DCompileFromFile(PSFileName, NULL, NULL, "PS", "ps_5_0", flag, 0,
+		&pPixelShaderBlob, &pErrorMessage);
+
 	if (FAILED(result))
 	{
 		//存在错误信息
-		if (errorMessage)
+		if (pErrorMessage)
 		{
-			OutputShaderErrorMessage(errorMessage, PSFileName);
+			Log::LogShaderCompileInfo(pErrorMessage, PSFileName);
 		}
 		//不存在错误信息,也就是没有找到Shader文件
 		else
@@ -107,7 +110,7 @@ bool BlurShader::InitializeShader(WCHAR* VSFileName, WCHAR* PSFileName)
 		}
 	}
 
-	HR(d3dDevice->CreatePixelShader(PixelShaderBuffer->GetBufferPointer(), PixelShaderBuffer->GetBufferSize(), NULL, &md3dPixelShader));
+	HR(g_pDevice->CreatePixelShader(pPixelShaderBlob->GetBufferPointer(), pPixelShaderBlob->GetBufferSize(), NULL, &m_pPixelShader));
 
 	//第四,填充输入布局形容结构体,创建输入布局
 	D3D11_INPUT_ELEMENT_DESC VertexInputLayout[] =
@@ -118,13 +121,12 @@ bool BlurShader::InitializeShader(WCHAR* VSFileName, WCHAR* PSFileName)
 
 	unsigned int numElements = sizeof(VertexInputLayout) / sizeof(VertexInputLayout[0]);         //布局数量
 
-	HR(d3dDevice->CreateInputLayout(VertexInputLayout, numElements, VertexShaderBuffer->GetBufferPointer(), VertexShaderBuffer->GetBufferSize(), &md3dInputLayout));
+	HR(g_pDevice->CreateInputLayout(VertexInputLayout, numElements, 
+		pVertexShaderBlob->GetBufferPointer(), pVertexShaderBlob->GetBufferSize(), &m_pInputLayout));
 
-	//第五,释放VertexShaderBuffer和PixelShaderBuffer
-	VertexShaderBuffer->Release();
-	VertexShaderBuffer = NULL;
-	PixelShaderBuffer->Release();
-	PixelShaderBuffer = NULL;
+	//第五,释放Blob
+	ReleaseCOM(pVertexShaderBlob);
+	ReleaseCOM(pPixelShaderBlob);
 
 
 	//第七,填充采样形容结构体,并且创建采样状态
@@ -143,12 +145,12 @@ bool BlurShader::InitializeShader(WCHAR* VSFileName, WCHAR* PSFileName)
 	samplerDesc.MinLOD = 0;
 	samplerDesc.MaxLOD = D3D11_FLOAT32_MAX;
 
-	HR(d3dDevice->CreateSamplerState(&samplerDesc, &mSamplerLinearWrap));
+	HR(g_pDevice->CreateSamplerState(&samplerDesc, &m_pWrapLinearSampler));
 
 	samplerDesc.AddressU = D3D11_TEXTURE_ADDRESS_CLAMP;
 	samplerDesc.AddressV = D3D11_TEXTURE_ADDRESS_CLAMP;
 	samplerDesc.AddressW = D3D11_TEXTURE_ADDRESS_CLAMP;
-	HR(d3dDevice->CreateSamplerState(&samplerDesc, &mSamplerLinearClamp));
+	HR(g_pDevice->CreateSamplerState(&samplerDesc, &m_pClampPointSampler));
 
 	return true;
 }
@@ -157,73 +159,33 @@ bool BlurShader::InitializeShader(WCHAR* VSFileName, WCHAR* PSFileName)
 
 void BlurShader::ShutDown()
 {
-	ReleaseCOM(md3dInputLayout);
-	ReleaseCOM(md3dPixelShader);
-	ReleaseCOM(md3dVertexShader);
+	ReleaseCOM(m_pCBCommon);
+	ReleaseCOM(m_pInputLayout);
+	ReleaseCOM(m_pPixelShader);
+	ReleaseCOM(m_pVertexShader);
+	ReleaseCOM(m_pWrapLinearSampler);
+	ReleaseCOM(m_pClampPointSampler);
 }
-
-void BlurShader::OutputShaderErrorMessage(ID3D10Blob* errorMessage, WCHAR* shaderFilename)
-{
-	char* compileErrors;
-	unsigned long bufferSize, i;
-	ofstream fout;
-
-
-	// 获取指向错误信息文本的指针
-	compileErrors = (char*)(errorMessage->GetBufferPointer());
-
-	// 获取错误信息文本的长度
-	bufferSize = errorMessage->GetBufferSize();
-
-	// 创建一个txt,用于写入错误信息
-	fout.open("shader-error.txt");
-
-	//想txt文件写入错误信息
-	for (i = 0; i<bufferSize; i++)
-	{
-		fout << compileErrors[i];
-	}
-
-	// 关闭文件
-	fout.close();
-
-	// Release the error message.
-	errorMessage->Release();
-	errorMessage = 0;
-
-	//弹出提醒的小窗口
-	MessageBox(NULL, L"Error compiling shader.  Check shader-error.txt for message.", shaderFilename, MB_OK);
-
-}
-
 
 bool BlurShader::SetShaderCB(ID3D11ShaderResourceView* screenRT)
 {
-
-	ID3D11DeviceContext* d3dDeviceContext = D3DClass::GetInstance()->GetDeviceContext();;
-
-
-
-	d3dDeviceContext->PSSetShaderResources(0, 1, &screenRT);
+	g_pDeviceContext->PSSetShaderResources(0, 1, &screenRT);
 
 	return true;
 }
 
 bool BlurShader::SetShaderState()
 {
-
-	ID3D11DeviceContext* deviceContext = D3DClass::GetInstance()->GetDeviceContext();
-
 	//设置顶点输入布局
-	deviceContext->IASetInputLayout(md3dInputLayout);
+	g_pDeviceContext->IASetInputLayout(m_pInputLayout);
 
 	//设置VertexShader和PixelShader
-	deviceContext->VSSetShader(md3dVertexShader, NULL, 0);
-	deviceContext->PSSetShader(md3dPixelShader, NULL, 0);
+	g_pDeviceContext->VSSetShader(m_pVertexShader, nullptr, 0);
+	g_pDeviceContext->PSSetShader(m_pPixelShader, nullptr, 0);
 
 	//设置采样状态
-	deviceContext->PSSetSamplers(0, 1, &mSamplerLinearWrap); 
-	deviceContext->PSSetSamplers(1, 1, &mSamplerLinearClamp);
+	g_pDeviceContext->PSSetSamplers(0, 1, &m_pWrapLinearSampler);
+	g_pDeviceContext->PSSetSamplers(1, 1, &m_pClampPointSampler);
 
 	return true;
 }

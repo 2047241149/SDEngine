@@ -5,8 +5,13 @@
 #include<DirectXMath.h>
 using namespace DirectX;
 
-
+class MathTool
+{
+public:
 	//返回一个矩阵的逆矩阵的转置
-XMMATRIX GetInvenseTranspose(CXMMATRIX ma);
+	static XMMATRIX GetInvenseTranspose(CXMMATRIX ma);
+};
+
+
 
 #endif
