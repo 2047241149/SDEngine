@@ -1,7 +1,7 @@
 #include"MathTool.h"
 
 //返回一个矩阵的逆矩阵的转置
-XMMATRIX GetInvenseTranspose(CXMMATRIX ma)
+XMMATRIX MathTool::GetInvenseTranspose(CXMMATRIX ma)
 {
 	XMMATRIX A = ma;
 

@@ -1,3 +1,4 @@
+
 #pragma once
 #ifndef  _CAMERA_H
 #define _CAMERA_H
@@ -95,4 +96,4 @@ public:
 };
 #endif 
 
-
+#define	g_pMainCamera (Camera::GetInstance())

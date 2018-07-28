@@ -1,8 +1,14 @@
 #include "Shader.h"
 
-Shader::Shader(WCHAR* vsFilenPath, WCHAR* psFilenPath)
+Shader::Shader(WCHAR* vsFilenPath, WCHAR* psFilenPath):
+	m_pVertexShader(nullptr),
+	m_pPixelShader(nullptr),
+	m_pInputLayout(nullptr),
+	m_pCBCommon(nullptr),
+	m_pWrapLinearSampler(nullptr),
+	m_pClampPointSampler(nullptr)	
 {
-	Initialize(vsFilenPath, psFilenPath);
+	Init(vsFilenPath, psFilenPath);
 }
 
 
@@ -18,18 +24,11 @@ Shader::~Shader()
 }
 
 
-bool Shader::Initialize(WCHAR* vsFilenPath, WCHAR* psFilenPath)
+bool Shader::Init(WCHAR* vsFilenPath, WCHAR* psFilenPath)
 {
-	//置空指针
-	md3dVertexShader = nullptr;
-	md3dPixelShader = nullptr;
-	md3dInputLayout = nullptr;
-	mWrapLinearSampler = nullptr;
-	mClampPointSampler = nullptr;
-	mCBCommon = nullptr;
-
 	bool result;
-	result = InitializeShader(vsFilenPath, psFilenPath);
+	result = InitShader(vsFilenPath, psFilenPath);
+
 	if (!result)
 		return false;
 
@@ -52,23 +51,17 @@ bool Shader::SetShaderParams(CXMMATRIX worldMatrix)
 	return true;
 }
 
-
-
-
-bool Shader::InitializeShader(WCHAR* VSFileName, WCHAR* PSFileName)
+bool Shader::InitShader(WCHAR* VSFileName, WCHAR* PSFileName)
 {
 	HRESULT result;
-	ID3D10Blob* errorMessage;
-	ID3D10Blob* VertexShaderBuffer;
-	ID3D10Blob* PixelShaderBuffer;
-	ID3D11Device* d3dDevice = D3DClass::GetInstance()->GetDevice();
-	ID3D11DeviceContext* d3dDeviceContext = D3DClass::GetInstance()->GetDeviceContext();
-
+	ID3D10Blob* pErrorMessage;
+	ID3D10Blob* pVertexShaderBlob;
+	ID3D10Blob* pPixelShaderBob;
 
 	//第一,初始化参数
-	errorMessage = NULL;
-	VertexShaderBuffer = NULL;
-	PixelShaderBuffer = NULL;
+	pErrorMessage = nullptr;
+	pVertexShaderBlob = nullptr;
+	pPixelShaderBob = nullptr;
 	DWORD flag = D3DCOMPILE_ENABLE_STRICTNESS;
 
 	#if _DEBUG
@@ -76,13 +69,13 @@ bool Shader::InitializeShader(WCHAR* VSFileName, WCHAR* PSFileName)
 	#endif
 
 	//第二,编译VertexShader代码,并创建VertexShader
-	result = D3DCompileFromFile(VSFileName, NULL, NULL, "VS", "vs_5_0", flag, 0, &VertexShaderBuffer, &errorMessage);
+	result = D3DCompileFromFile(VSFileName, NULL, NULL, "VS", "vs_5_0", flag, 0, &pVertexShaderBlob, &pErrorMessage);
 	if (FAILED(result))
 	{
 		//存在错误信息
-		if (errorMessage)
+		if (pErrorMessage)
 		{
-			OutputShaderErrorMessage(errorMessage,VSFileName);
+			Log::LogShaderCompileInfo(pErrorMessage,VSFileName);
 		}
 		//不存在错误信息,也就是没有找到Shader文件
 		else
@@ -91,17 +84,17 @@ bool Shader::InitializeShader(WCHAR* VSFileName, WCHAR* PSFileName)
 		}
 	}
 
-	HR(d3dDevice->CreateVertexShader(VertexShaderBuffer->GetBufferPointer(), VertexShaderBuffer->GetBufferSize(), NULL, &md3dVertexShader));
+	HR(g_pDevice->CreateVertexShader(pVertexShaderBlob->GetBufferPointer(), pVertexShaderBlob->GetBufferSize(), NULL, &m_pVertexShader));
 
 
 	//第三,编译PixelShader,并创建PixelShader
-	result = D3DCompileFromFile(PSFileName, NULL, NULL, "PS", "ps_5_0", flag, 0, &PixelShaderBuffer, &errorMessage);
+	result = D3DCompileFromFile(PSFileName, NULL, NULL, "PS", "ps_5_0", flag, 0, &pPixelShaderBob, &pErrorMessage);
 	if (FAILED(result))
 	{
 		//存在错误信息
-		if (errorMessage)
+		if (pErrorMessage)
 		{
-			OutputShaderErrorMessage(errorMessage, PSFileName);
+			Log::LogShaderCompileInfo(pErrorMessage, PSFileName);
 		}
 		//不存在错误信息,也就是没有找到Shader文件
 		else
@@ -110,7 +103,7 @@ bool Shader::InitializeShader(WCHAR* VSFileName, WCHAR* PSFileName)
 		}
 	}
 
-	HR(d3dDevice->CreatePixelShader(PixelShaderBuffer->GetBufferPointer(), PixelShaderBuffer->GetBufferSize(), NULL, &md3dPixelShader));
+	HR(g_pDevice->CreatePixelShader(pPixelShaderBob->GetBufferPointer(), pPixelShaderBob->GetBufferSize(), NULL, &m_pPixelShader));
 
 	//第四,填充输入布局形容结构体,创建输入布局
 	D3D11_INPUT_ELEMENT_DESC VertexInputLayout[] =
@@ -123,29 +116,28 @@ bool Shader::InitializeShader(WCHAR* VSFileName, WCHAR* PSFileName)
 		
 	};
 
-	unsigned int numElements = sizeof(VertexInputLayout) / sizeof(VertexInputLayout[0]);         //布局数量
+	//布局数量
+	unsigned int numElements = sizeof(VertexInputLayout) / sizeof(VertexInputLayout[0]);         
 
-	HR(d3dDevice->CreateInputLayout(VertexInputLayout, numElements, VertexShaderBuffer->GetBufferPointer(), VertexShaderBuffer->GetBufferSize(), &md3dInputLayout));
+	HR(g_pDevice->CreateInputLayout(VertexInputLayout, numElements, pVertexShaderBlob->GetBufferPointer(),
+		pVertexShaderBlob->GetBufferSize(), &m_pInputLayout));
 
-	//第五,释放VertexShaderBuffer和PixelShaderBuffer
-	VertexShaderBuffer->Release();
-	VertexShaderBuffer = NULL;
-	PixelShaderBuffer->Release();
-	PixelShaderBuffer = NULL;
+	//第五,释放pVertexShaderBlob和pPixelShaderBob
+	ReleaseCOM(pVertexShaderBlob);
+	ReleaseCOM(pPixelShaderBob);
 
 	//第六,设置(变换矩阵常量)缓存形容结构体,并创建矩阵常量缓存
 	D3D11_BUFFER_DESC commonBufferDesc;
 	ZeroMemory(&commonBufferDesc, sizeof(commonBufferDesc));
 	commonBufferDesc.Usage = D3D11_USAGE_DYNAMIC;
-	commonBufferDesc.ByteWidth = sizeof(CBCommmon);   //结构体大小,必须为16字节倍数
+	commonBufferDesc.ByteWidth = sizeof(CBCommmon);  
 	commonBufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
 	commonBufferDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
-
-	HR(d3dDevice->CreateBuffer(&commonBufferDesc, NULL, &mCBCommon));
+	HR(g_pDevice->CreateBuffer(&commonBufferDesc, NULL, &m_pCBCommon));
 
 	//第七,填充采样形容结构体,并且创建采样状态
 	D3D11_SAMPLER_DESC samplerDesc;
-	samplerDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;  //都是线性插值(三种方式,点过滤,线性过滤,异性过滤)
+	samplerDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR; 
 	samplerDesc.AddressU = D3D11_TEXTURE_ADDRESS_WRAP;
 	samplerDesc.AddressV = D3D11_TEXTURE_ADDRESS_WRAP;
 	samplerDesc.AddressW = D3D11_TEXTURE_ADDRESS_WRAP;
@@ -158,14 +150,14 @@ bool Shader::InitializeShader(WCHAR* VSFileName, WCHAR* PSFileName)
 	samplerDesc.BorderColor[3] = 0;
 	samplerDesc.MinLOD = 0;
 	samplerDesc.MaxLOD = D3D11_FLOAT32_MAX;
+	HR(g_pDevice->CreateSamplerState(&samplerDesc, &m_pWrapLinearSampler));
 
-	HR(d3dDevice->CreateSamplerState(&samplerDesc, &mWrapLinearSampler));
 	samplerDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_POINT;
 	samplerDesc.AddressU = D3D11_TEXTURE_ADDRESS_CLAMP;
 	samplerDesc.AddressV = D3D11_TEXTURE_ADDRESS_CLAMP;
 	samplerDesc.AddressW = D3D11_TEXTURE_ADDRESS_CLAMP;
+	HR(g_pDevice->CreateSamplerState(&samplerDesc, &m_pClampPointSampler));
 
-	HR(d3dDevice->CreateSamplerState(&samplerDesc, &mClampPointSampler));
 	return true;
 }
 
@@ -173,65 +165,28 @@ bool Shader::InitializeShader(WCHAR* VSFileName, WCHAR* PSFileName)
 
 void Shader::ShutDown()
 {
-	ReleaseCOM(mCBCommon);
-	ReleaseCOM(md3dInputLayout);
-	ReleaseCOM(md3dPixelShader);
-	ReleaseCOM(md3dVertexShader);
-	ReleaseCOM(mWrapLinearSampler);
-	ReleaseCOM(mClampPointSampler);
+	ReleaseCOM(m_pCBCommon);
+	ReleaseCOM(m_pInputLayout);
+	ReleaseCOM(m_pPixelShader);
+	ReleaseCOM(m_pVertexShader);
+	ReleaseCOM(m_pWrapLinearSampler);
+	ReleaseCOM(m_pClampPointSampler);
 }
-
-void Shader::OutputShaderErrorMessage(ID3D10Blob* errorMessage, WCHAR* shaderFilename)
-{
-	char* compileErrors;
-	unsigned long bufferSize, i;
-	ofstream fout;
-
-
-	// 获取指向错误信息文本的指针
-	compileErrors = (char*)(errorMessage->GetBufferPointer());
-
-	// 获取错误信息文本的长度
-	bufferSize = errorMessage->GetBufferSize();
-
-	// 创建一个txt,用于写入错误信息
-	fout.open("shader-error.txt");
-
-	//想txt文件写入错误信息
-	for (i = 0; i<bufferSize; i++)
-	{
-		fout << compileErrors[i];
-	}
-
-	// 关闭文件
-	fout.close();
-
-	// Release the error message.
-	errorMessage->Release();
-	errorMessage = 0;
-
-	//弹出提醒的小窗口
-	MessageBox(NULL, L"Error compiling shader.  Check shader-error.txt for message.", shaderFilename, MB_OK);
-
-}
-
 
 bool Shader::SetShaderCB(CXMMATRIX worldMatrix)
 {
 
-	ID3D11DeviceContext* d3dDeviceContext = D3DClass::GetInstance()->GetDeviceContext();
-	XMMATRIX viewMatrix = Camera::GetInstance()->GetViewMatrix();
-	XMMATRIX ProjMatrix = Camera::GetInstance()->GetProjectionMatrix();
+	XMMATRIX viewMatrix = g_pMainCamera->GetViewMatrix();
+	XMMATRIX ProjMatrix = g_pMainCamera->GetProjectionMatrix();
 
 	//第一，更新变换矩阵常量缓存的值
-	//将矩阵转置,在传入常量缓存前进行转置,因为GPU对矩阵数据会自动进行一次转置
 	D3D11_MAPPED_SUBRESOURCE mappedSubresource;
-	HR(d3dDeviceContext->Map(mCBCommon, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedSubresource));
+	HR(g_pDeviceContext->Map(m_pCBCommon, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedSubresource));
 	auto pCBCommon = reinterpret_cast<CBCommmon*>(mappedSubresource.pData);
 	XMMATRIX worldMa = XMMatrixTranspose(worldMatrix);
 	XMMATRIX viewMa = XMMatrixTranspose(viewMatrix);
 	XMMATRIX ProjMa = XMMatrixTranspose(ProjMatrix);
-	XMMATRIX worldInvTranspose = XMMatrixTranspose(GetInvenseTranspose(worldMatrix));  //世界矩阵的逆矩阵的转置 
+	XMMATRIX worldInvTranspose = XMMatrixTranspose(MathTool::GetInvenseTranspose(worldMatrix));
 	pCBCommon->mWorldMatrix = worldMa;
 	pCBCommon->mViewMatrix = viewMa;
 	pCBCommon->mProjMatrix = ProjMa;
@@ -239,34 +194,31 @@ bool Shader::SetShaderCB(CXMMATRIX worldMatrix)
 	XMStoreFloat4(&pCBCommon->dirLightColor, Light::GetInstnce()->GetLightColor());
 	XMStoreFloat3(&pCBCommon->dirLightDir, Light::GetInstnce()->GetLightDirection());
 	XMStoreFloat3(&pCBCommon->ambientLight, Light::GetInstnce()->GetAmbientLight());
+	pCBCommon->cameraPos = g_pMainCamera->GetPosition();
 
-	pCBCommon->cameraPos = Camera::GetInstance()->GetPosition();
 
-
-	d3dDeviceContext->Unmap(mCBCommon, 0);
+	g_pDeviceContext->Unmap(m_pCBCommon, 0);
 
 	//第三,设置在VertexShader的常量缓存的值(带着更新的值)
-	d3dDeviceContext->VSSetConstantBuffers(0, 1, &mCBCommon);
-	d3dDeviceContext->PSSetConstantBuffers(0, 1, &mCBCommon);
+	g_pDeviceContext->VSSetConstantBuffers(0, 1, &m_pCBCommon);
+	g_pDeviceContext->PSSetConstantBuffers(0, 1, &m_pCBCommon);
 
 	return true;
 }
 
 bool Shader::SetShaderState()
 {
-
-	ID3D11DeviceContext* deviceContext = D3DClass::GetInstance()->GetDeviceContext();
-
 	//设置顶点输入布局
-	deviceContext->IASetInputLayout(md3dInputLayout);
+	g_pDeviceContext->IASetInputLayout(m_pInputLayout);
 
 	//设置VertexShader和PixelShader
-	deviceContext->VSSetShader(md3dVertexShader, NULL, 0);
-	deviceContext->PSSetShader(md3dPixelShader, NULL, 0);
+	g_pDeviceContext->VSSetShader(m_pVertexShader, nullptr, 0);
+	g_pDeviceContext->PSSetShader(m_pPixelShader, nullptr, 0);
 
 	//设置采样状态
-	deviceContext->PSSetSamplers(0, 1, &mWrapLinearSampler); 
-	deviceContext->PSSetSamplers(1, 1, &mClampPointSampler);
+	g_pDeviceContext->PSSetSamplers(0, 1, &m_pWrapLinearSampler);
+	g_pDeviceContext->PSSetSamplers(1, 1, &m_pClampPointSampler);
+
 	return true;
 }
 
