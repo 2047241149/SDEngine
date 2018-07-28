@@ -42,7 +42,7 @@ bool GraphicsClass::Initialize(int ScreenWidth, int ScreenHeight, HWND hwnd,HINS
 	XMVECTOR lookAtPos = XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f);
 	dirLight->SetViewParams(lightPos, lookAtPos);
 	dirLight->SetLightColor(XMVectorSet(1.0, 1.0f, 1.0f, 1.0f));
-	dirLight->SetAmbientLight(XMVectorSet(0.20f, 0.20f, 0.20f, 1.0f));
+	dirLight->SetAmbientLight(XMVectorSet(0.05f, 0.05f, 0.05f, 1.0f));
 
 	//´´½¨ModelClasss
 	mHeadObject = shared_ptr<GameObject>(new GameObject("FBXModel\\head\\head.FBX"));

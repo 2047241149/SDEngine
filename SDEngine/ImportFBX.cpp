@@ -511,7 +511,7 @@ void ImportFBX::ReadReletiveTextureFileName(FbxProperty* mproperty,
 		if (tgaTagPos != string::npos)
 		{
 			relativeFileName = relativeFileName.substr(0, tgaTagPos);
-			relativeFileName += string(".jpg");
+			relativeFileName += string(".dds");
 		}
 		string fileName = fbxFileNamePre + relativeFileName;
 		if (name == FbxSurfaceMaterial::sDiffuse)
