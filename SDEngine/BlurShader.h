@@ -1,14 +1,8 @@
 #ifndef _BLUR_SHADER_H
 #define _BLUR_SHADER_H
 
-#include<Windows.h>
-#include"Macro.h"
-#include<d3d11_1.h>
-#include<d3dcompiler.h>
-#include<DirectXMath.h>
-#include<fstream>
-#include"MathTool.h"
-#include"D3DClass.h"
+
+#include "CoreMini.h"
 #include"Shader.h"
 #include"Camera.h"
 #include"Light.h"

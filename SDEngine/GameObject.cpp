@@ -52,8 +52,6 @@ void GameObject::Shutdown()
 
 bool GameObject::InitializeBuffer()
 {
-	ID3D11Device* d3dDevice = D3DClass::GetInstance()->GetDevice();
-
 
 	vector<Model>& mModelList = mFBXModel->mModelList;
 	for (UINT index = 0; index < mModelList.size(); ++index)
@@ -78,7 +76,7 @@ bool GameObject::InitializeBuffer()
 			vertexData.pSysMem = &mMesh.mVertexData[0];
 			vertexData.SysMemPitch = 0;
 			vertexData.SysMemSlicePitch = 0;
-			HR(d3dDevice->CreateBuffer(&vertexBufferDesc, &vertexData, &mMesh.mVertexBuffer));
+			HR(g_pDevice->CreateBuffer(&vertexBufferDesc, &vertexData, &mMesh.mVertexBuffer));
 
 			//第二,填充(索引)缓存形容结构体和子资源数据结构体,并创建索引缓存
 			D3D11_BUFFER_DESC  indexBufferDesc;
@@ -93,7 +91,7 @@ bool GameObject::InitializeBuffer()
 			indexData.pSysMem = &mMesh.mIndexData[0];
 			indexData.SysMemPitch = 0;
 			indexData.SysMemSlicePitch = 0;
-			HR(d3dDevice->CreateBuffer(&indexBufferDesc, &indexData, &mMesh.mIndexBuffer));
+			HR(g_pDevice->CreateBuffer(&indexBufferDesc, &indexData, &mMesh.mIndexBuffer));
 		}
 
 	}
@@ -151,7 +149,6 @@ bool GameObject::LoadFBXModel(string fbxFileName)
 
 void GameObject::CheckSRVMap(string texFileName, Model* model)
 {
-	ID3D11Device* d3dDevice = D3DClass::GetInstance()->GetDevice();
 
 	if (texFileName == "")
 	{
@@ -163,7 +160,7 @@ void GameObject::CheckSRVMap(string texFileName, Model* model)
 	if (mSRVMap.find(texFileName) == mSRVMap.end())
 	{
 		ID3D11ShaderResourceView* memSRV = nullptr;
-		DXUTCreateShaderResourceViewFromFile(d3dDevice, Str2Wstr(texFileName).c_str(), &memSRV);
+		DXUTCreateShaderResourceViewFromFile(g_pDevice, Str2Wstr(texFileName).c_str(), &memSRV);
 		if ((int)memSRV == 0xcccccccc)
 		{
 			memSRV = nullptr;
@@ -175,19 +172,14 @@ void GameObject::CheckSRVMap(string texFileName, Model* model)
 
 void GameObject::Render(MaterialType renderMode ,FXMVECTOR surfaceColor)
 {
-	ID3D11DeviceContext* d3dDeviceContext = D3DClass::GetInstance()->GetDeviceContext();
-	ShaderManager* mShaderManager = ShaderManager::GetInstance();
-	Camera* mainCamera = Camera::GetInstance();
-	Light* dirLight = Light::GetInstnce();
-	XMVECTOR lightDir = dirLight->GetLightDirection();
-	XMVECTOR lightColor = dirLight->GetLightColor();
+
 
 	XMMATRIX worldMatrix = this->GetWorldMatrix();
 
 	XMVECTOR errorShaderColor = XMVectorSet(1.0f, 0.0f, 0.0f, 1.0f);
 
 	//三角形片元
-	d3dDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+	g_pDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 	vector<Model>& mModelList = mFBXModel->mModelList;
 	map<string, ID3D11ShaderResourceView*>& mSRVMap = mFBXModel->mSRVMap;
 	for (UINT index = 0; index < mModelList.size(); ++index)
@@ -212,18 +204,18 @@ void GameObject::Render(MaterialType renderMode ,FXMVECTOR surfaceColor)
 			//纯颜色绘制模式
 			if (renderMode == MaterialType::PURE_COLOR)
 			{
-				mShaderManager->SetPureColorShader(worldMatrix,surfaceColor);
+				GShaderManager->SetPureColorShader(worldMatrix,surfaceColor);
 			}
 			//漫反射贴图(仅仅有)
 			else if (renderMode == MaterialType::DIFFUSE)
 			{
 				if (diffuseSRV == nullptr|| material.diffuseMapFileName =="")
 				{
-					mShaderManager->SetPureColorShader(worldMatrix,errorShaderColor);
+					GShaderManager->SetPureColorShader(worldMatrix,errorShaderColor);
 				}
 				else if (diffuseSRV)
 				{
-					mShaderManager->SetDiffuseShader(worldMatrix,diffuseSRV);
+					GShaderManager->SetDiffuseShader(worldMatrix,diffuseSRV);
 				}
 			}
 			//漫反射 + 法线贴图
@@ -232,11 +224,11 @@ void GameObject::Render(MaterialType renderMode ,FXMVECTOR surfaceColor)
 				if (diffuseSRV && bumpSRV&&material.bumpMapFileName != "")
 				{
 
-					mShaderManager->SetDiffuseNormalShader(worldMatrix,diffuseSRV, bumpSRV);
+					GShaderManager->SetDiffuseNormalShader(worldMatrix,diffuseSRV, bumpSRV);
 				}
 				else
 				{
-					mShaderManager->SetPureColorShader(worldMatrix,errorShaderColor);
+					GShaderManager->SetPureColorShader(worldMatrix,errorShaderColor);
 				}
 			}
 			//漫反射 + 镜面贴图
@@ -244,12 +236,12 @@ void GameObject::Render(MaterialType renderMode ,FXMVECTOR surfaceColor)
 			{
 				if (diffuseSRV && specSRV&&material.specularMapFileName != "")
 				{
-					XMVECTOR cameraPos = Camera::GetInstance()->GetPositionXM();
-					mShaderManager->SetDiffuseSpecShader(worldMatrix,diffuseSRV, specSRV);
+				
+					GShaderManager->SetDiffuseSpecShader(worldMatrix,diffuseSRV, specSRV);
 				}
 				else
 				{
-					mShaderManager->SetPureColorShader(worldMatrix, errorShaderColor);
+					GShaderManager->SetPureColorShader(worldMatrix, errorShaderColor);
 				}
 			}
 			//漫反射贴图 + 法线贴图 + 镜面贴图
@@ -257,37 +249,36 @@ void GameObject::Render(MaterialType renderMode ,FXMVECTOR surfaceColor)
 			{
 				if (diffuseSRV && bumpSRV&&specSRV && material.bumpMapFileName != "" &&  material.specularMapFileName!="")
 				{
-					XMVECTOR cameraPos = Camera::GetInstance()->GetPositionXM();
-					mShaderManager->SetDiffuseNormalSpecShader(worldMatrix,
+					GShaderManager->SetDiffuseNormalSpecShader(worldMatrix,
 						diffuseSRV, bumpSRV, specSRV);
 				}
 				else
 				{
-					mShaderManager->SetPureColorShader(worldMatrix,errorShaderColor);
+					GShaderManager->SetPureColorShader(worldMatrix,errorShaderColor);
 				}
 			}
 			//线框绘制模式
 			else if(renderMode == MaterialType::WIRE_FRAME)
 			{
-				mShaderManager->SetPureColorShader(worldMatrix, XMVectorSet(1.0f, 1.0f, 1.0f, 1.0f));
+				GShaderManager->SetPureColorShader(worldMatrix, XMVectorSet(1.0f, 1.0f, 1.0f, 1.0f));
 			} 
 
 			//仅仅获取深度缓存
 			else if (renderMode == MaterialType::DEPTH_BUFFER)
 			{
-				mShaderManager->SetDepthGetShader(worldMatrix);
+				GShaderManager->SetDepthGetShader(worldMatrix);
 			}
 
 	
 			//设置顶点缓存
 			UINT stride = sizeof(mesh.mVertexData[0]); //每个顶点元素的跨度大小，或者说每个顶点元素的大小
 			UINT offset = 0;
-			d3dDeviceContext->IASetVertexBuffers(0, 1, &mesh.mVertexBuffer, &stride, &offset);
+			g_pDeviceContext->IASetVertexBuffers(0, 1, &mesh.mVertexBuffer, &stride, &offset);
 
 			//设置索引缓存
-			d3dDeviceContext->IASetIndexBuffer(mesh.mIndexBuffer, DXGI_FORMAT_R16_UINT, 0); //Word为两个字节																		  //设置拓扑方式
+			g_pDeviceContext->IASetIndexBuffer(mesh.mIndexBuffer, DXGI_FORMAT_R16_UINT, 0); //Word为两个字节																		  //设置拓扑方式
 
-			d3dDeviceContext->DrawIndexed(mesh.mIndexData.size(), 0, 0);
+			g_pDeviceContext->DrawIndexed(mesh.mIndexData.size(), 0, 0);
 		}
 	}
 
@@ -295,9 +286,9 @@ void GameObject::Render(MaterialType renderMode ,FXMVECTOR surfaceColor)
 
 void GameObject::RenderMesh()
 {
-	ID3D11DeviceContext* d3dDeviceContext = D3DClass::GetInstance()->GetDeviceContext();
+
 	//三角形片元
-	d3dDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+	g_pDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
 	vector<Model>& mModelList = mFBXModel->mModelList;
 	for (UINT index = 0; index < mModelList.size(); ++index)
@@ -316,12 +307,12 @@ void GameObject::RenderMesh()
 			//设置顶点缓存
 			UINT stride = sizeof(mesh.mVertexData[0]); //每个顶点元素的跨度大小，或者说每个顶点元素的大小
 			UINT offset = 0;
-			d3dDeviceContext->IASetVertexBuffers(0, 1, &mesh.mVertexBuffer, &stride, &offset);
+			g_pDeviceContext->IASetVertexBuffers(0, 1, &mesh.mVertexBuffer, &stride, &offset);
 
 			//设置索引缓存
-			d3dDeviceContext->IASetIndexBuffer(mesh.mIndexBuffer, DXGI_FORMAT_R16_UINT, 0); //Word为两个字节																		  //设置拓扑方式
+			g_pDeviceContext->IASetIndexBuffer(mesh.mIndexBuffer, DXGI_FORMAT_R16_UINT, 0); //Word为两个字节																		  //设置拓扑方式
 
-			d3dDeviceContext->DrawIndexed(mesh.mIndexData.size(), 0, 0);
+			g_pDeviceContext->DrawIndexed(mesh.mIndexData.size(), 0, 0);
 		}
 	}
 

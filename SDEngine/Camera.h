@@ -37,9 +37,9 @@ public:
 	Camera(const Camera& other);
 	~Camera();
 
-	static Camera* GetInstance();
+	static shared_ptr<Camera> Get();
 public:
-	static shared_ptr<Camera> camera;
+	static shared_ptr<Camera> m_pCamera;
 public:
 	//Ïà»úÎ»ÖÃ
 	void SetPosition(float x, float y, float z);
@@ -96,4 +96,4 @@ public:
 };
 #endif 
 
-#define	g_pMainCamera (Camera::GetInstance())
+#define	GCamera (Camera::Get())

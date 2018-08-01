@@ -2,11 +2,7 @@
 #ifndef _DEBUG_WINDOW_H
 #define _DEBUG_WINDOW_H
 
-#include<d3d11_1.h>
-#include<DirectXMath.h>
-#include"D3DClass.h"
-#include"Macro.h"  //°üº¬¸¨ÖúµÄºê
-using namespace DirectX;
+#include "CoreMini.h"
 
 class DebugWindow
 {

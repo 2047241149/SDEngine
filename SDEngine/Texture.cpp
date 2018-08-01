@@ -18,9 +18,8 @@ Texture::~Texture()
 
 bool Texture::Init(WCHAR* TextureFilename)
 {
-	//ÖÃ¿ÕÖ¸Õë
-	ID3D11Device* d3dDevice = D3DClass::GetInstance()->GetDevice();
-	HR(DXUTCreateShaderResourceViewFromFile(d3dDevice, TextureFilename, &m_pSRV));
+
+	HR(DXUTCreateShaderResourceViewFromFile(g_pDevice, TextureFilename, &m_pSRV));
 	return true;
 }
 

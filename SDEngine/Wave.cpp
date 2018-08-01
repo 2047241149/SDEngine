@@ -48,8 +48,6 @@ Wave::~Wave()
 
 void Wave::Init()
 {
-	ID3D11Device* d3dDevice = D3DClass::GetInstance()->GetDevice();
-
 
 	//VertexBuffer
 	D3D11_BUFFER_DESC vertexBufferDesc;
@@ -65,7 +63,7 @@ void Wave::Init()
 	vertexData.pSysMem = &mWaveVertexData[0];
 	vertexData.SysMemPitch = 0;
 	vertexData.SysMemSlicePitch = 0;
-	d3dDevice->CreateBuffer(&vertexBufferDesc, &vertexData, &mVertexBuffer);
+	g_pDevice->CreateBuffer(&vertexBufferDesc, &vertexData, &mVertexBuffer);
 
 
 	int waveIndex = 0;
@@ -131,27 +129,25 @@ void Wave::Init()
 	indexData.pSysMem = &mWaveIndexData[0];
 	indexData.SysMemPitch = 0;
 	indexData.SysMemSlicePitch = 0;
-	d3dDevice->CreateBuffer(&indexBufferDesc, &indexData, &mIndexBuffer);
+	g_pDevice->CreateBuffer(&indexBufferDesc, &indexData, &mIndexBuffer);
 
 }
 
 
 void Wave::Render()
 {
-	ID3D11DeviceContext* d3dDeviceContext = D3DClass::GetInstance()->GetDeviceContext();
-
 	//三角形片元
-	d3dDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+	g_pDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
 	//设定VertexBuffetr
 	UINT stride = sizeof(VertexPCNTT); //每个顶点元素的跨度大小，或者说每个顶点元素的大小
 	UINT offset = 0;
-	d3dDeviceContext->IASetVertexBuffers(0, 1, &mVertexBuffer, &stride, &offset);
+	g_pDeviceContext->IASetVertexBuffers(0, 1, &mVertexBuffer, &stride, &offset);
 
 	//设置索引缓存
-	d3dDeviceContext->IASetIndexBuffer(mIndexBuffer, DXGI_FORMAT_R16_UINT, 0); 
+	g_pDeviceContext->IASetIndexBuffer(mIndexBuffer, DXGI_FORMAT_R16_UINT, 0);
 
-	d3dDeviceContext->DrawIndexed(mWaveIndexData.size(), 0, 0);
+	g_pDeviceContext->DrawIndexed(mWaveIndexData.size(), 0, 0);
 }
 
 
@@ -409,8 +405,7 @@ void Wave::CalculateVertexTangent()
 
 void Wave::UpdateWaveData(float time)
 {
-	ID3D11DeviceContext* d3dDeviceContext = D3DClass::GetInstance()->GetDeviceContext();
-
+	
 	//计算顶点法线
 	CalculateVertexPos(time);
 
@@ -425,7 +420,7 @@ void Wave::UpdateWaveData(float time)
 
 
 	D3D11_MAPPED_SUBRESOURCE mappedResource;
-	d3dDeviceContext->Map(mVertexBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
+	g_pDeviceContext->Map(mVertexBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
 
 	//获取指向顶点缓存的指针
 	VertexPCNTT* verticesPtr;
@@ -435,7 +430,7 @@ void Wave::UpdateWaveData(float time)
 	memcpy(verticesPtr, (void*)&mWaveVertexData[0], (sizeof(VertexPCNTT) * mWaveVertexData.size()));
 
 	//解锁顶点缓存
-	d3dDeviceContext->Unmap(mVertexBuffer, 0);
+	g_pDeviceContext->Unmap(mVertexBuffer, 0);
 }
 
 float Wave::Dot(const XMFLOAT3& vec1, const XMFLOAT3& vec2)

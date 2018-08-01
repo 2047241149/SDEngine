@@ -6,7 +6,7 @@
 #include<d3d11_1.h>
 #include "DXUT.h"
 #include "SDKmisc.h"
-#include"D3DClass.h"
+#include "DirectxCore.h"
 using namespace DirectX;
 
 class Texture

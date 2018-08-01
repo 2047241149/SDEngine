@@ -2,11 +2,7 @@
 #ifndef _BITMAP_CLASS_H
 #define _BITMAP_CLASS_H
 
-#include<d3d11_1.h>
-#include<DirectXMath.h>
-#include"Macro.h"  //包含辅助的宏
-#include"D3DClass.h"
-using namespace DirectX;
+#include "CoreMini.h"
 
 /*默认情况下图片的大小跟传入的窗口参数这么大，并且左上角的坐标是在WIN32坐标系(0,0)处*/
 

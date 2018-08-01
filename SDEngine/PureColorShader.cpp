@@ -21,7 +21,6 @@ PureColorShader::~PureColorShader()
 void PureColorShader::CreateBuffer()
 {
 
-	ID3D11Device* d3dDevice = D3DClass::GetInstance()->GetDevice();
 	//CBEveryFrame
 	D3D11_BUFFER_DESC cbufferDesc;
 	ZeroMemory(&cbufferDesc, sizeof(cbufferDesc));
@@ -29,7 +28,7 @@ void PureColorShader::CreateBuffer()
 	cbufferDesc.ByteWidth = sizeof(CBEveryFrame);   //结构体大小,必须为16字节倍数
 	cbufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
 	cbufferDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
-	d3dDevice->CreateBuffer(&cbufferDesc, NULL, &mCBEveryFrameBuffer);
+	g_pDevice->CreateBuffer(&cbufferDesc, NULL, &mCBEveryFrameBuffer);
 }
 
 
@@ -41,15 +40,15 @@ void PureColorShader::ShutDown()
 
 bool PureColorShader::SetShaderCBExtern(CXMMATRIX worldMatrix, FXMVECTOR surfaceColor)
 {
-	ID3D11DeviceContext* d3dDeviceContext = D3DClass::GetInstance()->GetDeviceContext();
+
 	Shader::SetShaderCB(worldMatrix);
 
 	D3D11_MAPPED_SUBRESOURCE mappedSubresource;
-	HR(d3dDeviceContext->Map(mCBEveryFrameBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedSubresource));
+	HR(g_pDeviceContext->Map(mCBEveryFrameBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedSubresource));
 	auto pCBEverFrame = reinterpret_cast<CBEveryFrame*>(mappedSubresource.pData);
 	XMStoreFloat4(&pCBEverFrame->surfaceColor, surfaceColor);
-	d3dDeviceContext->Unmap(mCBEveryFrameBuffer, 0);
-	d3dDeviceContext->PSSetConstantBuffers(1, 1, &mCBEveryFrameBuffer);
+	g_pDeviceContext->Unmap(mCBEveryFrameBuffer, 0);
+	g_pDeviceContext->PSSetConstantBuffers(1, 1, &mCBEveryFrameBuffer);
 
 	return true;
 }

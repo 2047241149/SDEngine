@@ -12,7 +12,7 @@
 #include <sstream>
 #include<memory>
 #include<vector>
-#include"D3DClass.h"
+#include "DirectxCore.h"
 #include"CommomVertexFormat.h"
 #include "CommonFunction.h"
 #include "ImportFBX.h"

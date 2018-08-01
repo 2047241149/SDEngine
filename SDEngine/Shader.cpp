@@ -176,8 +176,8 @@ void Shader::ShutDown()
 bool Shader::SetShaderCB(CXMMATRIX worldMatrix)
 {
 
-	XMMATRIX viewMatrix = g_pMainCamera->GetViewMatrix();
-	XMMATRIX ProjMatrix = g_pMainCamera->GetProjectionMatrix();
+	XMMATRIX viewMatrix = GCamera->GetViewMatrix();
+	XMMATRIX ProjMatrix = GCamera->GetProjectionMatrix();
 
 	//第一，更新变换矩阵常量缓存的值
 	D3D11_MAPPED_SUBRESOURCE mappedSubresource;
@@ -191,12 +191,10 @@ bool Shader::SetShaderCB(CXMMATRIX worldMatrix)
 	pCBCommon->mViewMatrix = viewMa;
 	pCBCommon->mProjMatrix = ProjMa;
 	pCBCommon->mWorldInvTranposeMatirx = worldInvTranspose;
-	XMStoreFloat4(&pCBCommon->dirLightColor, Light::GetInstnce()->GetLightColor());
-	XMStoreFloat3(&pCBCommon->dirLightDir, Light::GetInstnce()->GetLightDirection());
-	XMStoreFloat3(&pCBCommon->ambientLight, Light::GetInstnce()->GetAmbientLight());
-	pCBCommon->cameraPos = g_pMainCamera->GetPosition();
-
-
+	pCBCommon->dirLightColor = GLightManager->GetMainLight()->GetLightColor();
+	pCBCommon->dirLightDir = GLightManager->GetMainLight()->GetLightDirection();
+	pCBCommon->ambientLight = GLightManager->GetMainLight()->GetAmbientLight();
+	pCBCommon->cameraPos = GCamera->GetPosition();
 	g_pDeviceContext->Unmap(m_pCBCommon, 0);
 
 	//第三,设置在VertexShader的常量缓存的值(带着更新的值)
