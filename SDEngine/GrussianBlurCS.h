@@ -1,14 +1,7 @@
 #ifndef _GRUSSIAN_BLUR_CS_H
 #define _GRUSSIAN_BLUR_CS_H
 
-#include<Windows.h>
-#include"Macro.h"
-#include<d3d11_1.h>
-#include<d3dcompiler.h>
-#include<DirectXMath.h>
-#include<fstream>
-#include"D3DClass.h"
-#include "Log.h"
+#include "CoreMini.h"
 
 using namespace std;
 using namespace DirectX;

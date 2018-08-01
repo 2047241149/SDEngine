@@ -40,17 +40,17 @@ private:
 	shared_ptr<Shader> mDepthGetShader;
 	shared_ptr<SSRGBufferShader> mSSRGBufferShader;
 	shared_ptr<WaveShader> mWaveShader;
-public:
-	static shared_ptr<ShaderManager> mShaderManager;
 
-	static ShaderManager* GetInstance();
+private:
+	static shared_ptr<ShaderManager> m_spShaderManager;
+	
 public:
 	ShaderManager();
 	~ShaderManager();
 	ShaderManager(const ShaderManager&);
 
-	bool Initialize();
-
+	bool Init();
+	static shared_ptr<ShaderManager> Get();
 	//对外的Render方法接口
 	bool SetDiffuseShader(CXMMATRIX worldMatrix ,ID3D11ShaderResourceView* diffuseTexture);
 
@@ -110,5 +110,7 @@ public:
 	Shader* GetDepthGetShader() { return mDepthGetShader.get(); }
 	SSRGBufferShader* GetSSRGBufferShader() { return mSSRGBufferShader.get(); }
 };
-#endif // !_SHADER_MANAGER_CLASS
+#endif 
 
+
+#define GShaderManager (ShaderManager::Get())

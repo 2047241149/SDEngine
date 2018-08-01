@@ -30,9 +30,9 @@ void DiffuseShader::CreateBuffer()
 
 bool DiffuseShader::SetShaderCBExtern(CXMMATRIX worldMatrix, ID3D11ShaderResourceView* diffuseTexture)
 {
-	ID3D11DeviceContext* d3dDeviceContext = D3DClass::GetInstance()->GetDeviceContext();
+	
 	Shader::SetShaderCB(worldMatrix);
-	d3dDeviceContext->PSSetShaderResources(0, 1, &diffuseTexture);
+	g_pDeviceContext->PSSetShaderResources(0, 1, &diffuseTexture);
 
 	return true;
 }

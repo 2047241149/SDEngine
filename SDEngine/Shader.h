@@ -8,10 +8,10 @@
 #include<DirectXMath.h>
 #include<fstream>
 #include"MathTool.h"
-#include"D3DClass.h"
+#include"DirectxCore.h"
 #include"Shader.h"
 #include"Camera.h"
-#include"Light.h"
+#include "LightManager.h"
 #include "CommonConstantBufferStruct.h"
 #include "Log.h"
 using namespace std;

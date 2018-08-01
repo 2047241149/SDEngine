@@ -114,9 +114,12 @@
   <ItemGroup>
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="CircleWave.cpp" />
+    <ClCompile Include="DirectionLight.cpp" />
+    <ClCompile Include="LightManager.cpp" />
+    <ClCompile Include="PointLight.cpp" />
     <ClCompile Include="RenderTexture.cpp" />
     <ClCompile Include="CommonFunction.cpp" />
-    <ClCompile Include="D3DClass.cpp" />
+    <ClCompile Include="DirectxCore.cpp" />
     <ClCompile Include="Debugwindow.cpp" />
     <ClCompile Include="BlurShader.cpp" />
     <ClCompile Include="DirectionWave.cpp" />
@@ -161,11 +164,15 @@
   <ItemGroup>
     <ClInclude Include="Camera.h" />
     <ClInclude Include="CircleWave.h" />
+    <ClInclude Include="CoreMini.h" />
+    <ClInclude Include="DirectionLight.h" />
+    <ClInclude Include="LightManager.h" />
+    <ClInclude Include="PointLight.h" />
     <ClInclude Include="RenderTexture.h" />
     <ClInclude Include="CommomVertexFormat.h" />
     <ClInclude Include="CommonConstantBufferStruct.h" />
     <ClInclude Include="CommonFunction.h" />
-    <ClInclude Include="D3DClass.h" />
+    <ClInclude Include="DirectxCore.h" />
     <ClInclude Include="Debugwindow.h" />
     <ClInclude Include="BlurShader.h" />
     <ClInclude Include="DirectionWave.h" />

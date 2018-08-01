@@ -8,11 +8,12 @@
 #include<DirectXMath.h>
 #include<fstream>
 #include"MathTool.h"
-#include"D3DClass.h"
+#include"DirectxCore.h"
 #include"Shader.h"
 #include"Camera.h"
 #include"Light.h"
 #include "CommonConstantBufferStruct.h"
+#include "Log.h"
 using namespace std;
 using namespace DirectX;
 
@@ -29,7 +30,7 @@ private:
 	ID3D11SamplerState *mSamplerLinearClamp;
 
 public:
-	bool virtual Initialize(WCHAR* vsFilenPath, WCHAR* psFilenPath);
+	bool virtual Init(WCHAR* vsFilenPath, WCHAR* psFilenPath);
 
 	//初始化Shader,用于创建InputLayout,VertexShader,PixelShader,常量缓存
 	bool virtual InitializeShader(WCHAR*, WCHAR*);
@@ -37,8 +38,6 @@ public:
 	//释放Shader
 	void virtual ShutDown();
 
-	//输出Shader编译文件的错误信息
-	void virtual OutputShaderErrorMessage(ID3D10Blob*, WCHAR*);
 
 public:
 	SSRGBufferShader(WCHAR* vsFilenPath, WCHAR* psFilenPath);

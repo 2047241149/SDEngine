@@ -96,8 +96,6 @@ bool DebugWindow::InitializeBuffer()
 	indices[4] = 4;
 	indices[5] = 5;
 
-	ID3D11Device* d3dDevice = D3DClass::GetInstance()->GetDevice();
-
 	//第一,填充(顶点)缓存形容结构体和子资源数据结构体,并创建顶点缓存(这里用的是动态缓存)
 	D3D11_BUFFER_DESC vertexBufferDesc;
 	vertexBufferDesc.Usage = D3D11_USAGE_DYNAMIC;
@@ -111,7 +109,7 @@ bool DebugWindow::InitializeBuffer()
 	vertexData.pSysMem = vertexs;
 	vertexData.SysMemPitch = 0;
 	vertexData.SysMemSlicePitch = 0;
-	HR(d3dDevice->CreateBuffer(&vertexBufferDesc, &vertexData, &md3dVertexBuffer));
+	HR(g_pDevice->CreateBuffer(&vertexBufferDesc, &vertexData, &md3dVertexBuffer));
 
 	//第二,填充(索引)缓存形容结构体和子资源数据结构体,并创建索引缓存
 	D3D11_BUFFER_DESC  indexBufferDesc;
@@ -126,7 +124,7 @@ bool DebugWindow::InitializeBuffer()
 	indexData.pSysMem = indices;
 	indexData.SysMemPitch = 0;
 	indexData.SysMemSlicePitch = 0;
-    HR(d3dDevice->CreateBuffer(&indexBufferDesc, &indexData, &md3dIndexBuffer));
+    HR(g_pDevice->CreateBuffer(&indexBufferDesc, &indexData, &md3dIndexBuffer));
 
 	//释放顶点数组和索引数组(这时数据已经载入缓存,不需要这些数组了)
 	delete[]vertexs;
@@ -150,20 +148,19 @@ void DebugWindow::ShutdownBuffer()
 void DebugWindow::RenderBuffers()
 {
 
-	ID3D11DeviceContext* d3dDeviceContext = D3DClass::GetInstance()->GetDeviceContext();
 
 	//设置顶点缓存
 	UINT stride = sizeof(Vertex); //每个顶点元素的跨度大小，或者说每个顶点元素的大小
 	UINT offset = 0;
-	d3dDeviceContext->IASetVertexBuffers(0, 1, &md3dVertexBuffer, &stride, &offset);
+	g_pDeviceContext->IASetVertexBuffers(0, 1, &md3dVertexBuffer, &stride, &offset);
 
 	//设置索引缓存
-	d3dDeviceContext->IASetIndexBuffer(md3dIndexBuffer, DXGI_FORMAT_R16_UINT, 0); //Word为两个字节
+	g_pDeviceContext->IASetIndexBuffer(md3dIndexBuffer, DXGI_FORMAT_R16_UINT, 0); //Word为两个字节
 
 	//设置拓扑方式
-	d3dDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+	g_pDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
-	d3dDeviceContext->DrawIndexed(6, 0, 0);
+	g_pDeviceContext->DrawIndexed(6, 0, 0);
 }
 
 
@@ -185,7 +182,6 @@ bool DebugWindow::UpdateBuffers(int positionX, int positionY)
 	mPreviousPosX = positionX;
 	mPreviousPosY = positionY;
 
-	ID3D11DeviceContext* d3dDeviceContext = D3DClass::GetInstance()->GetDeviceContext();
 
 	//求出win32坐标下图片的的left, right, top, bottom坐标,由WIN32坐标PosX和PosY变为D3D11坐标系
 	float left, right, top, bottom;
@@ -224,7 +220,7 @@ bool DebugWindow::UpdateBuffers(int positionX, int positionY)
 
 	//锁定顶点缓存为了可以进行写入（动态缓存不能用UpdateSubResources写入）
 	D3D11_MAPPED_SUBRESOURCE mappedResource;
-	HR(d3dDeviceContext->Map(md3dVertexBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource));
+	HR(g_pDeviceContext->Map(md3dVertexBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource));
 
 	//获取指向顶点缓存的指针
 	Vertex* verticesPtr;
@@ -234,7 +230,7 @@ bool DebugWindow::UpdateBuffers(int positionX, int positionY)
 	memcpy(verticesPtr, (void*)vertexs, (sizeof(Vertex) * mVertexCount));
 
 	//解锁顶点缓存
-	d3dDeviceContext->Unmap(md3dVertexBuffer, 0);
+	g_pDeviceContext->Unmap(md3dVertexBuffer, 0);
 
 	//释放顶点数组
 	delete vertexs;
