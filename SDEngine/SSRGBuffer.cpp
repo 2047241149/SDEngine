@@ -47,11 +47,9 @@ bool SSRGBuffer::Initialize(int TextureWidth, int TextureHeight, float ScreenDep
 	gBufferTextureDesc.MiscFlags = 0;
 
 
-	ID3D11Device* d3dDevice = D3DClass::GetInstance()->GetDevice();
-
 	for (int i = 0; i < SSR_BUFFER_COUNT; ++i)
 	{
-		HR(d3dDevice->CreateTexture2D(&gBufferTextureDesc, NULL, &mRenderTargetTextureArray[i]));
+		HR(g_pDevice->CreateTexture2D(&gBufferTextureDesc, NULL, &mRenderTargetTextureArray[i]));
 	}
 
 
@@ -63,7 +61,7 @@ bool SSRGBuffer::Initialize(int TextureWidth, int TextureHeight, float ScreenDep
 	renderTargetViewDesc.Texture2D.MipSlice = 0;
 	for (int i = 0; i < SSR_BUFFER_COUNT; ++i)
 	{
-		HR(d3dDevice->CreateRenderTargetView(mRenderTargetTextureArray[i], &renderTargetViewDesc, &mRenderTargetViewArray[i]));
+		HR(g_pDevice->CreateRenderTargetView(mRenderTargetTextureArray[i], &renderTargetViewDesc, &mRenderTargetViewArray[i]));
 	}
 
 
@@ -77,7 +75,7 @@ bool SSRGBuffer::Initialize(int TextureWidth, int TextureHeight, float ScreenDep
 
 	for (int i = 0; i < SSR_BUFFER_COUNT; ++i)
 	{
-		HR(d3dDevice->CreateShaderResourceView(mRenderTargetTextureArray[i], &gBufferShaderResourceViewDesc, 
+		HR(g_pDevice->CreateShaderResourceView(mRenderTargetTextureArray[i], &gBufferShaderResourceViewDesc, 
 			&mGBufferSRV[i]));
 	}
 
@@ -109,12 +107,11 @@ void SSRGBuffer::ShutDown()
 //让此时所有图形渲染到这个目前渲染的位置
 void SSRGBuffer::SetRenderTarget(ID3D11DepthStencilView* backDSV)
 {
-	ID3D11DeviceContext* deviceContext = D3DClass::GetInstance()->GetDeviceContext();
 	//绑定渲染目标视图和深度模板视图到输出渲染管线，此时渲染输出到两张纹理中
-	deviceContext->OMSetRenderTargets(SSR_BUFFER_COUNT, mRenderTargetViewArray, backDSV);
+	g_pDeviceContext->OMSetRenderTargets(SSR_BUFFER_COUNT, mRenderTargetViewArray, backDSV);
 
 	//设置相应的视口
-	deviceContext->RSSetViewports(1, &md3dViewport);
+	g_pDeviceContext->RSSetViewports(1, &md3dViewport);
 
 	ClearGBuffer();
 }
@@ -123,19 +120,16 @@ void SSRGBuffer::SetRenderTarget(ID3D11DepthStencilView* backDSV)
 void SSRGBuffer::ClearGBuffer()
 {
 
-	ID3D11DeviceContext* deviceContext = D3DClass::GetInstance()->GetDeviceContext();
-
 	float value[3] = { 0,0,0 };
 
 	//ViewPos
-	deviceContext->ClearRenderTargetView(mRenderTargetViewArray[SSRBufferType::VIEW_POS], value);
-	
+	g_pDeviceContext->ClearRenderTargetView(mRenderTargetViewArray[SSRBufferType::VIEW_POS], value);
 	
 	//ViewNormal
 	value[0] = 0.0f;
 	value[1] = 0.0f;
 	value[2] = -1.0f;
-	deviceContext->ClearRenderTargetView(mRenderTargetViewArray[SSRBufferType::VIEW_NORMAL], value);
+	g_pDeviceContext->ClearRenderTargetView(mRenderTargetViewArray[SSRBufferType::VIEW_NORMAL], value);
 
 }
 

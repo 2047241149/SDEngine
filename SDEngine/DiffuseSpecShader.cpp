@@ -28,8 +28,6 @@ void DiffuseSpecShader::CreateBuffer()
 {
 	mCBLightBuffer = NULL;
 
-	ID3D11Device* d3dDevice = D3DClass::GetInstance()->GetDevice();
-
 	D3D11_BUFFER_DESC cbufferDesc;
 	ZeroMemory(&cbufferDesc, sizeof(cbufferDesc));
 	cbufferDesc.Usage = D3D11_USAGE_DYNAMIC;
@@ -37,20 +35,19 @@ void DiffuseSpecShader::CreateBuffer()
 	cbufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
 	cbufferDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
 
-	d3dDevice->CreateBuffer(&cbufferDesc, NULL, &mCBLightBuffer);
+	g_pDevice->CreateBuffer(&cbufferDesc, NULL, &mCBLightBuffer);
 
 	cbufferDesc.ByteWidth = sizeof(CBCamera);   
-	d3dDevice->CreateBuffer(&cbufferDesc, NULL, &mCBCamera);
+	g_pDevice->CreateBuffer(&cbufferDesc, NULL, &mCBCamera);
 }
 
 bool DiffuseSpecShader::SetShaderCBExtern(CXMMATRIX worldMatrix,
 	ID3D11ShaderResourceView* diffuseSRV,  ID3D11ShaderResourceView* specSRV)
 {
-	ID3D11DeviceContext* d3dDeviceContext = D3DClass::GetInstance()->GetDeviceContext();
 	Shader::SetShaderCB(worldMatrix);
 
-	d3dDeviceContext->PSSetShaderResources(0, 1, &diffuseSRV);
-	d3dDeviceContext->PSSetShaderResources(1, 1, &specSRV);
+	g_pDeviceContext->PSSetShaderResources(0, 1, &diffuseSRV);
+	g_pDeviceContext->PSSetShaderResources(1, 1, &specSRV);
 
 	return true;
 }

@@ -2,10 +2,8 @@
 #ifndef _GERSTNER_WAVE_CS_H
 #define _GERSTNER_WAVE_CS_H
 
-#include<d3d11_1.h>
-#include "D3DClass.h"
-#include<d3dcompiler.h>
-#include "CommomVertexFormat.h"
+
+#include "CoreMini.h"
 
 struct CBGerstnerWaveUpdate
 {
@@ -64,7 +62,6 @@ public:
 	XMMATRIX GetWorldMatrix();
 
 private:
-	void OutputShaderErrorMessage(ID3D10Blob* errorMessage, WCHAR* shaderFilename);
 	void Initlize(WCHAR* csWavePosPath, WCHAR* csWaveNormalPath);
 	void CreateComputerShader(WCHAR* csWavePosPath, WCHAR* csWaveNormalPath);
 	void CreateConstantBuffer();

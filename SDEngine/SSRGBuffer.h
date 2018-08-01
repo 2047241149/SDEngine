@@ -4,10 +4,7 @@
 #ifndef _SSR_GBUFFER_H
 #define _SSR_GBUFFER_H
 
-#include<Windows.h>
-#include<d3d11_1.h>
-#include"D3DClass.h"
-#include"Macro.h"
+#include"CoreMini.h"
 #include<ctime>
 
 enum SSRBufferType

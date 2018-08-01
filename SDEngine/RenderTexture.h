@@ -2,10 +2,7 @@
 #ifndef _RENDER_TEXTURE_H
 #define _RENDER_TEXTURE_H
 
-#include<Windows.h>
-#include<d3d11_1.h>
-#include"D3DClass.h"
-#include"Macro.h"
+#include "CoreMini.h"
 
 class RenderTexture
 {

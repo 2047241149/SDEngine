@@ -8,7 +8,8 @@
 #include<DirectXMath.h>
 #include<fstream>
 #include"MathTool.h"
-#include"D3DClass.h"
+#include"DirectxCore.h"
+#include "Log.h"
 #include"Shader.h"
 #include"Camera.h"
 #include"Light.h"
@@ -46,8 +47,6 @@ public:
 	//释放Shader
 	void virtual ShutDown();
 
-	//输出Shader编译文件的错误信息
-	void virtual OutputShaderErrorMessage(ID3D10Blob*, WCHAR*);
 
 public:
 	SSRShader(WCHAR* vsFilenPath, WCHAR* psFilenPath);

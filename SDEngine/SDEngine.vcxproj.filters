@@ -18,9 +18,6 @@
     <ClCompile Include="Camera.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="D3DClass.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
     <ClCompile Include="Debugwindow.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
@@ -150,6 +147,18 @@
     <ClCompile Include="RenderTexture.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="LightManager.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="PointLight.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="DirectionLight.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="DirectxCore.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Camera.h">
@@ -162,9 +171,6 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="CommonFunction.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="D3DClass.h">
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="Debugwindow.h">
@@ -294,6 +300,21 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="RenderTexture.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="LightManager.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="PointLight.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="DirectionLight.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="DirectxCore.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="CoreMini.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>

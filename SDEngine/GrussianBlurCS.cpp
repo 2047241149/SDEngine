@@ -37,8 +37,6 @@ bool GrussianBlurCS::InitShader(WCHAR* csFilePath)
 	ID3D10Blob* errorMessage;
 	ID3D10Blob* CSBlobHorizontal;
 	ID3D10Blob* CSBlobVertical;
-	ID3D11Device* d3dDevice = D3DClass::GetInstance()->GetDevice();
-	ID3D11DeviceContext* d3dDeviceContext = D3DClass::GetInstance()->GetDeviceContext();
 
 
 	//初始化参数
@@ -61,16 +59,16 @@ bool GrussianBlurCS::InitShader(WCHAR* csFilePath)
 		}
 		else
 		{
-			MessageBox(NULL, L"can not find CS file", L"error", MB_OK);
+			MessageBox(nullptr, L"can not find CS file", L"error", MB_OK);
 		}
 	}
 
-	HR(d3dDevice->CreateComputeShader(CSBlobHorizontal->GetBufferPointer(), 
-		CSBlobHorizontal->GetBufferSize(), NULL, &m_pCSGrussianBlurHorizontal));
+	HR(g_pDevice->CreateComputeShader(CSBlobHorizontal->GetBufferPointer(), 
+		CSBlobHorizontal->GetBufferSize(), nullptr, &m_pCSGrussianBlurHorizontal));
 
 
 	//编译ComputeShaderVertical
-	result = D3DCompileFromFile(csFilePath, NULL, NULL, "CS_VerticalBlur", "cs_5_0", flag, 0, &CSBlobVertical, &errorMessage);
+	result = D3DCompileFromFile(csFilePath, nullptr, nullptr, "CS_VerticalBlur", "cs_5_0", flag, 0, &CSBlobVertical, &errorMessage);
 	if (FAILED(result))
 	{
 		if (errorMessage)
@@ -83,7 +81,7 @@ bool GrussianBlurCS::InitShader(WCHAR* csFilePath)
 		}
 	}
 
-	HR(d3dDevice->CreateComputeShader(CSBlobVertical->GetBufferPointer(),
+	HR(g_pDevice->CreateComputeShader(CSBlobVertical->GetBufferPointer(),
 		CSBlobVertical->GetBufferSize(), NULL, &m_pCSGrussianBlurVertical));
 
 	return true;
@@ -102,7 +100,7 @@ void GrussianBlurCS::Run(int nScreenWidth, int nScreenHeight, RWRenderTexture* p
 	const float groupSharedMemorySize = 256;
 
 	//HorizontalBlur
-	float nDispatchX = ceil((float)nScreenWidth / groupSharedMemorySize);
+	int nDispatchX = (int)ceil((float)nScreenWidth / groupSharedMemorySize);
 	g_pDeviceContext->CSSetShader(m_pCSGrussianBlurHorizontal, nullptr, 0);
 	g_pDeviceContext->CSSetShaderResources(0, 1, &pSceneRT);
 	ID3D11UnorderedAccessView* pUAVH = pRWRenderTextureH->GetUAV();
@@ -116,7 +114,7 @@ void GrussianBlurCS::Run(int nScreenWidth, int nScreenHeight, RWRenderTexture* p
 	g_pDeviceContext->CSSetUnorderedAccessViews(0, 1, nullUAV, nullptr);
 
 	//VerticalBlur
-	float nDispatchY = ceil((float)nScreenHeight / groupSharedMemorySize);
+	int nDispatchY = (int)ceil((float)nScreenHeight / groupSharedMemorySize);
 	g_pDeviceContext->CSSetShader(m_pCSGrussianBlurVertical, nullptr, 0);
 	ID3D11ShaderResourceView* pSRV = pRWRenderTextureH->GetSRV();
 	g_pDeviceContext->CSSetShaderResources(0, 1, &pSRV);

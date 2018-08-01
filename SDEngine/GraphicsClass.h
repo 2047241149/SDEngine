@@ -2,11 +2,7 @@
 #ifndef _GRAPHICS_CLASS_H
 #define _GRAPHICS_CLASS_H
 
-#define POST_EFFECT
-//#define SSR
-//#define DEBUG_GBUFFER
-
-#include"D3DClass.h"
+#include "DirectxCore.h"
 #include"GameObject.h"
 #include"Macro.h"
 #include"Light.h"
@@ -16,7 +12,6 @@
 #include"ShaderManager.h"
 #include"SDKmesh.h"
 #include<DXUT.h>
-#include<DXUTgui.h>
 #include"GeometryBuffer.h"
 #include "DepthBufferRT.h"
 #include<memory>
@@ -31,6 +26,8 @@
 #include "GerstnerWaveCS.h"
 #include "GrussianBlurCS.h"
 #include "RWRenderTexture.h"
+#include "LightManager.h"
+
 
 //全局变量
 const bool FULL_SCREEN = false;
@@ -38,6 +35,10 @@ const bool VSYNC_ENABLE = false;  //是尽可能快渲染还是限制帧渲染
 const float SCREEN_FAR = 800.0f;  //视截体远裁面
 const float SCREEN_NEAR = 1.0f;  //视截体近裁面
 const float CAMERA_SPEED = 10.0f;
+
+#define POST_EFFECT
+//#define SSR
+//#define DEBUG_GBUFFER
 
 class GraphicsClass
 {
@@ -73,6 +74,7 @@ private:
 	shared_ptr<DepthBufferRT>  mBackDepthBufferRT;
 
 	int m_nScreenWidth, m_nScreenHeight;
+
 
 private:
 	bool Initialize(int ScreenWidth, int ScreenHeight, HWND hwnd, HINSTANCE hinstance);
