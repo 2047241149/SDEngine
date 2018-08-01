@@ -52,11 +52,10 @@ bool GeometryBuffer::Initialize(int TextureWidth, int TextureHeight, float Scree
 	gBufferTextureDesc.MiscFlags = 0;
 
 
-	ID3D11Device* d3dDevice = D3DClass::GetInstance()->GetDevice();
 
 	for (int i = 0; i < BUFFER_COUNT; ++i)
 	{
-		HR(d3dDevice->CreateTexture2D(&gBufferTextureDesc, NULL, &mRenderTargetTextureArray[i]));
+		HR(g_pDevice->CreateTexture2D(&gBufferTextureDesc, NULL, &mRenderTargetTextureArray[i]));
 	}
 
 
@@ -68,7 +67,7 @@ bool GeometryBuffer::Initialize(int TextureWidth, int TextureHeight, float Scree
 	renderTargetViewDesc.Texture2D.MipSlice = 0;
 	for (int i = 0; i < BUFFER_COUNT; ++i)
 	{
-		HR(d3dDevice->CreateRenderTargetView(mRenderTargetTextureArray[i], &renderTargetViewDesc, &mRenderTargetViewArray[i]));
+		HR(g_pDevice->CreateRenderTargetView(mRenderTargetTextureArray[i], &renderTargetViewDesc, &mRenderTargetViewArray[i]));
 	}
 
 
@@ -82,7 +81,7 @@ bool GeometryBuffer::Initialize(int TextureWidth, int TextureHeight, float Scree
 
 	for (int i = 0; i < BUFFER_COUNT; ++i)
 	{
-		HR(d3dDevice->CreateShaderResourceView(mRenderTargetTextureArray[i], &gBufferShaderResourceViewDesc, 
+		HR(g_pDevice->CreateShaderResourceView(mRenderTargetTextureArray[i], &gBufferShaderResourceViewDesc, 
 			&mGBufferSRV[i]));
 	}
 
@@ -102,7 +101,7 @@ bool GeometryBuffer::Initialize(int TextureWidth, int TextureHeight, float Scree
 	depthBufferTextureDesc.BindFlags = D3D11_BIND_DEPTH_STENCIL | D3D11_BIND_SHADER_RESOURCE;  //注意深度缓存(纹理)的绑定标志  
 	depthBufferTextureDesc.CPUAccessFlags = 0;
 	depthBufferTextureDesc.MiscFlags = 0;
-	HR(d3dDevice->CreateTexture2D(&depthBufferTextureDesc, NULL, &mDepthStencilTexture));
+	HR(g_pDevice->CreateTexture2D(&depthBufferTextureDesc, NULL, &mDepthStencilTexture));
 
 
 	//第五,填充深度缓存视图形容结构体,创建深度缓存(模板缓存)视图
@@ -112,7 +111,7 @@ bool GeometryBuffer::Initialize(int TextureWidth, int TextureHeight, float Scree
 	depthStencilViewDesc.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2D;
 	depthStencilViewDesc.Texture2D.MipSlice = 0;
 
-	HR(d3dDevice->CreateDepthStencilView(
+	HR(g_pDevice->CreateDepthStencilView(
 		mDepthStencilTexture, //我们基于这个深度缓存/漏字板缓存创建一个视图
 		&depthStencilViewDesc,
 		&mDepthStencilView));//指向深度缓存/漏字板视图的指针
@@ -124,16 +123,16 @@ bool GeometryBuffer::Initialize(int TextureWidth, int TextureHeight, float Scree
 	depthBufferSRVDesc.Texture2D.MostDetailedMip = 0;
 	depthBufferSRVDesc.Texture2D.MipLevels = depthBufferTextureDesc.MipLevels;
 
-	HR(d3dDevice->CreateShaderResourceView(mDepthStencilTexture, &depthBufferSRVDesc,
+	HR(g_pDevice->CreateShaderResourceView(mDepthStencilTexture, &depthBufferSRVDesc,
 		&mDepthBufferSRV));
 
 
 	//创建randomRT
 	srand(static_cast<unsigned int>(time(NULL)));
 	unsigned char* rand_data = new unsigned char[TextureWidth * TextureHeight];
-	for (UINT i = 0; i < TextureHeight; ++i)
+	for (int i = 0; i < TextureHeight; ++i)
 	{
-		for (UINT j = 0; j < TextureWidth; ++j)
+		for (int j = 0; j < TextureWidth; ++j)
 		{
 			//取值的前八位,也就0到255
 			unsigned char value = static_cast<unsigned char>(rand())&static_cast<unsigned char>(0x00ff);
@@ -159,8 +158,8 @@ bool GeometryBuffer::Initialize(int TextureWidth, int TextureHeight, float Scree
 	tex_data.pSysMem = rand_data;
 	tex_data.SysMemPitch = TextureWidth;
 	tex_data.SysMemSlicePitch = TextureWidth * TextureHeight;
-	d3dDevice->CreateTexture2D(&randomRTDesc, &tex_data, &mRandomTexture);
-	d3dDevice->CreateShaderResourceView(mRandomTexture, NULL, &mRandomSRV);
+	g_pDevice->CreateTexture2D(&randomRTDesc, &tex_data, &mRandomTexture);
+	g_pDevice->CreateShaderResourceView(mRandomTexture, NULL, &mRandomSRV);
 
 	delete[] rand_data;
 
@@ -198,12 +197,12 @@ void GeometryBuffer::ShutDown()
 //让此时所有图形渲染到这个目前渲染的位置
 void GeometryBuffer::SetRenderTarget(XMFLOAT3 backColor)
 {
-	ID3D11DeviceContext* deviceContext = D3DClass::GetInstance()->GetDeviceContext();
+
 	//绑定渲染目标视图和深度模板视图到输出渲染管线，此时渲染输出到两张纹理中
-	deviceContext->OMSetRenderTargets(BUFFER_COUNT, mRenderTargetViewArray, mDepthStencilView);
+	g_pDeviceContext->OMSetRenderTargets(BUFFER_COUNT, mRenderTargetViewArray, mDepthStencilView);
 
 	//设置相应的视口
-	deviceContext->RSSetViewports(1, &md3dViewport);
+	g_pDeviceContext->RSSetViewports(1, &md3dViewport);
 
 	ClearGBuffer(backColor);
 
@@ -213,10 +212,9 @@ void GeometryBuffer::SetRenderTarget(XMFLOAT3 backColor)
 
 void GeometryBuffer::ClearDepthBuffer()
 {
-	ID3D11DeviceContext* deviceContext = D3DClass::GetInstance()->GetDeviceContext();
 
 	//清除深度缓存和模板缓存
-	deviceContext->ClearDepthStencilView(mDepthStencilView, D3D11_CLEAR_DEPTH|D3D11_CLEAR_STENCIL, 1.0f, 0);
+	g_pDeviceContext->ClearDepthStencilView(mDepthStencilView, D3D11_CLEAR_DEPTH|D3D11_CLEAR_STENCIL, 1.0f, 0);
 }
 
 
@@ -230,29 +228,27 @@ void GeometryBuffer::ClearGBuffer(XMFLOAT3 backColor)
 	color[2] = backColor.z;
 	color[3] = 1.0f;
 
-	
-	ID3D11DeviceContext* deviceContext = D3DClass::GetInstance()->GetDeviceContext();
 	//ColorBuffer
-	deviceContext->ClearRenderTargetView(mRenderTargetViewArray[GBufferType::Diffuse], color);
+	g_pDeviceContext->ClearRenderTargetView(mRenderTargetViewArray[GBufferType::Diffuse], color);
 	
 	
 	//WorldNormal
 	color[0] = 0.0f;
 	color[1] = 0.0f;
 	color[2] = -1.0f;
-	deviceContext->ClearRenderTargetView(mRenderTargetViewArray[GBufferType::Normal], color);
+	g_pDeviceContext->ClearRenderTargetView(mRenderTargetViewArray[GBufferType::Normal], color);
 
 	//WorldPos
 	color[0] = 0.0f;
 	color[1] = 0.0f;
 	color[2] = 0.0f;
-	deviceContext->ClearRenderTargetView(mRenderTargetViewArray[GBufferType::Pos], color);
+	g_pDeviceContext->ClearRenderTargetView(mRenderTargetViewArray[GBufferType::Pos], color);
 
 	//Specular
 	color[0] = 0.0f;
 	color[1] = 0.0f;
 	color[2] = 0.0f;
-	deviceContext->ClearRenderTargetView(mRenderTargetViewArray[GBufferType::Specular], color);
+	g_pDeviceContext->ClearRenderTargetView(mRenderTargetViewArray[GBufferType::Specular], color);
 
 }
 

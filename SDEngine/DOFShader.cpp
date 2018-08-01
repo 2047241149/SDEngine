@@ -61,9 +61,6 @@ bool DOFShader::InitializeShader(WCHAR* VSFileName, WCHAR* PSFileName)
 	ID3D10Blob* errorMessage;
 	ID3D10Blob* VertexShaderBuffer;
 	ID3D10Blob* PixelShaderBuffer;
-	ID3D11Device* d3dDevice = D3DClass::GetInstance()->GetDevice();
-	ID3D11DeviceContext* d3dDeviceContext = D3DClass::GetInstance()->GetDeviceContext();
-
 
 	//第一,初始化参数
 	errorMessage = NULL;
@@ -82,7 +79,7 @@ bool DOFShader::InitializeShader(WCHAR* VSFileName, WCHAR* PSFileName)
 		//存在错误信息
 		if (errorMessage)
 		{
-			OutputShaderErrorMessage(errorMessage,VSFileName);
+			Log::LogShaderCompileInfo(errorMessage,VSFileName);
 		}
 		//不存在错误信息,也就是没有找到Shader文件
 		else
@@ -91,7 +88,7 @@ bool DOFShader::InitializeShader(WCHAR* VSFileName, WCHAR* PSFileName)
 		}
 	}
 
-	HR(d3dDevice->CreateVertexShader(VertexShaderBuffer->GetBufferPointer(), VertexShaderBuffer->GetBufferSize(), NULL, &md3dVertexShader));
+	HR(g_pDevice->CreateVertexShader(VertexShaderBuffer->GetBufferPointer(), VertexShaderBuffer->GetBufferSize(), NULL, &md3dVertexShader));
 
 
 	//第三,编译PixelShader,并创建PixelShader
@@ -101,7 +98,7 @@ bool DOFShader::InitializeShader(WCHAR* VSFileName, WCHAR* PSFileName)
 		//存在错误信息
 		if (errorMessage)
 		{
-			OutputShaderErrorMessage(errorMessage, PSFileName);
+			Log::LogShaderCompileInfo(errorMessage, PSFileName);
 		}
 		//不存在错误信息,也就是没有找到Shader文件
 		else
@@ -110,7 +107,7 @@ bool DOFShader::InitializeShader(WCHAR* VSFileName, WCHAR* PSFileName)
 		}
 	}
 
-	HR(d3dDevice->CreatePixelShader(PixelShaderBuffer->GetBufferPointer(), PixelShaderBuffer->GetBufferSize(), NULL, &md3dPixelShader));
+	HR(g_pDevice->CreatePixelShader(PixelShaderBuffer->GetBufferPointer(), PixelShaderBuffer->GetBufferSize(), NULL, &md3dPixelShader));
 
 	//第四,填充输入布局形容结构体,创建输入布局
 	D3D11_INPUT_ELEMENT_DESC VertexInputLayout[] =
@@ -122,7 +119,7 @@ bool DOFShader::InitializeShader(WCHAR* VSFileName, WCHAR* PSFileName)
 
 	unsigned int numElements = sizeof(VertexInputLayout) / sizeof(VertexInputLayout[0]);         //布局数量
 
-	HR(d3dDevice->CreateInputLayout(VertexInputLayout, numElements, VertexShaderBuffer->GetBufferPointer(), VertexShaderBuffer->GetBufferSize(), &md3dInputLayout));
+	HR(g_pDevice->CreateInputLayout(VertexInputLayout, numElements, VertexShaderBuffer->GetBufferPointer(), VertexShaderBuffer->GetBufferSize(), &md3dInputLayout));
 
 	//第五,释放VertexShaderBuffer和PixelShaderBuffer
 	VertexShaderBuffer->Release();
@@ -137,7 +134,7 @@ bool DOFShader::InitializeShader(WCHAR* VSFileName, WCHAR* PSFileName)
 	cBufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
 	cBufferDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
 
-	HR(d3dDevice->CreateBuffer(&cBufferDesc, NULL, &mCBDOF));
+	HR(g_pDevice->CreateBuffer(&cBufferDesc, NULL, &mCBDOF));
 
 	//第七,填充采样形容结构体,并且创建采样状态
 	D3D11_SAMPLER_DESC samplerDesc;
@@ -155,12 +152,12 @@ bool DOFShader::InitializeShader(WCHAR* VSFileName, WCHAR* PSFileName)
 	samplerDesc.MinLOD = 0;
 	samplerDesc.MaxLOD = D3D11_FLOAT32_MAX;
 
-	HR(d3dDevice->CreateSamplerState(&samplerDesc, &mSamplerLinearWrap));
+	HR(g_pDevice->CreateSamplerState(&samplerDesc, &mSamplerLinearWrap));
 
 	samplerDesc.AddressU = D3D11_TEXTURE_ADDRESS_CLAMP;
 	samplerDesc.AddressV = D3D11_TEXTURE_ADDRESS_CLAMP;
 	samplerDesc.AddressW = D3D11_TEXTURE_ADDRESS_CLAMP;
-	HR(d3dDevice->CreateSamplerState(&samplerDesc, &mSamplerLinearClamp));
+	HR(g_pDevice->CreateSamplerState(&samplerDesc, &mSamplerLinearClamp));
 
 	return true;
 }
@@ -175,61 +172,25 @@ void DOFShader::ShutDown()
 	ReleaseCOM(md3dVertexShader);
 }
 
-void DOFShader::OutputShaderErrorMessage(ID3D10Blob* errorMessage, WCHAR* shaderFilename)
-{
-	char* compileErrors;
-	unsigned long bufferSize, i;
-	ofstream fout;
-
-
-	// 获取指向错误信息文本的指针
-	compileErrors = (char*)(errorMessage->GetBufferPointer());
-
-	// 获取错误信息文本的长度
-	bufferSize = errorMessage->GetBufferSize();
-
-	// 创建一个txt,用于写入错误信息
-	fout.open("shader-error.txt");
-
-	//想txt文件写入错误信息
-	for (i = 0; i<bufferSize; i++)
-	{
-		fout << compileErrors[i];
-	}
-
-	// 关闭文件
-	fout.close();
-
-	// Release the error message.
-	errorMessage->Release();
-	errorMessage = 0;
-
-	//弹出提醒的小窗口
-	MessageBox(NULL, L"Error compiling shader.  Check shader-error.txt for message.", shaderFilename, MB_OK);
-
-}
-
 
 bool DOFShader::SetShaderCB(ID3D11ShaderResourceView* screenRT, ID3D11ShaderResourceView* screenBlurRT,
 	ID3D11ShaderResourceView* depthRT,
 	float dofStart, float dofRange, float farPlane, float nearPlane)
 {
 
-	ID3D11DeviceContext* d3dDeviceContext = D3DClass::GetInstance()->GetDeviceContext();
-
 	D3D11_MAPPED_SUBRESOURCE mappedSubresource;
-	HR(d3dDeviceContext->Map(mCBDOF, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedSubresource));
+	HR(g_pDeviceContext->Map(mCBDOF, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedSubresource));
 	auto pCBDOF = reinterpret_cast<CBDOF*>(mappedSubresource.pData);
 	pCBDOF->depthRange = dofRange;
 	pCBDOF->depthStart = dofStart;
 	pCBDOF->farPlane = farPlane;
 	pCBDOF->nearPlane = nearPlane;
-	d3dDeviceContext->Unmap(mCBDOF, 0);
+	g_pDeviceContext->Unmap(mCBDOF, 0);
 
-	d3dDeviceContext->PSSetConstantBuffers(0, 1, &mCBDOF);
-	d3dDeviceContext->PSSetShaderResources(0, 1, &screenRT);
-	d3dDeviceContext->PSSetShaderResources(1, 1, &screenBlurRT);
-	d3dDeviceContext->PSSetShaderResources(2, 1, &depthRT);
+	g_pDeviceContext->PSSetConstantBuffers(0, 1, &mCBDOF);
+	g_pDeviceContext->PSSetShaderResources(0, 1, &screenRT);
+	g_pDeviceContext->PSSetShaderResources(1, 1, &screenBlurRT);
+	g_pDeviceContext->PSSetShaderResources(2, 1, &depthRT);
 
 	return true;
 }
@@ -237,18 +198,17 @@ bool DOFShader::SetShaderCB(ID3D11ShaderResourceView* screenRT, ID3D11ShaderReso
 bool DOFShader::SetShaderState()
 {
 
-	ID3D11DeviceContext* deviceContext = D3DClass::GetInstance()->GetDeviceContext();
 
 	//设置顶点输入布局
-	deviceContext->IASetInputLayout(md3dInputLayout);
+	g_pDeviceContext->IASetInputLayout(md3dInputLayout);
 
 	//设置VertexShader和PixelShader
-	deviceContext->VSSetShader(md3dVertexShader, NULL, 0);
-	deviceContext->PSSetShader(md3dPixelShader, NULL, 0);
+	g_pDeviceContext->VSSetShader(md3dVertexShader, NULL, 0);
+	g_pDeviceContext->PSSetShader(md3dPixelShader, NULL, 0);
 
 	//设置采样状态
-	deviceContext->PSSetSamplers(0, 1, &mSamplerLinearWrap); 
-	deviceContext->PSSetSamplers(1, 1, &mSamplerLinearClamp);
+	g_pDeviceContext->PSSetSamplers(0, 1, &mSamplerLinearWrap);
+	g_pDeviceContext->PSSetSamplers(1, 1, &mSamplerLinearClamp);
 
 	return true;
 }

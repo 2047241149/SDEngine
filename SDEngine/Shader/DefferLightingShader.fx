@@ -67,7 +67,7 @@ float4 PS(VertexOut outa) : SV_Target
 
 	color = float4((ambientLight + dirLightColor.xyz * diffuseFactor) * diffuse, 1.0);
 	color = color + float4(specularFactor, specularFactor, specularFactor, 1.0);
-	float correctGamma = 1.0 / 2.2;
+	float correctGamma = 1.0 / 2.0;
 	color = pow(color, float4(correctGamma, correctGamma, correctGamma, 0.0));
 
 	return color;

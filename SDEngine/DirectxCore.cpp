@@ -1,47 +1,46 @@
-#include"D3DClass.h"
+#include "DirectxCore.h"
 
-D3DClass::D3DClass()
-{
-	mD3D = nullptr;
-}
-
-D3DClass::~D3DClass()
+DirectxCore::DirectxCore():
+	md3dDevice(nullptr),
+	md3dImmediateContext(nullptr),
+	md3dSwapChain(nullptr),
+	md3dRenderTargetView(nullptr),
+	md3dDepthStencilView(nullptr),
+	md3dDepthStencilBuffer(nullptr),
+	md3dDepthStencilState(nullptr),
+	md3dDisableDepthStencilState(nullptr),
+	md3dRasterizerState(nullptr),
+	md3dEnableBlendState(nullptr),
+	md3dDisableBlendState(nullptr),
+	md3dWireFrameRS(nullptr)
 {
 	
 }
 
-
-D3DClass::D3DClass(const D3DClass& other)
+DirectxCore::~DirectxCore()
 {
 	ShutDown();
 }
 
-D3DClass* D3DClass::GetInstance()
+
+DirectxCore::DirectxCore(const DirectxCore& other)
 {
-	if (mD3D == nullptr)
+	ShutDown();
+}
+
+shared_ptr<DirectxCore> DirectxCore::Get()
+{
+	if (nullptr == m_pDirectxCore)
 	{
-		mD3D = shared_ptr<D3DClass>(new D3DClass());
+		m_pDirectxCore = shared_ptr<DirectxCore>(new DirectxCore());
 	}
-	return mD3D.get();
+	return m_pDirectxCore;
 }
 
 
-bool D3DClass::Initialize(int ScreenWidth, int ScreenHeight, bool vsync, HWND hwnd, bool fullscreen, float ScreenDepth, float ScreenNear)
+bool DirectxCore::Init(int ScreenWidth, int ScreenHeight, bool vsync, HWND hwnd, bool fullscreen, float ScreenDepth, float ScreenNear)
 {
-	//置空指针
-	md3dDevice = NULL;
-	md3dImmediateContext = NULL;
-	md3dSwapChain = NULL;
-	md3dRenderTargetView = NULL;
-	md3dDepthStencilView = NULL;
-	md3dDepthStencilBuffer = NULL;
-	md3dDepthStencilState = NULL;
-	md3dDisableDepthStencilState = NULL;
-	md3dRasterizerState = NULL;
-	md3dEnableBlendState = NULL;
-	md3dDisableBlendState = NULL;
-	md3dWireFrameRS = NULL;
-
+	
 	//--------------------------------------------------------------
 	//获取显示模式信息和显卡信息
 	//---------------------------------------------------------------
@@ -176,7 +175,7 @@ bool D3DClass::Initialize(int ScreenWidth, int ScreenHeight, bool vsync, HWND hw
 	//--------------------------------------------------------------
 	D3D11_TEXTURE2D_DESC depthStencilDesc;
 	ZeroMemory(&depthStencilDesc, sizeof(depthStencilDesc));
-	depthStencilDesc.Width=ScreenWidth;
+	depthStencilDesc.Width = ScreenWidth;
 	depthStencilDesc.Height = ScreenHeight;
 	depthStencilDesc.MipLevels = 1;
 	depthStencilDesc.ArraySize = 1;
@@ -217,12 +216,9 @@ bool D3DClass::Initialize(int ScreenWidth, int ScreenHeight, bool vsync, HWND hw
 	md3dImmediateContext->OMSetDepthStencilState(md3dDepthStencilState, 0);
 
 
-
-
 	//--------------------------------------------------------------
 	//创建深度缓存(模板缓存)视图
 	//--------------------------------------------------------------
-
 	HR(md3dDevice->CreateDepthStencilView(
 		md3dDepthStencilBuffer, //我们基于这个深度缓存/漏字板缓存创建一个视图
 		0,
@@ -277,14 +273,12 @@ bool D3DClass::Initialize(int ScreenWidth, int ScreenHeight, bool vsync, HWND hw
 	md3dImmediateContext->RSSetViewports(1,&mViewport);
 
 
-
 	//第十二,输出一个Text文件保存显卡的信息 
 	char CardInfo[128];
 	int memory;
 	GetVideoCardInfo(CardInfo, memory);
 	ofstream os("I:/1.txt");
 	os << "memory=" << memory << "  " << " CardInfo= " << CardInfo;
-
 
 
 	//创建一个使ZBuffer无效的DepthStencilState状态
@@ -348,7 +342,6 @@ bool D3DClass::Initialize(int ScreenWidth, int ScreenHeight, bool vsync, HWND hw
 	HR(md3dDevice->CreateDepthStencilState(&MaskReflectDESC, &md3dDSSMaskReflect));
 
 
-
 	//创建一个标记反射面的DepthStencilState状态
 	D3D11_DEPTH_STENCIL_DESC EnableReflectDESC;
 	ZeroMemory(&EnableReflectDESC, sizeof(EnableReflectDESC));
@@ -368,7 +361,6 @@ bool D3DClass::Initialize(int ScreenWidth, int ScreenHeight, bool vsync, HWND hw
 	EnableReflectDESC.BackFace.StencilPassOp = D3D11_STENCIL_OP_KEEP;
 	EnableReflectDESC.BackFace.StencilFunc = D3D11_COMPARISON_EQUAL;
 	HR(md3dDevice->CreateDepthStencilState(&EnableReflectDESC, &md3dDSSEnableReflect));
-
 
 
 	//创建alpha混合开启的混合状态
@@ -394,7 +386,7 @@ bool D3DClass::Initialize(int ScreenWidth, int ScreenHeight, bool vsync, HWND hw
 }
 
 
-void D3DClass::BeginScene(float red, float green, float blue, float alpha)
+void DirectxCore::BeginScene(float red, float green, float blue, float alpha)
 {
 	float color[4];
 
@@ -412,7 +404,7 @@ void D3DClass::BeginScene(float red, float green, float blue, float alpha)
 	
 }
 
-void D3DClass::EndScene()
+void DirectxCore::EndScene()
 {
 	//因为渲染已经完成,提交backbuffer到屏幕
 	if (mVsyncEnable)
@@ -429,7 +421,7 @@ void D3DClass::EndScene()
 
 
 
-void D3DClass::GetVideoCardInfo(char* cardName, int& memory)
+void DirectxCore::GetVideoCardInfo(char* cardName, int& memory)
 {
 	strcpy_s(cardName, 128, mVideoCardDescription);
 	memory = mVideoCardMemory;
@@ -437,7 +429,7 @@ void D3DClass::GetVideoCardInfo(char* cardName, int& memory)
 }
 
 
-void D3DClass::TurnOffAlphaBlend()
+void DirectxCore::TurnOffAlphaBlend()
 {
 	float blendFactor[4];
 	blendFactor[0] = 0.0f;
@@ -448,7 +440,7 @@ void D3DClass::TurnOffAlphaBlend()
 }
 
 
-void D3DClass::TurnOnAlphaBlend()
+void DirectxCore::TurnOnAlphaBlend()
 {
 	float blendFactor[4];
 	blendFactor[0] = 0.0f;
@@ -459,27 +451,27 @@ void D3DClass::TurnOnAlphaBlend()
 }
 
 
-void D3DClass::TurnOffZBuffer()
+void DirectxCore::TurnOffZBuffer()
 {
 	md3dImmediateContext->OMSetDepthStencilState(md3dDisableDepthStencilState, 1);
 }
 
-void D3DClass::SetBackBufferRender()
+void DirectxCore::SetBackBufferRender()
 {
 	md3dImmediateContext->OMSetRenderTargets(1, &md3dRenderTargetView, md3dDepthStencilView);
 }
 
 
-void D3DClass::SetViewPort()
+void DirectxCore::SetViewPort()
 {
 	md3dImmediateContext->RSSetViewports(1, &mViewport);
 }
 
-void D3DClass::TurnOnZBuffer()
+void DirectxCore::TurnOnZBuffer()
 {
 	md3dImmediateContext->OMSetDepthStencilState(md3dDepthStencilState, 0);
 }
-void D3DClass::ShutDown()
+void DirectxCore::ShutDown()
 {
 	//在释放其它D3D接口前,使交换链进入窗口模式
 	if (md3dSwapChain)
@@ -500,29 +492,29 @@ void D3DClass::ShutDown()
 	ReleaseCOM(md3dImmediateContext);
 }
 
-void D3DClass::TurnOnSolidRender()
+void DirectxCore::TurnOnSolidRender()
 {
 	md3dImmediateContext->RSSetState(md3dRasterizerState);
 }
-void D3DClass::TurnOnWireFrameRender()
+void DirectxCore::TurnOnWireFrameRender()
 {
 	md3dImmediateContext->RSSetState(md3dWireFrameRS);
 }
 
 
-void D3DClass::TurnOnMaskReflectDSS()
+void DirectxCore::TurnOnMaskReflectDSS()
 {
 	md3dImmediateContext->OMSetDepthStencilState(md3dDSSMaskReflect, 1);
 }
 
 
-void D3DClass::TurnOnEnableReflectDSS()
+void DirectxCore::TurnOnEnableReflectDSS()
 {
 	md3dImmediateContext->OMSetDepthStencilState(md3dDSSEnableReflect, 1);
 }
 
 
-void D3DClass::TurnOnCullFront()
+void DirectxCore::TurnOnCullFront()
 {
 	md3dImmediateContext->RSSetState(md3dCullFrontRS);
 }
@@ -530,15 +522,17 @@ void D3DClass::TurnOnCullFront()
 
 
 //恢复默认的
-void D3DClass::RecoverDefaultDSS()
+void DirectxCore::RecoverDefaultDSS()
 {
 	md3dImmediateContext->OMSetDepthStencilState(md3dDepthStencilState, 0);
 }
 
 //关掉ZBuffer写
-void D3DClass::TurnOnDisbleZWriteDSS()
+void DirectxCore::TurnOnDisbleZWriteDSS()
 {
 	md3dImmediateContext->OMSetDepthStencilState(md3dDisableZWriteDSS, 0);
 }
 
-shared_ptr<D3DClass> D3DClass::mD3D = nullptr;
+
+shared_ptr<DirectxCore> DirectxCore::m_pDirectxCore = nullptr;
+

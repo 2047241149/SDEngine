@@ -1,7 +1,7 @@
 #pragma once
 #ifndef  _WAVE_H
 #define _WAVE_H
-#include "D3DClass.h"
+#include "CoreMini.h"
 #include "CommomVertexFormat.h"
 
 struct WaveParam

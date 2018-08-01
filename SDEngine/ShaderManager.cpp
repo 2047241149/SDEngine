@@ -3,7 +3,7 @@
 
 ShaderManager::ShaderManager()
 {
-	Initialize();
+	Init();
 }
 
 ShaderManager::~ShaderManager()
@@ -16,7 +16,7 @@ ShaderManager::ShaderManager(const ShaderManager& other)
 
 }
 
-bool ShaderManager::Initialize()
+bool ShaderManager::Init()
 {
 
 	mDiffuseNormalShader = shared_ptr<DiffuseNormalShader>(new
@@ -163,14 +163,14 @@ bool ShaderManager::SetDepthShader(ID3D11ShaderResourceView* depthTexture)
 	return true;
 }
 
-ShaderManager* ShaderManager::GetInstance()
+shared_ptr<ShaderManager> ShaderManager::Get()
 {
-	if (mShaderManager == nullptr)
+	if (nullptr == m_spShaderManager)
 	{
-		mShaderManager = shared_ptr<ShaderManager>(new ShaderManager());
+		m_spShaderManager = shared_ptr<ShaderManager>(new ShaderManager());
 	}
 
-	return mShaderManager.get();
+	return m_spShaderManager;
 }
 
 
@@ -317,5 +317,5 @@ bool ShaderManager::SetWaveShader(CXMMATRIX worldMatrix, FXMVECTOR surfaceColor,
 	return true;
 }
 
-shared_ptr<ShaderManager> ShaderManager::mShaderManager = nullptr;
+shared_ptr<ShaderManager> ShaderManager::m_spShaderManager = nullptr;
 

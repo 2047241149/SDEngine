@@ -2,10 +2,7 @@
 #ifndef _RENDER_DEPTH_TO_TEXTURE_H
 #define _RENDER_DEPTH_TO_TEXTURE_H
 
-#include<Windows.h>
-#include<d3d11_1.h>
-#include"Macro.h"
-#include "D3DClass.h"
+#include "CoreMini.h"
 
 class DepthBufferRT
 {

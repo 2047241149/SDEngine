@@ -19,30 +19,29 @@ bool GraphicsClass::Initialize(int ScreenWidth, int ScreenHeight, HWND hwnd,HINS
 {
 
 	mhwnd = hwnd;
+
 	m_nScreenWidth = ScreenWidth;
 	m_nScreenHeight = ScreenHeight;
-	//创建D3DClass类并且初始化,D3DClass应该是第一个被创建并且初始化
-	D3DClass::GetInstance()->Initialize(ScreenWidth, ScreenHeight, VSYNC_ENABLE, hwnd, FULL_SCREEN, SCREEN_NEAR, SCREEN_FAR);
 
-	ID3D11Device* d3dDevice = D3DClass::GetInstance()->GetDevice();
+	//创建D3DClass类并且初始化,D3DClass是第一个被创建并且初始化
+	GDirectxCore->Init(ScreenWidth, ScreenHeight, VSYNC_ENABLE, hwnd, FULL_SCREEN, SCREEN_NEAR, SCREEN_FAR);
 
+	//Console的Debug窗口
 	InitDebugConsole();
 
 	//创建相机
-	Camera* mainCamera = Camera::GetInstance();
-	mainCamera->SetProjParams(XM_PI / 3.0f, (float)ScreenWidth / (float)ScreenHeight, SCREEN_NEAR, SCREEN_FAR);
-	mainCamera->SetUIOrthoParams((float)ScreenWidth, (float)ScreenHeight);
+	GCamera->SetProjParams(XM_PI / 3.0f, (float)ScreenWidth / (float)ScreenHeight, SCREEN_NEAR, SCREEN_FAR);
+	GCamera->SetUIOrthoParams((float)ScreenWidth, (float)ScreenHeight);
 
-	//创建Shader管理器
-	ShaderManager* mShaderManager = ShaderManager::GetInstance();
+	//给游戏添加灯光
+	shared_ptr<DirectionLight> m_spDirLight = shared_ptr<DirectionLight>(new DirectionLight());
+	m_spDirLight->SetLightPostion(XMFLOAT3(12.0f, 12.0f, 12.0f));
+	m_spDirLight->SetLookAtPosition(XMFLOAT3(0.0f, 0.0f, 0.0f));
+	m_spDirLight->SetAmbientLight(XMFLOAT3(0.05f, 0.05f, 0.05f));
+	m_spDirLight->SetLightColor(XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f));
+	GLightManager->Add(m_spDirLight);
 
-	//创建directionLight(游戏中仅仅存在一个方向光，用来模拟太阳光)
-	Light* dirLight = Light::GetInstnce();
-	XMVECTOR lightPos = XMVectorSet(12.0f, 12.0f, 12.0f, 0.0f);
-	XMVECTOR lookAtPos = XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f);
-	dirLight->SetViewParams(lightPos, lookAtPos);
-	dirLight->SetLightColor(XMVectorSet(1.0, 1.0f, 1.0f, 1.0f));
-	dirLight->SetAmbientLight(XMVectorSet(0.05f, 0.05f, 0.05f, 1.0f));
+
 
 	//创建ModelClasss
 	mHeadObject = shared_ptr<GameObject>(new GameObject("FBXModel\\head\\head.FBX"));
@@ -93,7 +92,7 @@ bool GraphicsClass::Frame()
 	{
 	return false;
 	}
-	Camera* mainCamera = Camera::GetInstance();
+	
 	FPS* fpsPtr = FPS::GetInstance();
 	fpsPtr->Frame();
 
@@ -110,31 +109,31 @@ bool GraphicsClass::Frame()
 		//"W","S"键操作
 		if (mInputClass->IsWPressed())
 		{
-			mainCamera->Walk(deltaTime*CAMERA_SPEED);
+			GCamera->Walk(deltaTime*CAMERA_SPEED);
 		}
 		else if (mInputClass->IsSPressed())
 		{
-			mainCamera->Walk(-deltaTime*CAMERA_SPEED);
+			GCamera->Walk(-deltaTime*CAMERA_SPEED);
 		}
 
 		//"A","D"键操作
 		if (mInputClass->IsAPressed())
 		{
-			mainCamera->Strafe(-deltaTime*CAMERA_SPEED);
+			GCamera->Strafe(-deltaTime*CAMERA_SPEED);
 		}
 		else if (mInputClass->IsDPressed())
 		{
-			mainCamera->Strafe(deltaTime*CAMERA_SPEED);
+			GCamera->Strafe(deltaTime*CAMERA_SPEED);
 		}
 
 		//"Q","E"键操作
 		if (mInputClass->IsQPressed())
 		{
-			mainCamera->UpDown(-deltaTime*CAMERA_SPEED);
+			GCamera->UpDown(-deltaTime*CAMERA_SPEED);
 		}
 		else if (mInputClass->IsEPressed())
 		{
-			mainCamera->UpDown(deltaTime*CAMERA_SPEED);
+			GCamera->UpDown(deltaTime*CAMERA_SPEED);
 		}
 
 
@@ -142,22 +141,22 @@ bool GraphicsClass::Frame()
 		if (rotateY <= 90.0f&&rotateY >= -90.0f)
 		{
 			rotateY += (float)mouseYOffset*deltaTime;
-			mainCamera->Pitch((float)mouseYOffset*deltaTime*2.0f);
+			GCamera->Pitch((float)mouseYOffset*deltaTime*2.0f);
 		}
 	
 		//进行视角左右的旋转
-		mainCamera->RotateY((float)mouseXOffset*deltaTime*2.0f);
+		GCamera->RotateY((float)mouseXOffset*deltaTime*2.0f);
 	}
 
 
 	//1与2切换渲染模式
 	if (mInputClass->IsKeyDown(DIK_1))
 	{
-		D3DClass::GetInstance()->TurnOnSolidRender();
+		GDirectxCore->TurnOnSolidRender();
 	}
 	if (mInputClass->IsKeyDown(DIK_2))
 	{
-		D3DClass::GetInstance()->TurnOnWireFrameRender();
+		GDirectxCore->TurnOnWireFrameRender();
 	}
 	if (mInputClass->IsKeyDown(DIK_3))
 	{
@@ -176,14 +175,14 @@ bool GraphicsClass::Frame()
 		materialType = MaterialType::DIFFUSE_NORMAL_SPECULAR;
 	}
 
-	mainCamera->UpdateViewMatrix();
+	GCamera->UpdateViewMatrix();
 	//如果按下ESC，则破坏窗口
 	if (mInputClass->IsEscapePressed())
 	{
 		DestroyWindow(mhwnd);
 	}
 
-	mainCamera->UpdateViewMatrix();
+	GCamera->UpdateViewMatrix();
 
 	return true;
 }
@@ -195,9 +194,7 @@ void GraphicsClass::Render()
 	//绘制整个场景
 	//*************************************************************************
 
-	auto d3dPtr = D3DClass::GetInstance();
-
-	d3dPtr->BeginScene(0.3f, 0.0f, 1.0f, 1.0f);
+	GDirectxCore->BeginScene(0.3f, 0.0f, 1.0f, 1.0f);
 
 	//绘制不透明物体
 	RenderOpacity();
@@ -220,14 +217,13 @@ void GraphicsClass::Render()
 	//**************************************************************************
 	//结束绘制
 	//*************************************************************************
-	d3dPtr->EndScene();
+	GDirectxCore->EndScene();
 }
 
 
 
 void GraphicsClass::RenderFBXMesh()
 {
-
 	//渲染头
 	mHeadObject->mTransform->localScale = XMFLOAT3(5.0f, 5.0f, 5.0f);
 	mHeadObject->mTransform->localPosition = XMFLOAT3(0.0f, 10.0f, 0.0f);
@@ -235,10 +231,10 @@ void GraphicsClass::RenderFBXMesh()
 	mHeadObject->Render(materialType);
 
 	//渲染SponzaBottom(用于SSR反射)
-	D3DClass::GetInstance()->TurnOnMaskReflectDSS();
+	GDirectxCore->TurnOnMaskReflectDSS();
 	mSponzaBottom->mTransform->localPosition = XMFLOAT3(0.0f, 0.0f, 0.0f);
 	mSponzaBottom->Render(MaterialType::DIFFUSE);
-	D3DClass::GetInstance()->TurnOnZBuffer();//恢复默认的DSS
+	GDirectxCore->TurnOnZBuffer();//恢复默认的DSS
 
 	//渲染SponzaNoBottm
 	mSponzaNoBottom->mTransform->localPosition = XMFLOAT3(0.0f, 0.0f, 0.0f);
@@ -248,14 +244,12 @@ void GraphicsClass::RenderFBXMesh()
 	mSphereObject->mTransform->localScale = XMFLOAT3(1.0f, 1.0f, 1.0f);
 
 	//平行光源球
-	 XMStoreFloat3(&mSphereObject->mTransform->localPosition,
-		 -Light::GetInstnce()->GetLightDirection());
+	mSphereObject->mTransform->localPosition = GLightManager->GetMainLight()->GetLightDirection();
 	mSphereObject->Render(MaterialType::PURE_COLOR, XMVectorSet(1.0f, 1.0f, 0.0f, 1.0f));
-	
+
 	//原点球
 	mSphereObject->mTransform->localPosition = XMFLOAT3(0.0f, 0.0f, 0.0f);
-	mSphereObject->Render(MaterialType::PURE_COLOR,XMVectorSet(1.0f,1.0f,0.0f,1.0f));
-
+	mSphereObject->Render(MaterialType::PURE_COLOR, XMVectorSet(1.0f,1.0f,0.0f,1.0f));
 }
 
 void GraphicsClass::RenderGeometryPass()
@@ -268,21 +262,21 @@ void GraphicsClass::RenderGeometryPass()
 void GraphicsClass::RenderLightingPass()
 {
 	mSrcRT->SetRenderTarget();
-	D3DClass::GetInstance()->TurnOffZBuffer();
+	GDirectxCore->TurnOffZBuffer();
 	ID3D11ShaderResourceView* shaderResourceView[4];
 	shaderResourceView[0] = mGeometryBuffer->GetGBufferSRV(GBufferType::Diffuse);
 	shaderResourceView[1] = mGeometryBuffer->GetGBufferSRV(GBufferType::Pos);
 	shaderResourceView[2] = mGeometryBuffer->GetGBufferSRV(GBufferType::Normal);
 	shaderResourceView[3] = mGeometryBuffer->GetGBufferSRV(GBufferType::Specular);
-	ShaderManager::GetInstance()->SetDefferLighingShader(shaderResourceView);
+	GShaderManager->SetDefferLighingShader(shaderResourceView);
 	mQuad->Render();
 
-	D3DClass::GetInstance()->SetBackBufferRender();
-	D3DClass::GetInstance()->SetViewPort();
-	ShaderManager::GetInstance()->SetGraphcisBlitShader(mSrcRT->GetSRV());
+	GDirectxCore->SetBackBufferRender();
+	GDirectxCore->SetViewPort();
+	GShaderManager->SetGraphcisBlitShader(mSrcRT->GetSRV());
 	mQuad->Render();
 
-	D3DClass::GetInstance()->TurnOnZBuffer();
+	GDirectxCore->TurnOnZBuffer();
 }
 
 
@@ -295,62 +289,61 @@ void GraphicsClass::RenderPostEffectPass()
 
 void GraphicsClass::RenderDebugWindow()
 {
-	D3DClass::GetInstance()->SetBackBufferRender();
-	D3DClass::GetInstance()->SetViewPort();
-	D3DClass::GetInstance()->TurnOffZBuffer();
+	GDirectxCore->SetBackBufferRender();
+	GDirectxCore->SetViewPort();
+	GDirectxCore->TurnOffZBuffer();
 
 	//diffuse
-	ShaderManager::GetInstance()->SetUIShader
+	GShaderManager->SetUIShader
 	(mGeometryBuffer->GetGBufferSRV(GBufferType::Diffuse));
 	mDebugWindow->Render(10, 600);
 
 	//pos
-	ShaderManager::GetInstance()->SetUIShader
+	GShaderManager->SetUIShader
 	(mGeometryBuffer->GetGBufferSRV(GBufferType::Pos));
 	mDebugWindow->Render(130, 600);
 
 	//normal
-	ShaderManager::GetInstance()->SetUIShader
+	GShaderManager->SetUIShader
 	(mGeometryBuffer->GetGBufferSRV(GBufferType::Normal));
 	mDebugWindow->Render(250, 600);
 
 	//specular
-	ShaderManager::GetInstance()->SetUIShader
+	GShaderManager->SetUIShader
 	(mGeometryBuffer->GetGBufferSRV(GBufferType::Specular));
 	mDebugWindow->Render(370, 600);
 
-	ShaderManager::GetInstance()->SetDepthShader
+	GShaderManager->SetDepthShader
 	(mGeometryBuffer->GetGBufferSRV(GBufferType::Depth));
 	mDebugWindow->Render(490, 600);
 
 
-	ShaderManager::GetInstance()->SetDepthShader
+	GShaderManager->SetDepthShader
 	(mBackDepthBufferRT->GetShaderResourceView());
 	mDebugWindow->Render(610, 600);
 
-	ShaderManager::GetInstance()->SetUIShader
+	GShaderManager->SetUIShader
 	(mSSRBuffer->GetGBufferSRV(SSRBufferType::VIEW_NORMAL));
 	mDebugWindow->Render(10, 480);
 
-	ShaderManager::GetInstance()->SetUIShader
+	GShaderManager->SetUIShader
 	(mSSRBuffer->GetGBufferSRV(SSRBufferType::VIEW_POS));
 	mDebugWindow->Render(10, 360);
 
-	D3DClass::GetInstance()->TurnOnZBuffer();
+	GDirectxCore->TurnOnZBuffer();
 }
 
 void GraphicsClass::RenderSSRPass()
 {
 	//mSSRRT->SetRenderTarget();
-	ID3D11DeviceContext* d3dDeviceContext = D3DClass::GetInstance()->GetDeviceContext();
-	ID3D11RenderTargetView* backRTV = D3DClass::GetInstance()->GetRTV();
+	ID3D11RenderTargetView* backRTV =GDirectxCore->GetRTV();
 	//靠模板緩存值來判斷
-	d3dDeviceContext->OMSetRenderTargets(1, &backRTV, nullptr);
-	D3DClass::GetInstance()->SetViewPort();
-	D3DClass::GetInstance()->TurnOnAlphaBlend();
-	D3DClass::GetInstance()->TurnOffZBuffer();
+	g_pDeviceContext->OMSetRenderTargets(1, &backRTV, nullptr);
+	GDirectxCore->SetViewPort();
+	GDirectxCore->TurnOnAlphaBlend();
+	GDirectxCore->TurnOffZBuffer();
 	XMMATRIX worldMatrix = mSponzaBottom->GetWorldMatrix();
-	XMMATRIX projMatrix = Camera::GetInstance()->GetProjectionMatrix();
+	XMMATRIX projMatrix = GCamera->GetProjectionMatrix();
 	XMFLOAT4X4 projFloat4X4;
 	XMStoreFloat4x4(&projFloat4X4, projMatrix);
 	XMFLOAT2 perspectiveValues;
@@ -362,10 +355,10 @@ void GraphicsClass::RenderSSRPass()
 	arraySRV[2] = mBackDepthBufferRT->GetShaderResourceView();
 	arraySRV[3] = mSSRBuffer->GetGBufferSRV(SSRBufferType::VIEW_POS);
 	arraySRV[4] = mSSRBuffer->GetGBufferSRV(SSRBufferType::VIEW_NORMAL);
-	ShaderManager::GetInstance()->SetSSRShader(worldMatrix,arraySRV,perspectiveValues);
+	GShaderManager->SetSSRShader(worldMatrix,arraySRV,perspectiveValues);
 	mQuad->Render();
-	D3DClass::GetInstance()->TurnOnZBuffer();
-	D3DClass::GetInstance()->TurnOffAlphaBlend();
+	GDirectxCore->TurnOnZBuffer();
+	GDirectxCore->TurnOffAlphaBlend();
 }
 
 void GraphicsClass::RenderOpacity()
@@ -386,28 +379,28 @@ void GraphicsClass::RenderTransparency()
 
 void GraphicsClass::RenderGeneralTransparency()
 {
-	ID3D11DeviceContext* d3dDeviceContext = D3DClass::GetInstance()->GetDeviceContext();
-	ID3D11RenderTargetView* backRTV = D3DClass::GetInstance()->GetRTV();
+	ID3D11DeviceContext* d3dDeviceContext = GDirectxCore->GetDeviceContext();
+	ID3D11RenderTargetView* backRTV = GDirectxCore->GetRTV();
 	ID3D11DepthStencilView* opacityDSV = mGeometryBuffer->GetDSV();
 	d3dDeviceContext->OMSetRenderTargets(1, &backRTV, opacityDSV);
-	D3DClass::GetInstance()->SetViewPort();
-	D3DClass::GetInstance()->TurnOnDisbleZWriteDSS();
-	D3DClass::GetInstance()->TurnOnAlphaBlend();
+	GDirectxCore->SetViewPort();
+	GDirectxCore->TurnOnDisbleZWriteDSS();
+	GDirectxCore->TurnOnAlphaBlend();
 
 	mSphereObject->mTransform->localPosition = XMFLOAT3(3.0, 9.0, 0.0);
 	mSphereObject->mTransform->localScale = XMFLOAT3(3.0, 3.0, 3.0);
 	XMMATRIX worldMatrix = mSphereObject->GetWorldMatrix();
-	ShaderManager::GetInstance()->SetForwardPureColorShader(worldMatrix, XMVectorSet(1.0f, 0.0f, 0.0f, 1.0f));
+	GShaderManager->SetForwardPureColorShader(worldMatrix, XMVectorSet(1.0f, 0.0f, 0.0f, 1.0f));
 	mSphereObject->RenderMesh();
-	D3DClass::GetInstance()->TurnOffAlphaBlend();
-	D3DClass::GetInstance()->RecoverDefaultDSS();
+	GDirectxCore->TurnOffAlphaBlend();
+	GDirectxCore->RecoverDefaultDSS();
 }
 
 
 void GraphicsClass::RenderSceneBackDepthBuffer()
 {
 	mBackDepthBufferRT->SetRenderTarget();
-	D3DClass::GetInstance()->TurnOnCullFront();
+	GDirectxCore->TurnOnCullFront();
 
 	//渲染头
 	mHeadObject->mTransform->localScale = XMFLOAT3(5.0f, 5.0f, 5.0f);
@@ -428,9 +421,9 @@ void GraphicsClass::RenderSceneBackDepthBuffer()
 
 
 	//平行光源球
-	XMStoreFloat3(&mSphereObject->mTransform->localPosition,
-		-Light::GetInstnce()->GetLightDirection());
+	mSphereObject->mTransform->localPosition = GLightManager->GetMainLight()->GetLightDirection();
 	mSphereObject->Render(MaterialType::DEPTH_BUFFER);
+
 
 	//原点球
 	mSphereObject->mTransform->localPosition = XMFLOAT3(0.0f, 0.0f, 0.0f);
@@ -438,7 +431,7 @@ void GraphicsClass::RenderSceneBackDepthBuffer()
 
 
 	//恢复默认的RS
-	D3DClass::GetInstance()->TurnOnSolidRender();
+	GDirectxCore->TurnOnSolidRender();
 
 }
 
@@ -446,14 +439,14 @@ void GraphicsClass::RenderSSRBufferPass()
 {
 	ID3D11DepthStencilView* backDSV = mGeometryBuffer->GetDSV();
 	mSSRBuffer->SetRenderTarget(backDSV);
-	D3DClass::GetInstance()->TurnOnEnableReflectDSS();
+	GDirectxCore->TurnOnEnableReflectDSS();
 	ID3D11ShaderResourceView* arraySRV[2];
 	arraySRV[0] = mGeometryBuffer->GetGBufferSRV(GBufferType::Pos);
 	arraySRV[1] = mGeometryBuffer->GetGBufferSRV(GBufferType::Normal);
-	ShaderManager::GetInstance()->SetSSRGBufferShader(arraySRV);
+	GShaderManager->SetSSRGBufferShader(arraySRV);
 	mQuad->Render();
-	D3DClass::GetInstance()->RecoverDefaultDSS();
-	D3DClass::GetInstance()->SetBackBufferRender();
+	GDirectxCore->RecoverDefaultDSS();
+	GDirectxCore->SetBackBufferRender();
 
 }
 

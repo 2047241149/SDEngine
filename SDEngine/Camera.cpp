@@ -3,7 +3,6 @@
 
 Camera::Camera()
 {
-
 	//初始化第一人称相机的参数，刚开始相机是位于中间的
 	mPosition = XMFLOAT3(0.f, 0.0f, -1.0f);
 	mRight = XMFLOAT3(1.0f, 0.0f, 0.0f);
@@ -253,14 +252,14 @@ XMMATRIX Camera::GetUIOrthoMatrix()const
 	return XMMatrixOrthographicLH(mScreenWidth, mScreenHeight, mNearPlane, mFarPlane);
 }
 
-Camera* Camera::GetInstance()
+shared_ptr<Camera> Camera::Get()
 {
-	if (camera == nullptr)
+	if (nullptr == m_pCamera)
 	{
-		camera = shared_ptr<Camera>(new Camera());
+		m_pCamera = shared_ptr<Camera>(new Camera());
 	}
-	return camera.get();
+	return m_pCamera;
 
 }
 
-shared_ptr<Camera> Camera::camera = nullptr;
+shared_ptr<Camera> Camera::m_pCamera = nullptr;

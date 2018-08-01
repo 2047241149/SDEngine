@@ -1,7 +1,8 @@
 #pragma once
 #ifndef _RW_RENDER_TEXTURE_H
 #define _RW_RENDER_TEXTURE_H
-#include "D3DClass.h"
+
+#include "CoreMini.h"
 
 const int STANDARD_RES_WIDTH = 1024;
 const int STANDARD_RES_HEIGHT = 768;
