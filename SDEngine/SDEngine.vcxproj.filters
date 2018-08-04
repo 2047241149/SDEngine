@@ -15,329 +15,334 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Camera.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="Debugwindow.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="DepthShader.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="DiffuseNormalShader.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="DiffuseNormalSpecShader.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="DiffuseShader.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="DiffuseSpecShader.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="FPS.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="GameObject.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="GraphicsClass.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="ImportFBX.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="Input.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="Light.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="MathTool.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="PureColorShader.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="Quad.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="Shader.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="ShaderManager.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="SystemClass.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="Texture.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="UIShader.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="源.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="GeometryBuffer.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="DefferLightingShader.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="GraphicsBlitShader.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="DOFShader.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="BlurShader.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="DepthBufferRT.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="SSRGBuffer.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="SSRGBufferShader.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="ScreenSpaceReflectShader.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="CommonFunction.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="Wave.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="WaveShader.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="DirectionWave.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="CircleWave.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="GerstnerWave.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="GerstnerWaveCS.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="GrussianBlurCS.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="Log.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="RWRenderTexture.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
     <ClCompile Include="LoadTexture\DDSTextureLoader.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="LoadTexture\WICTextureLoader.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="RenderTexture.cpp">
+    <ClCompile Include="Source\BlurShader.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="LightManager.cpp">
+    <ClCompile Include="Source\Camera.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="PointLight.cpp">
+    <ClCompile Include="Source\CircleWave.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="DirectionLight.cpp">
+    <ClCompile Include="Source\CommonFunction.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="DirectxCore.cpp">
+    <ClCompile Include="Source\Debugwindow.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\DefferLightingShader.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\DepthBufferRT.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\DepthShader.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\DiffuseNormalShader.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\DiffuseNormalSpecShader.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\DiffuseShader.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\DiffuseSpecShader.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\DirectionLight.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\DirectionWave.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\DirectxCore.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\DOFShader.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\FPS.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\GameObject.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\GeometryBuffer.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\GerstnerWave.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\GerstnerWaveCS.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\GraphicsBlitShader.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\GraphicsClass.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\GrussianBlurCS.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\ImportFBX.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Input.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Light.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\LightManager.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Log.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\MathTool.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\PointLight.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\PureColorShader.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Quad.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\RenderTexture.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\RWRenderTexture.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\ScreenSpaceReflectShader.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\ShaderManager.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\SSRGBuffer.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\SSRGBufferShader.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\SystemClass.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Texture.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\UIShader.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Wave.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\WaveShader.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\源.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\2DShader.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\3DShader.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Camera.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="CommomVertexFormat.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="CommonConstantBufferStruct.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="CommonFunction.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="Debugwindow.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="DepthShader.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="DiffuseNormalShader.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="DiffuseNormalSpecShader.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="DiffuseShader.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="DiffuseSpecShader.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="FPS.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="GameObject.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="GraphicsClass.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="ImportDll.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="ImportFBX.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="Input.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="Light.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="Macro.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="MathTool.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="PureColorShader.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="Quad.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="Shader.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="ShaderManager.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="SystemClass.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="Texture.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="UIShader.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="GeometryBuffer.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="DefferLightingShader.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="GraphicsBlitShader.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="DOFShader.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="BlurShader.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="DepthBufferRT.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="SSRGBuffer.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="SSRGBufferShader.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="ScreenSpaceReflectShader.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="Wave.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="WaveShader.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="DirectionWave.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="CircleWave.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="GerstnerWave.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="GerstnerWaveCS.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="GrussianBlurCS.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="Log.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="RWRenderTexture.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
     <ClInclude Include="LoadTexture\DDSTextureLoader.h">
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="LoadTexture\WICTextureLoader.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="RenderTexture.h">
+    <ClInclude Include="Source\BlurShader.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="LightManager.h">
+    <ClInclude Include="Source\Camera.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="PointLight.h">
+    <ClInclude Include="Source\CircleWave.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="DirectionLight.h">
+    <ClInclude Include="Source\CommomVertexFormat.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="DirectxCore.h">
+    <ClInclude Include="Source\CommonConstantBufferStruct.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="CoreMini.h">
+    <ClInclude Include="Source\CommonFunction.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\CoreMini.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Debugwindow.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\DefferLightingShader.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\DepthBufferRT.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\DepthShader.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\DiffuseNormalShader.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\DiffuseNormalSpecShader.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\DiffuseShader.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\DiffuseSpecShader.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\DirectionLight.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\DirectionWave.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\DirectxCore.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\DOFShader.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\FPS.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\GameObject.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\GeometryBuffer.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\GerstnerWave.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\GerstnerWaveCS.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\GraphicsBlitShader.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\GraphicsClass.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\GrussianBlurCS.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\ImportDll.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\ImportFBX.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Input.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Light.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\LightManager.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Log.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Macro.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\MathTool.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\PointLight.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\PureColorShader.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Quad.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\RenderTexture.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\RWRenderTexture.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\ScreenSpaceReflectShader.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\ShaderManager.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\SSRGBuffer.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\SSRGBufferShader.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\SystemClass.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Texture.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\UIShader.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Wave.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\WaveShader.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\2DShader.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\3DShader.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="libfbxsdk.dll" />
-    <None Include="Shader\DepthShader.fx" />
-    <None Include="Shader\DiffuseNormalShader.fx" />
-    <None Include="Shader\DiffuseNormalSpecularShader.fx" />
-    <None Include="Shader\DiffuseShader.fx" />
-    <None Include="Shader\DiffuseSpecularShader.fx" />
-    <None Include="Shader\LightFunction.fx" />
-    <None Include="Shader\PureColorShader.fx" />
-    <None Include="Shader\UIShader.fx" />
-    <None Include="Shader\DefferLightingShader.fx" />
-    <None Include="Shader\GraphicsBlitShader.fx" />
-    <None Include="Shader\DOFShader.fx" />
-    <None Include="Shader\BlurShader.fx" />
-    <None Include="Shader\ScreenSpaceReflectShader.fx" />
-    <None Include="Shader\ForwardPureColorShader.fx" />
-    <None Include="Shader\DepthGetShader.fx" />
-    <None Include="Shader\SSRGBuffer.fx" />
-    <None Include="Shader\WaveShader.fx" />
-    <None Include="Shader\WaveComputerShader.fx" />
-    <None Include="Shader\GaussianBlurShaderCS.fx" />
+    <None Include="Resource\Shader\BlurShader.fx" />
+    <None Include="Resource\Shader\DefferLightingShader.fx" />
+    <None Include="Resource\Shader\DepthGetShader.fx" />
+    <None Include="Resource\Shader\DepthShader.fx" />
+    <None Include="Resource\Shader\DiffuseNormalShader.fx" />
+    <None Include="Resource\Shader\DiffuseNormalSpecularShader.fx" />
+    <None Include="Resource\Shader\DiffuseShader.fx" />
+    <None Include="Resource\Shader\DiffuseSpecularShader.fx" />
+    <None Include="Resource\Shader\DOFShader.fx" />
+    <None Include="Resource\Shader\ForwardPureColorShader.fx" />
+    <None Include="Resource\Shader\GaussianBlurShaderCS.fx" />
+    <None Include="Resource\Shader\GraphicsBlitShader.fx" />
+    <None Include="Resource\Shader\LightFunction.fx" />
+    <None Include="Resource\Shader\PureColorShader.fx" />
+    <None Include="Resource\Shader\ScreenSpaceReflectShader.fx" />
+    <None Include="Resource\Shader\SSRGBuffer.fx" />
+    <None Include="Resource\Shader\UIShader.fx" />
+    <None Include="Resource\Shader\WaveComputerShader.fx" />
+    <None Include="Resource\Shader\WaveShader.fx" />
   </ItemGroup>
 </Project>

@@ -112,135 +112,134 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Camera.cpp" />
-    <ClCompile Include="CircleWave.cpp" />
-    <ClCompile Include="DirectionLight.cpp" />
-    <ClCompile Include="LightManager.cpp" />
-    <ClCompile Include="PointLight.cpp" />
-    <ClCompile Include="RenderTexture.cpp" />
-    <ClCompile Include="CommonFunction.cpp" />
-    <ClCompile Include="DirectxCore.cpp" />
-    <ClCompile Include="Debugwindow.cpp" />
-    <ClCompile Include="BlurShader.cpp" />
-    <ClCompile Include="DirectionWave.cpp" />
-    <ClCompile Include="GerstnerWave.cpp" />
-    <ClCompile Include="GerstnerWaveCS.cpp" />
-    <ClCompile Include="GrussianBlurCS.cpp" />
+    <ClCompile Include="Source\2DShader.cpp" />
+    <ClCompile Include="Source\Camera.cpp" />
+    <ClCompile Include="Source\CircleWave.cpp" />
+    <ClCompile Include="Source\DirectionLight.cpp" />
+    <ClCompile Include="Source\LightManager.cpp" />
+    <ClCompile Include="Source\PointLight.cpp" />
+    <ClCompile Include="Source\RenderTexture.cpp" />
+    <ClCompile Include="Source\CommonFunction.cpp" />
+    <ClCompile Include="Source\DirectxCore.cpp" />
+    <ClCompile Include="Source\Debugwindow.cpp" />
+    <ClCompile Include="Source\BlurShader.cpp" />
+    <ClCompile Include="Source\DirectionWave.cpp" />
+    <ClCompile Include="Source\GerstnerWave.cpp" />
+    <ClCompile Include="Source\GerstnerWaveCS.cpp" />
+    <ClCompile Include="Source\GrussianBlurCS.cpp" />
     <ClCompile Include="LoadTexture\DDSTextureLoader.cpp" />
     <ClCompile Include="LoadTexture\WICTextureLoader.cpp" />
-    <ClCompile Include="Log.cpp" />
-    <ClCompile Include="RWRenderTexture.cpp" />
-    <ClCompile Include="WaveShader.cpp" />
-    <ClCompile Include="ScreenSpaceReflectShader.cpp" />
-    <ClCompile Include="SSRGBufferShader.cpp" />
-    <ClCompile Include="DOFShader.cpp" />
-    <ClCompile Include="GraphicsBlitShader.cpp" />
-    <ClCompile Include="GeometryBuffer.cpp" />
-    <ClCompile Include="DepthShader.cpp" />
-    <ClCompile Include="DiffuseNormalShader.cpp" />
-    <ClCompile Include="DiffuseNormalSpecShader.cpp" />
-    <ClCompile Include="DiffuseShader.cpp" />
-    <ClCompile Include="DiffuseSpecShader.cpp" />
-    <ClCompile Include="FPS.cpp" />
-    <ClCompile Include="GameObject.cpp" />
-    <ClCompile Include="GraphicsClass.cpp" />
-    <ClCompile Include="ImportFBX.cpp" />
-    <ClCompile Include="Input.cpp" />
-    <ClCompile Include="Light.cpp" />
-    <ClCompile Include="MathTool.cpp" />
-    <ClCompile Include="PureColorShader.cpp" />
-    <ClCompile Include="Quad.cpp" />
-    <ClCompile Include="DepthBufferRT.cpp" />
-    <ClCompile Include="DefferLightingShader.cpp" />
-    <ClCompile Include="Shader.cpp" />
-    <ClCompile Include="ShaderManager.cpp" />
-    <ClCompile Include="SSRGBuffer.cpp" />
-    <ClCompile Include="SystemClass.cpp" />
-    <ClCompile Include="Texture.cpp" />
-    <ClCompile Include="UIShader.cpp" />
-    <ClCompile Include="Wave.cpp" />
-    <ClCompile Include="源.cpp" />
+    <ClCompile Include="Source\Log.cpp" />
+    <ClCompile Include="Source\RWRenderTexture.cpp" />
+    <ClCompile Include="Source\WaveShader.cpp" />
+    <ClCompile Include="Source\ScreenSpaceReflectShader.cpp" />
+    <ClCompile Include="Source\SSRGBufferShader.cpp" />
+    <ClCompile Include="Source\DOFShader.cpp" />
+    <ClCompile Include="Source\GraphicsBlitShader.cpp" />
+    <ClCompile Include="Source\GeometryBuffer.cpp" />
+    <ClCompile Include="Source\DepthShader.cpp" />
+    <ClCompile Include="Source\DiffuseNormalShader.cpp" />
+    <ClCompile Include="Source\DiffuseNormalSpecShader.cpp" />
+    <ClCompile Include="Source\DiffuseShader.cpp" />
+    <ClCompile Include="Source\DiffuseSpecShader.cpp" />
+    <ClCompile Include="Source\FPS.cpp" />
+    <ClCompile Include="Source\GameObject.cpp" />
+    <ClCompile Include="Source\GraphicsClass.cpp" />
+    <ClCompile Include="Source\ImportFBX.cpp" />
+    <ClCompile Include="Source\Input.cpp" />
+    <ClCompile Include="Source\Light.cpp" />
+    <ClCompile Include="Source\MathTool.cpp" />
+    <ClCompile Include="Source\PureColorShader.cpp" />
+    <ClCompile Include="Source\Quad.cpp" />
+    <ClCompile Include="Source\DepthBufferRT.cpp" />
+    <ClCompile Include="Source\DefferLightingShader.cpp" />
+    <ClCompile Include="Source\3DShader.cpp" />
+    <ClCompile Include="Source\ShaderManager.cpp" />
+    <ClCompile Include="Source\SSRGBuffer.cpp" />
+    <ClCompile Include="Source\SystemClass.cpp" />
+    <ClCompile Include="Source\Texture.cpp" />
+    <ClCompile Include="Source\UIShader.cpp" />
+    <ClCompile Include="Source\Wave.cpp" />
+    <ClCompile Include="Source\源.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Camera.h" />
-    <ClInclude Include="CircleWave.h" />
-    <ClInclude Include="CoreMini.h" />
-    <ClInclude Include="DirectionLight.h" />
-    <ClInclude Include="LightManager.h" />
-    <ClInclude Include="PointLight.h" />
-    <ClInclude Include="RenderTexture.h" />
-    <ClInclude Include="CommomVertexFormat.h" />
-    <ClInclude Include="CommonConstantBufferStruct.h" />
-    <ClInclude Include="CommonFunction.h" />
-    <ClInclude Include="DirectxCore.h" />
-    <ClInclude Include="Debugwindow.h" />
-    <ClInclude Include="BlurShader.h" />
-    <ClInclude Include="DirectionWave.h" />
-    <ClInclude Include="GerstnerWave.h" />
-    <ClInclude Include="GerstnerWaveCS.h" />
-    <ClInclude Include="GrussianBlurCS.h" />
+    <ClInclude Include="Source\2DShader.h" />
+    <ClInclude Include="Source\Camera.h" />
+    <ClInclude Include="Source\CircleWave.h" />
+    <ClInclude Include="Source\CoreMini.h" />
+    <ClInclude Include="Source\DirectionLight.h" />
+    <ClInclude Include="Source\LightManager.h" />
+    <ClInclude Include="Source\PointLight.h" />
+    <ClInclude Include="Source\RenderTexture.h" />
+    <ClInclude Include="Source\CommomVertexFormat.h" />
+    <ClInclude Include="Source\CommonConstantBufferStruct.h" />
+    <ClInclude Include="Source\CommonFunction.h" />
+    <ClInclude Include="Source\DirectxCore.h" />
+    <ClInclude Include="Source\Debugwindow.h" />
+    <ClInclude Include="Source\BlurShader.h" />
+    <ClInclude Include="Source\DirectionWave.h" />
+    <ClInclude Include="Source\GerstnerWave.h" />
+    <ClInclude Include="Source\GerstnerWaveCS.h" />
+    <ClInclude Include="Source\GrussianBlurCS.h" />
     <ClInclude Include="LoadTexture\DDSTextureLoader.h" />
     <ClInclude Include="LoadTexture\WICTextureLoader.h" />
-    <ClInclude Include="Log.h" />
-    <ClInclude Include="RWRenderTexture.h" />
-    <ClInclude Include="WaveShader.h" />
-    <ClInclude Include="ScreenSpaceReflectShader.h" />
-    <ClInclude Include="SSRGBufferShader.h" />
-    <ClInclude Include="DOFShader.h" />
-    <ClInclude Include="GraphicsBlitShader.h" />
-    <ClInclude Include="GeometryBuffer.h" />
-    <ClInclude Include="DepthShader.h" />
-    <ClInclude Include="DiffuseNormalShader.h" />
-    <ClInclude Include="DiffuseNormalSpecShader.h" />
-    <ClInclude Include="DiffuseShader.h" />
-    <ClInclude Include="DiffuseSpecShader.h" />
-    <ClInclude Include="FPS.h" />
-    <ClInclude Include="GameObject.h" />
-    <ClInclude Include="GraphicsClass.h" />
-    <ClInclude Include="ImportDll.h" />
-    <ClInclude Include="ImportFBX.h" />
-    <ClInclude Include="Input.h" />
-    <ClInclude Include="Light.h" />
-    <ClInclude Include="Macro.h" />
-    <ClInclude Include="MathTool.h" />
-    <ClInclude Include="PureColorShader.h" />
-    <ClInclude Include="Quad.h" />
-    <ClInclude Include="DepthBufferRT.h" />
-    <ClInclude Include="DefferLightingShader.h" />
-    <ClInclude Include="Shader.h" />
-    <ClInclude Include="ShaderManager.h" />
-    <ClInclude Include="SSRGBuffer.h" />
-    <ClInclude Include="SystemClass.h" />
-    <ClInclude Include="Texture.h" />
-    <ClInclude Include="UIShader.h" />
-    <ClInclude Include="Wave.h" />
+    <ClInclude Include="Source\Log.h" />
+    <ClInclude Include="Source\RWRenderTexture.h" />
+    <ClInclude Include="Source\WaveShader.h" />
+    <ClInclude Include="Source\ScreenSpaceReflectShader.h" />
+    <ClInclude Include="Source\SSRGBufferShader.h" />
+    <ClInclude Include="Source\DOFShader.h" />
+    <ClInclude Include="Source\GraphicsBlitShader.h" />
+    <ClInclude Include="Source\GeometryBuffer.h" />
+    <ClInclude Include="Source\DepthShader.h" />
+    <ClInclude Include="Source\DiffuseNormalShader.h" />
+    <ClInclude Include="Source\DiffuseNormalSpecShader.h" />
+    <ClInclude Include="Source\DiffuseShader.h" />
+    <ClInclude Include="Source\DiffuseSpecShader.h" />
+    <ClInclude Include="Source\FPS.h" />
+    <ClInclude Include="Source\GameObject.h" />
+    <ClInclude Include="Source\GraphicsClass.h" />
+    <ClInclude Include="Source\ImportDll.h" />
+    <ClInclude Include="Source\ImportFBX.h" />
+    <ClInclude Include="Source\Input.h" />
+    <ClInclude Include="Source\Light.h" />
+    <ClInclude Include="Source\Macro.h" />
+    <ClInclude Include="Source\MathTool.h" />
+    <ClInclude Include="Source\PureColorShader.h" />
+    <ClInclude Include="Source\Quad.h" />
+    <ClInclude Include="Source\DepthBufferRT.h" />
+    <ClInclude Include="Source\DefferLightingShader.h" />
+    <ClInclude Include="Source\3DShader.h" />
+    <ClInclude Include="Source\ShaderManager.h" />
+    <ClInclude Include="Source\SSRGBuffer.h" />
+    <ClInclude Include="Source\SystemClass.h" />
+    <ClInclude Include="Source\Texture.h" />
+    <ClInclude Include="Source\UIShader.h" />
+    <ClInclude Include="Source\Wave.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="libfbxsdk.dll" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Shader\DepthShader.fx">
+    <None Include="Resource\Shader\DepthShader.fx">
       <FileType>Document</FileType>
     </None>
-    <None Include="Shader\DiffuseNormalShader.fx">
+    <None Include="Resource\Shader\DiffuseNormalShader.fx">
       <FileType>Document</FileType>
     </None>
-    <None Include="Shader\DiffuseNormalSpecularShader.fx">
+    <None Include="Resource\Shader\DiffuseNormalSpecularShader.fx">
       <FileType>Document</FileType>
     </None>
-    <None Include="Shader\DiffuseShader.fx">
+    <None Include="Resource\Shader\DiffuseShader.fx">
       <FileType>Document</FileType>
     </None>
-    <None Include="Shader\DiffuseSpecularShader.fx">
+    <None Include="Resource\Shader\DiffuseSpecularShader.fx">
       <FileType>Document</FileType>
     </None>
-    <None Include="Shader\LightFunction.fx">
+    <None Include="Resource\Shader\LightFunction.fx">
       <FileType>Document</FileType>
     </None>
-    <None Include="Shader\PureColorShader.fx">
+    <None Include="Resource\Shader\PureColorShader.fx">
       <FileType>Document</FileType>
     </None>
-    <None Include="Shader\UIShader.fx">
+    <None Include="Resource\Shader\UIShader.fx">
       <FileType>Document</FileType>
     </None>
   </ItemGroup>
@@ -253,57 +252,57 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Shader\DefferLightingShader.fx">
+    <None Include="Resource\Shader\DefferLightingShader.fx">
       <FileType>Document</FileType>
     </None>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Shader\GraphicsBlitShader.fx">
+    <None Include="Resource\Shader\GraphicsBlitShader.fx">
       <FileType>Document</FileType>
     </None>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Shader\DOFShader.fx">
+    <None Include="Resource\Shader\DOFShader.fx">
       <FileType>Document</FileType>
     </None>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Shader\BlurShader.fx">
+    <None Include="Resource\Shader\BlurShader.fx">
       <FileType>Document</FileType>
     </None>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Shader\ScreenSpaceReflectShader.fx">
+    <None Include="Resource\Shader\ScreenSpaceReflectShader.fx">
       <FileType>Document</FileType>
     </None>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Shader\ForwardPureColorShader.fx">
+    <None Include="Resource\Shader\ForwardPureColorShader.fx">
       <FileType>Document</FileType>
     </None>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Shader\DepthGetShader.fx">
+    <None Include="Resource\Shader\DepthGetShader.fx">
       <FileType>Document</FileType>
     </None>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Shader\SSRGBuffer.fx">
+    <None Include="Resource\Shader\SSRGBuffer.fx">
       <FileType>Document</FileType>
     </None>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Shader\WaveShader.fx">
+    <None Include="Resource\Shader\WaveShader.fx">
       <FileType>Document</FileType>
     </None>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Shader\WaveComputerShader.fx">
+    <None Include="Resource\Shader\WaveComputerShader.fx">
       <FileType>Document</FileType>
     </None>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Shader\GaussianBlurShaderCS.fx">
+    <None Include="Resource\Shader\GaussianBlurShaderCS.fx">
       <FileType>Document</FileType>
     </None>
   </ItemGroup>
