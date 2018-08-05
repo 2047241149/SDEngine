@@ -16,7 +16,7 @@ using namespace DirectX;
 class ImportFBX
 {
 private:
-	vector<MemFBXModel> mMemFBXModelData;
+	vector<MemFBXModelData> mMemFBXModelData;
 	FbxScene* mScene;
 private:
 	FbxManager* mFbxManager = nullptr;
@@ -25,9 +25,9 @@ private:
 	//读取一个场景的mesh类型数据
 	void ReadSceneMeshData(FbxScene* scene);
 	void ReadMeshNodeData(FbxNode* node);
-	void ProcessMesh(FbxMesh* mesh, MemFBXModel* fbxModel);
+	void ProcessMesh(FbxMesh* mesh, MemFBXModelData* fbxModel);
 	void ReadMeshMaterialIndex(FbxMesh* mesh, vector<Triangle>& triangleData);
-	void ChangeModelData(Model* destModel,MemFBXModel* srcMemFBXModel);
+	void ChangeModelData(ModelData* destModel,MemFBXModelData* srcMemFBXModel);
 
 	//三角化mesh
 	void TriangulateRecursive(FbxNode* node);
@@ -46,11 +46,12 @@ private:
 
 private:
 	//读取材质属性
-	void LoadMaterial(FbxMesh* mesh, map<int, Material>& materialMap);
-	void LoadMaterialTexture(FbxSurfaceMaterial* surfaceMaterial, int materialIndex, map<int, Material>& materialMap);
-	void ReadReletiveTextureFileName(FbxProperty* property, int materialIndex, map<int, Material>& materialMap);
+	void LoadMaterial(FbxMesh* mesh, map<int, MaterialTexFileName>& materialMap);
+	void LoadMaterialTexture(FbxSurfaceMaterial* surfaceMaterial, int materialIndex, map<int, MaterialTexFileName>& materialMap);
+	void ReadReletiveTextureFileName(FbxProperty* property, int materialIndex, map<int, MaterialTexFileName>& materialMap);
 	
 private:
+
 	void CalculateTriangleTangent(Triangle& triangle);
 public:
 	static shared_ptr<ImportFBX> instance;
@@ -62,7 +63,7 @@ public:
 public:
 	static ImportFBX* GetInstance();
 	void ClearMem();
-	void ImportFbxFile(string fbxFileName, vector<Model>& mFBXModel);
+	void ImportFbxFile(string fbxFileName, vector<ModelData>& mFBXModel);
 
 };
 
