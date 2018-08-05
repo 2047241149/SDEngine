@@ -41,20 +41,38 @@ bool GraphicsClass::Initialize(int ScreenWidth, int ScreenHeight, HWND hwnd,HINS
 	m_spDirLight->SetLightColor(XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f));
 	GLightManager->Add(m_spDirLight);
 
+	//创建mesh
+	shared_ptr<Mesh> pHeadMesh = shared_ptr<Mesh>(new Mesh("Resource\\FBXModel\\head\\head.FBX"));
+	pHeadMesh->m_eMaterialType = MaterialType::DIFFUSE;
 
+	shared_ptr<Mesh> pSphereMesh = shared_ptr<Mesh>(new Mesh("Resource\\FBXModel\\sphere\\sphere.FBX"));
+	pSphereMesh->m_eMaterialType = MaterialType::PURE_COLOR;
+	pSphereMesh->pureColor = XMFLOAT4(1.0f, 0.0f, 0.0f, 1.0f);
 
-	//创建ModelClasss
-	mHeadObject = shared_ptr<GameObject>(new GameObject("Resource\\FBXModel\\head\\head.FBX"));
+	shared_ptr<Mesh> pSponzaBottom = shared_ptr<Mesh>(new Mesh("Resource\\FBXModel\\sponza\\sponza_bottom.FBX"));
+	pSponzaBottom->m_eMaterialType = MaterialType::DIFFUSE;
+	
+	shared_ptr<Mesh> pSponzaNoBottom = shared_ptr<Mesh>(new Mesh("Resource\\FBXModel\\sponza\\sponza_no_bottom.FBX"));
+	pSponzaNoBottom->bReflect = true;
+	pSponzaNoBottom->bTransparent = true;
+	pSponzaNoBottom->m_eMaterialType = MaterialType::DIFFUSE;
 
-	mSphereObject = shared_ptr<GameObject>(new GameObject("Resource\\FBXModel\\sphere\\sphere.FBX"));
+	//创建GameObject
+	mHeadObject = shared_ptr<GameObject>(new GameObject());
+	mHeadObject->SetMesh(pHeadMesh);
+	mHeadObject->m_pTransform->localPosition = 
 
-	mSponzaBottom = shared_ptr<GameObject>(new GameObject("Resource\\FBXModel\\sponza\\sponza_bottom.FBX"));
+	mSphereObject = shared_ptr<GameObject>(new GameObject());
+	mSphereObject->SetMesh(pSphereMesh);
 
-	mSponzaNoBottom = shared_ptr<GameObject>(new GameObject("Resource\\FBXModel\\sponza\\sponza_no_bottom.FBX"));
+	mSponzaBottom = shared_ptr<GameObject>(new GameObject());
+	mSponzaBottom->SetMesh(pSponzaBottom);
+
+	mSponzaNoBottom = shared_ptr<GameObject>(new GameObject());
+	mSponzaNoBottom->SetMesh(pSponzaNoBottom);
 
 	//创建输入类
 	mInputClass = shared_ptr<Input>(new Input(hinstance, hwnd, ScreenWidth, ScreenHeight));
-
 
 	mSrcRT = shared_ptr<RenderTexture>(
 		new RenderTexture(ScreenWidth, ScreenHeight));
@@ -66,7 +84,6 @@ bool GraphicsClass::Initialize(int ScreenWidth, int ScreenHeight, HWND hwnd,HINS
 		GeometryBuffer(ScreenWidth,ScreenHeight,SCREEN_FAR,SCREEN_NEAR));
 
 	mQuad = shared_ptr<Quad>(new Quad());
-
 
 	mDebugWindow = shared_ptr<DebugWindow>(new DebugWindow(ScreenWidth,ScreenHeight,120,120));
 

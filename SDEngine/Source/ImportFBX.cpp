@@ -38,7 +38,7 @@ ImportFBX* ImportFBX::GetInstance()
 	return instance.get();
 }
 
-void ImportFBX::ImportFbxFile(string fbxFileName, vector<Model>& mFBXModel)
+void ImportFBX::ImportFbxFile(string fbxFileName, vector<ModelData>& mFBXModel)
 {
 	//清除缓存数据
 	ClearMemFBXModelData();
@@ -119,7 +119,7 @@ void ImportFBX::ReadMeshNodeData(FbxNode* node)
 	if (nodeType == FbxNodeAttribute::EType::eMesh)
 	{
 		FbxMesh* mesh = node->GetMesh();
-		MemFBXModel fbxModel;
+		MemFBXModelData fbxModel;
 		mMemFBXModelData.push_back(fbxModel);
 		ProcessMesh(mesh, &mMemFBXModelData[mMemFBXModelData.size()-1]);
 		LoadMaterial(mesh, mMemFBXModelData[mMemFBXModelData.size()-1].mMaterialMap);
@@ -133,7 +133,7 @@ void ImportFBX::ReadMeshNodeData(FbxNode* node)
 	}
 }
 
-void ImportFBX::ProcessMesh(FbxMesh* mesh, MemFBXModel* fbxModel)
+void ImportFBX::ProcessMesh(FbxMesh* mesh, MemFBXModelData* fbxModel)
 {
 
 	int triangleCount = mesh->GetPolygonCount();
@@ -462,7 +462,7 @@ void ImportFBX::ReadVertexUV(FbxMesh* mesh, int ctrlPointIndex, int uvIndex, XMF
 
 //默认考虑不存在 FbxLayeredTexture的情况
 void ImportFBX::LoadMaterialTexture(FbxSurfaceMaterial* surfaceMaterial,
-	int materialIndex, map<int, Material>& materialMap)
+	int materialIndex, map<int, MaterialTexFileName>& materialMap)
 {
 
 	FbxProperty pProperty;
@@ -486,7 +486,7 @@ void ImportFBX::LoadMaterialTexture(FbxSurfaceMaterial* surfaceMaterial,
 }
 
 void ImportFBX::ReadReletiveTextureFileName(FbxProperty* mproperty,
-	int materialIndex, map<int, Material>& materialMap)
+	int materialIndex, map<int, MaterialTexFileName>& materialMap)
 {
 	if (!mproperty || !mproperty->IsValid())
 	{
@@ -583,7 +583,7 @@ void ImportFBX::ReadMeshMaterialIndex(FbxMesh* mesh, vector<Triangle>& triangleD
 	}
 }
 
-void ImportFBX::LoadMaterial(FbxMesh* mesh, map<int, Material>& materialMap)
+void ImportFBX::LoadMaterial(FbxMesh* mesh, map<int, MaterialTexFileName>& materialMap)
 {
 	int materialCount;
 	FbxNode* pNode;
@@ -608,11 +608,11 @@ void ImportFBX::LoadMaterial(FbxMesh* mesh, map<int, Material>& materialMap)
 }
 
 //将从FBX文件读取的数据转换为DX渲染的数据
-void ImportFBX::ChangeModelData(Model* destModel, MemFBXModel* srcMemFBXModel)
+void ImportFBX::ChangeModelData(ModelData* destModel, MemFBXModelData* srcMemFBXModel)
 {
 	destModel->mMaterialMap = srcMemFBXModel->mMaterialMap;
 
-	map<int, Material>& mMaterialMap = destModel->mMaterialMap;
+	map<int, MaterialTexFileName>& mMaterialMap = destModel->mMaterialMap;
 	vector<Triangle>& mTriangleData = srcMemFBXModel->mTriangleData;
 	
 	bool isExitTexture = true;

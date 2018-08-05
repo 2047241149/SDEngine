@@ -1,8 +1,8 @@
 #include"GameObject.h"
 
-GameObject::GameObject(string fbxFileName)
+GameObject::GameObject()
 {
-	Initialize(fbxFileName);
+	Init();
 }
 
 
@@ -16,23 +16,14 @@ GameObject::~GameObject()
 	Shutdown();
 }
 
-bool GameObject::Initialize(string fbxFileName)
+bool GameObject::Init()
 {
 
 	bool result;
-	mFBXModel = shared_ptr<FBXModel>(new FBXModel());
-	mTransform = shared_ptr<Transform>(new Transform());
-
-	//第一，初始化外部模型数据,这个发生在初始化缓存之前，因为顶点缓存索引缓存来自外部模型数据
-	result = LoadFBXModel(fbxFileName);
-	if (!result)
-	{
-		MessageBox(NULL, L"LoadFBXModel failure", L"ERROR", MB_OK);
-		return false;
-	}
+	m_pTransform = shared_ptr<Transform>(new Transform());
 
 	//第二,初始化构成model的各个mesh的顶点缓存，索引缓存
-	result = InitializeBuffer();
+	result = InitBuffer();
 	if (!result)
 	{
 		MessageBox(NULL, L"Initialize Buffer failure", L"ERROR", MB_OK);
@@ -45,24 +36,21 @@ bool GameObject::Initialize(string fbxFileName)
 void GameObject::Shutdown()
 {
 	ShutdownBuffer();
-	ShutdownSRV();
 }
 
-
-
-bool GameObject::InitializeBuffer()
+bool GameObject::InitBuffer()
 {
 
-	vector<Model>& mModelList = mFBXModel->mModelList;
+	vector<ModelData>& mModelList = m_pMesh->m_pFBXModel->mModelList;
 	for (UINT index = 0; index < mModelList.size(); ++index)
 	{
-		Model* mModelData = &mModelList[index];
+		ModelData* mModelData = &mModelList[index];
 
 		for (int i = 0; i < (int)mModelData->mMeshList.size(); ++i)
 		{
 			//第一,填充(顶点)缓存形容结构体和子资源数据结构体,并创建顶点缓存
 
-			Mesh& mMesh = mModelData->mMeshList[i];
+			MeshData& mMesh = mModelData->mMeshList[i];
 
 			D3D11_BUFFER_DESC vertexBufferDesc;
 			vertexBufferDesc.Usage = D3D11_USAGE_DEFAULT;
@@ -101,13 +89,13 @@ bool GameObject::InitializeBuffer()
 
 void GameObject::ShutdownBuffer()
 {
-	vector<Model>& mModelList = mFBXModel->mModelList;
+	vector<ModelData>& mModelList = m_pMesh->m_pFBXModel->mModelList;
 	for (UINT index = 0; index < mModelList.size(); ++index)
 	{
-		Model* mModelData = &mModelList[index];
+		ModelData* mModelData = &mModelList[index];
 		for (int i = 0; i < (int)mModelData->mMeshList.size(); ++i)
 		{
-			Mesh& mMesh = mModelData->mMeshList[i];
+			MeshData& mMesh = mModelData->mMeshList[i];
 			ReleaseCOM(mMesh.mVertexBuffer);
 			ReleaseCOM(mMesh.mIndexBuffer);
 		}
@@ -117,62 +105,8 @@ void GameObject::ShutdownBuffer()
 
 }
 
-
-bool GameObject::LoadTexture()
-{
-	vector<Model>& mModelList = mFBXModel->mModelList;
-	for (UINT index = 0; index < mModelList.size(); ++index)
-	{
-		Model* mModelData = &mModelList[index];
-		for (auto iter = mModelData->mMaterialMap.begin();
-			iter != mModelData->mMaterialMap.end(); ++iter)
-		{
-			CheckSRVMap(iter->second.diffuseMapFileName, mModelData);
-			CheckSRVMap(iter->second.bumpMapFileName, mModelData);
-			CheckSRVMap(iter->second.specularMapFileName, mModelData);
-			CheckSRVMap(iter->second.alphaMapFileName, mModelData);
-		}
-	}
-
-	return true;
-}
-
-bool GameObject::LoadFBXModel(string fbxFileName)
-{
-	ImportFBX* singleInstace = ImportFBX::GetInstance();
-	singleInstace->ImportFbxFile(fbxFileName,mFBXModel->mModelList);
-
-	LoadTexture();
-
-	return true;
-}
-
-void GameObject::CheckSRVMap(string texFileName, Model* model)
-{
-
-	if (texFileName == "")
-	{
-		return;
-	}
-
-	map<string, ID3D11ShaderResourceView*>& mSRVMap = mFBXModel->mSRVMap;
-	//确保所有相对路径相同的纹理不重复加载
-	if (mSRVMap.find(texFileName) == mSRVMap.end())
-	{
-		ID3D11ShaderResourceView* memSRV = nullptr;
-		DXUTCreateShaderResourceViewFromFile(g_pDevice, Str2Wstr(texFileName).c_str(), &memSRV);
-		if ((int)memSRV == 0xcccccccc)
-		{
-			memSRV = nullptr;
-		}
-		mSRVMap[texFileName] = memSRV;
-	}
-}
-
-
 void GameObject::Render(MaterialType renderMode ,FXMVECTOR surfaceColor)
 {
-
 
 	XMMATRIX worldMatrix = this->GetWorldMatrix();
 
@@ -180,22 +114,22 @@ void GameObject::Render(MaterialType renderMode ,FXMVECTOR surfaceColor)
 
 	//三角形片元
 	g_pDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-	vector<Model>& mModelList = mFBXModel->mModelList;
-	map<string, ID3D11ShaderResourceView*>& mSRVMap = mFBXModel->mSRVMap;
+	vector<ModelData>& mModelList = m_pMesh->m_pFBXModel->mModelList;
+	map<string, ID3D11ShaderResourceView*>& mSRVMap = m_pMesh->m_pFBXModel->mSRVMap;
 	for (UINT index = 0; index < mModelList.size(); ++index)
 	{
 		
-		Model* mModelData = &mModelList[index];
+		ModelData* mModelData = &mModelList[index];
 
-		vector<Mesh>& mMeshList = mModelData->mMeshList;
+		vector<MeshData>& mMeshList = mModelData->mMeshList;
 
 		for (UINT i = 0; i < mMeshList.size(); ++i)
 		{
 			
 			//根据材质Id设置相应的VertexShader,PixelShader
-			Mesh& mesh = mMeshList[i];
+			MeshData& mesh = mMeshList[i];
 
-			Material& material = mModelData->mMaterialMap[mesh.materialId];
+			MaterialTexFileName& material = mModelData->mMaterialMap[mesh.materialId];
 			ID3D11ShaderResourceView* diffuseSRV = mSRVMap[material.diffuseMapFileName];
 			ID3D11ShaderResourceView* bumpSRV = mSRVMap[material.bumpMapFileName];
 			ID3D11ShaderResourceView* specSRV = mSRVMap[material.specularMapFileName];
@@ -290,19 +224,19 @@ void GameObject::RenderMesh()
 	//三角形片元
 	g_pDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
-	vector<Model>& mModelList = mFBXModel->mModelList;
+	vector<ModelData>& mModelList = m_pMesh->m_pFBXModel->mModelList;
 	for (UINT index = 0; index < mModelList.size(); ++index)
 	{
 
-		Model* mModelData = &mModelList[index];
+		ModelData* mModelData = &mModelList[index];
 
-		vector<Mesh>& mMeshList = mModelData->mMeshList;
+		vector<MeshData>& mMeshList = mModelData->mMeshList;
 
 		for (UINT i = 0; i < mMeshList.size(); ++i)
 		{
 
 			//根据材质Id设置相应的VertexShader,PixelShader
-			Mesh& mesh = mMeshList[i];
+			MeshData& mesh = mMeshList[i];
 
 			//设置顶点缓存
 			UINT stride = sizeof(mesh.mVertexData[0]); //每个顶点元素的跨度大小，或者说每个顶点元素的大小
@@ -316,30 +250,26 @@ void GameObject::RenderMesh()
 		}
 	}
 
-
 }
 
-void GameObject::ShutdownSRV()
-{
-	map<string, ID3D11ShaderResourceView*>& mSRVMap = mFBXModel->mSRVMap;
-
-	for (auto iter = mSRVMap.begin(); iter != mSRVMap.end(); ++iter)
-	{
-		ReleaseCOM(iter->second);
-	}
-}
 
 XMMATRIX GameObject::GetWorldMatrix()
 {
-	XMMATRIX scale = XMMatrixScaling(mTransform->localScale.x, mTransform->localScale.y, mTransform->localScale.z);
+	XMMATRIX scale = XMMatrixScaling(m_pTransform->localScale.x, m_pTransform->localScale.y, m_pTransform->localScale.z);
 
-	XMMATRIX rotation = XMMatrixRotationX(mTransform->localRotation.x / 180.0f * XM_PI)
-		* XMMatrixRotationY(mTransform->localRotation.y / 180.0f * XM_PI)
-		* XMMatrixRotationZ(mTransform->localRotation.z / 180.0f * XM_PI);
+	XMMATRIX rotation = XMMatrixRotationX(m_pTransform->localRotation.x / 180.0f * XM_PI)
+		* XMMatrixRotationY(m_pTransform->localRotation.y / 180.0f * XM_PI)
+		* XMMatrixRotationZ(m_pTransform->localRotation.z / 180.0f * XM_PI);
 
-	XMMATRIX translation = XMMatrixTranslation(mTransform->localPosition.x, mTransform->localPosition.y, mTransform->localPosition.z);
+	XMMATRIX translation = XMMatrixTranslation(m_pTransform->localPosition.x, m_pTransform->localPosition.y, m_pTransform->localPosition.z);
 
 	XMMATRIX worldMatrix = scale * rotation * translation;
 
 	return worldMatrix;
+}
+
+
+void GameObject::SetMesh(shared_ptr<Mesh> pMesh)
+{
+	m_pMesh = pMesh;
 }

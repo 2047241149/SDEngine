@@ -15,12 +15,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="LoadTexture\DDSTextureLoader.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="LoadTexture\WICTextureLoader.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
     <ClCompile Include="Source\BlurShader.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
@@ -162,14 +156,23 @@
     <ClCompile Include="Source\3DShader.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="Source\LoadTexture\DDSTextureLoader.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\LoadTexture\Resource.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\LoadTexture\WICTextureLoader.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Mesh.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\GameObjectManager.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="LoadTexture\DDSTextureLoader.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="LoadTexture\WICTextureLoader.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
     <ClInclude Include="Source\BlurShader.h">
       <Filter>头文件</Filter>
     </ClInclude>
@@ -321,6 +324,21 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="Source\3DShader.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\LoadTexture\DDSTextureLoader.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\LoadTexture\Resource.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\LoadTexture\WICTextureLoader.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Mesh.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\GameObjectManager.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>

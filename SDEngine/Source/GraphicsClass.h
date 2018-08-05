@@ -3,15 +3,13 @@
 #define _GRAPHICS_CLASS_H
 
 #include "DirectxCore.h"
-#include"GameObject.h"
+#include "GameObjectManager.h"
 #include"Macro.h"
 #include"Light.h"
 #include"FPS.h"
 #include"GraphicsClass.h"
 #include"Input.h"
 #include"ShaderManager.h"
-#include"SDKmesh.h"
-#include<DXUT.h>
 #include"GeometryBuffer.h"
 #include "DepthBufferRT.h"
 #include<memory>

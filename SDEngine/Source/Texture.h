@@ -3,10 +3,10 @@
 #define _TEXTURE_CLASS_H
 
 #include"Macro.h"
-#include<d3d11_1.h>
+#include "DirectxCore.h"
+#include "LoadTexture/Resource.h"
 #include "DXUT.h"
 #include "SDKmisc.h"
-#include "DirectxCore.h"
 using namespace DirectX;
 
 class Texture

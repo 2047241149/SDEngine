@@ -28,7 +28,7 @@ struct Triangle
 };
 
 
-struct Material
+struct MaterialTexFileName
 {
 	string diffuseMapFileName;
 	string specularMapFileName;
@@ -37,7 +37,7 @@ struct Material
 };
 
 
-struct Mesh
+struct MeshData
 {
 	vector<VertexPCNTT> mVertexData;
 	vector<WORD> mIndexData;
@@ -48,25 +48,25 @@ struct Mesh
 
 
 //临时的FBX模型数据
-struct MemFBXModel
+struct MemFBXModelData
 {
 	vector<Triangle> mTriangleData;
-	map<int, Material> mMaterialMap;
+	map<int, MaterialTexFileName> mMaterialMap;
 };
 
-//FBX一个节点解析出多个不同材质的mesh，也就是一个Model
-//所以一个存在多个FBXMesh阶段的FBX文件可以解析出n个Model
-struct Model
+//FBX一个节点解析出多个MeshData，也就是一个Model
+struct ModelData
 {
-	vector<Mesh> mMeshList;
-	map<int, Material> mMaterialMap;
+	vector<MeshData> mMeshList;
+	map<int, MaterialTexFileName> mMaterialMap;
 };
 
 
 //保证了一个FBX加载的所有纹理文件都仅仅加载一次
-struct FBXModel
+//一个FBX文件可以解析出n个ModelData
+struct FBXModelData
 {
-	vector<Model> mModelList;
+	vector<ModelData> mModelList;
 	map<string, ID3D11ShaderResourceView*> mSRVMap;
 };
 

@@ -18,8 +18,8 @@ Texture::~Texture()
 
 bool Texture::Init(WCHAR* TextureFilename)
 {
-
-	HR(DXUTCreateShaderResourceViewFromFile(g_pDevice, TextureFilename, &m_pSRV));
+	
+	HR(Resource::CreateShaderResourceViewFromFile(g_pDevice, TextureFilename, &m_pSRV));
 	return true;
 }
 

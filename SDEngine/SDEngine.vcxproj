@@ -112,11 +112,14 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Source\GameObjectManager.cpp" />
+    <ClCompile Include="Source\LoadTexture\Resource.cpp" />
     <ClCompile Include="Source\2DShader.cpp" />
     <ClCompile Include="Source\Camera.cpp" />
     <ClCompile Include="Source\CircleWave.cpp" />
     <ClCompile Include="Source\DirectionLight.cpp" />
     <ClCompile Include="Source\LightManager.cpp" />
+    <ClCompile Include="Source\Mesh.cpp" />
     <ClCompile Include="Source\PointLight.cpp" />
     <ClCompile Include="Source\RenderTexture.cpp" />
     <ClCompile Include="Source\CommonFunction.cpp" />
@@ -127,8 +130,8 @@
     <ClCompile Include="Source\GerstnerWave.cpp" />
     <ClCompile Include="Source\GerstnerWaveCS.cpp" />
     <ClCompile Include="Source\GrussianBlurCS.cpp" />
-    <ClCompile Include="LoadTexture\DDSTextureLoader.cpp" />
-    <ClCompile Include="LoadTexture\WICTextureLoader.cpp" />
+    <ClCompile Include="Source\LoadTexture\DDSTextureLoader.cpp" />
+    <ClCompile Include="Source\LoadTexture\WICTextureLoader.cpp" />
     <ClCompile Include="Source\Log.cpp" />
     <ClCompile Include="Source\RWRenderTexture.cpp" />
     <ClCompile Include="Source\WaveShader.cpp" />
@@ -163,12 +166,15 @@
     <ClCompile Include="Source\源.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Source\GameObjectManager.h" />
+    <ClInclude Include="Source\LoadTexture\Resource.h" />
     <ClInclude Include="Source\2DShader.h" />
     <ClInclude Include="Source\Camera.h" />
     <ClInclude Include="Source\CircleWave.h" />
     <ClInclude Include="Source\CoreMini.h" />
     <ClInclude Include="Source\DirectionLight.h" />
     <ClInclude Include="Source\LightManager.h" />
+    <ClInclude Include="Source\Mesh.h" />
     <ClInclude Include="Source\PointLight.h" />
     <ClInclude Include="Source\RenderTexture.h" />
     <ClInclude Include="Source\CommomVertexFormat.h" />
@@ -181,8 +187,8 @@
     <ClInclude Include="Source\GerstnerWave.h" />
     <ClInclude Include="Source\GerstnerWaveCS.h" />
     <ClInclude Include="Source\GrussianBlurCS.h" />
-    <ClInclude Include="LoadTexture\DDSTextureLoader.h" />
-    <ClInclude Include="LoadTexture\WICTextureLoader.h" />
+    <ClInclude Include="Source\LoadTexture\DDSTextureLoader.h" />
+    <ClInclude Include="Source\LoadTexture\WICTextureLoader.h" />
     <ClInclude Include="Source\Log.h" />
     <ClInclude Include="Source\RWRenderTexture.h" />
     <ClInclude Include="Source\WaveShader.h" />
@@ -242,14 +248,6 @@
     <None Include="Resource\Shader\UIShader.fx">
       <FileType>Document</FileType>
     </None>
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\..\DXUT\Core\DXUT_2017_Win10.vcxproj">
-      <Project>{85344b7f-5aa0-4e12-a065-d1333d11f6ca}</Project>
-    </ProjectReference>
-    <ProjectReference Include="..\..\DXUT\Optional\DXUTOpt_2017_Win10.vcxproj">
-      <Project>{61b333c2-c4f7-4cc1-a9bf-83f6d95588eb}</Project>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <None Include="Resource\Shader\DefferLightingShader.fx">
