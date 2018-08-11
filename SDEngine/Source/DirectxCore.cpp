@@ -12,7 +12,8 @@ DirectxCore::DirectxCore():
 	md3dRasterizerState(nullptr),
 	md3dEnableBlendState(nullptr),
 	md3dDisableBlendState(nullptr),
-	md3dWireFrameRS(nullptr)
+	md3dWireFrameRS(nullptr),
+	m_pLightBlendState(nullptr)
 {
 	
 }
@@ -376,6 +377,20 @@ bool DirectxCore::Init(int ScreenWidth, int ScreenHeight, bool vsync, HWND hwnd,
 	blendStateDescription.RenderTarget[0].RenderTargetWriteMask = 0x0f;
 	HR(md3dDevice->CreateBlendState(&blendStateDescription, &md3dEnableBlendState));
 
+	//用于延迟渲染的光照混合的状态
+	D3D11_BLEND_DESC lightBlendStateDesc;
+	ZeroMemory(&lightBlendStateDesc, sizeof(D3D11_BLEND_DESC));
+	lightBlendStateDesc.RenderTarget[0].BlendEnable = TRUE;
+	lightBlendStateDesc.RenderTarget[0].SrcBlend = D3D11_BLEND_ONE;
+	lightBlendStateDesc.RenderTarget[0].DestBlend = D3D11_BLEND_ONE;
+	lightBlendStateDesc.RenderTarget[0].BlendOp = D3D11_BLEND_OP_ADD;
+	lightBlendStateDesc.RenderTarget[0].SrcBlendAlpha = D3D11_BLEND_ONE;
+	lightBlendStateDesc.RenderTarget[0].DestBlendAlpha = D3D11_BLEND_ZERO;
+	lightBlendStateDesc.RenderTarget[0].BlendOpAlpha = D3D11_BLEND_OP_ADD;
+	lightBlendStateDesc.RenderTarget[0].RenderTargetWriteMask = 0x0f;
+	HR(md3dDevice->CreateBlendState(&lightBlendStateDesc, &m_pLightBlendState));
+
+
 	//创建alpha混合关闭的混合状态
 	blendStateDescription.RenderTarget[0].BlendEnable = false;
 	HR(md3dDevice->CreateBlendState(&blendStateDescription, &md3dDisableBlendState));
@@ -531,6 +546,18 @@ void DirectxCore::RecoverDefaultDSS()
 void DirectxCore::TurnOnDisbleZWriteDSS()
 {
 	md3dImmediateContext->OMSetDepthStencilState(md3dDisableZWriteDSS, 0);
+}
+
+
+void DirectxCore::TurnOnLightBlend()
+{
+	float blendFactor[4];
+	blendFactor[0] = 0.0f;
+	blendFactor[1] = 0.0f;
+	blendFactor[2] = 0.0f;
+	blendFactor[3] = 0.0f;
+
+	md3dImmediateContext->OMSetBlendState(m_pLightBlendState, blendFactor, 1);
 }
 
 

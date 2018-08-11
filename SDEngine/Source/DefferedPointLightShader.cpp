@@ -1,33 +1,31 @@
-#include"DefferLightingShader.h"
+#include "DefferedPointLightShader.h"
 
-DefferLighingShader::DefferLighingShader(WCHAR* vsFilenPath, WCHAR* psFilenPath):
+DefferedPointLightShader::DefferedPointLightShader(WCHAR* vsFilenPath, WCHAR* psFilenPath):
 	Shader_2D(vsFilenPath,psFilenPath),
-	mCBCommon(nullptr)
+	mCBCommon(nullptr),
+	m_pCBPointLight(nullptr)
 {
 	CreateConstantBuffer();
 }
 
 
-DefferLighingShader::DefferLighingShader(const DefferLighingShader& other):
+DefferedPointLightShader::DefferedPointLightShader(const DefferedPointLightShader& other):
 	Shader_2D(other)
 {
 
 }
 
 
-DefferLighingShader::~DefferLighingShader()
+DefferedPointLightShader::~DefferedPointLightShader()
 {
 	ShutDown();
 }
 
-
-
-
-bool DefferLighingShader::SetShaderParams(ID3D11ShaderResourceView* gBuffer[4])
+bool DefferedPointLightShader::SetShaderParams(ID3D11ShaderResourceView* gBuffer[4],int nPointLightIndex)
 {
 	bool result;
 	//设置Shader常量缓存和纹理资源
-	result = SetShaderCB(gBuffer);
+	result = SetShaderCB(gBuffer, nPointLightIndex);
 	if (!result)
 		return false;
 
@@ -40,7 +38,7 @@ bool DefferLighingShader::SetShaderParams(ID3D11ShaderResourceView* gBuffer[4])
 
 
 
-void DefferLighingShader::CreateConstantBuffer()
+void DefferedPointLightShader::CreateConstantBuffer()
 {
 
 	D3D11_BUFFER_DESC commonBufferDesc;
@@ -50,17 +48,26 @@ void DefferLighingShader::CreateConstantBuffer()
 	commonBufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
 	commonBufferDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
 	g_pDevice->CreateBuffer(&commonBufferDesc, NULL, &mCBCommon);
+
+	D3D11_BUFFER_DESC dirlightBufferDesc;
+	ZeroMemory(&dirlightBufferDesc, sizeof(dirlightBufferDesc));
+	dirlightBufferDesc.Usage = D3D11_USAGE_DYNAMIC;
+	dirlightBufferDesc.ByteWidth = sizeof(CBPointLight);
+	dirlightBufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
+	dirlightBufferDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+	g_pDevice->CreateBuffer(&dirlightBufferDesc, NULL, &m_pCBPointLight);
 }
 
 
 
-void DefferLighingShader::ShutDown()
+void DefferedPointLightShader::ShutDown()
 {
 	ReleaseCOM(mCBCommon);
+	ReleaseCOM(m_pCBPointLight);
 }
 
 
-bool DefferLighingShader::SetShaderCB(ID3D11ShaderResourceView* gBuffer[4])
+bool DefferedPointLightShader::SetShaderCB(ID3D11ShaderResourceView* gBuffer[4],int nPointLightIndex)
 {
 	XMMATRIX viewMatrix = GCamera->GetViewMatrix();
 	XMMATRIX ProjMatrix = GCamera->GetProjectionMatrix();
@@ -77,14 +84,25 @@ bool DefferLighingShader::SetShaderCB(ID3D11ShaderResourceView* gBuffer[4])
 	pCBCommon->mViewMatrix = viewMa;
 	pCBCommon->mProjMatrix = ProjMa;
 	pCBCommon->mWorldInvTranposeMatirx = XMMatrixIdentity();
-	pCBCommon->dirLightColor = GLightManager->GetMainLight()->GetLightColor();
-	pCBCommon->dirLightDir = GLightManager->GetMainLight()->GetLightDirection();
-	pCBCommon->ambientLight = GLightManager->GetMainLight()->GetAmbientLight();
+
 	pCBCommon->cameraPos = GCamera->GetPosition();
 	g_pDeviceContext->Unmap(mCBCommon, 0);
+
+	D3D11_MAPPED_SUBRESOURCE mappedSSLight;
+	HR(g_pDeviceContext->Map(m_pCBPointLight, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedSSLight));
+	auto pCBPointLght = reinterpret_cast<CBPointLight*>(mappedSSLight.pData);
+	shared_ptr<PointLight> pPointLight = GLightManager->m_vecPointLight[nPointLightIndex];
+	
+	pCBPointLght->lightColor = pPointLight->GetLightColor();
+	pCBPointLght->lightPos = pPointLight->GetPosition();
+	pCBPointLght->radius = pPointLight->GetRadius();
+	pCBPointLght->attenuation = pPointLight->GetLightAttenuation();
+	g_pDeviceContext->Unmap(m_pCBPointLight, 0);
+
 	//第三,设置在VertexShader的常量缓存的值(带着更新的值)
 	g_pDeviceContext->VSSetConstantBuffers(0, 1, &mCBCommon);
 	g_pDeviceContext->PSSetConstantBuffers(0, 1, &mCBCommon);
+	g_pDeviceContext->PSSetConstantBuffers(1, 1, &m_pCBPointLight);
 	g_pDeviceContext->PSSetShaderResources(0, 4, gBuffer);
 
 	return true;

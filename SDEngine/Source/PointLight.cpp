@@ -3,7 +3,8 @@
 
 PointLight::PointLight():
 	Light(),
-	m_fRadius(5.0f)
+	m_fRadius(5.0f),
+	m_lightAttenuation(XMFLOAT3(1.0f,0.0f,0.0f))
 {
 
 }
@@ -27,4 +28,14 @@ float PointLight::GetRadius()
 void PointLight::SetRadius(float fRadius)
 {
 	m_fRadius = fRadius;
+}
+
+XMFLOAT3 PointLight::GetLightAttenuation()
+{
+	return m_lightAttenuation;
+}
+
+void PointLight::SetLightAttenuation(XMFLOAT3 lightAttenuation)
+{
+	m_lightAttenuation = lightAttenuation;
 }

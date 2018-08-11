@@ -3,15 +3,13 @@
 #define _GRAPHICS_CLASS_H
 
 #include "DirectxCore.h"
-#include"GameObject.h"
+#include "GameObjectManager.h"
 #include"Macro.h"
 #include"Light.h"
 #include"FPS.h"
 #include"GraphicsClass.h"
 #include"Input.h"
 #include"ShaderManager.h"
-#include"SDKmesh.h"
-#include<DXUT.h>
 #include"GeometryBuffer.h"
 #include "DepthBufferRT.h"
 #include<memory>
@@ -38,7 +36,7 @@ const float CAMERA_SPEED = 10.0f;
 
 #define POST_EFFECT
 //#define SSR
-//#define DEBUG_GBUFFER
+#define DEBUG_GBUFFER
 
 class GraphicsClass
 {
@@ -53,10 +51,12 @@ private:
 	shared_ptr<Quad> mQuad;
 
 	//网格数据类
-	shared_ptr<GameObject> mSphereObject;
+	shared_ptr<GameObject> mOpacitySphereObject;
+	shared_ptr<GameObject> mTransSphereObject;
 	shared_ptr<GameObject> mHeadObject;
 	shared_ptr<GameObject> mSponzaNoBottom;
 	shared_ptr<GameObject> mSponzaBottom;
+
 	shared_ptr<RenderTexture> mSSRRT;
 	shared_ptr<RenderTexture> mSrcRT;
 
@@ -81,7 +81,6 @@ private:
 
 
 private:
-	void RenderFBXMesh();
 	void RenderOpacity();
 	void RenderTransparency();
 	void RenderGeneralTransparency();

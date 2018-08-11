@@ -13,8 +13,11 @@ public:
 public:
 	float GetRadius();
 	void SetRadius(float fRadius);
+	XMFLOAT3 GetLightAttenuation();
+	void SetLightAttenuation(XMFLOAT3 lightAttenuation);
 
 private:
 	float m_fRadius;
+	XMFLOAT3 m_lightAttenuation;
 };
 #endif 

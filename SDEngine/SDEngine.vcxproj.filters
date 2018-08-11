@@ -15,12 +15,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="LoadTexture\DDSTextureLoader.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="LoadTexture\WICTextureLoader.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
     <ClCompile Include="Source\BlurShader.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
@@ -34,9 +28,6 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="Source\Debugwindow.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\DefferLightingShader.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="Source\DepthBufferRT.cpp">
@@ -162,14 +153,29 @@
     <ClCompile Include="Source\3DShader.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="Source\LoadTexture\DDSTextureLoader.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\LoadTexture\Resource.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\LoadTexture\WICTextureLoader.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Mesh.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\GameObjectManager.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\DefferedDirLightShader.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\DefferedPointLightShader.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="LoadTexture\DDSTextureLoader.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="LoadTexture\WICTextureLoader.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
     <ClInclude Include="Source\BlurShader.h">
       <Filter>头文件</Filter>
     </ClInclude>
@@ -192,9 +198,6 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="Source\Debugwindow.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\DefferLightingShader.h">
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="Source\DepthBufferRT.h">
@@ -323,6 +326,27 @@
     <ClInclude Include="Source\3DShader.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="Source\LoadTexture\DDSTextureLoader.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\LoadTexture\Resource.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\LoadTexture\WICTextureLoader.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Mesh.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\GameObjectManager.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\DefferedDirLightShader.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\DefferedPointLightShader.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="Resource\Shader\BlurShader.fx" />
@@ -344,5 +368,7 @@
     <None Include="Resource\Shader\UIShader.fx" />
     <None Include="Resource\Shader\WaveComputerShader.fx" />
     <None Include="Resource\Shader\WaveShader.fx" />
+    <None Include="Resource\Shader\DefferedDirLightShader.fx" />
+    <None Include="Resource\Shader\DefferedPointLightShader.fx" />
   </ItemGroup>
 </Project>

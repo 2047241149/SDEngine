@@ -34,27 +34,84 @@ bool GraphicsClass::Initialize(int ScreenWidth, int ScreenHeight, HWND hwnd,HINS
 	GCamera->SetUIOrthoParams((float)ScreenWidth, (float)ScreenHeight);
 
 	//给游戏添加灯光
+	
 	shared_ptr<DirectionLight> m_spDirLight = shared_ptr<DirectionLight>(new DirectionLight());
 	m_spDirLight->SetLightPostion(XMFLOAT3(12.0f, 12.0f, 12.0f));
 	m_spDirLight->SetLookAtPosition(XMFLOAT3(0.0f, 0.0f, 0.0f));
 	m_spDirLight->SetAmbientLight(XMFLOAT3(0.05f, 0.05f, 0.05f));
-	m_spDirLight->SetLightColor(XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f));
+	m_spDirLight->SetLightColor(XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f));
+
+	for (int nNum = -5; nNum < 5; ++nNum)
+	{
+		shared_ptr<PointLight> m_spPointLight = shared_ptr<PointLight>(new PointLight());
+		m_spPointLight->SetLightColor(XMFLOAT4(5.0f, 0.0f, 0.0f, 1.0f));
+		m_spPointLight->SetRadius(10.0f);
+		m_spPointLight->SetLightAttenuation(XMFLOAT3(1.0f, 1.0f, 0.0f));
+		m_spPointLight->SetLightPostion(XMFLOAT3(4.0f * nNum, 3.0f, 0.0f));
+		GLightManager->Add(m_spPointLight);
+	}
+
 	GLightManager->Add(m_spDirLight);
+	
+
+	//创建mesh
+	//(1)
+	shared_ptr<Mesh> pHeadMesh = shared_ptr<Mesh>(new Mesh("Resource\\FBXModel\\head\\head.FBX"));
+	pHeadMesh->m_eMaterialType = MaterialType::DIFFUSE;
+
+	//(2)
+	shared_ptr<Mesh> pOpacitySphereMesh = shared_ptr<Mesh>(new Mesh("Resource\\FBXModel\\sphere\\sphere.FBX"));
+	pOpacitySphereMesh->m_eMaterialType = MaterialType::PURE_COLOR;
+	pOpacitySphereMesh->pureColor = XMFLOAT4(1.0f, 0.0f, 0.0f, 1.0f);
+
+	//(3)
+	shared_ptr<Mesh>  pTransparentSphereMesh = shared_ptr<Mesh>(new Mesh("Resource\\FBXModel\\sphere\\sphere.FBX"));
+	pTransparentSphereMesh->m_eMaterialType = MaterialType::PURE_COLOR;
+	pTransparentSphereMesh->bTransparent = true;
+	pTransparentSphereMesh->pureColor = XMFLOAT4(0.0f, 0.0f, 1.0f, 1.0f);
+
+	//(4)
+	shared_ptr<Mesh> pSponzaBottom = shared_ptr<Mesh>(new Mesh("Resource\\FBXModel\\sponza\\sponza_bottom.FBX"));
+	pSponzaBottom->m_eMaterialType = MaterialType::DIFFUSE;
+	pSponzaBottom->bReflect = true;
+	pSponzaBottom->bTransparent = false;
+
+	//(5)
+	shared_ptr<Mesh> pSponzaNoBottom = shared_ptr<Mesh>(new Mesh("Resource\\FBXModel\\sponza\\sponza_no_bottom.FBX"));
+	pSponzaNoBottom->m_eMaterialType = MaterialType::DIFFUSE;
+
+	//创建GameObject
+	mHeadObject = shared_ptr<GameObject>(new GameObject());
+	mHeadObject->SetMesh(pHeadMesh);
+	mHeadObject->m_pTransform->localPosition = XMFLOAT3(0.0f, 10.0f, 0.0f);
+	mHeadObject->m_pTransform->localRotation = XMFLOAT3(0.0f, 90.0f, 0.0f);
+	mHeadObject->m_pTransform->localScale = XMFLOAT3(5.0f, 5.0f, 5.0f);
+
+	mOpacitySphereObject = shared_ptr<GameObject>(new GameObject());
+	mOpacitySphereObject->SetMesh(pOpacitySphereMesh);
+	mOpacitySphereObject->m_pTransform->localScale = XMFLOAT3(1.0f, 1.0f, 1.0f);
+
+	mSponzaBottom = shared_ptr<GameObject>(new GameObject());
+	mSponzaBottom->SetMesh(pSponzaBottom);
+	mSponzaBottom->m_pTransform->localPosition = XMFLOAT3(0.0f, 0.0f, 0.0f);
+
+	mSponzaNoBottom = shared_ptr<GameObject>(new GameObject());
+	mSponzaNoBottom->SetMesh(pSponzaNoBottom);
+	mSponzaNoBottom->m_pTransform->localPosition = XMFLOAT3(0.0f, 0.0f, 0.0f);
+
+	mTransSphereObject = shared_ptr<GameObject>(new GameObject());
+	mTransSphereObject->SetMesh(pTransparentSphereMesh);
+	mTransSphereObject->m_pTransform->localPosition = XMFLOAT3(10.0f, 10.0f, 0.0f);
 
 
-
-	//创建ModelClasss
-	mHeadObject = shared_ptr<GameObject>(new GameObject("Resource\\FBXModel\\head\\head.FBX"));
-
-	mSphereObject = shared_ptr<GameObject>(new GameObject("Resource\\FBXModel\\sphere\\sphere.FBX"));
-
-	mSponzaBottom = shared_ptr<GameObject>(new GameObject("Resource\\FBXModel\\sponza\\sponza_bottom.FBX"));
-
-	mSponzaNoBottom = shared_ptr<GameObject>(new GameObject("Resource\\FBXModel\\sponza\\sponza_no_bottom.FBX"));
+	GGameObjectManager->Add(mHeadObject);
+	GGameObjectManager->Add(mOpacitySphereObject);
+	GGameObjectManager->Add(mSponzaBottom);
+	GGameObjectManager->Add(mSponzaNoBottom);
+	GGameObjectManager->Add(mTransSphereObject);
 
 	//创建输入类
 	mInputClass = shared_ptr<Input>(new Input(hinstance, hwnd, ScreenWidth, ScreenHeight));
-
 
 	mSrcRT = shared_ptr<RenderTexture>(
 		new RenderTexture(ScreenWidth, ScreenHeight));
@@ -66,7 +123,6 @@ bool GraphicsClass::Initialize(int ScreenWidth, int ScreenHeight, HWND hwnd,HINS
 		GeometryBuffer(ScreenWidth,ScreenHeight,SCREEN_FAR,SCREEN_NEAR));
 
 	mQuad = shared_ptr<Quad>(new Quad());
-
 
 	mDebugWindow = shared_ptr<DebugWindow>(new DebugWindow(ScreenWidth,ScreenHeight,120,120));
 
@@ -104,7 +160,7 @@ bool GraphicsClass::Frame()
 
 
 	//鼠标右键处于按下的状态才能进行（左右移动）（前后移动）（旋转的操作）
-	if (mInputClass->IsMouseRightButtuonPressed()&& fps >=5&& fps <=1000000)
+	if (mInputClass->IsMouseRightButtuonPressed()&& fps >=5 && fps <=1000000)
 	{
 		//"W","S"键操作
 		if (mInputClass->IsWPressed())
@@ -200,14 +256,14 @@ void GraphicsClass::Render()
 	RenderOpacity();
 
 	//获取整个场景的BackDepthBuffer
-	//RenderSceneBackDepthBuffer();
+	RenderSceneBackDepthBuffer();
 
 	//绘制透明物体(普通的透明物体，SSR)
 	RenderTransparency();
 
-	#if defined(POST_EFFECT)
+	/*#if defined(POST_EFFECT)
 		RenderPostEffectPass();
-	#endif // POST_EFFECT
+	#endif // POST_EFFECT*/
 
 	#if defined(DEBUG_GBUFFER)
 		RenderDebugWindow();
@@ -220,43 +276,30 @@ void GraphicsClass::Render()
 	GDirectxCore->EndScene();
 }
 
-
-
-void GraphicsClass::RenderFBXMesh()
-{
-	//渲染头
-	mHeadObject->mTransform->localScale = XMFLOAT3(5.0f, 5.0f, 5.0f);
-	mHeadObject->mTransform->localPosition = XMFLOAT3(0.0f, 10.0f, 0.0f);
-	mHeadObject->mTransform->localRotation = XMFLOAT3(0.0f, 90.0f, 0.0f);
-	mHeadObject->Render(materialType);
-
-	//渲染SponzaBottom(用于SSR反射)
-	GDirectxCore->TurnOnMaskReflectDSS();
-	mSponzaBottom->mTransform->localPosition = XMFLOAT3(0.0f, 0.0f, 0.0f);
-	mSponzaBottom->Render(MaterialType::DIFFUSE);
-	GDirectxCore->TurnOnZBuffer();//恢复默认的DSS
-
-	//渲染SponzaNoBottm
-	mSponzaNoBottom->mTransform->localPosition = XMFLOAT3(0.0f, 0.0f, 0.0f);
-	mSponzaNoBottom->Render(MaterialType::DIFFUSE);
-
-	//球渲染
-	mSphereObject->mTransform->localScale = XMFLOAT3(1.0f, 1.0f, 1.0f);
-
-	//平行光源球
-	mSphereObject->mTransform->localPosition = GLightManager->GetMainLight()->GetLightDirection();
-	mSphereObject->Render(MaterialType::PURE_COLOR, XMVectorSet(1.0f, 1.0f, 0.0f, 1.0f));
-
-	//原点球
-	mSphereObject->mTransform->localPosition = XMFLOAT3(0.0f, 0.0f, 0.0f);
-	mSphereObject->Render(MaterialType::PURE_COLOR, XMVectorSet(1.0f,1.0f,0.0f,1.0f));
-}
-
 void GraphicsClass::RenderGeometryPass()
 {
 	mGeometryBuffer->SetRenderTarget(XMFLOAT3(0.0f, 0.0f, 0.5f));
 
-	RenderFBXMesh();
+	vector<shared_ptr<GameObject>> vecGameObject = GGameObjectManager->m_vecGameObject;
+
+	for (int index = 0; index < (int)vecGameObject.size(); index++)
+	{
+		shared_ptr<GameObject> pGameObject = vecGameObject[index];
+		if (!pGameObject->m_pMesh->bTransparent)
+		{
+			if (!pGameObject->m_pMesh->bReflect)
+			{
+				pGameObject->Render();
+			}
+			else
+			{
+				GDirectxCore->TurnOnMaskReflectDSS();
+				pGameObject->Render();
+				GDirectxCore->TurnOnZBuffer();
+			}
+		
+		}
+	}
 }
 
 void GraphicsClass::RenderLightingPass()
@@ -268,8 +311,24 @@ void GraphicsClass::RenderLightingPass()
 	shaderResourceView[1] = mGeometryBuffer->GetGBufferSRV(GBufferType::Pos);
 	shaderResourceView[2] = mGeometryBuffer->GetGBufferSRV(GBufferType::Normal);
 	shaderResourceView[3] = mGeometryBuffer->GetGBufferSRV(GBufferType::Specular);
-	GShaderManager->SetDefferLighingShader(shaderResourceView);
-	mQuad->Render();
+	GDirectxCore->TurnOnLightBlend();
+
+	//DirLight叠加
+	for (int index = 0; index < (int)GLightManager->m_vecDirLight.size(); ++index)
+	{
+		GShaderManager->SetDefferedDirLightShader(shaderResourceView, index);
+		mQuad->Render();
+	}
+
+	//PointLight叠加
+	for (int index = 0; index < (int)GLightManager->m_vecPointLight.size(); ++index)
+	{
+		GShaderManager->SetDefferedPointLightShader(shaderResourceView, index);
+		mQuad->Render();
+	}
+
+	GDirectxCore->TurnOffAlphaBlend();
+
 
 	GDirectxCore->SetBackBufferRender();
 	GDirectxCore->SetViewPort();
@@ -322,13 +381,13 @@ void GraphicsClass::RenderDebugWindow()
 	(mBackDepthBufferRT->GetShaderResourceView());
 	mDebugWindow->Render(610, 600);
 
-	GShaderManager->SetUIShader
+	/*GShaderManager->SetUIShader
 	(mSSRBuffer->GetGBufferSRV(SSRBufferType::VIEW_NORMAL));
 	mDebugWindow->Render(10, 480);
 
 	GShaderManager->SetUIShader
 	(mSSRBuffer->GetGBufferSRV(SSRBufferType::VIEW_POS));
-	mDebugWindow->Render(10, 360);
+	mDebugWindow->Render(10, 360);*/
 
 	GDirectxCore->TurnOnZBuffer();
 }
@@ -372,6 +431,7 @@ void GraphicsClass::RenderOpacity()
 void GraphicsClass::RenderTransparency()
 {
 	RenderGeneralTransparency();
+
 	#if defined(SSR)
 	RenderSSR();
 	#endif
@@ -387,11 +447,19 @@ void GraphicsClass::RenderGeneralTransparency()
 	GDirectxCore->TurnOnDisbleZWriteDSS();
 	GDirectxCore->TurnOnAlphaBlend();
 
-	mSphereObject->mTransform->localPosition = XMFLOAT3(3.0, 9.0, 0.0);
-	mSphereObject->mTransform->localScale = XMFLOAT3(3.0, 3.0, 3.0);
-	XMMATRIX worldMatrix = mSphereObject->GetWorldMatrix();
-	GShaderManager->SetForwardPureColorShader(worldMatrix, XMVectorSet(1.0f, 0.0f, 0.0f, 1.0f));
-	mSphereObject->RenderMesh();
+	vector<shared_ptr<GameObject>> vecGameObject = GGameObjectManager->m_vecGameObject;
+
+	for (int index = 0; index < (int)vecGameObject.size(); index++)
+	{
+		shared_ptr<GameObject> pGameObject = vecGameObject[index];
+		if (pGameObject->m_pMesh->bTransparent && !pGameObject->m_pMesh->bReflect)
+		{	
+			XMMATRIX worldMatrix = pGameObject->GetWorldMatrix();
+			GShaderManager->SetForwardPureColorShader(worldMatrix, XMVectorSet(1.0f, 0.0f, 0.0f, 1.0f));
+			pGameObject->RenderMesh();
+		}
+	}
+
 	GDirectxCore->TurnOffAlphaBlend();
 	GDirectxCore->RecoverDefaultDSS();
 }
@@ -401,34 +469,16 @@ void GraphicsClass::RenderSceneBackDepthBuffer()
 {
 	mBackDepthBufferRT->SetRenderTarget();
 	GDirectxCore->TurnOnCullFront();
+	vector<shared_ptr<GameObject>> vecGameObject = GGameObjectManager->m_vecGameObject;
 
-	//渲染头
-	mHeadObject->mTransform->localScale = XMFLOAT3(5.0f, 5.0f, 5.0f);
-	mHeadObject->mTransform->localPosition = XMFLOAT3(0.0f, 10.0f, 0.0f);
-	mHeadObject->mTransform->localRotation = XMFLOAT3(0.0f, 90.0f, 0.0f);
-	mHeadObject->Render(MaterialType::DEPTH_BUFFER);
-
-	//渲染SponzaBottom
-	mSponzaBottom->mTransform->localPosition = XMFLOAT3(0.0f, 0.0f, 0.0f);
-	mSponzaBottom->Render(MaterialType::DEPTH_BUFFER);
-
-    //渲染SponzaNoBottm
-	mSponzaNoBottom->mTransform->localPosition = XMFLOAT3(0.0f, 0.0f, 0.0f);
-	mSponzaNoBottom->Render(MaterialType::DEPTH_BUFFER);
-
-	//球渲染
-	mSphereObject->mTransform->localScale = XMFLOAT3(1.0f, 1.0f, 1.0f);
-
-
-	//平行光源球
-	mSphereObject->mTransform->localPosition = GLightManager->GetMainLight()->GetLightDirection();
-	mSphereObject->Render(MaterialType::DEPTH_BUFFER);
-
-
-	//原点球
-	mSphereObject->mTransform->localPosition = XMFLOAT3(0.0f, 0.0f, 0.0f);
-	mSphereObject->Render(MaterialType::DEPTH_BUFFER);
-
+	for (int index = 0; index < (int)vecGameObject.size(); index++)
+	{
+		shared_ptr<GameObject> pGameObject = vecGameObject[index];
+		if (!pGameObject->m_pMesh->bTransparent)
+		{
+			pGameObject->Render();
+		}
+	}
 
 	//恢复默认的RS
 	GDirectxCore->TurnOnSolidRender();

@@ -27,6 +27,7 @@ protected:
 
 private:
 	ID3D11Buffer* mCBEveryFrameBuffer;
+	ID3D11Buffer* m_pCBDirLight;
 private:
 	//灯光常量缓存结构体
 	struct CBEveryFrame

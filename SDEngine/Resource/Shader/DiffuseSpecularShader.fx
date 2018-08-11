@@ -11,11 +11,6 @@ cbuffer CBMatrix:register(b0)
 	matrix WorldInvTranspose;
 	float3 cameraPos;
 	float pad1;
-	float4 dirLightColor;
-	float3 dirLightDir;
-	float pad2;
-	float3 ambientLight;
-	float pad3;
 };
 
 struct VertexIn

@@ -9,17 +9,22 @@ cbuffer CBMatrix:register(b0)
 	matrix WorldInvTranspose;
 	float3 cameraPos;
 	float pad1;
-	float4 dirLightColor;
-	float3 dirLightDir;
-	float pad2;
-	float3 ambientLight;
-	float pad3;
 };
+
 
 cbuffer CBEveryFrame:register(b1)
 {
 	float4 surfaceColor;
 }
+
+cbuffer CBDirLight : register(b2)
+{
+	float4 lightColor;
+	float3 lightDir;
+	float3 ambientLight;
+	float2 pad;
+};
+
 
 struct VertexIn
 {
@@ -55,10 +60,10 @@ float4 PS(VertexOut outa) : SV_Target
 {
 	
 	float4 color;
-	float3 lightDir = normalize(-dirLightDir);
+	float3 lightDir = normalize(-lightDir);
 	float3 worldNormal = normalize(outa.W_Normal);
 	//float diffuseFactor = saturate(dot(worldNormal, lightDir));
-	color.rgb =dirLightColor.xyz * surfaceColor.xyz;
+	color.rgb = lightColor.xyz * surfaceColor.xyz;
 	color.a = 0.6;
 	return color;
 }
