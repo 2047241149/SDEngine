@@ -12,6 +12,7 @@
 #include<istream>
 #include<ostream>
 #include<strstream>
+#include<map>
 #include<memory>
 #include "LightManager.h"
 #include"DirectxCore.h"

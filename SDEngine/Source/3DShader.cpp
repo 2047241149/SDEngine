@@ -191,9 +191,6 @@ bool Shader_3D::SetShaderCB(CXMMATRIX worldMatrix)
 	pCBCommon->mViewMatrix = viewMa;
 	pCBCommon->mProjMatrix = ProjMa;
 	pCBCommon->mWorldInvTranposeMatirx = worldInvTranspose;
-	pCBCommon->dirLightColor = GLightManager->GetMainLight()->GetLightColor();
-	pCBCommon->dirLightDir = GLightManager->GetMainLight()->GetLightDirection();
-	pCBCommon->ambientLight = GLightManager->GetMainLight()->GetAmbientLight();
 	pCBCommon->cameraPos = GCamera->GetPosition();
 	g_pDeviceContext->Unmap(m_pCBCommon, 0);
 

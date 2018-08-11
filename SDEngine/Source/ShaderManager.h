@@ -1,7 +1,8 @@
 #pragma once
 #ifndef _SHADER_MANAGER_H
 #define _SHADER_MANAGER_H
-#include"DefferLightingShader.h"
+#include "DefferedDirLightShader.h"
+#include "DefferedPointLightShader.h"
 #include "DiffuseShader.h"
 #include"DiffuseNormalShader.h"
 #include"DiffuseNormalSpecShader.h"
@@ -31,7 +32,8 @@ private:
 	shared_ptr<DiffuseNormalShader> mDiffuseNormalShader;
 	shared_ptr<DiffuseNormalSpecShader> mDiffuseNormalSpecShader;
 	shared_ptr<DiffuseSpecShader> mDiffuseSpecShader;
-	shared_ptr<DefferLighingShader> mDefferLightingShader;
+	shared_ptr<DefferedDirLightShader> mDefferDirLightShader;
+	shared_ptr<DefferedPointLightShader> mDefferPointLightShader;
 	shared_ptr<GraphcisBlitShader> mGraphcisBlitShader;
 	shared_ptr<DOFShader> mDOFShader;
 	shared_ptr<BlurShader> mBlurShader;
@@ -60,8 +62,6 @@ public:
 	bool SetDiffuseNormalSpecShader(CXMMATRIX worldMatrix,
 		ID3D11ShaderResourceView* diffuseSRV, ID3D11ShaderResourceView* normalSRV,
 		ID3D11ShaderResourceView* specSRV);
-
-	bool SetDefferLighingShader(ID3D11ShaderResourceView* gBuffer[4]);
 
 	bool SetUIShader(ID3D11ShaderResourceView* diffuseTexture);
 
@@ -93,12 +93,15 @@ public:
 	bool SetWaveShader(CXMMATRIX worldMatrix, FXMVECTOR surfaceColor, 
 		ID3D11ShaderResourceView* diffuse, ID3D11ShaderResourceView* normal);
 
+	bool SetDefferedDirLightShader(ID3D11ShaderResourceView* gBuffer[4], int nDirLightIndex);
+
+	bool SetDefferedPointLightShader(ID3D11ShaderResourceView* gBuffer[4], int nPointLightIndex);
+
 public:
 	DepthShader* GetDepthShader() { return mDepthShader.get(); }
 	DiffuseShader* GetDiffuseShader() { return mDiffuseShader.get(); }
 	DiffuseNormalShader* GetDiffuseNormalShader() { return mDiffuseNormalShader.get(); }
 	DiffuseNormalSpecShader* GetDiffuseNormalSpecShader() { return mDiffuseNormalSpecShader.get(); }
-	DefferLighingShader* GetDefferLighingShader(){ return  mDefferLightingShader.get(); }
 	UIShader* GetUIShader() { return mUIShader.get(); }
 	PureColorShader* GetPureColorShader() { return mPureColorShader.get(); }
 	DiffuseSpecShader* GetDiffuseSpecShader() { return mDiffuseSpecShader.get(); }
