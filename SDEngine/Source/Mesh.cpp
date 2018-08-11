@@ -6,15 +6,9 @@ Mesh::Mesh(string strFbxFileName):
 	bTransparent(false),
 	bReflect(false)
 {
-	if (m_mapFBXModelData.end() == m_mapFBXModelData.find(strFbxFileName))
-	{
-		m_pFBXModel = m_mapFBXModelData[strFbxFileName];
-	}
-	else
-	{
-		LoadFBXModel(strFbxFileName);
-		m_mapFBXModelData[strFbxFileName] = m_pFBXModel;
-	}
+
+	LoadFBXModel(strFbxFileName);	
+	InitBuffer();
 }
 
 Mesh::Mesh(const Mesh& other)
@@ -61,11 +55,22 @@ bool Mesh::LoadTexture()
 
 bool Mesh::LoadFBXModel(string strFbxFileName)
 {
-	ImportFBX* singleInstace = ImportFBX::GetInstance();
-	singleInstace->ImportFbxFile(strFbxFileName, m_pFBXModel->mModelList);
+	if (GImportFBX->m_mapFBXModel.find(strFbxFileName) == GImportFBX->m_mapFBXModel.end())
+	{
+		m_pFBXModel = shared_ptr<FBXModelData>(new FBXModelData());
+		GImportFBX->ImportFbxFile(strFbxFileName, m_pFBXModel->mModelList);
+		LoadTexture();
+		GImportFBX->m_mapFBXModel[strFbxFileName] = m_pFBXModel;
+	}
+	else
+	{
+		m_pFBXModel = GImportFBX->m_mapFBXModel[strFbxFileName];
+	}
 
-	LoadTexture();
+	if (nullptr != m_pFBXModel)
+	{
 
+	}
 	return true;
 }
 
@@ -94,4 +99,70 @@ void Mesh::LoadSRVResource(string strTexFileName, ModelData* model)
 void Mesh::ShutDown()
 {
 	ShutDownSRV();
+}
+
+
+void Mesh::InitBuffer()
+{
+	if (nullptr == m_pFBXModel)
+		return;
+
+	vector<ModelData>& mModelList = m_pFBXModel->mModelList;
+
+	for (UINT index = 0; index < mModelList.size(); ++index)
+	{
+		ModelData* mModelData = &mModelList[index];
+
+		for (int i = 0; i < (int)mModelData->mMeshList.size(); ++i)
+		{
+			//第一,填充(顶点)缓存形容结构体和子资源数据结构体,并创建顶点缓存
+			MeshData& mMesh = mModelData->mMeshList[i];
+
+			D3D11_BUFFER_DESC vertexBufferDesc;
+			vertexBufferDesc.Usage = D3D11_USAGE_DEFAULT;
+			vertexBufferDesc.ByteWidth = sizeof(mMesh.mVertexData[0]) * mMesh.mVertexData.size();
+			vertexBufferDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
+			vertexBufferDesc.CPUAccessFlags = 0;
+			vertexBufferDesc.MiscFlags = 0;
+			vertexBufferDesc.StructureByteStride = 0;
+
+			D3D11_SUBRESOURCE_DATA vertexData;
+			vertexData.pSysMem = &mMesh.mVertexData[0];
+			vertexData.SysMemPitch = 0;
+			vertexData.SysMemSlicePitch = 0;
+			g_pDevice->CreateBuffer(&vertexBufferDesc, &vertexData, &mMesh.mVertexBuffer);
+
+			//第二,填充(索引)缓存形容结构体和子资源数据结构体,并创建索引缓存
+			D3D11_BUFFER_DESC  indexBufferDesc;
+			indexBufferDesc.Usage = D3D11_USAGE_DEFAULT;
+			indexBufferDesc.ByteWidth = sizeof(WORD) * mMesh.mIndexData.size();
+			indexBufferDesc.BindFlags = D3D11_BIND_INDEX_BUFFER;
+			indexBufferDesc.CPUAccessFlags = 0;
+			indexBufferDesc.MiscFlags = 0;
+			indexBufferDesc.StructureByteStride = 0;
+
+			D3D11_SUBRESOURCE_DATA indexData;
+			indexData.pSysMem = &mMesh.mIndexData[0];
+			indexData.SysMemPitch = 0;
+			indexData.SysMemSlicePitch = 0;
+			g_pDevice->CreateBuffer(&indexBufferDesc, &indexData, &mMesh.mIndexBuffer);
+		}
+
+	}
+
+}
+
+void Mesh::ShutDownBuffer()
+{
+	vector<ModelData>& mModelList = m_pFBXModel->mModelList;
+	for (UINT index = 0; index < mModelList.size(); ++index)
+	{
+		ModelData* mModelData = &mModelList[index];
+		for (int i = 0; i < (int)mModelData->mMeshList.size(); ++i)
+		{
+			MeshData& mMesh = mModelData->mMeshList[i];
+			ReleaseCOM(mMesh.mVertexBuffer);
+			ReleaseCOM(mMesh.mIndexBuffer);
+		}
+	}
 }

@@ -29,13 +29,13 @@ void ImportFBX::ClearMem()
 }
 
 
-ImportFBX* ImportFBX::GetInstance()
+ImportFBX* ImportFBX::Get()
 {
-	if (instance == nullptr)
+	if (m_pImportFBX== nullptr)
 	{
-		instance = shared_ptr<ImportFBX>(new ImportFBX());
+		m_pImportFBX = shared_ptr<ImportFBX>(new ImportFBX());
 	}
-	return instance.get();
+	return m_pImportFBX.get();
 }
 
 void ImportFBX::ImportFbxFile(string fbxFileName, vector<ModelData>& mFBXModel)
@@ -767,4 +767,4 @@ void ImportFBX::CalculateTriangleTangent(Triangle& triangle)
 }
 
 
-shared_ptr<ImportFBX> ImportFBX::instance = nullptr;
+shared_ptr<ImportFBX> ImportFBX::m_pImportFBX = nullptr;

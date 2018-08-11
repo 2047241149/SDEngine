@@ -78,9 +78,6 @@ bool SSRGBufferShader::SetShaderCB(ID3D11ShaderResourceView* gBuffer[2])
 	pCBCommon->mViewMatrix = viewMa;
 	pCBCommon->mProjMatrix = ProjMa;
 	pCBCommon->mWorldInvTranposeMatirx = XMMatrixIdentity();
-	pCBCommon->dirLightColor = GLightManager->GetMainLight()->GetLightColor();
-	pCBCommon->dirLightDir = GLightManager->GetMainLight()->GetLightDirection();
-	pCBCommon->ambientLight = GLightManager->GetMainLight()->GetAmbientLight();
 	pCBCommon->cameraPos = GCamera->GetPosition();
 	g_pDeviceContext->Unmap(mCBCommon, 0);
 

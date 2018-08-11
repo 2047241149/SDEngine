@@ -15,32 +15,11 @@
 using namespace std;
 using namespace DirectX;
 
-enum MaterialType
-{
-	PURE_COLOR,
-	DIFFUSE,
-	DIFFUSE_NORMAL,
-	DIFFUSE_SPECULAR,
-	DIFFUSE_NORMAL_SPECULAR,
-	WIRE_FRAME,
-	DEPTH_BUFFER
-};
-
 class GameObject
 {
 public:
 	shared_ptr<Transform> m_pTransform;
-
-private:
 	shared_ptr<Mesh> m_pMesh;
-
-
-private:
-	//加载各种缓存
-	bool InitBuffer();
-
-	//释放各种缓存
-	void ShutdownBuffer();
 
 public:
 	GameObject();
@@ -52,7 +31,7 @@ public:
 	bool Init();
 	void Shutdown();
 
-	void Render(MaterialType renderMode = MaterialType::PURE_COLOR, FXMVECTOR surfaceColor = XMVectorSet(1.0f,1.0f,1.0f,1.0f));
+	void Render();
 
 	void RenderMesh();
 	XMMATRIX GetWorldMatrix();

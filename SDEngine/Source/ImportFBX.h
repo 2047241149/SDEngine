@@ -18,6 +18,10 @@ class ImportFBX
 private:
 	vector<MemFBXModelData> mMemFBXModelData;
 	FbxScene* mScene;
+
+public:
+	map<string, shared_ptr<FBXModelData>> m_mapFBXModel;
+
 private:
 	FbxManager* mFbxManager = nullptr;
 	string fbxFileNamePre;
@@ -54,17 +58,18 @@ private:
 
 	void CalculateTriangleTangent(Triangle& triangle);
 public:
-	static shared_ptr<ImportFBX> instance;
+	static shared_ptr<ImportFBX> m_pImportFBX;
 public:
 	ImportFBX();
 	ImportFBX(const ImportFBX& other);
 	~ImportFBX();
 
 public:
-	static ImportFBX* GetInstance();
+	static ImportFBX* Get();
 	void ClearMem();
 	void ImportFbxFile(string fbxFileName, vector<ModelData>& mFBXModel);
 
 };
 
+#define GImportFBX (ImportFBX::Get())
 #endif 

@@ -14,11 +14,14 @@ cbuffer CBMatrix:register(b0)
 	matrix WorldInvTranspose;
 	float3 cameraPos;
 	float pad1;
-	float4 dirLightColor;
-	float3 dirLightDir;
-	float pad2;
+};
+
+cbuffer CBDirLight:register(b1)
+{
+	float4 lightColor;
+	float3 lightDir;
 	float3 ambientLight;
-	float pad3;
+	float2 pad;
 };
 
 struct VertexIn
@@ -57,17 +60,17 @@ float4 PS(VertexOut outa) : SV_Target
 
 
 	//º∆À„diffuseLight
-	float3 invLightDir = -normalize(dirLightDir);
+	float3 invLightDir = -normalize(lightDir);
 	float diffuseFactor = saturate(dot(worldNormal, invLightDir));
 
 	//º∆À„specular
 	float3 viewDir = normalize(cameraPos - worldPos);
 	float3 halfDir = normalize(invLightDir + viewDir);
-	float specularFactor = pow(saturate(dot(halfDir, worldNormal)), 32) * specular;
+	float specularFactor = pow(saturate(dot(halfDir, worldNormal)), 32) * specular * 0.2;
 
-	color = float4((ambientLight + dirLightColor.xyz * diffuseFactor) * diffuse, 1.0);
+	color = float4((ambientLight + lightColor.xyz * diffuseFactor) * diffuse, 1.0);
 	color = color + float4(specularFactor, specularFactor, specularFactor, 1.0);
-	float correctGamma = 1.0 / 2.0;
+	float correctGamma = 1.0 / 1.5;
 	color = pow(color, float4(correctGamma, correctGamma, correctGamma, 0.0));
 
 	return color;

@@ -22,94 +22,24 @@ bool GameObject::Init()
 	bool result;
 	m_pTransform = shared_ptr<Transform>(new Transform());
 
-	//第二,初始化构成model的各个mesh的顶点缓存，索引缓存
-	result = InitBuffer();
-	if (!result)
-	{
-		MessageBox(NULL, L"Initialize Buffer failure", L"ERROR", MB_OK);
-		return false;
-	}
-
 	return true;
 }
 
 void GameObject::Shutdown()
 {
-	ShutdownBuffer();
-}
-
-bool GameObject::InitBuffer()
-{
-
-	vector<ModelData>& mModelList = m_pMesh->m_pFBXModel->mModelList;
-	for (UINT index = 0; index < mModelList.size(); ++index)
-	{
-		ModelData* mModelData = &mModelList[index];
-
-		for (int i = 0; i < (int)mModelData->mMeshList.size(); ++i)
-		{
-			//第一,填充(顶点)缓存形容结构体和子资源数据结构体,并创建顶点缓存
-
-			MeshData& mMesh = mModelData->mMeshList[i];
-
-			D3D11_BUFFER_DESC vertexBufferDesc;
-			vertexBufferDesc.Usage = D3D11_USAGE_DEFAULT;
-			vertexBufferDesc.ByteWidth = sizeof(mMesh.mVertexData[0]) * mMesh.mVertexData.size();
-			vertexBufferDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
-			vertexBufferDesc.CPUAccessFlags = 0;
-			vertexBufferDesc.MiscFlags = 0;
-			vertexBufferDesc.StructureByteStride = 0;
-
-			D3D11_SUBRESOURCE_DATA vertexData;
-			vertexData.pSysMem = &mMesh.mVertexData[0];
-			vertexData.SysMemPitch = 0;
-			vertexData.SysMemSlicePitch = 0;
-			HR(g_pDevice->CreateBuffer(&vertexBufferDesc, &vertexData, &mMesh.mVertexBuffer));
-
-			//第二,填充(索引)缓存形容结构体和子资源数据结构体,并创建索引缓存
-			D3D11_BUFFER_DESC  indexBufferDesc;
-			indexBufferDesc.Usage = D3D11_USAGE_DEFAULT;
-			indexBufferDesc.ByteWidth = sizeof(WORD) * mMesh.mIndexData.size();
-			indexBufferDesc.BindFlags = D3D11_BIND_INDEX_BUFFER;
-			indexBufferDesc.CPUAccessFlags = 0;
-			indexBufferDesc.MiscFlags = 0;
-			indexBufferDesc.StructureByteStride = 0;
-
-			D3D11_SUBRESOURCE_DATA indexData;
-			indexData.pSysMem = &mMesh.mIndexData[0];
-			indexData.SysMemPitch = 0;
-			indexData.SysMemSlicePitch = 0;
-			HR(g_pDevice->CreateBuffer(&indexBufferDesc, &indexData, &mMesh.mIndexBuffer));
-		}
-
-	}
-
-	return true;
-}
-
-void GameObject::ShutdownBuffer()
-{
-	vector<ModelData>& mModelList = m_pMesh->m_pFBXModel->mModelList;
-	for (UINT index = 0; index < mModelList.size(); ++index)
-	{
-		ModelData* mModelData = &mModelList[index];
-		for (int i = 0; i < (int)mModelData->mMeshList.size(); ++i)
-		{
-			MeshData& mMesh = mModelData->mMeshList[i];
-			ReleaseCOM(mMesh.mVertexBuffer);
-			ReleaseCOM(mMesh.mIndexBuffer);
-		}
-	}
-
-
 
 }
 
-void GameObject::Render(MaterialType renderMode ,FXMVECTOR surfaceColor)
+
+
+
+void GameObject::Render()
 {
+	MaterialType eMaterialType = m_pMesh->m_eMaterialType;
+	XMVECTOR surfaceColor = XMLoadFloat4(&m_pMesh->pureColor);
+
 
 	XMMATRIX worldMatrix = this->GetWorldMatrix();
-
 	XMVECTOR errorShaderColor = XMVectorSet(1.0f, 0.0f, 0.0f, 1.0f);
 
 	//三角形片元
@@ -136,12 +66,12 @@ void GameObject::Render(MaterialType renderMode ,FXMVECTOR surfaceColor)
 			ID3D11ShaderResourceView* alphaSRV = mSRVMap[material.alphaMapFileName];
 
 			//纯颜色绘制模式
-			if (renderMode == MaterialType::PURE_COLOR)
+			if (eMaterialType == MaterialType::PURE_COLOR)
 			{
 				GShaderManager->SetPureColorShader(worldMatrix,surfaceColor);
 			}
 			//漫反射贴图(仅仅有)
-			else if (renderMode == MaterialType::DIFFUSE)
+			else if (eMaterialType == MaterialType::DIFFUSE)
 			{
 				if (diffuseSRV == nullptr|| material.diffuseMapFileName =="")
 				{
@@ -153,7 +83,7 @@ void GameObject::Render(MaterialType renderMode ,FXMVECTOR surfaceColor)
 				}
 			}
 			//漫反射 + 法线贴图
-			else if (renderMode == MaterialType::DIFFUSE_NORMAL)
+			else if (eMaterialType == MaterialType::DIFFUSE_NORMAL)
 			{
 				if (diffuseSRV && bumpSRV&&material.bumpMapFileName != "")
 				{
@@ -166,7 +96,7 @@ void GameObject::Render(MaterialType renderMode ,FXMVECTOR surfaceColor)
 				}
 			}
 			//漫反射 + 镜面贴图
-			else if (renderMode == MaterialType::DIFFUSE_SPECULAR)
+			else if (eMaterialType == MaterialType::DIFFUSE_SPECULAR)
 			{
 				if (diffuseSRV && specSRV&&material.specularMapFileName != "")
 				{
@@ -179,7 +109,7 @@ void GameObject::Render(MaterialType renderMode ,FXMVECTOR surfaceColor)
 				}
 			}
 			//漫反射贴图 + 法线贴图 + 镜面贴图
-			else if (renderMode == MaterialType::DIFFUSE_NORMAL_SPECULAR)
+			else if (eMaterialType == MaterialType::DIFFUSE_NORMAL_SPECULAR)
 			{
 				if (diffuseSRV && bumpSRV&&specSRV && material.bumpMapFileName != "" &&  material.specularMapFileName!="")
 				{
@@ -192,13 +122,13 @@ void GameObject::Render(MaterialType renderMode ,FXMVECTOR surfaceColor)
 				}
 			}
 			//线框绘制模式
-			else if(renderMode == MaterialType::WIRE_FRAME)
+			else if(eMaterialType == MaterialType::WIRE_FRAME)
 			{
 				GShaderManager->SetPureColorShader(worldMatrix, XMVectorSet(1.0f, 1.0f, 1.0f, 1.0f));
 			} 
 
 			//仅仅获取深度缓存
-			else if (renderMode == MaterialType::DEPTH_BUFFER)
+			else if (eMaterialType == MaterialType::DEPTH_BUFFER)
 			{
 				GShaderManager->SetDepthGetShader(worldMatrix);
 			}

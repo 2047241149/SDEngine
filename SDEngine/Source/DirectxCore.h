@@ -71,6 +71,8 @@ public:
 	//关掉ZBuffer写
 	void TurnOnDisbleZWriteDSS();
 
+	void TurnOnLightBlend();
+
 private:
 	bool mVsyncEnable;  //是否限帧渲染
 	int mVideoCardMemory; //显卡内存
@@ -97,6 +99,7 @@ private:
 	ID3D11RasterizerState* md3dCullFrontRS; //剔除前面
 	ID3D11BlendState* md3dEnableBlendState; //开启alpha的混合状态
 	ID3D11BlendState* md3dDisableBlendState; //关闭alpha的混合状态
+	ID3D11BlendState* m_pLightBlendState;
 	D3D11_VIEWPORT mViewport;
 };
 
