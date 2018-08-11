@@ -27,6 +27,7 @@ public:
 private:
 
 	void ShutDownSRV();
+	void ShutDownBuffer();
 
 	void ShutDown();
 	
@@ -34,6 +35,8 @@ private:
 
 	bool LoadFBXModel(string strFbxFileName);
 	void LoadSRVResource(string strTexFileName, ModelData* model);
+
+	void InitBuffer();
 
 public:
 	shared_ptr<FBXModelData> m_pFBXModel;
@@ -45,8 +48,6 @@ public:
 
 	//当处于纯色渲染模式下，会使用的属性
 	XMFLOAT4 pureColor;  
-private:
-	static map<string, shared_ptr<FBXModelData>> m_mapFBXModelData;
 
 };
 #endif // !_MESH_H

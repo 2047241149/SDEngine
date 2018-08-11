@@ -30,4 +30,4 @@ void GameObjectManager::Add(shared_ptr<GameObject> pGameObject)
 	m_vecGameObject.push_back(pGameObject);
 }
 
-static shared_ptr<GameObjectManager> m_pGameObjectManager = nullptr;
+shared_ptr<GameObjectManager> GameObjectManager::m_pGameObjectManager = nullptr;

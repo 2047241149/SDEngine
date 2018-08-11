@@ -11,17 +11,20 @@ cbuffer CBMatrix:register(b0)
 	matrix WorldInvTranspose;
 	float3 cameraPos;
 	float pad1;
-	float4 dirLightColor;
-	float3 dirLightDir;
-	float pad2;
-	float3 ambientLight;
-	float pad3;
 };
 
 cbuffer CBEveryFrame:register(b1)
 {
 	float4 surfaceColor;
 }
+
+cbuffer CBDirLight : register(b2)
+{
+	float4 lightColor;
+	float3 lightDir;
+	float3 ambientLight;
+	float2 pad;
+};
 
 struct VertexIn
 {
@@ -84,7 +87,7 @@ float4 PS(VertexOut outa) : SV_Target
 	//float3 worldNormal = normalize(outa.WorldNormal);
 
 	//º∆À„diffuseLight
-	float3 invLightDir = -normalize(dirLightDir);
+	float3 invLightDir = -normalize(lightDir);
 	float diffuseFactor = saturate(dot(worldNormal, invLightDir));
 	float3 diffuse = DiffuseTex.Sample(SampleWrapLinear, outa.Tex).xyz;
 	diffuse = pow(diffuse, float4(2.0f, 2.0f, 2.0f, 0.0f));
@@ -96,7 +99,7 @@ float4 PS(VertexOut outa) : SV_Target
 	float spec = pow(saturate(dot(halfDir, worldNormal)), 32);
 	float3 specular = float3(spec, spec, spec);
 
-	color = float4((ambientLight + dirLightColor.xyz * diffuseFactor) * diffuse  + specular * 0.0f, 1.0);
+	color = float4((ambientLight + lightColor.xyz * diffuseFactor) * diffuse  + specular * 0.0f, 1.0);
 
 	float correctGamma = 1.0 / 2.0;
 

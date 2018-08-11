@@ -3,7 +3,7 @@
 #define _COMMON_CONSTANT_BUFFER_ST
 
 
-#include<d3d11_1.h>
+#include<d3d11_2.h>
 #include<DirectXMath.h>
 #include<iostream>
 #include<string>
@@ -12,7 +12,7 @@
 using namespace std;
 using namespace DirectX;
 
-//  ”√
+//
 struct CBCommmon
 {
 	XMMATRIX mWorldMatrix;
@@ -21,11 +21,27 @@ struct CBCommmon
 	XMMATRIX mWorldInvTranposeMatirx;
 	XMFLOAT3 cameraPos;
 	float pad;
-	XMFLOAT4 dirLightColor;
-	XMFLOAT3 dirLightDir;
-	float pad1;
-	XMFLOAT3 ambientLight;
-	float pad2;
 };
+
+
+struct CBDirectionLight
+{
+	XMFLOAT4 lightColor;
+	XMFLOAT3 lightDir;
+	XMFLOAT3 ambientLight;
+	XMFLOAT2 pad;
+};
+
+
+struct CBPointLight
+{
+	XMFLOAT4 lightColor;
+	XMFLOAT3 lightPos;
+	XMFLOAT3 attenuation;
+	float radius;
+	float pad;
+};
+
+
 
 #endif // !_COMMON_CONSTANT_BUFFER_ST

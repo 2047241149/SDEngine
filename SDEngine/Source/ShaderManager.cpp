@@ -30,8 +30,11 @@ bool ShaderManager::Init()
 		DiffuseShader(L"Resource/Shader/DiffuseShader.fx", L"Resource/Shader/DiffuseShader.fx"));
 
 	//创建以及初始化mPhongShader
-	mDefferLightingShader = shared_ptr<DefferLighingShader>(new 
-		DefferLighingShader(L"Resource/Shader/DefferLightingShader.fx", L"Resource/Shader/DefferLightingShader.fx"));
+	mDefferDirLightShader = shared_ptr<DefferedDirLightShader>(new
+		DefferedDirLightShader(L"Resource/Shader/DefferedDirLightShader.fx", L"Resource/Shader/DefferedDirLightShader.fx"));
+
+	mDefferPointLightShader = shared_ptr<DefferedPointLightShader>(new
+		DefferedPointLightShader(L"Resource/Shader/DefferedPointLightShader.fx", L"Resource/Shader/DefferedPointLightShader.fx"));
 
 	mDepthShader = shared_ptr<DepthShader>(new
 		DepthShader(L"Resource/Shader/DepthShader.fx", L"Resource/Shader/DepthShader.fx"));
@@ -116,22 +119,6 @@ bool ShaderManager::SetDiffuseNormalSpecShader(CXMMATRIX worldMatrix,
 
 	return true;
 }
-
-bool ShaderManager::SetDefferLighingShader(ID3D11ShaderResourceView* gBuffer[4])
-{
-	bool result;
-	result = mDefferLightingShader->SetShaderParams(gBuffer);
-
-	if (!result)
-	{
-		MessageBox(NULL, L"mDefferLightingShader render 失败", NULL, MB_OK);
-		return false;
-	}
-
-	return true;
-}
-
-
 
 bool ShaderManager::SetUIShader(ID3D11ShaderResourceView* diffuseTexture)
 
@@ -312,6 +299,32 @@ bool ShaderManager::SetWaveShader(CXMMATRIX worldMatrix, FXMVECTOR surfaceColor,
 	if (!result)
 	{
 		MessageBox(NULL, L"mWaveShader render 失败", NULL, MB_OK);
+		return false;
+	}
+	return true;
+}
+
+bool ShaderManager::SetDefferedDirLightShader(ID3D11ShaderResourceView* gBuffer[4], int nDirLightIndex)
+{
+
+	bool result;
+	result = mDefferDirLightShader->SetShaderParams(gBuffer, nDirLightIndex);
+	if (!result)
+	{
+		MessageBox(NULL, L"mDefferDirLightShader render 失败", NULL, MB_OK);
+		return false;
+	}
+	return true;
+}
+
+bool ShaderManager::SetDefferedPointLightShader(ID3D11ShaderResourceView* gBuffer[4], int nPointLightIndex)
+{
+
+	bool result;
+	result = mDefferPointLightShader->SetShaderParams(gBuffer, nPointLightIndex);
+	if (!result)
+	{
+		MessageBox(NULL, L"mDefferPointLightShader render 失败", NULL, MB_OK);
 		return false;
 	}
 	return true;

@@ -112,6 +112,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Source\DefferedPointLightShader.cpp" />
     <ClCompile Include="Source\GameObjectManager.cpp" />
     <ClCompile Include="Source\LoadTexture\Resource.cpp" />
     <ClCompile Include="Source\2DShader.cpp" />
@@ -155,7 +156,7 @@
     <ClCompile Include="Source\PureColorShader.cpp" />
     <ClCompile Include="Source\Quad.cpp" />
     <ClCompile Include="Source\DepthBufferRT.cpp" />
-    <ClCompile Include="Source\DefferLightingShader.cpp" />
+    <ClCompile Include="Source\DefferedDirLightShader.cpp" />
     <ClCompile Include="Source\3DShader.cpp" />
     <ClCompile Include="Source\ShaderManager.cpp" />
     <ClCompile Include="Source\SSRGBuffer.cpp" />
@@ -166,6 +167,7 @@
     <ClCompile Include="Source\源.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Source\DefferedPointLightShader.h" />
     <ClInclude Include="Source\GameObjectManager.h" />
     <ClInclude Include="Source\LoadTexture\Resource.h" />
     <ClInclude Include="Source\2DShader.h" />
@@ -214,7 +216,7 @@
     <ClInclude Include="Source\PureColorShader.h" />
     <ClInclude Include="Source\Quad.h" />
     <ClInclude Include="Source\DepthBufferRT.h" />
-    <ClInclude Include="Source\DefferLightingShader.h" />
+    <ClInclude Include="Source\DefferedDirLightShader.h" />
     <ClInclude Include="Source\3DShader.h" />
     <ClInclude Include="Source\ShaderManager.h" />
     <ClInclude Include="Source\SSRGBuffer.h" />
@@ -301,6 +303,14 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resource\Shader\GaussianBlurShaderCS.fx">
+      <FileType>Document</FileType>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resource\Shader\DefferedDirLightShader.fx">
+      <FileType>Document</FileType>
+    </None>
+    <None Include="Resource\Shader\DefferedPointLightShader.fx">
       <FileType>Document</FileType>
     </None>
   </ItemGroup>
