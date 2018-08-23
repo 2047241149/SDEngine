@@ -66,11 +66,11 @@ float4 PS(VertexOut outa) : SV_Target
 	//º∆À„specular
 	float3 viewDir = normalize(cameraPos - worldPos);
 	float3 halfDir = normalize(invLightDir + viewDir);
-	float specularFactor = pow(saturate(dot(halfDir, worldNormal)), 32) * specular * 0.2;
+	float specularFactor = pow(saturate(dot(halfDir, worldNormal)), 32) * specular * 0.05;
 
 	color = float4((ambientLight + lightColor.xyz * diffuseFactor) * diffuse, 1.0);
 	color = color + float4(specularFactor, specularFactor, specularFactor, 1.0);
-	float correctGamma = 1.0 / 1.5;
+	float correctGamma = 1.0 / 2.2;
 	color = pow(color, float4(correctGamma, correctGamma, correctGamma, 0.0));
 
 	return color;

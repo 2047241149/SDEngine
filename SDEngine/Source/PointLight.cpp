@@ -1,10 +1,11 @@
 #include "PointLight.h"
 
+const float SPHERE_MESH_RADIUS = 2.0f;
 
 PointLight::PointLight():
 	Light(),
-	m_fRadius(5.0f),
-	m_lightAttenuation(XMFLOAT3(1.0f,0.0f,0.0f))
+	m_fRadius(15.0f),
+	m_lightAttenuation(XMFLOAT3(1.0f, 0.7f, 1.8f))
 {
 
 }
@@ -38,4 +39,13 @@ XMFLOAT3 PointLight::GetLightAttenuation()
 void PointLight::SetLightAttenuation(XMFLOAT3 lightAttenuation)
 {
 	m_lightAttenuation = lightAttenuation;
+}
+
+XMMATRIX PointLight::GetWorldMatrix()
+{
+	float fScale = m_fRadius / SPHERE_MESH_RADIUS;
+	XMMATRIX worldMatrix = XMMatrixScaling(fScale, fScale, fScale) * 
+		XMMatrixTranslation(m_Position.x, m_Position.y, m_Position.z);
+
+	return worldMatrix;
 }

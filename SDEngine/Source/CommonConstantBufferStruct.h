@@ -37,8 +37,8 @@ struct CBPointLight
 {
 	XMFLOAT4 lightColor;
 	XMFLOAT3 lightPos;
-	XMFLOAT3 attenuation;
 	float radius;
+	XMFLOAT3 attenuation;
 	float pad;
 };
 
