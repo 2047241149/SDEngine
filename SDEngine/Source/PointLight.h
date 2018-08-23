@@ -3,6 +3,7 @@
 #define  _POINT_LIGHT_H
 #include "Light.h"
 
+
 class PointLight : public Light
 {
 public:
@@ -15,6 +16,7 @@ public:
 	void SetRadius(float fRadius);
 	XMFLOAT3 GetLightAttenuation();
 	void SetLightAttenuation(XMFLOAT3 lightAttenuation);
+	XMMATRIX GetWorldMatrix();
 
 private:
 	float m_fRadius;

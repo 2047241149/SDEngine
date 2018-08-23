@@ -160,3 +160,9 @@ ID3D11ShaderResourceView* RenderTexture::GetSRV()
 {
 	return m_pSRV;
 }
+
+
+ID3D11RenderTargetView* RenderTexture::GetRenderTargetView()
+{
+	return m_pRTV;
+}
