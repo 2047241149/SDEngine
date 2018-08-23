@@ -4,6 +4,7 @@
 
 #include "CoreMini.h"
 #include "ImportDll.h"
+#include "DirectxFrame/DirectxFrame.h"
 #pragma comment(lib,"DXGI.lib")
 
 using namespace std;
@@ -53,7 +54,7 @@ public:
 	void TurnOffZBuffer();
 	
 	//打开Solid渲染和线框渲染
-	void TurnOnSolidRender();
+	void RecoverDefualtRS();
 	void TurnOnWireFrameRender();
 
 	//打开标记反射面的DSS
@@ -72,6 +73,12 @@ public:
 	void TurnOnDisbleZWriteDSS();
 
 	void TurnOnLightBlend();
+
+	void TurnOffFaceCull();
+
+	void TurnOnMaskLightVolumeDSS();
+
+	void TurnOnRenderLightVolumeDSS();
 
 private:
 	bool mVsyncEnable;  //是否限帧渲染
@@ -94,9 +101,12 @@ private:
 	ID3D11DepthStencilState* md3dDisableZWriteDSS; //深度写无效的缓存状态
 	ID3D11DepthStencilState* md3dDSSMaskReflect;  //标记反射面
 	ID3D11DepthStencilState* md3dDSSEnableReflect; //进行反射面
+	ID3D11DepthStencilState* m_pDSSAddLightVolumeStencil; //标记像素在光源体积内的DSS
+	ID3D11DepthStencilState* m_pDSSRenderLightVolume; //渲染光源体积的DSS
 	ID3D11RasterizerState* md3dRasterizerState; //D3D的光栅化状态
 	ID3D11RasterizerState* md3dWireFrameRS; //D3D的光栅化状态
 	ID3D11RasterizerState* md3dCullFrontRS; //剔除前面
+	ID3D11RasterizerState* m_pTurnOffCullBackRS; //剔除前面
 	ID3D11BlendState* md3dEnableBlendState; //开启alpha的混合状态
 	ID3D11BlendState* md3dDisableBlendState; //关闭alpha的混合状态
 	ID3D11BlendState* m_pLightBlendState;
