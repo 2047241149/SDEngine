@@ -161,7 +161,6 @@ bool DirectxCore::Init(int ScreenWidth, int ScreenHeight, bool vsync, HWND hwnd,
 	HR(D3D11CreateDeviceAndSwapChain(NULL, D3D_DRIVER_TYPE_HARDWARE, NULL, 0, &featureLevel, 1,
 		D3D11_SDK_VERSION, &sd, &md3dSwapChain, &md3dDevice, NULL, &md3dImmediateContext));
 
-
 	//--------------------------------------------------------------
 	//第四,创建背后缓存视图
 	//--------------------------------------------------------------
@@ -169,7 +168,6 @@ bool DirectxCore::Init(int ScreenWidth, int ScreenHeight, bool vsync, HWND hwnd,
 	md3dSwapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), reinterpret_cast<void**>(&backBuffer));
 	md3dDevice->CreateRenderTargetView(backBuffer, 0, &md3dRenderTargetView);
 	ReleaseCOM(backBuffer);
-
 
 	//--------------------------------------------------------------
 	//填充2DTexture深度缓存(模板缓存)形容结构体，创建深度缓存(模板缓存)
@@ -232,35 +230,17 @@ bool DirectxCore::Init(int ScreenWidth, int ScreenHeight, bool vsync, HWND hwnd,
 	md3dImmediateContext->OMSetRenderTargets(1, &md3dRenderTargetView, md3dDepthStencilView);
 
 
-	//-------------------------------------------------------------
-	//创建并设定光栅化状态,用于控制如何渲染目标(以线框还是实体模式等等)
-	//-------------------------------------------------------------
-	D3D11_RASTERIZER_DESC rasterDesc;
-	rasterDesc.AntialiasedLineEnable = false;
-	rasterDesc.CullMode = D3D11_CULL_BACK; //背面剔除
-	rasterDesc.DepthBias = 0;
-	rasterDesc.DepthBiasClamp = 0.0f;
-	rasterDesc.DepthClipEnable = true; //深度裁剪开启
-	rasterDesc.FillMode = D3D11_FILL_SOLID; //实体渲染
-	rasterDesc.FrontCounterClockwise = false; //顺时针
-	rasterDesc.MultisampleEnable = false;
-	rasterDesc.ScissorEnable = false;
-	rasterDesc.SlopeScaledDepthBias = 0.0f;
-
-	HR(md3dDevice->CreateRasterizerState(&rasterDesc, &md3dRasterizerState));
-	md3dImmediateContext->RSSetState(md3dRasterizerState);
-
+	//正常的光栅化状态
+	HR(DirectXFrame::CreateRasterizerState(md3dDevice, &md3dRasterizerState));
 
 	//剔除前面
-	rasterDesc.CullMode = D3D11_CULL_FRONT; //前面剔除
-	HR(md3dDevice->CreateRasterizerState(&rasterDesc, &md3dCullFrontRS));
+	HR(DirectXFrame::CreateRasterizerState(md3dDevice, &md3dCullFrontRS, D3D11_CULL_FRONT));
 
 	//线框绘制
-	rasterDesc.CullMode = D3D11_CULL_BACK;
-	rasterDesc.FillMode = D3D11_FILL_WIREFRAME; 
+	HR(DirectXFrame::CreateRasterizerState(md3dDevice, &md3dWireFrameRS, D3D11_CULL_BACK, D3D11_FILL_WIREFRAME));
 
-	HR(md3dDevice->CreateRasterizerState(&rasterDesc, &md3dWireFrameRS));
-	
+	//不进行剔除
+	HR(DirectXFrame::CreateRasterizerState(md3dDevice, &m_pTurnOffCullBackRS, D3D11_CULL_NONE));
 
 	//-------------------------------------------------------------
 	//创建并设定视口
@@ -343,7 +323,7 @@ bool DirectxCore::Init(int ScreenWidth, int ScreenHeight, bool vsync, HWND hwnd,
 	HR(md3dDevice->CreateDepthStencilState(&MaskReflectDESC, &md3dDSSMaskReflect));
 
 
-	//创建一个标记反射面的DepthStencilState状态
+	//创建一个渲染反射面的DepthStencilState状态
 	D3D11_DEPTH_STENCIL_DESC EnableReflectDESC;
 	ZeroMemory(&EnableReflectDESC, sizeof(EnableReflectDESC));
 	EnableReflectDESC.DepthEnable = false;
@@ -362,6 +342,48 @@ bool DirectxCore::Init(int ScreenWidth, int ScreenHeight, bool vsync, HWND hwnd,
 	EnableReflectDESC.BackFace.StencilPassOp = D3D11_STENCIL_OP_KEEP;
 	EnableReflectDESC.BackFace.StencilFunc = D3D11_COMPARISON_EQUAL;
 	HR(md3dDevice->CreateDepthStencilState(&EnableReflectDESC, &md3dDSSEnableReflect));
+
+
+	//创建一个标记PointLightVolume的DSS
+	D3D11_DEPTH_STENCIL_DESC MaskLightVolumeDESC;
+	ZeroMemory(&MaskLightVolumeDESC, sizeof(MaskLightVolumeDESC));
+	MaskLightVolumeDESC.DepthEnable = true;
+	MaskLightVolumeDESC.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ZERO;
+	MaskLightVolumeDESC.DepthFunc = D3D11_COMPARISON_LESS;
+	MaskLightVolumeDESC.StencilEnable = true;
+	MaskLightVolumeDESC.StencilReadMask = 0xff;
+	MaskLightVolumeDESC.StencilWriteMask = 0xff;
+	MaskLightVolumeDESC.FrontFace.StencilFailOp = D3D11_STENCIL_OP_KEEP;
+	MaskLightVolumeDESC.FrontFace.StencilDepthFailOp = D3D11_STENCIL_OP_DECR;
+	MaskLightVolumeDESC.FrontFace.StencilPassOp = D3D11_STENCIL_OP_KEEP;
+	MaskLightVolumeDESC.FrontFace.StencilFunc = D3D11_COMPARISON_ALWAYS;
+
+	MaskLightVolumeDESC.BackFace.StencilFailOp = D3D11_STENCIL_OP_KEEP;
+	MaskLightVolumeDESC.BackFace.StencilDepthFailOp = D3D11_STENCIL_OP_INCR;
+	MaskLightVolumeDESC.BackFace.StencilPassOp = D3D11_STENCIL_OP_KEEP;
+	MaskLightVolumeDESC.BackFace.StencilFunc = D3D11_COMPARISON_ALWAYS;
+	HR(md3dDevice->CreateDepthStencilState(&MaskLightVolumeDESC, &m_pDSSAddLightVolumeStencil));
+
+
+	//创建一个渲染PointLightVolume的DSS
+	D3D11_DEPTH_STENCIL_DESC RenderLightVolumeDESC;
+	ZeroMemory(&RenderLightVolumeDESC, sizeof(RenderLightVolumeDESC));
+	RenderLightVolumeDESC.DepthEnable = false;
+	RenderLightVolumeDESC.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ZERO;
+	RenderLightVolumeDESC.DepthFunc = D3D11_COMPARISON_ALWAYS;
+	RenderLightVolumeDESC.StencilEnable = true;
+	RenderLightVolumeDESC.StencilReadMask = 0xff;
+	RenderLightVolumeDESC.StencilWriteMask = 0xff;
+	RenderLightVolumeDESC.FrontFace.StencilFailOp = D3D11_STENCIL_OP_KEEP;
+	RenderLightVolumeDESC.FrontFace.StencilDepthFailOp = D3D11_STENCIL_OP_KEEP;
+	RenderLightVolumeDESC.FrontFace.StencilPassOp = D3D11_STENCIL_OP_DECR;
+	RenderLightVolumeDESC.FrontFace.StencilFunc = D3D11_COMPARISON_EQUAL;
+
+	RenderLightVolumeDESC.BackFace.StencilFailOp = D3D11_STENCIL_OP_KEEP;
+	RenderLightVolumeDESC.BackFace.StencilDepthFailOp = D3D11_STENCIL_OP_KEEP;
+	RenderLightVolumeDESC.BackFace.StencilPassOp = D3D11_STENCIL_OP_DECR;
+	RenderLightVolumeDESC.BackFace.StencilFunc = D3D11_COMPARISON_EQUAL;
+	HR(md3dDevice->CreateDepthStencilState(&RenderLightVolumeDESC, &m_pDSSRenderLightVolume));
 
 
 	//创建alpha混合开启的混合状态
@@ -505,9 +527,12 @@ void DirectxCore::ShutDown()
 	ReleaseCOM(md3dSwapChain);
 	ReleaseCOM(md3dDevice);
 	ReleaseCOM(md3dImmediateContext);
+	ReleaseCOM(m_pTurnOffCullBackRS);
+	ReleaseCOM(m_pDSSAddLightVolumeStencil);
+	ReleaseCOM(m_pDSSRenderLightVolume);
 }
 
-void DirectxCore::TurnOnSolidRender()
+void DirectxCore::RecoverDefualtRS()
 {
 	md3dImmediateContext->RSSetState(md3dRasterizerState);
 }
@@ -516,24 +541,20 @@ void DirectxCore::TurnOnWireFrameRender()
 	md3dImmediateContext->RSSetState(md3dWireFrameRS);
 }
 
-
 void DirectxCore::TurnOnMaskReflectDSS()
 {
 	md3dImmediateContext->OMSetDepthStencilState(md3dDSSMaskReflect, 1);
 }
-
 
 void DirectxCore::TurnOnEnableReflectDSS()
 {
 	md3dImmediateContext->OMSetDepthStencilState(md3dDSSEnableReflect, 1);
 }
 
-
 void DirectxCore::TurnOnCullFront()
 {
 	md3dImmediateContext->RSSetState(md3dCullFrontRS);
 }
-
 
 
 //恢复默认的
@@ -548,7 +569,6 @@ void DirectxCore::TurnOnDisbleZWriteDSS()
 	md3dImmediateContext->OMSetDepthStencilState(md3dDisableZWriteDSS, 0);
 }
 
-
 void DirectxCore::TurnOnLightBlend()
 {
 	float blendFactor[4];
@@ -558,6 +578,21 @@ void DirectxCore::TurnOnLightBlend()
 	blendFactor[3] = 0.0f;
 
 	md3dImmediateContext->OMSetBlendState(m_pLightBlendState, blendFactor, 1);
+}
+
+void DirectxCore::TurnOffFaceCull()
+{
+	md3dImmediateContext->RSSetState(m_pTurnOffCullBackRS);
+}
+
+void DirectxCore::TurnOnMaskLightVolumeDSS()
+{
+	md3dImmediateContext->OMSetDepthStencilState(m_pDSSAddLightVolumeStencil, 0);
+}
+
+void DirectxCore::TurnOnRenderLightVolumeDSS()
+{
+	md3dImmediateContext->OMSetDepthStencilState(m_pDSSRenderLightVolume, 1);
 }
 
 

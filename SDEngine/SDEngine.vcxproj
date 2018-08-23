@@ -113,6 +113,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Source\DefferedPointLightShader.cpp" />
+    <ClCompile Include="Source\DirectxFrame\DirectxFrame.cpp" />
     <ClCompile Include="Source\GameObjectManager.cpp" />
     <ClCompile Include="Source\LoadTexture\Resource.cpp" />
     <ClCompile Include="Source\2DShader.cpp" />
@@ -168,6 +169,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\DefferedPointLightShader.h" />
+    <ClInclude Include="Source\DirectxFrame\DirectxFrame.h" />
     <ClInclude Include="Source\GameObjectManager.h" />
     <ClInclude Include="Source\LoadTexture\Resource.h" />
     <ClInclude Include="Source\2DShader.h" />

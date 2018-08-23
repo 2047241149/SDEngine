@@ -33,21 +33,20 @@ bool GraphicsClass::Initialize(int ScreenWidth, int ScreenHeight, HWND hwnd,HINS
 	GCamera->SetProjParams(XM_PI / 3.0f, (float)ScreenWidth / (float)ScreenHeight, SCREEN_NEAR, SCREEN_FAR);
 	GCamera->SetUIOrthoParams((float)ScreenWidth, (float)ScreenHeight);
 
-	//给游戏添加灯光
-	
+	//给游戏添加灯光 
 	shared_ptr<DirectionLight> m_spDirLight = shared_ptr<DirectionLight>(new DirectionLight());
 	m_spDirLight->SetLightPostion(XMFLOAT3(12.0f, 12.0f, 12.0f));
 	m_spDirLight->SetLookAtPosition(XMFLOAT3(0.0f, 0.0f, 0.0f));
-	m_spDirLight->SetAmbientLight(XMFLOAT3(0.05f, 0.05f, 0.05f));
-	m_spDirLight->SetLightColor(XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f));
+	m_spDirLight->SetAmbientLight(XMFLOAT3(0.1f, 0.1f, 0.1f));
+	m_spDirLight->SetLightColor(XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f));
 
-	for (int nNum = -5; nNum < 5; ++nNum)
+	for (int nNum = -3; nNum < 3; ++nNum)
 	{
 		shared_ptr<PointLight> m_spPointLight = shared_ptr<PointLight>(new PointLight());
-		m_spPointLight->SetLightColor(XMFLOAT4(5.0f, 0.0f, 0.0f, 1.0f));
+		m_spPointLight->SetLightColor(XMFLOAT4(1.0f, 0.0f, 0.0f, 0.0f));
 		m_spPointLight->SetRadius(10.0f);
-		m_spPointLight->SetLightAttenuation(XMFLOAT3(1.0f, 1.0f, 0.0f));
-		m_spPointLight->SetLightPostion(XMFLOAT3(4.0f * nNum, 3.0f, 0.0f));
+		m_spPointLight->SetLightAttenuation(XMFLOAT3(1.0f, 1.5f, 2.0f));
+		m_spPointLight->SetLightPostion(XMFLOAT3(10.0f * nNum, 2.0f, 0.0f));
 		GLightManager->Add(m_spPointLight);
 	}
 
@@ -59,24 +58,26 @@ bool GraphicsClass::Initialize(int ScreenWidth, int ScreenHeight, HWND hwnd,HINS
 	shared_ptr<Mesh> pHeadMesh = shared_ptr<Mesh>(new Mesh("Resource\\FBXModel\\head\\head.FBX"));
 	pHeadMesh->m_eMaterialType = MaterialType::DIFFUSE;
 
-	//(2)
+
 	shared_ptr<Mesh> pOpacitySphereMesh = shared_ptr<Mesh>(new Mesh("Resource\\FBXModel\\sphere\\sphere.FBX"));
 	pOpacitySphereMesh->m_eMaterialType = MaterialType::PURE_COLOR;
 	pOpacitySphereMesh->pureColor = XMFLOAT4(1.0f, 0.0f, 0.0f, 1.0f);
 
-	//(3)
+	shared_ptr<Mesh> pPointLightVolume = shared_ptr<Mesh>(new Mesh("Resource\\FBXModel\\sphere\\sphere.FBX"));
+	pPointLightVolume->m_eMaterialType = MaterialType::PURE_COLOR;
+	pPointLightVolume->pureColor = XMFLOAT4(1.0f, 0.0f, 0.0f, 1.0f);
+
 	shared_ptr<Mesh>  pTransparentSphereMesh = shared_ptr<Mesh>(new Mesh("Resource\\FBXModel\\sphere\\sphere.FBX"));
 	pTransparentSphereMesh->m_eMaterialType = MaterialType::PURE_COLOR;
 	pTransparentSphereMesh->bTransparent = true;
 	pTransparentSphereMesh->pureColor = XMFLOAT4(0.0f, 0.0f, 1.0f, 1.0f);
 
-	//(4)
 	shared_ptr<Mesh> pSponzaBottom = shared_ptr<Mesh>(new Mesh("Resource\\FBXModel\\sponza\\sponza_bottom.FBX"));
 	pSponzaBottom->m_eMaterialType = MaterialType::DIFFUSE;
 	pSponzaBottom->bReflect = true;
 	pSponzaBottom->bTransparent = false;
 
-	//(5)
+	
 	shared_ptr<Mesh> pSponzaNoBottom = shared_ptr<Mesh>(new Mesh("Resource\\FBXModel\\sponza\\sponza_no_bottom.FBX"));
 	pSponzaNoBottom->m_eMaterialType = MaterialType::DIFFUSE;
 
@@ -102,6 +103,9 @@ bool GraphicsClass::Initialize(int ScreenWidth, int ScreenHeight, HWND hwnd,HINS
 	mTransSphereObject = shared_ptr<GameObject>(new GameObject());
 	mTransSphereObject->SetMesh(pTransparentSphereMesh);
 	mTransSphereObject->m_pTransform->localPosition = XMFLOAT3(10.0f, 10.0f, 0.0f);
+
+	m_pPointVolume = shared_ptr<GameObject>(new GameObject());
+	m_pPointVolume->SetMesh(pPointLightVolume);
 
 
 	GGameObjectManager->Add(mHeadObject);
@@ -208,7 +212,7 @@ bool GraphicsClass::Frame()
 	//1与2切换渲染模式
 	if (mInputClass->IsKeyDown(DIK_1))
 	{
-		GDirectxCore->TurnOnSolidRender();
+		GDirectxCore->RecoverDefualtRS();
 	}
 	if (mInputClass->IsKeyDown(DIK_2))
 	{
@@ -256,10 +260,13 @@ void GraphicsClass::Render()
 	RenderOpacity();
 
 	//获取整个场景的BackDepthBuffer
+	#if defined(SSR)
 	RenderSceneBackDepthBuffer();
+	#endif
+	
 
 	//绘制透明物体(普通的透明物体，SSR)
-	RenderTransparency();
+	//RenderTransparency();
 
 	/*#if defined(POST_EFFECT)
 		RenderPostEffectPass();
@@ -293,9 +300,9 @@ void GraphicsClass::RenderGeometryPass()
 			}
 			else
 			{
-				GDirectxCore->TurnOnMaskReflectDSS();
+				//GDirectxCore->TurnOnMaskReflectDSS();
 				pGameObject->Render();
-				GDirectxCore->TurnOnZBuffer();
+				//GDirectxCore->TurnOnZBuffer();
 			}
 		
 		}
@@ -304,34 +311,12 @@ void GraphicsClass::RenderGeometryPass()
 
 void GraphicsClass::RenderLightingPass()
 {
-	mSrcRT->SetRenderTarget();
-	GDirectxCore->TurnOffZBuffer();
-	ID3D11ShaderResourceView* shaderResourceView[4];
-	shaderResourceView[0] = mGeometryBuffer->GetGBufferSRV(GBufferType::Diffuse);
-	shaderResourceView[1] = mGeometryBuffer->GetGBufferSRV(GBufferType::Pos);
-	shaderResourceView[2] = mGeometryBuffer->GetGBufferSRV(GBufferType::Normal);
-	shaderResourceView[3] = mGeometryBuffer->GetGBufferSRV(GBufferType::Specular);
-	GDirectxCore->TurnOnLightBlend();
-
-	//DirLight叠加
-	for (int index = 0; index < (int)GLightManager->m_vecDirLight.size(); ++index)
-	{
-		GShaderManager->SetDefferedDirLightShader(shaderResourceView, index);
-		mQuad->Render();
-	}
-
-	//PointLight叠加
-	for (int index = 0; index < (int)GLightManager->m_vecPointLight.size(); ++index)
-	{
-		GShaderManager->SetDefferedPointLightShader(shaderResourceView, index);
-		mQuad->Render();
-	}
-
-	GDirectxCore->TurnOffAlphaBlend();
-
+	RenderDirLightPass();
+	RenderPointLightPass();
 
 	GDirectxCore->SetBackBufferRender();
 	GDirectxCore->SetViewPort();
+	GDirectxCore->TurnOffZBuffer();
 	GShaderManager->SetGraphcisBlitShader(mSrcRT->GetSRV());
 	mQuad->Render();
 
@@ -376,19 +361,21 @@ void GraphicsClass::RenderDebugWindow()
 	(mGeometryBuffer->GetGBufferSRV(GBufferType::Depth));
 	mDebugWindow->Render(490, 600);
 
+	#if defined(SSR)
 
 	GShaderManager->SetDepthShader
 	(mBackDepthBufferRT->GetShaderResourceView());
 	mDebugWindow->Render(610, 600);
 
-	/*GShaderManager->SetUIShader
+	GShaderManager->SetUIShader
 	(mSSRBuffer->GetGBufferSRV(SSRBufferType::VIEW_NORMAL));
 	mDebugWindow->Render(10, 480);
 
 	GShaderManager->SetUIShader
 	(mSSRBuffer->GetGBufferSRV(SSRBufferType::VIEW_POS));
-	mDebugWindow->Render(10, 360);*/
-
+	mDebugWindow->Render(10, 360);
+	#endif
+	
 	GDirectxCore->TurnOnZBuffer();
 }
 
@@ -439,10 +426,9 @@ void GraphicsClass::RenderTransparency()
 
 void GraphicsClass::RenderGeneralTransparency()
 {
-	ID3D11DeviceContext* d3dDeviceContext = GDirectxCore->GetDeviceContext();
 	ID3D11RenderTargetView* backRTV = GDirectxCore->GetRTV();
 	ID3D11DepthStencilView* opacityDSV = mGeometryBuffer->GetDSV();
-	d3dDeviceContext->OMSetRenderTargets(1, &backRTV, opacityDSV);
+	g_pDeviceContext->OMSetRenderTargets(1, &backRTV, opacityDSV);
 	GDirectxCore->SetViewPort();
 	GDirectxCore->TurnOnDisbleZWriteDSS();
 	GDirectxCore->TurnOnAlphaBlend();
@@ -481,7 +467,7 @@ void GraphicsClass::RenderSceneBackDepthBuffer()
 	}
 
 	//恢复默认的RS
-	GDirectxCore->TurnOnSolidRender();
+	GDirectxCore->RecoverDefualtRS();
 
 }
 
@@ -518,4 +504,65 @@ void GraphicsClass::InitDebugConsole()
 void GraphicsClass::CloseDebugConsole()
 {
 	FreeConsole();
+}
+
+
+void GraphicsClass::RenderPointLightPass()
+{
+
+	ID3D11RenderTargetView* backRTV[1] = { nullptr };
+	ID3D11DepthStencilView* opacityDSV = mGeometryBuffer->GetDSV();
+	ID3D11RenderTargetView* pSceneRTV = mSrcRT->GetRenderTargetView();
+	
+	ID3D11ShaderResourceView* shaderResourceView[4];
+	shaderResourceView[0] = mGeometryBuffer->GetGBufferSRV(GBufferType::Diffuse);
+	shaderResourceView[1] = mGeometryBuffer->GetGBufferSRV(GBufferType::Pos);
+	shaderResourceView[2] = mGeometryBuffer->GetGBufferSRV(GBufferType::Normal);
+	shaderResourceView[3] = mGeometryBuffer->GetGBufferSRV(GBufferType::Specular);
+
+	for (int index = 0; index < (int)GLightManager->m_vecPointLight.size(); ++index)
+	{
+		g_pDeviceContext->OMSetRenderTargets(1, backRTV, opacityDSV);
+		GDirectxCore->TurnOnMaskLightVolumeDSS();
+		GDirectxCore->TurnOffFaceCull();
+		shared_ptr<PointLight> pPoinntLight = GLightManager->m_vecPointLight[index];
+		GShaderManager->SetForwardPureColorShader(pPoinntLight->GetWorldMatrix(), XMVectorSet(1.0f,1.0f,1.0,1.0f));
+		m_pPointVolume->RenderMesh();
+
+		g_pDeviceContext->OMSetRenderTargets(1, &pSceneRTV, opacityDSV);	
+		GDirectxCore->TurnOnLightBlend();
+		GDirectxCore->TurnOnRenderLightVolumeDSS();
+		GShaderManager->SetDefferedPointLightShader(shaderResourceView, index);
+		m_pPointVolume->RenderMesh();
+		GDirectxCore->TurnOffAlphaBlend();
+	}
+
+	GDirectxCore->RecoverDefualtRS();
+	//GDirectxCore->RecoverDefaultDSS();
+	//GDirectxCore->RecoverDefualtRS();
+	
+}
+
+
+void GraphicsClass::RenderDirLightPass()
+{
+
+	mSrcRT->SetRenderTarget();
+	ID3D11ShaderResourceView* shaderResourceView[4];
+	shaderResourceView[0] = mGeometryBuffer->GetGBufferSRV(GBufferType::Diffuse);
+	shaderResourceView[1] = mGeometryBuffer->GetGBufferSRV(GBufferType::Pos);
+	shaderResourceView[2] = mGeometryBuffer->GetGBufferSRV(GBufferType::Normal);
+	shaderResourceView[3] = mGeometryBuffer->GetGBufferSRV(GBufferType::Specular);
+
+	GDirectxCore->TurnOffZBuffer();
+	GDirectxCore->TurnOnLightBlend();
+
+	for (int index = 0; index < (int)GLightManager->m_vecDirLight.size(); ++index)
+	{
+		GShaderManager->SetDefferedDirLightShader(shaderResourceView, index);
+		mQuad->Render();
+	}
+
+	GDirectxCore->TurnOffAlphaBlend();
+	GDirectxCore->RecoverDefaultDSS();
 }

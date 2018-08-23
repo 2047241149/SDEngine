@@ -34,9 +34,9 @@ const float SCREEN_FAR = 800.0f;  //视截体远裁面
 const float SCREEN_NEAR = 1.0f;  //视截体近裁面
 const float CAMERA_SPEED = 10.0f;
 
-#define POST_EFFECT
+//#define POST_EFFECT
 //#define SSR
-#define DEBUG_GBUFFER
+//#define DEBUG_GBUFFER
 
 class GraphicsClass
 {
@@ -56,6 +56,7 @@ private:
 	shared_ptr<GameObject> mHeadObject;
 	shared_ptr<GameObject> mSponzaNoBottom;
 	shared_ptr<GameObject> mSponzaBottom;
+	shared_ptr<GameObject> m_pPointVolume;
 
 	shared_ptr<RenderTexture> mSSRRT;
 	shared_ptr<RenderTexture> mSrcRT;
@@ -91,6 +92,8 @@ private:
 	void RenderSSRPass();
 	void RenderSSRBufferPass();
 	void RenderSceneBackDepthBuffer();
+	void RenderPointLightPass();
+	void RenderDirLightPass();
 
 	void RenderSSR();
 	void InitDebugConsole();

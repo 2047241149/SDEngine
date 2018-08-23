@@ -4,12 +4,12 @@
 #include "CoreMini.h"
 #include"Camera.h"
 #include "CommonConstantBufferStruct.h"
-#include "2DShader.h"
+#include "3DShader.h"
 using namespace std;
 using namespace DirectX;
 
 
-class DefferedPointLightShader : public Shader_2D
+class DefferedPointLightShader : public Shader_3D
 {
 private:
 	ID3D11Buffer* mCBCommon; 

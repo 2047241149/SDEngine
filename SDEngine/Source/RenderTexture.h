@@ -35,6 +35,7 @@ public:
 	void ClearRenderTarget(float fRed, float fGreen,float fBlue, float fAlpha);
 
 	ID3D11ShaderResourceView* GetSRV();
+	ID3D11RenderTargetView* GetRenderTargetView();
 
 };
 #endif 
