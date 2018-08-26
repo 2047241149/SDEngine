@@ -1,7 +1,6 @@
-Texture2D DiffuseTex:register(t0); 
-Texture2D WorldPosTex:register(t1);
-Texture2D WorldNormalTex:register(t2);
-Texture2D SpecularTex:register(t3);
+Texture2D WorldPosTex:register(t0);
+Texture2D WorldNormalTex:register(t1);
+Texture2D SpecularTex:register(t2);
 
 SamplerState wrapLinearSample:register(s0);  
 SamplerState clampLinearSample:register(s1);  
@@ -57,33 +56,26 @@ VertexOut VS(VertexIn ina)
 float4 PS(VertexOut outa) : SV_Target
 {
 	float2 uv = (outa.HCPos.xy / outa.HCPos.w) * float2(0.5, -0.5) + float2(0.5, 0.5);
-	float4 color = float4(0.0, 0.0, 0.0, 0.0);
-	float3 diffuse = DiffuseTex.Sample(wrapLinearSample, uv).xyz;
+	float4 light = float4(0.0, 0.0, 0.0, 0.0);
 	float3 worldPos = WorldPosTex.Sample(clampLinearSample, uv).xyz;
 	float3 worldNormal = WorldNormalTex.Sample(clampLinearSample, uv).xyz;
 	worldNormal = normalize(worldNormal);
 	float specular = SpecularTex.Sample(wrapLinearSample, uv).x;
 
-	//计算Diffuse
+	//计算DiffuseLight
 	float3 pixelToLightDir = lightPos - worldPos;
 	float distance = length(pixelToLightDir);
-
-
 	pixelToLightDir = normalize(pixelToLightDir);
 	float diffuseFactor = saturate(dot(worldNormal, pixelToLightDir));
 
-	//计算specular
+	//计算specularLight
 	float3 viewDir = normalize(cameraPos - worldPos);
 	float3 halfDir = normalize(pixelToLightDir + viewDir);
 	float specularFactor = pow(saturate(dot(halfDir, worldNormal)), 32) * specular;
 
-	color = float4((lightColor.xyz * diffuseFactor) * diffuse, 1.0);
-	color = color + float4(specularFactor, specularFactor, specularFactor, 1.0);
+	light = float4(lightColor.xyz * diffuseFactor, specularFactor);
 	float attenua = 1.0 / (attenuation.x + attenuation.y * distance + attenuation.z * distance * distance);
-	color = color * attenua;
-	float correctGamma = 1.0 / 2.2;
-	color = pow(color, float4(correctGamma, correctGamma, correctGamma, 0.0));
-	color.a = 1.0f;
+	light = light * attenua;
 
-	return color;
+	return light;
 }

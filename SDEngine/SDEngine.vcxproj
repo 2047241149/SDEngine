@@ -112,6 +112,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Source\DefferedFinalShader.cpp" />
     <ClCompile Include="Source\DefferedPointLightShader.cpp" />
     <ClCompile Include="Source\DirectxFrame\DirectxFrame.cpp" />
     <ClCompile Include="Source\GameObjectManager.cpp" />
@@ -168,6 +169,7 @@
     <ClCompile Include="Source\源.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Source\DefferedFinalShader.h" />
     <ClInclude Include="Source\DefferedPointLightShader.h" />
     <ClInclude Include="Source\DirectxFrame\DirectxFrame.h" />
     <ClInclude Include="Source\GameObjectManager.h" />
@@ -312,7 +314,12 @@
     <None Include="Resource\Shader\DefferedDirLightShader.fx">
       <FileType>Document</FileType>
     </None>
-    <None Include="Resource\Shader\DefferedPointLightShader.fx">
+    <None Include="Resource\Shader\DefferedPointLightBuffer.fx">
+      <FileType>Document</FileType>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resource\Shader\DefferedFinalShader.fx">
       <FileType>Document</FileType>
     </None>
   </ItemGroup>
