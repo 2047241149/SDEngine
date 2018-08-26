@@ -37,16 +37,16 @@ bool GraphicsClass::Initialize(int ScreenWidth, int ScreenHeight, HWND hwnd,HINS
 	shared_ptr<DirectionLight> m_spDirLight = shared_ptr<DirectionLight>(new DirectionLight());
 	m_spDirLight->SetLightPostion(XMFLOAT3(12.0f, 12.0f, 12.0f));
 	m_spDirLight->SetLookAtPosition(XMFLOAT3(0.0f, 0.0f, 0.0f));
-	m_spDirLight->SetAmbientLight(XMFLOAT3(0.1f, 0.1f, 0.1f));
-	m_spDirLight->SetLightColor(XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f));
+	m_spDirLight->SetAmbientLight(XMFLOAT3(0.01f, 0.01f, 0.01f));
+	m_spDirLight->SetLightColor(XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f));
 
 	for (int nNum = -3; nNum < 3; ++nNum)
 	{
 		shared_ptr<PointLight> m_spPointLight = shared_ptr<PointLight>(new PointLight());
 		m_spPointLight->SetLightColor(XMFLOAT4(1.0f, 0.0f, 0.0f, 0.0f));
-		m_spPointLight->SetRadius(10.0f);
+		m_spPointLight->SetRadius(20.0f);
 		m_spPointLight->SetLightAttenuation(XMFLOAT3(1.0f, 1.5f, 2.0f));
-		m_spPointLight->SetLightPostion(XMFLOAT3(10.0f * nNum, 2.0f, 0.0f));
+		m_spPointLight->SetLightPostion(XMFLOAT3(20.0f * nNum, 2.0f, 0.0f));
 		GLightManager->Add(m_spPointLight);
 	}
 
@@ -123,6 +123,10 @@ bool GraphicsClass::Initialize(int ScreenWidth, int ScreenHeight, HWND hwnd,HINS
 	mSSRRT = shared_ptr<RenderTexture>(
 		new RenderTexture(ScreenWidth, ScreenHeight));
 
+	mLightBuffer = shared_ptr<RenderTexture>(new RenderTexture(ScreenWidth, ScreenHeight));
+
+	mDownSampleLightBuffer = shared_ptr<RenderTexture>(new RenderTexture(ScreenWidth / LIGHT_MAP_DOWN_SMAPLE, ScreenHeight/ LIGHT_MAP_DOWN_SMAPLE));
+
 	mGeometryBuffer = shared_ptr<GeometryBuffer>(new 
 		GeometryBuffer(ScreenWidth,ScreenHeight,SCREEN_FAR,SCREEN_NEAR));
 
@@ -135,6 +139,7 @@ bool GraphicsClass::Initialize(int ScreenWidth, int ScreenHeight, HWND hwnd,HINS
 	mSSRBuffer = shared_ptr<SSRGBuffer>(new 
 		SSRGBuffer(ScreenWidth, ScreenHeight, SCREEN_FAR, SCREEN_NEAR));
 
+	
 	return true;
 }
 
@@ -513,12 +518,13 @@ void GraphicsClass::RenderPointLightPass()
 	ID3D11RenderTargetView* backRTV[1] = { nullptr };
 	ID3D11DepthStencilView* opacityDSV = mGeometryBuffer->GetDSV();
 	ID3D11RenderTargetView* pSceneRTV = mSrcRT->GetRenderTargetView();
+	ID3D11RenderTargetView* pLightRTV = mLightBuffer->GetRenderTargetView();
+	mLightBuffer->ClearRenderTarget(0.0f, 0.0f, 0.0f, 1.0f);
 	
-	ID3D11ShaderResourceView* shaderResourceView[4];
-	shaderResourceView[0] = mGeometryBuffer->GetGBufferSRV(GBufferType::Diffuse);
-	shaderResourceView[1] = mGeometryBuffer->GetGBufferSRV(GBufferType::Pos);
-	shaderResourceView[2] = mGeometryBuffer->GetGBufferSRV(GBufferType::Normal);
-	shaderResourceView[3] = mGeometryBuffer->GetGBufferSRV(GBufferType::Specular);
+	ID3D11ShaderResourceView* shaderResourceView[3];
+	shaderResourceView[0] = mGeometryBuffer->GetGBufferSRV(GBufferType::Pos);
+	shaderResourceView[1] = mGeometryBuffer->GetGBufferSRV(GBufferType::Normal);
+	shaderResourceView[2] = mGeometryBuffer->GetGBufferSRV(GBufferType::Specular);
 
 	for (int index = 0; index < (int)GLightManager->m_vecPointLight.size(); ++index)
 	{
@@ -529,7 +535,7 @@ void GraphicsClass::RenderPointLightPass()
 		GShaderManager->SetForwardPureColorShader(pPoinntLight->GetWorldMatrix(), XMVectorSet(1.0f,1.0f,1.0,1.0f));
 		m_pPointVolume->RenderMesh();
 
-		g_pDeviceContext->OMSetRenderTargets(1, &pSceneRTV, opacityDSV);	
+		g_pDeviceContext->OMSetRenderTargets(1, &pLightRTV, opacityDSV);
 		GDirectxCore->TurnOnLightBlend();
 		GDirectxCore->TurnOnRenderLightVolumeDSS();
 		GShaderManager->SetDefferedPointLightShader(shaderResourceView, index);
@@ -538,8 +544,26 @@ void GraphicsClass::RenderPointLightPass()
 	}
 
 	GDirectxCore->RecoverDefualtRS();
-	//GDirectxCore->RecoverDefaultDSS();
-	//GDirectxCore->RecoverDefualtRS();
+
+
+	//¶ÔLightBuffer½µ²ÉÑù
+	GDirectxCore->TurnOffZBuffer();
+	mDownSampleLightBuffer->SetRenderTarget();
+	GShaderManager->SetGraphcisBlitShader(mLightBuffer->GetSRV());
+	mQuad->Render();
+	GDirectxCore->RecoverDefaultDSS();
+
+	GDirectxCore->TurnOffZBuffer();
+	GDirectxCore->SetViewPort();
+	g_pDeviceContext->OMSetRenderTargets(1, &pSceneRTV, opacityDSV);
+	ID3D11ShaderResourceView* pShaderViewArray[2];
+	GDirectxCore->TurnOnLightBlend();
+	pShaderViewArray[0] = mGeometryBuffer->GetGBufferSRV(GBufferType::Diffuse);
+	pShaderViewArray[1] = mDownSampleLightBuffer->GetSRV();
+	GShaderManager->SetDefferedFinalShader(pShaderViewArray);
+	mQuad->Render();
+	GDirectxCore->TurnOffAlphaBlend();
+	GDirectxCore->RecoverDefaultDSS();
 	
 }
 

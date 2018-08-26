@@ -177,6 +177,9 @@
     <ClCompile Include="Source\DirectxFrame\DirectxFrame.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="Source\DefferedFinalShader.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\BlurShader.h">
@@ -353,6 +356,9 @@
     <ClInclude Include="Source\DirectxFrame\DirectxFrame.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="Source\DefferedFinalShader.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="Resource\Shader\BlurShader.fx" />
@@ -375,6 +381,7 @@
     <None Include="Resource\Shader\WaveComputerShader.fx" />
     <None Include="Resource\Shader\WaveShader.fx" />
     <None Include="Resource\Shader\DefferedDirLightShader.fx" />
-    <None Include="Resource\Shader\DefferedPointLightShader.fx" />
+    <None Include="Resource\Shader\DefferedFinalShader.fx" />
+    <None Include="Resource\Shader\DefferedPointLightBuffer.fx" />
   </ItemGroup>
 </Project>

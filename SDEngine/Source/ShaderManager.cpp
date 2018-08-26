@@ -34,7 +34,10 @@ bool ShaderManager::Init()
 		DefferedDirLightShader(L"Resource/Shader/DefferedDirLightShader.fx", L"Resource/Shader/DefferedDirLightShader.fx"));
 
 	mDefferPointLightShader = shared_ptr<DefferedPointLightShader>(new
-		DefferedPointLightShader(L"Resource/Shader/DefferedPointLightShader.fx", L"Resource/Shader/DefferedPointLightShader.fx"));
+		DefferedPointLightShader(L"Resource/Shader/DefferedPointLightBuffer.fx", L"Resource/Shader/DefferedPointLightBuffer.fx"));
+
+	mDefferedFinalShader = shared_ptr<DefferedFinalShader>(new
+		DefferedFinalShader(L"Resource/Shader/DefferedFinalShader.fx", L"Resource/Shader/DefferedFinalShader.fx"));
 
 	mDepthShader = shared_ptr<DepthShader>(new
 		DepthShader(L"Resource/Shader/DepthShader.fx", L"Resource/Shader/DepthShader.fx"));
@@ -317,7 +320,7 @@ bool ShaderManager::SetDefferedDirLightShader(ID3D11ShaderResourceView* gBuffer[
 	return true;
 }
 
-bool ShaderManager::SetDefferedPointLightShader(ID3D11ShaderResourceView* gBuffer[4], int nPointLightIndex)
+bool ShaderManager::SetDefferedPointLightShader(ID3D11ShaderResourceView* gBuffer[3], int nPointLightIndex)
 {
 
 	bool result;
@@ -325,6 +328,18 @@ bool ShaderManager::SetDefferedPointLightShader(ID3D11ShaderResourceView* gBuffe
 	if (!result)
 	{
 		MessageBox(NULL, L"mDefferPointLightShader render Ê§°Ü", NULL, MB_OK);
+		return false;
+	}
+	return true;
+}
+
+bool ShaderManager::SetDefferedFinalShader(ID3D11ShaderResourceView* gBuffer[2])
+{
+	bool result;
+	result = mDefferedFinalShader->SetShaderParams(gBuffer);
+	if (!result)
+	{
+		MessageBox(NULL, L"mDefferedFinalShader render Ê§°Ü", NULL, MB_OK);
 		return false;
 	}
 	return true;

@@ -21,7 +21,7 @@ DefferedPointLightShader::~DefferedPointLightShader()
 	ShutDown();
 }
 
-bool DefferedPointLightShader::SetShaderParams(ID3D11ShaderResourceView* gBuffer[4],int nPointLightIndex)
+bool DefferedPointLightShader::SetShaderParams(ID3D11ShaderResourceView* gBuffer[3],int nPointLightIndex)
 {
 	bool result;
 	//设置Shader常量缓存和纹理资源
@@ -64,7 +64,7 @@ void DefferedPointLightShader::ShutDown()
 }
 
 
-bool DefferedPointLightShader::SetShaderCB(ID3D11ShaderResourceView* gBuffer[4],int nPointLightIndex)
+bool DefferedPointLightShader::SetShaderCB(ID3D11ShaderResourceView* gBuffer[3],int nPointLightIndex)
 {
 	XMMATRIX viewMatrix = GCamera->GetViewMatrix();
 	XMMATRIX ProjMatrix = GCamera->GetProjectionMatrix();
@@ -99,7 +99,7 @@ bool DefferedPointLightShader::SetShaderCB(ID3D11ShaderResourceView* gBuffer[4],
 	g_pDeviceContext->VSSetConstantBuffers(0, 1, &mCBCommon);
 	g_pDeviceContext->PSSetConstantBuffers(0, 1, &mCBCommon);
 	g_pDeviceContext->PSSetConstantBuffers(1, 1, &m_pCBPointLight);
-	g_pDeviceContext->PSSetShaderResources(0, 4, gBuffer);
+	g_pDeviceContext->PSSetShaderResources(0, 3, gBuffer);
 
 	return true;
 }
