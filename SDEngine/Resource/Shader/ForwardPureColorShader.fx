@@ -63,7 +63,7 @@ float4 PS(VertexOut outa) : SV_Target
 	float3 lightDir = normalize(-lightDir);
 	float3 worldNormal = normalize(outa.W_Normal);
 	//float diffuseFactor = saturate(dot(worldNormal, lightDir));
-	color.rgb = lightColor.xyz * surfaceColor.xyz;
+	color.rgb = lightColor.xyz * surfaceColor.xyz * lightColor.w;
 	color.a = 0.6;
 	return color;
 }

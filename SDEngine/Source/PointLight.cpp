@@ -1,13 +1,15 @@
 #include "PointLight.h"
 
-const float SPHERE_MESH_RADIUS = 2.0f;
+const float SPHERE_MESH_RADIUS = 1.0f;
+const float EDGE_LIGHT_INTENSITY = 0.005f;
+const float POINT_LIGHT_ATEEEN_CONSTANT = 1.0f;
+const float DEFAULT_POINT_RADIUS = 15.0f;
 
-PointLight::PointLight():
-	Light(),
-	m_fRadius(15.0f),
-	m_lightAttenuation(XMFLOAT3(1.0f, 0.7f, 1.8f))
+PointLight::PointLight():Light(),
+	m_fRadius(DEFAULT_POINT_RADIUS),
+	m_lightAttenuation(XMFLOAT4(POINT_LIGHT_ATEEEN_CONSTANT, POINT_LIGHT_ATEEEN_CONSTANT, 0.0f,0.0f))
 {
-
+	CalculateQuadratic();
 }
 
 PointLight::PointLight(const PointLight& other):
@@ -29,17 +31,14 @@ float PointLight::GetRadius()
 void PointLight::SetRadius(float fRadius)
 {
 	m_fRadius = fRadius;
+	CalculateQuadratic();
 }
 
-XMFLOAT3 PointLight::GetLightAttenuation()
+XMFLOAT4 PointLight::GetLightAttenuation()
 {
 	return m_lightAttenuation;
 }
 
-void PointLight::SetLightAttenuation(XMFLOAT3 lightAttenuation)
-{
-	m_lightAttenuation = lightAttenuation;
-}
 
 XMMATRIX PointLight::GetWorldMatrix()
 {
@@ -48,4 +47,26 @@ XMMATRIX PointLight::GetWorldMatrix()
 		XMMatrixTranslation(m_Position.x, m_Position.y, m_Position.z);
 
 	return worldMatrix;
+}
+
+void PointLight::CalculateQuadratic()
+{
+	float fMaxLightIntensity = 
+		MathTool::Max(MathTool::Max(m_LightColor.x, m_LightColor.y), m_LightColor.z) * m_fLightIntensity;
+
+	float num1 = (fMaxLightIntensity / EDGE_LIGHT_INTENSITY) - m_lightAttenuation.x - m_lightAttenuation.y * m_fRadius;
+	m_lightAttenuation.z = num1 / (m_fRadius * m_fRadius);
+	m_lightAttenuation.w = sqrt(m_lightAttenuation.z * m_fRadius);
+}
+
+void PointLight::SetLightIntensity(float fLightIntensity)
+{
+	Light::SetLightIntensity(fLightIntensity);
+	CalculateQuadratic();
+}
+
+void PointLight::SetLightColor(XMFLOAT3 color)
+{
+	Light::SetLightColor(color);
+	CalculateQuadratic();
 }

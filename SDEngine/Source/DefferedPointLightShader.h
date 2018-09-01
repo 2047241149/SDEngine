@@ -27,7 +27,7 @@ public:
 	virtual ~DefferedPointLightShader();
 
 public:
-	bool SetShaderCB(ID3D11ShaderResourceView* gBuffer[4],int nPointLightIndex);
-	bool SetShaderParams(ID3D11ShaderResourceView* gBuffer[4], int nPointLightIndex);
+	bool SetShaderCB(ID3D11ShaderResourceView* gBuffer[3],int nPointLightIndex);
+	bool SetShaderParams(ID3D11ShaderResourceView* gBuffer[3], int nPointLightIndex);
 };
 #endif 

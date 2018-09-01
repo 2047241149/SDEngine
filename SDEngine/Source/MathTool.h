@@ -5,11 +5,11 @@
 #include<DirectXMath.h>
 using namespace DirectX;
 
-class MathTool
+namespace MathTool
 {
-public:
 	//返回一个矩阵的逆矩阵的转置
-	static XMMATRIX GetInvenseTranspose(CXMMATRIX ma);
+	XMMATRIX GetInvenseTranspose(CXMMATRIX ma);
+	float Max(float a, float b);
 };
 
 
