@@ -78,9 +78,6 @@
     <ClCompile Include="Source\GraphicsBlitShader.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="Source\GraphicsClass.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
     <ClCompile Include="Source\GrussianBlurCS.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
@@ -129,9 +126,6 @@
     <ClCompile Include="Source\SSRGBufferShader.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="Source\SystemClass.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
     <ClCompile Include="Source\Texture.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
@@ -175,6 +169,15 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="Source\DirectxFrame\DirectxFrame.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\DefferedFinalShader.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\GraphicsSystem.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\SDEngine.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>
@@ -251,9 +254,6 @@
     <ClInclude Include="Source\GraphicsBlitShader.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="Source\GraphicsClass.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
     <ClInclude Include="Source\GrussianBlurCS.h">
       <Filter>头文件</Filter>
     </ClInclude>
@@ -308,9 +308,6 @@
     <ClInclude Include="Source\SSRGBufferShader.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="Source\SystemClass.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
     <ClInclude Include="Source\Texture.h">
       <Filter>头文件</Filter>
     </ClInclude>
@@ -353,6 +350,15 @@
     <ClInclude Include="Source\DirectxFrame\DirectxFrame.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="Source\DefferedFinalShader.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\GraphicsSystem.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\SDEngine.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="Resource\Shader\BlurShader.fx" />
@@ -375,6 +381,7 @@
     <None Include="Resource\Shader\WaveComputerShader.fx" />
     <None Include="Resource\Shader\WaveShader.fx" />
     <None Include="Resource\Shader\DefferedDirLightShader.fx" />
+    <None Include="Resource\Shader\DefferedFinalShader.fx" />
     <None Include="Resource\Shader\DefferedPointLightShader.fx" />
   </ItemGroup>
 </Project>

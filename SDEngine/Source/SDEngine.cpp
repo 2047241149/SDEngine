@@ -1,8 +1,8 @@
-#include"SystemClass.h"
+#include "SDEngine.h"
 
 
 //全局变量
-static SystemClass* D3DAPP = NULL;
+static SDEngine* D3DAPP = NULL;
 
 
 //接受SystemClass类对象的全局回调函数
@@ -41,38 +41,38 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 
 
-SystemClass::SystemClass()
+SDEngine::SDEngine()
 {
-	Initialize();
+	Init();
 }
 
-SystemClass::SystemClass(const SystemClass& sys)
+SDEngine::SDEngine(const SDEngine& sys)
 {
 
 }
 
 /*不在析构函数中回收内存的一点原因是谨慎对待内存的回收问题*/
-SystemClass::~SystemClass()
+SDEngine::~SDEngine()
 {
 	ShutDown();
 }
 
 /*系统类初始化函数*/
-bool SystemClass::Initialize()
+bool SDEngine::Init()
 {
 	int ScreenWidth, ScreenHeight;
 
 	//------第一,针对窗口类------
 	/*初始化屏幕宽度和高度*/
 	/*初始化系统类的窗口*/
-	InitializeWindow(ScreenWidth, ScreenHeight);
+	InitWindow(ScreenWidth, ScreenHeight);
 
 	//------第二,针对图形类------
 	/*创建图形类对象*/
-	mGraphicsClass = shared_ptr<GraphicsClass>(new GraphicsClass(ScreenWidth,ScreenHeight,mHwnd,mHinstance));
-	if (!mGraphicsClass)
+	mGraphicsSystem = shared_ptr<GraphicsSystem>(new GraphicsSystem(ScreenWidth,ScreenHeight,mHwnd,mHinstance));
+	if (!mGraphicsSystem)
 	{
-		MessageBox(NULL, L"mGraphicsClass initialzie failure", NULL, MB_OK);
+		MessageBox(NULL, L"mGraphicsSystem init failure", NULL, MB_OK);
 		return false;
 	}
 
@@ -80,12 +80,12 @@ bool SystemClass::Initialize()
 	return true;
 }
 
-void SystemClass::ShutDown()
+void SDEngine::ShutDown()
 {
 	this->ShutdownWindow();
 }
 
-void SystemClass::Run()
+void SDEngine::Run()
 {
 	MSG msg = { 0 };
 	bool done, result;
@@ -115,13 +115,13 @@ void SystemClass::Run()
 	}
 }
 
-bool SystemClass::Frame()
+bool SDEngine::Frame()
 {
 
-	mGraphicsClass->Frame();
+	mGraphicsSystem->Frame();
 
 	//进行每帧的图形渲染
-	mGraphicsClass->Render();
+	mGraphicsSystem->Render();
 
 	int fps = FPS::GetInstance()->GetFPS();
 	string fpsStr;
@@ -133,7 +133,7 @@ bool SystemClass::Frame()
 }
 
 
-LRESULT CALLBACK SystemClass::MessageHandler(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
+LRESULT CALLBACK SDEngine::MessageHandler(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
 	switch (message)
 	{
@@ -157,7 +157,7 @@ LRESULT CALLBACK SystemClass::MessageHandler(HWND hwnd, UINT message, WPARAM wPa
 
 
 
-void SystemClass::InitializeWindow(int& ScrrenWidth, int &ScrrenHeight)
+void SDEngine::InitWindow(int& ScrrenWidth, int &ScrrenHeight)
 {
 	WNDCLASSEX wc;
 	DEVMODE dmScrrenSettings;
@@ -236,7 +236,7 @@ void SystemClass::InitializeWindow(int& ScrrenWidth, int &ScrrenHeight)
 	ShowCursor(false);
 }
 
-void SystemClass::ShutdownWindow()
+void SDEngine::ShutdownWindow()
 {
 
 	//显示鼠标光标
@@ -250,13 +250,13 @@ void SystemClass::ShutdownWindow()
 
 	//移除(破坏)窗口
 	DestroyWindow(mHwnd);
-	mHwnd = NULL;
+	mHwnd = nullptr;
 
 	//移除程序实例
 	UnregisterClass(mApplicationName, mHinstance);
-	mHinstance = NULL;
+	mHinstance = nullptr;
 
 	//置空应用类对象
-	D3DAPP = NULL;
+	D3DAPP = nullptr;
 }
 

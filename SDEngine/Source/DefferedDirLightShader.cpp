@@ -23,8 +23,7 @@ DefferedDirLightShader::~DefferedDirLightShader()
 
 
 
-
-bool DefferedDirLightShader::SetShaderParams(ID3D11ShaderResourceView* gBuffer[4], int nDirLightIndex)
+bool DefferedDirLightShader::SetShaderParams(ID3D11ShaderResourceView* gBuffer[3], int nDirLightIndex)
 {
 	bool result;
 	//设置Shader常量缓存和纹理资源
@@ -70,7 +69,7 @@ void DefferedDirLightShader::ShutDown()
 }
 
 
-bool DefferedDirLightShader::SetShaderCB(ID3D11ShaderResourceView* gBuffer[4], int nDirLightIndex)
+bool DefferedDirLightShader::SetShaderCB(ID3D11ShaderResourceView* gBuffer[3], int nDirLightIndex)
 {
 	XMMATRIX viewMatrix = GCamera->GetViewMatrix();
 	XMMATRIX ProjMatrix = GCamera->GetProjectionMatrix();
@@ -95,17 +94,20 @@ bool DefferedDirLightShader::SetShaderCB(ID3D11ShaderResourceView* gBuffer[4], i
 	D3D11_MAPPED_SUBRESOURCE mappedSSLight;
 	HR(g_pDeviceContext->Map(m_pCBDirLight, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedSSLight));
 	auto pCBDirLght = reinterpret_cast<CBDirectionLight*>(mappedSSLight.pData);
+
+	XMFLOAT3 lightColor = pDirLight->GetLightColor();
 	pCBDirLght->ambientLight = pDirLight->GetAmbientLight();
-	pCBDirLght->lightColor = pDirLight->GetLightColor();
+	pCBDirLght->lightColor = XMFLOAT4(lightColor.x, lightColor.y, lightColor.z, pDirLight->GetLightIntensity());
 	pCBDirLght->lightDir = pDirLight->GetLightDirection();
-	pCBDirLght->pad = XMFLOAT2(0.0f, 0.0f);
+	pCBDirLght->pad1 = 0.0f;
+	pCBDirLght->pad2 = 0.0f;
 	g_pDeviceContext->Unmap(m_pCBDirLight, 0);
 
 	//第三,设置在VertexShader的常量缓存的值(带着更新的值)
 	g_pDeviceContext->VSSetConstantBuffers(0, 1, &mCBCommon);
 	g_pDeviceContext->PSSetConstantBuffers(0, 1, &mCBCommon);
 	g_pDeviceContext->PSSetConstantBuffers(1, 1, &m_pCBDirLight);
-	g_pDeviceContext->PSSetShaderResources(0, 4, gBuffer);
+	g_pDeviceContext->PSSetShaderResources(0, 3, gBuffer);
 
 	return true;
 }

@@ -6,10 +6,10 @@
 
 #include<Windows.h>  
 #include<memory>
-#include"GraphicsClass.h"
+#include "GraphicsSystem.h"
 #include"FPS.h"
 
-class SystemClass
+class SDEngine
 {
 
 private:
@@ -19,14 +19,14 @@ private:
 
 private:
 	//InputClass* m_Input; //输入类	
-	shared_ptr<GraphicsClass> mGraphicsClass;
+	shared_ptr<GraphicsSystem> mGraphicsSystem;
 
 private:
 	//帧函数
 	bool Frame();
 
 	//初始化窗口函数
-	void InitializeWindow(int&, int&);
+	void InitWindow(int&, int&);
 
 	//关闭窗口函数
 	void ShutdownWindow();
@@ -37,16 +37,16 @@ private:
 public:
 
 	/*构造函数*/
-	SystemClass();
+	SDEngine();
 
 	/*拷贝构造函数*/
-	SystemClass(const SystemClass&);
+	SDEngine(const SDEngine&);
 
 	/*析构函数*/
-	~SystemClass();
+	~SDEngine();
 
 	/*初始化函数*/
-	bool Initialize();
+	bool Init();
 
 
 	/*运行函数*/

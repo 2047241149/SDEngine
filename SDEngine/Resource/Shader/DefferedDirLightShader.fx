@@ -1,7 +1,6 @@
-Texture2D DiffuseTex:register(t0); 
-Texture2D WorldPosTex:register(t1);
-Texture2D WorldNormalTex:register(t2);
-Texture2D SpecularTex:register(t3);
+Texture2D WorldPosTex:register(t0);
+Texture2D WorldNormalTex:register(t1);
+Texture2D SpecularTex:register(t2);
 
 SamplerState wrapLinearSample:register(s0);  
 SamplerState clampLinearSample:register(s1);  
@@ -20,8 +19,9 @@ cbuffer CBDirLight:register(b1)
 {
 	float4 lightColor;
 	float3 lightDir;
+	float pad2;
 	float3 ambientLight;
-	float2 pad;
+	float2 pad3;
 };
 
 struct VertexIn
@@ -52,14 +52,10 @@ float4 PS(VertexOut outa) : SV_Target
 	float4 color = float4(0.0, 0.0, 0.0, 0.0);
 
 	//diffuseLight
-	float3 diffuse = DiffuseTex.Sample(wrapLinearSample, outa.Tex).xyz;
 	float3 worldPos = WorldPosTex.Sample(clampLinearSample, outa.Tex).xyz;
 	float3 worldNormal = WorldNormalTex.Sample(clampLinearSample, outa.Tex).xyz;
 	worldNormal = normalize(worldNormal);
 	float specular = SpecularTex.Sample(wrapLinearSample, outa.Tex).x;
-
-
-	//º∆À„diffuseLight
 	float3 invLightDir = -normalize(lightDir);
 	float diffuseFactor = saturate(dot(worldNormal, invLightDir));
 
@@ -68,10 +64,8 @@ float4 PS(VertexOut outa) : SV_Target
 	float3 halfDir = normalize(invLightDir + viewDir);
 	float specularFactor = pow(saturate(dot(halfDir, worldNormal)), 32) * specular * 0.05;
 
-	color = float4((ambientLight + lightColor.xyz * diffuseFactor) * diffuse, 1.0);
-	color = color + float4(specularFactor, specularFactor, specularFactor, 1.0);
-	float correctGamma = 1.0 / 2.2;
-	color = pow(color, float4(correctGamma, correctGamma, correctGamma, 0.0));
+	color = float4(ambientLight + lightColor.xyz * diffuseFactor * lightColor.w, 1.0);
+	color.w = specularFactor;
 
 	return color;
 }

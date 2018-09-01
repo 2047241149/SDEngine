@@ -21,7 +21,7 @@ DefferedPointLightShader::~DefferedPointLightShader()
 	ShutDown();
 }
 
-bool DefferedPointLightShader::SetShaderParams(ID3D11ShaderResourceView* gBuffer[4],int nPointLightIndex)
+bool DefferedPointLightShader::SetShaderParams(ID3D11ShaderResourceView* gBuffer[3],int nPointLightIndex)
 {
 	bool result;
 	//设置Shader常量缓存和纹理资源
@@ -64,7 +64,7 @@ void DefferedPointLightShader::ShutDown()
 }
 
 
-bool DefferedPointLightShader::SetShaderCB(ID3D11ShaderResourceView* gBuffer[4],int nPointLightIndex)
+bool DefferedPointLightShader::SetShaderCB(ID3D11ShaderResourceView* gBuffer[3],int nPointLightIndex)
 {
 	XMMATRIX viewMatrix = GCamera->GetViewMatrix();
 	XMMATRIX ProjMatrix = GCamera->GetProjectionMatrix();
@@ -89,7 +89,9 @@ bool DefferedPointLightShader::SetShaderCB(ID3D11ShaderResourceView* gBuffer[4],
 	HR(g_pDeviceContext->Map(m_pCBPointLight, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedSSLight));
 	auto pCBPointLght = reinterpret_cast<CBPointLight*>(mappedSSLight.pData);
 
-	pCBPointLght->lightColor = pPointLight->GetLightColor();
+	XMFLOAT3 lightColor = pPointLight->GetLightColor();
+
+	pCBPointLght->lightColor = XMFLOAT4(lightColor.x, lightColor.y, lightColor.z, pPointLight->GetLightIntensity());
 	pCBPointLght->lightPos = pPointLight->GetPosition();
 	pCBPointLght->radius = pPointLight->GetRadius();
 	pCBPointLght->attenuation = pPointLight->GetLightAttenuation();
@@ -99,7 +101,7 @@ bool DefferedPointLightShader::SetShaderCB(ID3D11ShaderResourceView* gBuffer[4],
 	g_pDeviceContext->VSSetConstantBuffers(0, 1, &mCBCommon);
 	g_pDeviceContext->PSSetConstantBuffers(0, 1, &mCBCommon);
 	g_pDeviceContext->PSSetConstantBuffers(1, 1, &m_pCBPointLight);
-	g_pDeviceContext->PSSetShaderResources(0, 4, gBuffer);
+	g_pDeviceContext->PSSetShaderResources(0, 3, gBuffer);
 
 	return true;
 }

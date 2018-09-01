@@ -65,10 +65,14 @@ bool PureColorShader::SetShaderCBExtern(CXMMATRIX worldMatrix, FXMVECTOR surface
 	D3D11_MAPPED_SUBRESOURCE mappedSSLight;
 	HR(g_pDeviceContext->Map(m_pCBDirLight, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedSSLight));
 	auto pCBDirLght = reinterpret_cast<CBDirectionLight*>(mappedSSLight.pData);
-	pCBDirLght->ambientLight = GLightManager->GetMainLight()->GetAmbientLight();
-	pCBDirLght->lightColor = GLightManager->GetMainLight()->GetLightColor();
-	pCBDirLght->lightDir = GLightManager->GetMainLight()->GetLightDirection();
-	pCBDirLght->pad = XMFLOAT2(0.0f, 0.0f);
+	shared_ptr<DirectionLight> pDirLight = GLightManager->GetMainLight();
+
+	XMFLOAT3 lightColor = pDirLight->GetLightColor();
+	pCBDirLght->ambientLight = pDirLight->GetAmbientLight();
+	pCBDirLght->lightColor = XMFLOAT4(lightColor.x, lightColor.y, lightColor.z, pDirLight->GetLightIntensity());
+	pCBDirLght->lightDir = pDirLight->GetLightDirection();
+	pCBDirLght->pad1 = 0.0f;
+	pCBDirLght->pad2 = 0.0f;
 	g_pDeviceContext->Unmap(m_pCBDirLight, 0);
 
 	g_pDeviceContext->PSSetConstantBuffers(1, 1, &mCBEveryFrameBuffer);

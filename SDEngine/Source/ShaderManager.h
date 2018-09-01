@@ -15,6 +15,7 @@
 #include "BlurShader.h"
 #include "ScreenSpaceReflectShader.h"
 #include "SSRGBufferShader.h"
+#include "DefferedFinalShader.h"
 #include "WaveShader.h"
 #include<memory>
 #include"Macro.h"
@@ -42,6 +43,7 @@ private:
 	shared_ptr<Shader_3D> mDepthGetShader;
 	shared_ptr<SSRGBufferShader> mSSRGBufferShader;
 	shared_ptr<WaveShader> mWaveShader;
+	shared_ptr<DefferedFinalShader> mDefferedFinalShader;
 
 private:
 	static shared_ptr<ShaderManager> m_spShaderManager;
@@ -95,8 +97,9 @@ public:
 
 	bool SetDefferedDirLightShader(ID3D11ShaderResourceView* gBuffer[4], int nDirLightIndex);
 
-	bool SetDefferedPointLightShader(ID3D11ShaderResourceView* gBuffer[4], int nPointLightIndex);
+	bool SetDefferedPointLightShader(ID3D11ShaderResourceView* gBuffer[3], int nPointLightIndex);
 
+	bool SetDefferedFinalShader(ID3D11ShaderResourceView* gBuffer[2]);
 public:
 	DepthShader* GetDepthShader() { return mDepthShader.get(); }
 	DiffuseShader* GetDiffuseShader() { return mDiffuseShader.get(); }

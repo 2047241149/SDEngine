@@ -112,6 +112,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Source\DefferedFinalShader.cpp" />
     <ClCompile Include="Source\DefferedPointLightShader.cpp" />
     <ClCompile Include="Source\DirectxFrame\DirectxFrame.cpp" />
     <ClCompile Include="Source\GameObjectManager.cpp" />
@@ -149,7 +150,7 @@
     <ClCompile Include="Source\DiffuseSpecShader.cpp" />
     <ClCompile Include="Source\FPS.cpp" />
     <ClCompile Include="Source\GameObject.cpp" />
-    <ClCompile Include="Source\GraphicsClass.cpp" />
+    <ClCompile Include="Source\GraphicsSystem.cpp" />
     <ClCompile Include="Source\ImportFBX.cpp" />
     <ClCompile Include="Source\Input.cpp" />
     <ClCompile Include="Source\Light.cpp" />
@@ -161,13 +162,14 @@
     <ClCompile Include="Source\3DShader.cpp" />
     <ClCompile Include="Source\ShaderManager.cpp" />
     <ClCompile Include="Source\SSRGBuffer.cpp" />
-    <ClCompile Include="Source\SystemClass.cpp" />
+    <ClCompile Include="Source\SDEngine.cpp" />
     <ClCompile Include="Source\Texture.cpp" />
     <ClCompile Include="Source\UIShader.cpp" />
     <ClCompile Include="Source\Wave.cpp" />
     <ClCompile Include="Source\源.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Source\DefferedFinalShader.h" />
     <ClInclude Include="Source\DefferedPointLightShader.h" />
     <ClInclude Include="Source\DirectxFrame\DirectxFrame.h" />
     <ClInclude Include="Source\GameObjectManager.h" />
@@ -208,7 +210,7 @@
     <ClInclude Include="Source\DiffuseSpecShader.h" />
     <ClInclude Include="Source\FPS.h" />
     <ClInclude Include="Source\GameObject.h" />
-    <ClInclude Include="Source\GraphicsClass.h" />
+    <ClInclude Include="Source\GraphicsSystem.h" />
     <ClInclude Include="Source\ImportDll.h" />
     <ClInclude Include="Source\ImportFBX.h" />
     <ClInclude Include="Source\Input.h" />
@@ -222,7 +224,7 @@
     <ClInclude Include="Source\3DShader.h" />
     <ClInclude Include="Source\ShaderManager.h" />
     <ClInclude Include="Source\SSRGBuffer.h" />
-    <ClInclude Include="Source\SystemClass.h" />
+    <ClInclude Include="Source\SDEngine.h" />
     <ClInclude Include="Source\Texture.h" />
     <ClInclude Include="Source\UIShader.h" />
     <ClInclude Include="Source\Wave.h" />
@@ -313,6 +315,11 @@
       <FileType>Document</FileType>
     </None>
     <None Include="Resource\Shader\DefferedPointLightShader.fx">
+      <FileType>Document</FileType>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resource\Shader\DefferedFinalShader.fx">
       <FileType>Document</FileType>
     </None>
   </ItemGroup>

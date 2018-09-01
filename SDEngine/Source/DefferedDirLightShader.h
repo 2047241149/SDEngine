@@ -27,7 +27,7 @@ public:
 	virtual ~DefferedDirLightShader();
 
 public:
-	bool SetShaderCB(ID3D11ShaderResourceView* gBuffer[4], int nDirLightIndex);
-	bool SetShaderParams(ID3D11ShaderResourceView* gBuffer[4], int nDirLightIndex);
+	bool SetShaderCB(ID3D11ShaderResourceView* gBuffer[3], int nDirLightIndex);
+	bool SetShaderParams(ID3D11ShaderResourceView* gBuffer[3], int nDirLightIndex);
 };
 #endif 
