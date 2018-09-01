@@ -89,7 +89,9 @@ bool DefferedPointLightShader::SetShaderCB(ID3D11ShaderResourceView* gBuffer[3],
 	HR(g_pDeviceContext->Map(m_pCBPointLight, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedSSLight));
 	auto pCBPointLght = reinterpret_cast<CBPointLight*>(mappedSSLight.pData);
 
-	pCBPointLght->lightColor = pPointLight->GetLightColor();
+	XMFLOAT3 lightColor = pPointLight->GetLightColor();
+
+	pCBPointLght->lightColor = XMFLOAT4(lightColor.x, lightColor.y, lightColor.z, pPointLight->GetLightIntensity());
 	pCBPointLght->lightPos = pPointLight->GetPosition();
 	pCBPointLght->radius = pPointLight->GetRadius();
 	pCBPointLght->attenuation = pPointLight->GetLightAttenuation();

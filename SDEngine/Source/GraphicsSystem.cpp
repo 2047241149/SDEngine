@@ -1,21 +1,21 @@
-#include"GraphicsClass.h"
+#include "GraphicsSystem.h"
 
-GraphicsClass::GraphicsClass(int ScreenWidth, int ScreenHeight, HWND hwnd, HINSTANCE hinstance)
+GraphicsSystem::GraphicsSystem(int ScreenWidth, int ScreenHeight, HWND hwnd, HINSTANCE hinstance)
 {
-	Initialize(ScreenWidth, ScreenHeight, hwnd, hinstance);
+	Init(ScreenWidth, ScreenHeight, hwnd, hinstance);
 }
 
-GraphicsClass::~GraphicsClass()
+GraphicsSystem::~GraphicsSystem()
 {
 	CloseDebugConsole();
 }
 
-GraphicsClass::GraphicsClass(const GraphicsClass&other)
+GraphicsSystem::GraphicsSystem(const GraphicsSystem&other)
 {
 
 }
 
-bool GraphicsClass::Initialize(int ScreenWidth, int ScreenHeight, HWND hwnd,HINSTANCE hinstance)
+bool GraphicsSystem::Init(int ScreenWidth, int ScreenHeight, HWND hwnd,HINSTANCE hinstance)
 {
 
 	mhwnd = hwnd;
@@ -37,18 +37,40 @@ bool GraphicsClass::Initialize(int ScreenWidth, int ScreenHeight, HWND hwnd,HINS
 	shared_ptr<DirectionLight> m_spDirLight = shared_ptr<DirectionLight>(new DirectionLight());
 	m_spDirLight->SetLightPostion(XMFLOAT3(12.0f, 12.0f, 12.0f));
 	m_spDirLight->SetLookAtPosition(XMFLOAT3(0.0f, 0.0f, 0.0f));
-	m_spDirLight->SetAmbientLight(XMFLOAT3(0.01f, 0.01f, 0.01f));
-	m_spDirLight->SetLightColor(XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f));
+	m_spDirLight->SetAmbientLight(XMFLOAT3(0.0f, 0.0f, 0.0f));
+	m_spDirLight->SetLightColor(XMFLOAT3(0.0f, 0.0f, 0.0f));
 
-	for (int nNum = -3; nNum < 3; ++nNum)
+	const int LIGHT_NUM = 5;
+
+	for (int nNumX = 0; nNumX < LIGHT_NUM; ++nNumX)
 	{
-		shared_ptr<PointLight> m_spPointLight = shared_ptr<PointLight>(new PointLight());
-		m_spPointLight->SetLightColor(XMFLOAT4(1.0f, 0.0f, 0.0f, 0.0f));
-		m_spPointLight->SetRadius(20.0f);
-		m_spPointLight->SetLightAttenuation(XMFLOAT3(1.0f, 1.5f, 2.0f));
-		m_spPointLight->SetLightPostion(XMFLOAT3(20.0f * nNum, 2.0f, 0.0f));
-		GLightManager->Add(m_spPointLight);
+		for (int nNumY = 0; nNumY < LIGHT_NUM; ++nNumY)
+		{
+				shared_ptr<PointLight> m_spPointLight = shared_ptr<PointLight>(new PointLight());
+				XMFLOAT3 lightColor;
+				int index = nNumX * nNumY;
+
+				if (index % 3 == 0)
+				{
+					lightColor = XMFLOAT3(1.0f, 0.0f, 0.0f);
+				}
+				else if (index % 3 == 1)
+				{
+					lightColor = XMFLOAT3(0.0f, 1.0f, 0.0f);
+				}
+				else
+				{
+					lightColor = XMFLOAT3(0.0f, 0.0f, 1.0f);
+				}
+
+				m_spPointLight->SetLightColor(lightColor);
+				m_spPointLight->SetLightIntensity(20.0f);
+				m_spPointLight->SetRadius(40.0f);
+				m_spPointLight->SetLightPostion(XMFLOAT3(10.0f *(nNumX - LIGHT_NUM / 2.0f), 5.0f, 10.0f *(nNumY - LIGHT_NUM / 2.0f)));
+				GLightManager->Add(m_spPointLight);
+		}
 	}
+
 
 	GLightManager->Add(m_spDirLight);
 	
@@ -125,8 +147,6 @@ bool GraphicsClass::Initialize(int ScreenWidth, int ScreenHeight, HWND hwnd,HINS
 
 	mLightBuffer = shared_ptr<RenderTexture>(new RenderTexture(ScreenWidth, ScreenHeight));
 
-	mDownSampleLightBuffer = shared_ptr<RenderTexture>(new RenderTexture(ScreenWidth / LIGHT_MAP_DOWN_SMAPLE, ScreenHeight/ LIGHT_MAP_DOWN_SMAPLE));
-
 	mGeometryBuffer = shared_ptr<GeometryBuffer>(new 
 		GeometryBuffer(ScreenWidth,ScreenHeight,SCREEN_FAR,SCREEN_NEAR));
 
@@ -144,7 +164,7 @@ bool GraphicsClass::Initialize(int ScreenWidth, int ScreenHeight, HWND hwnd,HINS
 }
 
 
-bool GraphicsClass::Frame()
+bool GraphicsSystem::Frame()
 {
 	bool result;
 	float deltaTime;
@@ -253,7 +273,7 @@ bool GraphicsClass::Frame()
 }
 
 
-void GraphicsClass::Render()
+void GraphicsSystem::Render()
 {
 	//**************************************************************************
 	//绘制整个场景
@@ -288,7 +308,7 @@ void GraphicsClass::Render()
 	GDirectxCore->EndScene();
 }
 
-void GraphicsClass::RenderGeometryPass()
+void GraphicsSystem::RenderGeometryPass()
 {
 	mGeometryBuffer->SetRenderTarget(XMFLOAT3(0.0f, 0.0f, 0.5f));
 
@@ -314,10 +334,11 @@ void GraphicsClass::RenderGeometryPass()
 	}
 }
 
-void GraphicsClass::RenderLightingPass()
+void GraphicsSystem::RenderLightingPass()
 {
 	RenderDirLightPass();
 	RenderPointLightPass();
+	RenderFinalShadingPass();
 
 	GDirectxCore->SetBackBufferRender();
 	GDirectxCore->SetViewPort();
@@ -330,13 +351,13 @@ void GraphicsClass::RenderLightingPass()
 
 
 
-void GraphicsClass::RenderPostEffectPass()
+void GraphicsSystem::RenderPostEffectPass()
 {
 
 }
 
 
-void GraphicsClass::RenderDebugWindow()
+void GraphicsSystem::RenderDebugWindow()
 {
 	GDirectxCore->SetBackBufferRender();
 	GDirectxCore->SetViewPort();
@@ -384,7 +405,7 @@ void GraphicsClass::RenderDebugWindow()
 	GDirectxCore->TurnOnZBuffer();
 }
 
-void GraphicsClass::RenderSSRPass()
+void GraphicsSystem::RenderSSRPass()
 {
 	//mSSRRT->SetRenderTarget();
 	ID3D11RenderTargetView* backRTV =GDirectxCore->GetRTV();
@@ -412,7 +433,7 @@ void GraphicsClass::RenderSSRPass()
 	GDirectxCore->TurnOffAlphaBlend();
 }
 
-void GraphicsClass::RenderOpacity()
+void GraphicsSystem::RenderOpacity()
 {
 	RenderGeometryPass();
 
@@ -420,7 +441,7 @@ void GraphicsClass::RenderOpacity()
 }
 
 //绘制透明物体分为绘制透明
-void GraphicsClass::RenderTransparency()
+void GraphicsSystem::RenderTransparency()
 {
 	RenderGeneralTransparency();
 
@@ -429,7 +450,7 @@ void GraphicsClass::RenderTransparency()
 	#endif
 }
 
-void GraphicsClass::RenderGeneralTransparency()
+void GraphicsSystem::RenderGeneralTransparency()
 {
 	ID3D11RenderTargetView* backRTV = GDirectxCore->GetRTV();
 	ID3D11DepthStencilView* opacityDSV = mGeometryBuffer->GetDSV();
@@ -456,7 +477,7 @@ void GraphicsClass::RenderGeneralTransparency()
 }
 
 
-void GraphicsClass::RenderSceneBackDepthBuffer()
+void GraphicsSystem::RenderSceneBackDepthBuffer()
 {
 	mBackDepthBufferRT->SetRenderTarget();
 	GDirectxCore->TurnOnCullFront();
@@ -476,7 +497,7 @@ void GraphicsClass::RenderSceneBackDepthBuffer()
 
 }
 
-void GraphicsClass::RenderSSRBufferPass()
+void GraphicsSystem::RenderSSRBufferPass()
 {
 	ID3D11DepthStencilView* backDSV = mGeometryBuffer->GetDSV();
 	mSSRBuffer->SetRenderTarget(backDSV);
@@ -491,14 +512,14 @@ void GraphicsClass::RenderSSRBufferPass()
 
 }
 
-void  GraphicsClass::RenderSSR()
+void  GraphicsSystem::RenderSSR()
 {
 	RenderSSRBufferPass();
 	RenderSSRPass();
 }
 
 
-void GraphicsClass::InitDebugConsole()
+void GraphicsSystem::InitDebugConsole()
 {
 	AllocConsole();
 	FILE* pf;
@@ -506,20 +527,19 @@ void GraphicsClass::InitDebugConsole()
 }
 
 
-void GraphicsClass::CloseDebugConsole()
+void GraphicsSystem::CloseDebugConsole()
 {
 	FreeConsole();
 }
 
 
-void GraphicsClass::RenderPointLightPass()
+void GraphicsSystem::RenderPointLightPass()
 {
 
 	ID3D11RenderTargetView* backRTV[1] = { nullptr };
 	ID3D11DepthStencilView* opacityDSV = mGeometryBuffer->GetDSV();
 	ID3D11RenderTargetView* pSceneRTV = mSrcRT->GetRenderTargetView();
 	ID3D11RenderTargetView* pLightRTV = mLightBuffer->GetRenderTargetView();
-	mLightBuffer->ClearRenderTarget(0.0f, 0.0f, 0.0f, 1.0f);
 	
 	ID3D11ShaderResourceView* shaderResourceView[3];
 	shaderResourceView[0] = mGeometryBuffer->GetGBufferSRV(GBufferType::Pos);
@@ -545,38 +565,19 @@ void GraphicsClass::RenderPointLightPass()
 
 	GDirectxCore->RecoverDefualtRS();
 
-
-	//对LightBuffer降采样
-	GDirectxCore->TurnOffZBuffer();
-	mDownSampleLightBuffer->SetRenderTarget();
-	GShaderManager->SetGraphcisBlitShader(mLightBuffer->GetSRV());
-	mQuad->Render();
-	GDirectxCore->RecoverDefaultDSS();
-
-	GDirectxCore->TurnOffZBuffer();
-	GDirectxCore->SetViewPort();
-	g_pDeviceContext->OMSetRenderTargets(1, &pSceneRTV, opacityDSV);
-	ID3D11ShaderResourceView* pShaderViewArray[2];
-	GDirectxCore->TurnOnLightBlend();
-	pShaderViewArray[0] = mGeometryBuffer->GetGBufferSRV(GBufferType::Diffuse);
-	pShaderViewArray[1] = mDownSampleLightBuffer->GetSRV();
-	GShaderManager->SetDefferedFinalShader(pShaderViewArray);
-	mQuad->Render();
-	GDirectxCore->TurnOffAlphaBlend();
-	GDirectxCore->RecoverDefaultDSS();
+	
 	
 }
 
 
-void GraphicsClass::RenderDirLightPass()
+void GraphicsSystem::RenderDirLightPass()
 {
 
-	mSrcRT->SetRenderTarget();
+	mLightBuffer->SetRenderTarget();
 	ID3D11ShaderResourceView* shaderResourceView[4];
-	shaderResourceView[0] = mGeometryBuffer->GetGBufferSRV(GBufferType::Diffuse);
-	shaderResourceView[1] = mGeometryBuffer->GetGBufferSRV(GBufferType::Pos);
-	shaderResourceView[2] = mGeometryBuffer->GetGBufferSRV(GBufferType::Normal);
-	shaderResourceView[3] = mGeometryBuffer->GetGBufferSRV(GBufferType::Specular);
+	shaderResourceView[0] = mGeometryBuffer->GetGBufferSRV(GBufferType::Pos);
+	shaderResourceView[1] = mGeometryBuffer->GetGBufferSRV(GBufferType::Normal);
+	shaderResourceView[2] = mGeometryBuffer->GetGBufferSRV(GBufferType::Specular);
 
 	GDirectxCore->TurnOffZBuffer();
 	GDirectxCore->TurnOnLightBlend();
@@ -588,5 +589,23 @@ void GraphicsClass::RenderDirLightPass()
 	}
 
 	GDirectxCore->TurnOffAlphaBlend();
+	GDirectxCore->RecoverDefaultDSS();
+}
+
+void GraphicsSystem::RenderFinalShadingPass()
+{
+	ID3D11RenderTargetView* pSceneRTV = mSrcRT->GetRenderTargetView();
+	ID3D11DepthStencilView* opacityDSV = mGeometryBuffer->GetDSV();
+
+
+	GDirectxCore->TurnOffZBuffer();
+	GDirectxCore->SetViewPort();
+	g_pDeviceContext->OMSetRenderTargets(1, &pSceneRTV, opacityDSV);
+	ID3D11ShaderResourceView* pShaderViewArray[2];
+	pShaderViewArray[0] = mGeometryBuffer->GetGBufferSRV(GBufferType::Diffuse);
+	pShaderViewArray[1] = mLightBuffer->GetSRV();
+	GShaderManager->SetDefferedFinalShader(pShaderViewArray);
+	mQuad->Render();
+	
 	GDirectxCore->RecoverDefaultDSS();
 }

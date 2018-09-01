@@ -21,8 +21,7 @@ cbuffer CBPointLight:register(b1)
 	float4 lightColor;
 	float3 lightPos;
 	float radius;
-	float3 attenuation;
-	float pad1;
+	float4 attenuation;
 };
 
 struct VertexIn
@@ -65,6 +64,7 @@ float4 PS(VertexOut outa) : SV_Target
 	//º∆À„DiffuseLight
 	float3 pixelToLightDir = lightPos - worldPos;
 	float distance = length(pixelToLightDir);
+	float distanceSquad = max(0, distance - radius / 2.0);
 	pixelToLightDir = normalize(pixelToLightDir);
 	float diffuseFactor = saturate(dot(worldNormal, pixelToLightDir));
 
@@ -73,8 +73,8 @@ float4 PS(VertexOut outa) : SV_Target
 	float3 halfDir = normalize(pixelToLightDir + viewDir);
 	float specularFactor = pow(saturate(dot(halfDir, worldNormal)), 32) * specular;
 
-	light = float4(lightColor.xyz * diffuseFactor, specularFactor);
-	float attenua = 1.0 / (attenuation.x + attenuation.y * distance + attenuation.z * distance * distance);
+	light = float4(lightColor.xyz *  diffuseFactor * lightColor.w, specularFactor);
+	float attenua = 1.0 / (attenuation.x + attenuation.y * distance + distance * distance * attenuation.w + attenuation.z * distanceSquad * distanceSquad);
 	light = light * attenua;
 
 	return light;

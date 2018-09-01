@@ -1,20 +1,19 @@
-#include"SystemClass.h"
-
+#include "SDEngine.h"
 
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nShowCmd)
 {
 	
-	shared_ptr<SystemClass> mSystemClass;
+	shared_ptr<SDEngine> mSDEngine;
 
-	mSystemClass = shared_ptr<SystemClass>(new SystemClass());
+	mSDEngine = shared_ptr<SDEngine>(new SDEngine());
 	
-	if (!mSystemClass)
+	if (!mSDEngine)
 	{
 		return 0;
 	}
 
 	//运行系统对象
-	mSystemClass->Run();
+	mSDEngine->Run();
 	
 	return 1;
 }
