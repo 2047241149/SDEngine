@@ -273,7 +273,7 @@ void Wave::CalculateVertexPos(float time)
 			//pos
 			mWaveVertexData[index].pos.x = positionX;
 			mWaveVertexData[index].pos.z = positionZ;
-			mWaveVertexData[index].pos.y = (float)GetWaveVertexHeight(positionX, positionZ, time);
+			mWaveVertexData[index].pos.y = (float)GetWaveVertexHeight((int)positionX, (int)positionZ, time);
 			++index;
 		}
 	}

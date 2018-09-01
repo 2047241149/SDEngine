@@ -1,13 +1,12 @@
 #pragma once
-#ifndef _GRAPHICS_CLASS_H
-#define _GRAPHICS_CLASS_H
+#ifndef _GRAPHICS_SYSTEM_H
+#define _GRAPHICS_SYSTEM_H
 
 #include "DirectxCore.h"
 #include "GameObjectManager.h"
 #include"Macro.h"
 #include"Light.h"
 #include"FPS.h"
-#include"GraphicsClass.h"
 #include"Input.h"
 #include"ShaderManager.h"
 #include"GeometryBuffer.h"
@@ -39,7 +38,7 @@ const int LIGHT_MAP_DOWN_SMAPLE = 1;
 //#define SSR
 //#define DEBUG_GBUFFER
 
-class GraphicsClass
+class GraphicsSystem
 {
 
 private:
@@ -64,8 +63,6 @@ private:
 
 	shared_ptr<RenderTexture> mLightBuffer;
 
-	shared_ptr<RenderTexture> mDownSampleLightBuffer;
-
 	//GeometryBuffer
 	shared_ptr<GeometryBuffer> mGeometryBuffer;
 
@@ -83,7 +80,7 @@ private:
 
 
 private:
-	bool Initialize(int ScreenWidth, int ScreenHeight, HWND hwnd, HINSTANCE hinstance);
+	bool Init(int ScreenWidth, int ScreenHeight, HWND hwnd, HINSTANCE hinstance);
 
 
 private:
@@ -92,6 +89,7 @@ private:
 	void RenderGeneralTransparency();
 	void RenderGeometryPass();
 	void RenderLightingPass();
+	void RenderFinalShadingPass();
 	void RenderPostEffectPass();
 	void RenderDebugWindow();
 	void RenderSSRPass();
@@ -105,9 +103,9 @@ private:
 	void CloseDebugConsole();
 
 public:
-	GraphicsClass(int ScreenWidth, int ScreenHeight, HWND hwnd, HINSTANCE hinstance);
-	GraphicsClass(const GraphicsClass&);
-	~GraphicsClass();
+	GraphicsSystem(int ScreenWidth, int ScreenHeight, HWND hwnd, HINSTANCE hinstance);
+	GraphicsSystem(const GraphicsSystem&);
+	~GraphicsSystem();
 
 public:
 	void Render();

@@ -16,18 +16,22 @@ public:
 	bool m_bCastShadow;
 
 protected:
-	XMFLOAT4 m_LightColor;
+	XMFLOAT3 m_LightColor;
 	XMFLOAT3 m_Position;
+	float m_fLightIntensity;
 
 public:
 	Light();
 	Light(const Light&other);
 	~Light();
 
+
 public:
-	void SetLightColor(XMFLOAT4 color);
 	void SetLightPostion(XMFLOAT3 pos);
-	XMFLOAT4 GetLightColor();
+	XMFLOAT3 GetLightColor();
 	XMFLOAT3 GetPosition();
+	float GetLightIntensity();
+	virtual void SetLightIntensity(float fLightIntensity);
+	virtual void SetLightColor(XMFLOAT3 color);
 };
 #endif // !_LIGHT_CLASS

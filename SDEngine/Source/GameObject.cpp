@@ -19,9 +19,7 @@ GameObject::~GameObject()
 bool GameObject::Init()
 {
 
-	bool result;
 	m_pTransform = shared_ptr<Transform>(new Transform());
-
 	return true;
 }
 

@@ -34,7 +34,7 @@ bool ShaderManager::Init()
 		DefferedDirLightShader(L"Resource/Shader/DefferedDirLightShader.fx", L"Resource/Shader/DefferedDirLightShader.fx"));
 
 	mDefferPointLightShader = shared_ptr<DefferedPointLightShader>(new
-		DefferedPointLightShader(L"Resource/Shader/DefferedPointLightBuffer.fx", L"Resource/Shader/DefferedPointLightBuffer.fx"));
+		DefferedPointLightShader(L"Resource/Shader/DefferedPointLightShader.fx", L"Resource/Shader/DefferedPointLightShader.fx"));
 
 	mDefferedFinalShader = shared_ptr<DefferedFinalShader>(new
 		DefferedFinalShader(L"Resource/Shader/DefferedFinalShader.fx", L"Resource/Shader/DefferedFinalShader.fx"));

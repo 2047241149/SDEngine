@@ -28,18 +28,19 @@ struct CBDirectionLight
 {
 	XMFLOAT4 lightColor;
 	XMFLOAT3 lightDir;
+	float pad1;
 	XMFLOAT3 ambientLight;
-	XMFLOAT2 pad;
+	float pad2;
 };
 
 
 struct CBPointLight
 {
-	XMFLOAT4 lightColor;
+	//lightColor第四位存储的是光源亮度
+	XMFLOAT4 lightColor;  
 	XMFLOAT3 lightPos;
 	float radius;
-	XMFLOAT3 attenuation;
-	float pad;
+	XMFLOAT4 attenuation;
 };
 
 
