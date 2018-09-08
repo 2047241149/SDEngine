@@ -130,7 +130,7 @@ bool Shader_2D::InitShader(WCHAR* VSFileName, WCHAR* PSFileName)
 
 	//第七,填充采样形容结构体,并且创建采样状态
 	D3D11_SAMPLER_DESC samplerDesc;
-	samplerDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;  //都是线性插值(三种方式,点过滤,线性过滤,异性过滤)
+	samplerDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR; 
 	samplerDesc.AddressU = D3D11_TEXTURE_ADDRESS_WRAP;
 	samplerDesc.AddressV = D3D11_TEXTURE_ADDRESS_WRAP;
 	samplerDesc.AddressW = D3D11_TEXTURE_ADDRESS_WRAP;
@@ -172,7 +172,7 @@ bool Shader_2D::SetShaderCB(ID3D11ShaderResourceView* screenRT)
 	return true;
 }
 
-bool Shader_2D::SetShaderState()
+void Shader_2D::SetShaderState()
 {
 	//设置顶点输入布局
 	g_pDeviceContext->IASetInputLayout(m_pInputLayout);
@@ -185,7 +185,6 @@ bool Shader_2D::SetShaderState()
 	g_pDeviceContext->PSSetSamplers(0, 1, &m_pWrapLinearSampler);
 	g_pDeviceContext->PSSetSamplers(1, 1, &m_pClampPointSampler);
 
-	return true;
 }
 
 

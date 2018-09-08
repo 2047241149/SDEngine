@@ -17,6 +17,7 @@
 #include "SSRGBufferShader.h"
 #include "DefferedFinalShader.h"
 #include "WaveShader.h"
+#include "FxaaShader.h"
 #include<memory>
 #include"Macro.h"
 using namespace std;
@@ -25,7 +26,7 @@ using namespace std;
 class ShaderManager
 {
 
-private:
+public:
 	shared_ptr<DiffuseShader> mDiffuseShader;
 	shared_ptr<UIShader> mUIShader;
 	shared_ptr<DepthShader> mDepthShader;
@@ -44,7 +45,7 @@ private:
 	shared_ptr<SSRGBufferShader> mSSRGBufferShader;
 	shared_ptr<WaveShader> mWaveShader;
 	shared_ptr<DefferedFinalShader> mDefferedFinalShader;
-
+	shared_ptr<FxaaShader> mFxaaShader;
 private:
 	static shared_ptr<ShaderManager> m_spShaderManager;
 	
@@ -100,21 +101,8 @@ public:
 	bool SetDefferedPointLightShader(ID3D11ShaderResourceView* gBuffer[3], int nPointLightIndex);
 
 	bool SetDefferedFinalShader(ID3D11ShaderResourceView* gBuffer[2]);
-public:
-	DepthShader* GetDepthShader() { return mDepthShader.get(); }
-	DiffuseShader* GetDiffuseShader() { return mDiffuseShader.get(); }
-	DiffuseNormalShader* GetDiffuseNormalShader() { return mDiffuseNormalShader.get(); }
-	DiffuseNormalSpecShader* GetDiffuseNormalSpecShader() { return mDiffuseNormalSpecShader.get(); }
-	UIShader* GetUIShader() { return mUIShader.get(); }
-	PureColorShader* GetPureColorShader() { return mPureColorShader.get(); }
-	DiffuseSpecShader* GetDiffuseSpecShader() { return mDiffuseSpecShader.get(); }
-	GraphcisBlitShader* GetGraphcisBlitShader() { return mGraphcisBlitShader.get(); }
-	DOFShader* GetDOFShader() { return mDOFShader.get(); }
-	BlurShader* GetBlurShader() { return mBlurShader.get(); }
-	SSRShader* GetSSRShader() { return mSSRShader.get(); }
-	PureColorShader* GetForwardPureColor() { return mForwardPureColorShader.get(); }
-	Shader_3D* GetDepthGetShader() { return mDepthGetShader.get(); }
-	SSRGBufferShader* GetSSRGBufferShader() { return mSSRGBufferShader.get(); }
+
+	bool SetFXAAShader(ID3D11ShaderResourceView* screenRT, float fScreenWidth, float fScreenHeight);
 };
 #endif 
 

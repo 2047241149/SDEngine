@@ -18,11 +18,11 @@ public:
 
 protected:
 	// Õ∑≈Shader
-	virtual void  ShutDown();
+	virtual void ShutDown();
+	virtual void SetShaderState();
 
 public:
 	bool SetShaderCB(ID3D11ShaderResourceView* screenRT);
-	bool SetShaderState();
 	bool SetShaderParams(ID3D11ShaderResourceView* screenRT);
 
 private:

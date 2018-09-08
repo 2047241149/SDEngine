@@ -37,10 +37,10 @@ bool GraphicsSystem::Init(int ScreenWidth, int ScreenHeight, HWND hwnd,HINSTANCE
 	shared_ptr<DirectionLight> m_spDirLight = shared_ptr<DirectionLight>(new DirectionLight());
 	m_spDirLight->SetLightPostion(XMFLOAT3(12.0f, 12.0f, 12.0f));
 	m_spDirLight->SetLookAtPosition(XMFLOAT3(0.0f, 0.0f, 0.0f));
-	m_spDirLight->SetAmbientLight(XMFLOAT3(0.0f, 0.0f, 0.0f));
-	m_spDirLight->SetLightColor(XMFLOAT3(0.0f, 0.0f, 0.0f));
+	m_spDirLight->SetAmbientLight(XMFLOAT3(0.1f, 0.1f, 0.1f));
+	m_spDirLight->SetLightColor(XMFLOAT3(1.0f, 1.0f, 1.0f));
 
-	const int LIGHT_NUM = 5;
+	const int LIGHT_NUM = 0;
 
 	for (int nNumX = 0; nNumX < LIGHT_NUM; ++nNumX)
 	{
@@ -343,7 +343,7 @@ void GraphicsSystem::RenderLightingPass()
 	GDirectxCore->SetBackBufferRender();
 	GDirectxCore->SetViewPort();
 	GDirectxCore->TurnOffZBuffer();
-	GShaderManager->SetGraphcisBlitShader(mSrcRT->GetSRV());
+	GShaderManager->SetFXAAShader(mSrcRT->GetSRV(), (float)m_nScreenWidth, (float)m_nScreenHeight);
 	mQuad->Render();
 
 	GDirectxCore->TurnOnZBuffer();
