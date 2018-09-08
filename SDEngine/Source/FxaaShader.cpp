@@ -5,7 +5,8 @@ FxaaShader::FxaaShader(WCHAR* vsFilenPath, WCHAR* psFilenPath):
 	Shader_2D(vsFilenPath,psFilenPath),
 	mCBFxaa(nullptr)
 {
-
+	CreateConstantBuffer();
+	CreateSamplerState();
 }
 
 
@@ -22,13 +23,11 @@ FxaaShader::~FxaaShader()
 }
 
 
-bool FxaaShader::SetShaderParams(ID3D11ShaderResourceView* screenRT, ID3D11ShaderResourceView* screenBlurRT,
-	ID3D11ShaderResourceView* depthRT,
-	float dofStart, float dofRange,float farPlane, float nearPlane)
+bool FxaaShader::SetShaderParams(ID3D11ShaderResourceView* screenRT, float fScrreenWidth, float fScrreenHeight)
 {
 	bool result;
 	//设置Shader常量缓存和纹理资源
-	result = SetShaderCB(screenRT,screenBlurRT, depthRT,dofStart,dofRange,farPlane,nearPlane);
+	result = SetShaderCB(screenRT, fScrreenWidth, fScrreenHeight);
 	if (!result)
 		return false;
 
@@ -59,20 +58,53 @@ void FxaaShader::ShutDown()
 }
 
 
-bool FxaaShader::SetShaderCB(ID3D11ShaderResourceView* screenRT, ID3D11ShaderResourceView* screenBlurRT,
-	ID3D11ShaderResourceView* depthRT,
-	float dofStart, float dofRange, float farPlane, float nearPlane)
+bool FxaaShader::SetShaderCB(ID3D11ShaderResourceView* screenRT, float fScrreenWidth, float fScrreenHeight)
 {
 
 	D3D11_MAPPED_SUBRESOURCE mappedSubresource;
 	HR(g_pDeviceContext->Map(mCBFxaa, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedSubresource));
 	auto pCBFxaa = reinterpret_cast<CBFXAA*>(mappedSubresource.pData);
+	/*IDXGISurface* pDXGISurface = nullptr;
+	DXGI_SURFACE_DESC* pDXGISurfaceDesc = nullptr;
+	g_DXGIOutput->GetDisplaySurfaceData(pDXGISurface);
+	pDXGISurface->GetDesc(pDXGISurfaceDesc);*/
+	pCBFxaa->rcpFrame.x = 1.0 / fScrreenWidth;
+	pCBFxaa->rcpFrame.y = 1.0 / fScrreenHeight;
+	pCBFxaa->rcpFrame.z = 0.0;
+	pCBFxaa->rcpFrame.w = 0.0;
 	g_pDeviceContext->Unmap(mCBFxaa, 0);
 
 	g_pDeviceContext->PSSetConstantBuffers(0, 1, &mCBFxaa);
 	g_pDeviceContext->PSSetShaderResources(0, 1, &screenRT);
-	g_pDeviceContext->PSSetShaderResources(1, 1, &screenBlurRT);
-	g_pDeviceContext->PSSetShaderResources(2, 1, &depthRT);
 
 	return true;
 }
+
+void FxaaShader::SetShaderState()
+{
+	Shader_2D::SetShaderState();
+	g_pDeviceContext->PSSetSamplers(2, 0, &mAnisotropicSampler);
+
+}
+
+void FxaaShader::CreateSamplerState()
+{
+	D3D11_SAMPLER_DESC samplerDesc;
+	samplerDesc.Filter = D3D11_FILTER_ANISOTROPIC;
+	samplerDesc.AddressU = D3D11_TEXTURE_ADDRESS_CLAMP;
+	samplerDesc.AddressV = D3D11_TEXTURE_ADDRESS_CLAMP;
+	samplerDesc.AddressW = D3D11_TEXTURE_ADDRESS_CLAMP;
+	samplerDesc.MipLODBias = 0.0f;
+	samplerDesc.MaxAnisotropy = 4;
+	samplerDesc.ComparisonFunc = D3D11_COMPARISON_ALWAYS;
+	samplerDesc.BorderColor[0] = 0;
+	samplerDesc.BorderColor[1] = 0;
+	samplerDesc.BorderColor[2] = 0;
+	samplerDesc.BorderColor[3] = 0;
+	samplerDesc.MinLOD = 0;
+	samplerDesc.MaxLOD = D3D11_FLOAT32_MAX;
+
+	g_pDevice->CreateSamplerState(&samplerDesc, &mAnisotropicSampler);
+}
+
+
