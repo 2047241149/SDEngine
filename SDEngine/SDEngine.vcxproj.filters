@@ -180,6 +180,9 @@
     <ClCompile Include="Source\SDEngine.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="Source\FxaaShader.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\BlurShader.h">
@@ -359,6 +362,9 @@
     <ClInclude Include="Source\SDEngine.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="Source\FxaaShader.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="Resource\Shader\BlurShader.fx" />
@@ -383,5 +389,6 @@
     <None Include="Resource\Shader\DefferedDirLightShader.fx" />
     <None Include="Resource\Shader\DefferedFinalShader.fx" />
     <None Include="Resource\Shader\DefferedPointLightShader.fx" />
+    <None Include="Resource\Shader\FxaaShader.fx" />
   </ItemGroup>
 </Project>

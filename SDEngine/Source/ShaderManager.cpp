@@ -73,6 +73,8 @@ bool ShaderManager::Init()
 	mWaveShader = shared_ptr<WaveShader>(new
 		WaveShader(L"Resource/Shader/WaveShader.fx", L"Resource/Shader/WaveShader.fx"));
 
+	mFxaaShader = shared_ptr<FxaaShader>(new
+		FxaaShader(L"Resource/Shader/FxaaShader.fx", L"Resource/Shader/FxaaShader.fx"));
 	return true;
 }
 
@@ -340,6 +342,20 @@ bool ShaderManager::SetDefferedFinalShader(ID3D11ShaderResourceView* gBuffer[2])
 	if (!result)
 	{
 		MessageBox(NULL, L"mDefferedFinalShader render Ê§°Ü", NULL, MB_OK);
+		return false;
+	}
+	return true;
+}
+
+
+bool ShaderManager::SetFXAAShader(ID3D11ShaderResourceView* screenRT,float fScreenWidth, float fScreenHeight)
+{
+
+	bool result;
+	result = mFxaaShader->SetShaderParams(screenRT, fScreenWidth, fScreenHeight);
+	if (!result)
+	{
+		MessageBox(NULL, L"SetFXAAShader render Ê§°Ü", NULL, MB_OK);
 		return false;
 	}
 	return true;
