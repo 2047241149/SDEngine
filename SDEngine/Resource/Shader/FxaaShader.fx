@@ -321,7 +321,7 @@ float3 FxaaPixelShader(
 	float lumaSW = FxaaLuma(rgbSW);
 	float lumaSE = FxaaLuma(rgbSE);
 
-	//基于颜色的边缘检测(乘数因子综合恰好为0)
+	//基于光度的边缘检测(乘数因子综合恰好为0)
 	//垂直向边缘检测
 	float edgeVert =
 		abs((0.25 * lumaNW) + (-0.5 * lumaN) + (0.25 * lumaNE)) +
