@@ -1,7 +1,7 @@
 #ifndef _FXAA_SHADER_H
 #define _FXAA_SHADER_H
 
-#include 
+
 #include "CommonConstantBufferStruct.h"
 #include "2DShader.h"
 using namespace std;
@@ -17,28 +17,26 @@ public:
 	virtual ~FxaaShader();
 
 public:
-	bool SetShaderCB(ID3D11ShaderResourceView* screenRT, ID3D11ShaderResourceView* screenBlurRT, 
-		ID3D11ShaderResourceView* depthRT,
-		float dofStart,float dofRange, float farPlane, float nearPlane);
-	bool SetShaderParams(ID3D11ShaderResourceView* screenRT, ID3D11ShaderResourceView* screenBlurRT,
-		ID3D11ShaderResourceView* depthRT,
-		float dofStart, float dofRange,float farPlane, float nearPlane);
+	bool SetShaderCB(ID3D11ShaderResourceView* screenRT, float fScrreenWidth, float fScrreenHeight);
+	bool SetShaderParams(ID3D11ShaderResourceView* screenRT, float fScrreenWidth, float fScrreenHeight);
 
 private:
 	void CreateConstantBuffer();
+	void CreateSamplerState();
 
 protected:
 	virtual void  ShutDown() override;
-
+	virtual void SetShaderState() override;
 
 
 private:
 	struct CBFXAA
 	{
-
+		XMFLOAT4 rcpFrame;
 	};
 
 private:
 	ID3D11Buffer* mCBFxaa;
+	ID3D11SamplerState* mAnisotropicSampler;
 };
 #endif 

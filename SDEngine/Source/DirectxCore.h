@@ -35,6 +35,7 @@ public:
 	//Get函数
 	ID3D11Device* GetDevice() { return md3dDevice; }
 	ID3D11DeviceContext* GetDeviceContext(){ return md3dImmediateContext; }
+	IDXGIOutput* GetDXGIOutput() { return mAdapterOutput; }
 	ID3D11RenderTargetView* GetRTV() { return md3dRenderTargetView; }
 	ID3D11DepthStencilView* GetDSV() { return md3dDepthStencilView; }
 	D3D11_VIEWPORT GetViewPort() { return mViewport; }
@@ -89,7 +90,7 @@ private:
 	static shared_ptr<DirectxCore> m_pDirectxCore;
 
 private:
-
+	IDXGIOutput* mAdapterOutput;
 	ID3D11Device* md3dDevice;//D3D11设备
 	ID3D11DeviceContext* md3dImmediateContext;//D3D11设备上下文
 	IDXGISwapChain* md3dSwapChain;//D3D交换链
@@ -118,5 +119,5 @@ private:
 #define GDirectxCore (DirectxCore::Get())
 #define g_pDeviceContext DirectxCore::Get()->GetDeviceContext()
 #define g_pDevice  DirectxCore::Get()->GetDevice()
-
+#define g_DXGIOutput DirectxCore::Get()->GetDXGIOutput()
 #endif 

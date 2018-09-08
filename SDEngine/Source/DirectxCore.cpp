@@ -48,7 +48,6 @@ bool DirectxCore::Init(int ScreenWidth, int ScreenHeight, bool vsync, HWND hwnd,
 
 	IDXGIAdapter* adpter;//适配器
 	IDXGIFactory* factory;
-	IDXGIOutput* adapterOutput;
 	unsigned int numModes, numerator, denominator, stringLength;
 	DXGI_MODE_DESC* displayModeList;
 	DXGI_ADAPTER_DESC adapterDesc;
@@ -64,10 +63,10 @@ bool DirectxCore::Init(int ScreenWidth, int ScreenHeight, bool vsync, HWND hwnd,
 	HR(factory->EnumAdapters(0, &adpter));
 
 	//列举主要的适配器输出
-	HR(adpter->EnumOutputs(0, &adapterOutput));
+	HR(adpter->EnumOutputs(0, &mAdapterOutput));
 
 	//获取适应适配器DXGI_FORMAT_R8G8B8A8_UNORM显示格式的模式数目
-	HR(adapterOutput->GetDisplayModeList(DXGI_FORMAT_R8G8B8A8_UNORM, DXGI_ENUM_MODES_INTERLACED, &numModes, NULL));
+	HR(mAdapterOutput->GetDisplayModeList(DXGI_FORMAT_R8G8B8A8_UNORM, DXGI_ENUM_MODES_INTERLACED, &numModes, NULL));
 
 	//创建一个显示模式列表存放可能的显示模式(显卡,监视器)
 	displayModeList= new DXGI_MODE_DESC[numModes];
@@ -75,7 +74,7 @@ bool DirectxCore::Init(int ScreenWidth, int ScreenHeight, bool vsync, HWND hwnd,
 		return false;
 
 	//填充显示模式列表结构体
-	HR(adapterOutput->GetDisplayModeList(DXGI_FORMAT_R8G8B8A8_UNORM, DXGI_ENUM_MODES_INTERLACED, &numModes, displayModeList));
+	HR(mAdapterOutput->GetDisplayModeList(DXGI_FORMAT_R8G8B8A8_UNORM, DXGI_ENUM_MODES_INTERLACED, &numModes, displayModeList));
 
 	//浏览所有的显示模式,找到适合屏幕宽度和高度的
 	//当一个模式匹配,存储监视器刷新速度的分子分母??
