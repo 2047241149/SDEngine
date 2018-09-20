@@ -44,6 +44,7 @@ public:
 public:
 	bool bTransparent;
 	bool bReflect;
+	bool bCastShadow;
 	MaterialType m_eMaterialType;
 
 	//当处于纯色渲染模式下，会使用的属性

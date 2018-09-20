@@ -9,8 +9,7 @@ using namespace DirectX;
 
 class Shader_3D
 {
-private:
-
+protected:
 	ID3D11VertexShader* m_pVertexShader;
 	ID3D11PixelShader* m_pPixelShader;
 	ID3D11InputLayout* m_pInputLayout; 
@@ -33,8 +32,9 @@ public:
 	virtual ~Shader_3D();
 
 public:
-	bool SetShaderCB(CXMMATRIX worldMatrix);
-	bool SetShaderState();
+	virtual bool SetShaderCB(CXMMATRIX worldMatrix);
 	bool SetShaderParams(CXMMATRIX worldMatrix);
+	bool SetShaderState();
+
 };
 #endif 

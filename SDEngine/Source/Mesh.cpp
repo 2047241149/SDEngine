@@ -4,7 +4,8 @@
 Mesh::Mesh(string strFbxFileName):
 	pureColor(XMFLOAT4(1.0f,1.0f,1.0f,1.0f)),
 	bTransparent(false),
-	bReflect(false)
+	bReflect(false),
+	bCastShadow(true)
 {
 
 	LoadFBXModel(strFbxFileName);	

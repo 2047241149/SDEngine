@@ -19,7 +19,7 @@ ShaderManager::ShaderManager(const ShaderManager& other)
 bool ShaderManager::Init()
 {
 
-	mDiffuseNormalShader = shared_ptr<DiffuseNormalShader>(new
+ 	mDiffuseNormalShader = shared_ptr<DiffuseNormalShader>(new
 		DiffuseNormalShader(L"Resource/Shader/DiffuseNormalShader.fx", L"Resource/Shader/DiffuseNormalShader.fx"));
 
 	mDiffuseNormalSpecShader = shared_ptr<DiffuseNormalSpecShader>(new
@@ -75,6 +75,13 @@ bool ShaderManager::Init()
 
 	mFxaaShader = shared_ptr<FxaaShader>(new
 		FxaaShader(L"Resource/Shader/FxaaShader.fx", L"Resource/Shader/FxaaShader.fx"));
+
+	mLightDepthShader = shared_ptr<LightDepthShader>(new
+		LightDepthShader(L"Resource/Shader/LightDepthMap.fx", L"Resource/Shader/LightDepthMap.fx"));
+
+	
+	mShadowMapShader = shared_ptr<ShadowMapShader>(new
+		ShadowMapShader(L"Resource/Shader/DirShadowMapShader.fx", L"Resource/Shader/DirShadowMapShader.fx"));
 	return true;
 }
 
@@ -311,7 +318,6 @@ bool ShaderManager::SetWaveShader(CXMMATRIX worldMatrix, FXMVECTOR surfaceColor,
 
 bool ShaderManager::SetDefferedDirLightShader(ID3D11ShaderResourceView* gBuffer[4], int nDirLightIndex)
 {
-
 	bool result;
 	result = mDefferDirLightShader->SetShaderParams(gBuffer, nDirLightIndex);
 	if (!result)
@@ -359,6 +365,31 @@ bool ShaderManager::SetFXAAShader(ID3D11ShaderResourceView* screenRT,float fScre
 		return false;
 	}
 	return true;
+}
+
+bool ShaderManager::SetLightDepthShader(CXMMATRIX worldMatrix)
+{
+	bool result;
+	result = mLightDepthShader->SetShaderParams(worldMatrix);
+	if (!result)
+	{
+		MessageBox(NULL, L"SetLightDepthShader render Ê§°Ü", NULL, MB_OK);
+		return false;
+	}
+	return true;
+}
+
+bool ShaderManager::SetShadowMapShader(ID3D11ShaderResourceView* worldPosTex, ID3D11ShaderResourceView*  lightDepthMap, int nDirLightIndex)
+{
+	bool result;
+	result = mShadowMapShader->SetShaderParams(worldPosTex, lightDepthMap, nDirLightIndex);
+	if (!result)
+	{
+		MessageBox(NULL, L"mShadowMapShader render Ê§°Ü", NULL, MB_OK);
+		return false;
+	}
+	return true;
+
 }
 
 shared_ptr<ShaderManager> ShaderManager::m_spShaderManager = nullptr;
