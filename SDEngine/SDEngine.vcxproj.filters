@@ -183,6 +183,15 @@
     <ClCompile Include="Source\FxaaShader.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="Source\ShadowMap.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\LightDepthShader.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\ShadowMapShader.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\BlurShader.h">
@@ -365,6 +374,15 @@
     <ClInclude Include="Source\FxaaShader.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="Source\ShadowMap.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\LightDepthShader.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\ShadowMapShader.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="Resource\Shader\BlurShader.fx" />
@@ -390,5 +408,7 @@
     <None Include="Resource\Shader\DefferedFinalShader.fx" />
     <None Include="Resource\Shader\DefferedPointLightShader.fx" />
     <None Include="Resource\Shader\FxaaShader.fx" />
+    <None Include="Resource\Shader\LightDepthMap.fx" />
+    <None Include="Resource\Shader\DirShadowMapShader.fx" />
   </ItemGroup>
 </Project>

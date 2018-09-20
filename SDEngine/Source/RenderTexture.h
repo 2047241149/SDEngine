@@ -30,7 +30,7 @@ public:
 	bool Init(int nTextureWidth, int nTexureHeight);
 	void ShutDown();
 
-	void SetRenderTarget();
+	void SetRenderTarget(float fRed = 0.0f, float fGreen = 0.0f, float fBlue = 0.0f, float fAlpha = 1.0f);
 	void ClearDepthBuffer();
 	void ClearRenderTarget(float fRed, float fGreen,float fBlue, float fAlpha);
 

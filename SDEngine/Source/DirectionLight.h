@@ -5,6 +5,8 @@
 #include<vector>
 using std::vector;
 
+class Camera;
+
 class DirectionLight : public Light
 {
 public:
@@ -12,15 +14,15 @@ public:
 	DirectionLight(const DirectionLight&other);
 	~DirectionLight();
 
-
 public:
-	void SetLookAtPosition(XMFLOAT3 lookAtPosition);
+	void SetLightDiretion(XMFLOAT3 lightDir);
 	XMFLOAT3 GetLightDirection();
 	
 	void SetAmbientLight(XMFLOAT3  ambientLight);
 	XMFLOAT3 GetAmbientLight();
+	void GetDirLightViewAndProjMatrix(XMMATRIX& lightViewMatrix, XMMATRIX& lightOrthoProjMatrix);
 private:
-	XMFLOAT3 m_LookAtPosition;
+	XMFLOAT3 m_DirLightDiretion;
 	XMFLOAT3 m_AmbientLight;
 };
 
