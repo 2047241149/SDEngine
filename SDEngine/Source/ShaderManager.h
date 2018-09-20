@@ -18,6 +18,8 @@
 #include "DefferedFinalShader.h"
 #include "WaveShader.h"
 #include "FxaaShader.h"
+#include "LightDepthShader.h"
+#include "ShadowMapShader.h"
 #include<memory>
 #include"Macro.h"
 using namespace std;
@@ -46,6 +48,8 @@ public:
 	shared_ptr<WaveShader> mWaveShader;
 	shared_ptr<DefferedFinalShader> mDefferedFinalShader;
 	shared_ptr<FxaaShader> mFxaaShader;
+	shared_ptr<LightDepthShader> mLightDepthShader;
+	shared_ptr<ShadowMapShader> mShadowMapShader;
 private:
 	static shared_ptr<ShaderManager> m_spShaderManager;
 	
@@ -103,6 +107,10 @@ public:
 	bool SetDefferedFinalShader(ID3D11ShaderResourceView* gBuffer[2]);
 
 	bool SetFXAAShader(ID3D11ShaderResourceView* screenRT, float fScreenWidth, float fScreenHeight);
+
+	bool SetLightDepthShader(CXMMATRIX worldMatrix);
+
+	bool SetShadowMapShader(ID3D11ShaderResourceView* worldPosTex, ID3D11ShaderResourceView*  lightDepthMap, int nDirLightIndex);
 };
 #endif 
 

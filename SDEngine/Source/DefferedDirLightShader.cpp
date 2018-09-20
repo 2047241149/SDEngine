@@ -23,7 +23,7 @@ DefferedDirLightShader::~DefferedDirLightShader()
 
 
 
-bool DefferedDirLightShader::SetShaderParams(ID3D11ShaderResourceView* gBuffer[3], int nDirLightIndex)
+bool DefferedDirLightShader::SetShaderParams(ID3D11ShaderResourceView* gBuffer[4], int nDirLightIndex)
 {
 	bool result;
 	//设置Shader常量缓存和纹理资源
@@ -69,7 +69,7 @@ void DefferedDirLightShader::ShutDown()
 }
 
 
-bool DefferedDirLightShader::SetShaderCB(ID3D11ShaderResourceView* gBuffer[3], int nDirLightIndex)
+bool DefferedDirLightShader::SetShaderCB(ID3D11ShaderResourceView* gBuffer[4], int nDirLightIndex)
 {
 	XMMATRIX viewMatrix = GCamera->GetViewMatrix();
 	XMMATRIX ProjMatrix = GCamera->GetProjectionMatrix();
@@ -107,7 +107,7 @@ bool DefferedDirLightShader::SetShaderCB(ID3D11ShaderResourceView* gBuffer[3], i
 	g_pDeviceContext->VSSetConstantBuffers(0, 1, &mCBCommon);
 	g_pDeviceContext->PSSetConstantBuffers(0, 1, &mCBCommon);
 	g_pDeviceContext->PSSetConstantBuffers(1, 1, &m_pCBDirLight);
-	g_pDeviceContext->PSSetShaderResources(0, 3, gBuffer);
+	g_pDeviceContext->PSSetShaderResources(0, 4, gBuffer);
 
 	return true;
 }
