@@ -29,7 +29,7 @@ public:
 public:
 	void SetLightPostion(XMFLOAT3 pos);
 	XMFLOAT3 GetLightColor();
-	XMFLOAT3 GetPosition();
+	virtual XMFLOAT3 GetPosition();
 	float GetLightIntensity();
 	virtual void SetLightIntensity(float fLightIntensity);
 	virtual void SetLightColor(XMFLOAT3 color);

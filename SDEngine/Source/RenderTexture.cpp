@@ -122,7 +122,7 @@ void RenderTexture::ShutDown()
 
 
 //让此时所有图形渲染到这个目前渲染的位置
-void RenderTexture::SetRenderTarget()
+void RenderTexture::SetRenderTarget(float fRed, float fGreen, float fBlue, float fAlpha)
 {
 	//绑定渲染目标视图和深度模板视图到输出渲染管线，此时渲染输出到两张纹理中
 	g_pDeviceContext->OMSetRenderTargets(1, &m_pRTV, m_pDSV);
@@ -130,7 +130,7 @@ void RenderTexture::SetRenderTarget()
 	//设置相应的视口
 	g_pDeviceContext->RSSetViewports(1, &m_ViewPort);
 
-	ClearRenderTarget(0.0, 0.0, 0.0, 1.0f);
+	ClearRenderTarget(fRed, fGreen, fBlue, fAlpha);
 	ClearDepthBuffer();
 }
 

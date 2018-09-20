@@ -11,7 +11,7 @@ using namespace DirectX;
 using std::shared_ptr;
 class Camera
 {
-private:
+public:
 	//相机在世界空间的位置和方向向量
 	XMFLOAT3 mPosition;
 	XMFLOAT3 mRight;
