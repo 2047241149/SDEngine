@@ -112,6 +112,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Source\CascadeShadowMapManager.cpp" />
     <ClCompile Include="Source\ShadowMapShader.cpp" />
     <ClCompile Include="Source\LightDepthShader.cpp" />
     <ClCompile Include="Source\ShadowMap.cpp" />
@@ -173,6 +174,8 @@
     <ClCompile Include="Source\源.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Source\CascadeShadowMapManager.h" />
+    <ClInclude Include="Source\GraphicsConfig.h" />
     <ClInclude Include="Source\ShadowMapShader.h" />
     <ClInclude Include="Source\LightDepthShader.h" />
     <ClInclude Include="Source\ShadowMap.h" />

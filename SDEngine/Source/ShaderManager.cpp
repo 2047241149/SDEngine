@@ -1,5 +1,6 @@
 
 #include "ShaderManager.h"
+#include "CascadeShadowMapManager.h"
 
 ShaderManager::ShaderManager()
 {
@@ -367,10 +368,10 @@ bool ShaderManager::SetFXAAShader(ID3D11ShaderResourceView* screenRT,float fScre
 	return true;
 }
 
-bool ShaderManager::SetLightDepthShader(CXMMATRIX worldMatrix)
+bool ShaderManager::SetLightDepthShader(CXMMATRIX worldMatrix, CXMMATRIX lightOrthoProjMatrix)
 {
 	bool result;
-	result = mLightDepthShader->SetShaderParams(worldMatrix);
+	result = mLightDepthShader->SetShaderParamsExtern(worldMatrix, lightOrthoProjMatrix);
 	if (!result)
 	{
 		MessageBox(NULL, L"SetLightDepthShader render Ê§°Ü", NULL, MB_OK);
@@ -379,10 +380,10 @@ bool ShaderManager::SetLightDepthShader(CXMMATRIX worldMatrix)
 	return true;
 }
 
-bool ShaderManager::SetShadowMapShader(ID3D11ShaderResourceView* worldPosTex, ID3D11ShaderResourceView*  lightDepthMap, int nDirLightIndex)
+bool ShaderManager::SetShadowMapShader(ID3D11ShaderResourceView* worldPosTex, CascadedShadowsManager* cascadeShadowManager)
 {
 	bool result;
-	result = mShadowMapShader->SetShaderParams(worldPosTex, lightDepthMap, nDirLightIndex);
+	result = mShadowMapShader->SetShaderParams(worldPosTex, cascadeShadowManager);
 	if (!result)
 	{
 		MessageBox(NULL, L"mShadowMapShader render Ê§°Ü", NULL, MB_OK);

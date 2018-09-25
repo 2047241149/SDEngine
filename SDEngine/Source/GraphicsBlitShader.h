@@ -5,9 +5,9 @@
 #include"Camera.h"
 #include"Light.h"
 #include "CommonConstantBufferStruct.h"
+#include "2DShader.h"
 using namespace std;
 using namespace DirectX;
-#include "2DShader.h"
 
 class GraphcisBlitShader : public Shader_2D
 {
