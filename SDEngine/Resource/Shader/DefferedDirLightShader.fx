@@ -67,7 +67,7 @@ float4 PS(VertexOut outa) : SV_Target
 
 
 	//¿˚”√DirLightShadowMap
-	float shadowFactor = DirLightShadowMap.Sample(wrapLinearSample, outa.Tex).r;
+	float3 shadowFactor = DirLightShadowMap.Sample(wrapLinearSample, outa.Tex).rgb;
 	color = float4(ambientLight + lightColor.xyz * diffuseFactor * shadowFactor * lightColor.w, 1.0);
 	color.w = specularFactor;
 

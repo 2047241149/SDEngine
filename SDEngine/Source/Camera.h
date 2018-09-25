@@ -69,7 +69,7 @@ public:
 
 	//获取UI相机变换矩阵
 	XMMATRIX GetUIViewMatrix()const;
-
+	
 	//获取UI正交投影矩阵
 	XMMATRIX GetUIOrthoMatrix()const;
 

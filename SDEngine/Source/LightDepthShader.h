@@ -13,6 +13,7 @@ public:
 	virtual ~LightDepthShader();
 
 public:
-	virtual bool SetShaderCB(CXMMATRIX worldMatrix) override;
+	bool SetShaderParamsExtern(CXMMATRIX worldMatrix, CXMMATRIX lightOrthoProjMatrix);
+	bool SetShaderCBExtern(CXMMATRIX worldMatrix, CXMMATRIX lightOrthoProjMatrix);
 };
 #endif 

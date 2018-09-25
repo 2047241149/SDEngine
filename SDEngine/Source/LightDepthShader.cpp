@@ -19,11 +19,28 @@ LightDepthShader::~LightDepthShader()
 	
 }
 
-bool LightDepthShader::SetShaderCB(CXMMATRIX worldMatrix)
+bool LightDepthShader::SetShaderParamsExtern(CXMMATRIX worldMatrix, CXMMATRIX lightOrthoProjMatrix)
+{
+	
+	bool result;
+	//设置Shader常量缓存和纹理资源
+	result = SetShaderCBExtern(worldMatrix, lightOrthoProjMatrix);
+	if (!result)
+		return false;
+
+	//设置VertexShader PixelShader InputLayout SamplerState
+	SetShaderState();
+
+	return true;
+}
+
+bool LightDepthShader::SetShaderCBExtern(CXMMATRIX worldMatrix, CXMMATRIX lightOrthoProjMatrix)
 {
 	XMMATRIX lightViewMatrix;
-	XMMATRIX lightOrthoProjMatrix;
-	GLightManager->GetMainLight()->GetDirLightViewAndProjMatrix(lightViewMatrix, lightOrthoProjMatrix);
+	if (GLightManager->m_vecDirLight.size() <= 0)
+		return false;
+
+	lightViewMatrix = GLightManager->GetMainLight()->GetViewMatrix();
 
 	//第一，更新变换矩阵常量缓存的值
 	D3D11_MAPPED_SUBRESOURCE mappedSubresource;

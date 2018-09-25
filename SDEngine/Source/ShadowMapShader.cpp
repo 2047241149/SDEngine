@@ -1,4 +1,5 @@
 #include "ShadowMapShader.h"
+#include "CascadeShadowMapManager.h"
 
 ShadowMapShader::ShadowMapShader(WCHAR* vsFilenPath, WCHAR* psFilenPath):
 	Shader_2D(vsFilenPath,psFilenPath),
@@ -24,11 +25,11 @@ ShadowMapShader::~ShadowMapShader()
 
 
 
-bool ShadowMapShader::SetShaderParams(ID3D11ShaderResourceView* worldPosTex, ID3D11ShaderResourceView*  lightDepthMap, int nDirLightIndex)
+bool ShadowMapShader::SetShaderParams(ID3D11ShaderResourceView* worldPosTex, CascadedShadowsManager* mCascadeShadowManager)
 {
 	bool result;
 	//设置Shader常量缓存和纹理资源
-	result = SetShaderCB(worldPosTex, lightDepthMap, nDirLightIndex);
+	result = SetShaderCB(worldPosTex, mCascadeShadowManager);
 	if (!result)
 		return false;
 
@@ -91,8 +92,12 @@ void ShadowMapShader::ShutDown()
 }
 
 
-bool ShadowMapShader::SetShaderCB(ID3D11ShaderResourceView* worldPosTex, ID3D11ShaderResourceView*  lightDepthMap, int nDirLightIndex)
+bool ShadowMapShader::SetShaderCB(ID3D11ShaderResourceView* worldPosTex, CascadedShadowsManager* mCascadeShadowManager)
 {
+
+	if (GLightManager->m_vecDirLight.size() <= 0)
+		return false;
+
 	XMMATRIX viewMatrix = GCamera->GetViewMatrix();
 	XMMATRIX ProjMatrix = GCamera->GetProjectionMatrix();
 
@@ -111,25 +116,42 @@ bool ShadowMapShader::SetShaderCB(ID3D11ShaderResourceView* worldPosTex, ID3D11S
 	pCBCommon->cameraPos = GCamera->GetPosition();
 	g_pDeviceContext->Unmap(mCBCommon, 0);
 
-	shared_ptr<DirectionLight> pDirLight = GLightManager->m_vecDirLight[nDirLightIndex];
+	shared_ptr<DirectionLight> pDirLight = GLightManager->m_vecDirLight[0];
 	D3D11_MAPPED_SUBRESOURCE mappedSSShadowMap;
 	HR(g_pDeviceContext->Map(mCBShadowMap, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedSSShadowMap));
 	auto pCBShadowMap = reinterpret_cast<CBShadowMap*>(mappedSSShadowMap.pData);
 
 	XMMATRIX lightViewMatrix;
 	XMMATRIX lightOrthoProjMatrix;
-	pDirLight->GetDirLightViewAndProjMatrix(lightViewMatrix, lightOrthoProjMatrix);
+	lightViewMatrix = pDirLight->GetViewMatrix();
 	XMFLOAT3 lightColor = pDirLight->GetLightColor();
 	pCBShadowMap->lightViewMatrix = XMMatrixTranspose(lightViewMatrix);
-	pCBShadowMap->lightProjMatrix = XMMatrixTranspose(lightOrthoProjMatrix);
+	for (int nCascadeIndex = 0; nCascadeIndex < CASCADE_SHADOW_MAP_NUM; ++nCascadeIndex)
+	{
+		pCBShadowMap->arrayLightProjMatrix[nCascadeIndex] = 
+			XMMatrixTranspose(mCascadeShadowManager->mArrayLightOrthoMatrix[nCascadeIndex]);
+	}
+
+	for (int index = 0; index < 3; ++index)
+	{
+		pCBShadowMap->lightCameraZ[index] = mCascadeShadowManager->mfCameraZ[index];
+	}
+	pCBShadowMap->shadowBias = 0.003f;
+
 	g_pDeviceContext->Unmap(mCBShadowMap, 0);
+
+	ID3D11ShaderResourceView* arrayLightDepthMap[CASCADE_SHADOW_MAP_NUM];
+	for (int nCascadeIndex = 0; nCascadeIndex < CASCADE_SHADOW_MAP_NUM; ++nCascadeIndex)
+	{
+		arrayLightDepthMap[nCascadeIndex] = mCascadeShadowManager->GetShadowMapSRV(nCascadeIndex);
+	}
 
 	//第三,设置在VertexShader的常量缓存的值(带着更新的值)
 	g_pDeviceContext->VSSetConstantBuffers(0, 1, &mCBCommon);
 	g_pDeviceContext->PSSetConstantBuffers(0, 1, &mCBCommon);
 	g_pDeviceContext->PSSetConstantBuffers(1, 1, &mCBShadowMap);
 	g_pDeviceContext->PSSetShaderResources(0, 1, &worldPosTex);
-	g_pDeviceContext->PSSetShaderResources(1, 1, &lightDepthMap);
+	g_pDeviceContext->PSSetShaderResources(1, CASCADE_SHADOW_MAP_NUM, arrayLightDepthMap);
 
 	return true;
 }

@@ -108,9 +108,9 @@ public:
 
 	bool SetFXAAShader(ID3D11ShaderResourceView* screenRT, float fScreenWidth, float fScreenHeight);
 
-	bool SetLightDepthShader(CXMMATRIX worldMatrix);
+	bool SetLightDepthShader(CXMMATRIX worldMatrix, CXMMATRIX lightOrthoProjMatrix);
 
-	bool SetShadowMapShader(ID3D11ShaderResourceView* worldPosTex, ID3D11ShaderResourceView*  lightDepthMap, int nDirLightIndex);
+	bool SetShadowMapShader(ID3D11ShaderResourceView* worldPosTex, class CascadedShadowsManager* cascadeShadowManager);
 };
 #endif 
 

@@ -192,6 +192,9 @@
     <ClCompile Include="Source\ShadowMapShader.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="Source\CascadeShadowMapManager.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\BlurShader.h">
@@ -383,6 +386,12 @@
     <ClInclude Include="Source\ShadowMapShader.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="Source\CascadeShadowMapManager.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\GraphicsConfig.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="Resource\Shader\BlurShader.fx" />
@@ -404,11 +413,11 @@
     <None Include="Resource\Shader\UIShader.fx" />
     <None Include="Resource\Shader\WaveComputerShader.fx" />
     <None Include="Resource\Shader\WaveShader.fx" />
-    <None Include="Resource\Shader\DefferedDirLightShader.fx" />
     <None Include="Resource\Shader\DefferedFinalShader.fx" />
     <None Include="Resource\Shader\DefferedPointLightShader.fx" />
     <None Include="Resource\Shader\FxaaShader.fx" />
     <None Include="Resource\Shader\LightDepthMap.fx" />
+    <None Include="Resource\Shader\DefferedDirLightShader.fx" />
     <None Include="Resource\Shader\DirShadowMapShader.fx" />
   </ItemGroup>
 </Project>
