@@ -5,6 +5,7 @@
 #include"Camera.h"
 #include "CommonConstantBufferStruct.h"
 #include "2DShader.h"
+#include "GraphicsConfig.h"
 using namespace std;
 using namespace DirectX;
 
@@ -15,7 +16,9 @@ private:
 	struct CBShadowMap
 	{
 		XMMATRIX lightViewMatrix;
-		XMMATRIX lightProjMatrix;
+		XMMATRIX arrayLightProjMatrix[CASCADE_SHADOW_MAP_NUM];
+		float lightCameraZ[3];
+		float shadowBias;
 	};
 private:
 	ID3D11Buffer* mCBCommon; 
@@ -36,7 +39,7 @@ public:
 	virtual ~ShadowMapShader();
 
 public:
-	bool SetShaderCB(ID3D11ShaderResourceView* worldPosTex, ID3D11ShaderResourceView*  lightDepthMap, int nDirLightIndex);
-	bool SetShaderParams(ID3D11ShaderResourceView* worldPosTex, ID3D11ShaderResourceView*  lightDepthMap, int nDirLightIndex);
+	bool SetShaderCB(ID3D11ShaderResourceView* worldPosTex, class CascadedShadowsManager* cascadedShadowsManager);
+	bool SetShaderParams(ID3D11ShaderResourceView* worldPosTex, class CascadedShadowsManager* cascadedShadowsManager);
 };
 #endif 

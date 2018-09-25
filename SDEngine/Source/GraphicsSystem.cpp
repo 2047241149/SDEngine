@@ -126,7 +126,7 @@ bool GraphicsSystem::Init(int ScreenWidth, int ScreenHeight, HWND hwnd,HINSTANCE
 	mSSRRT = shared_ptr<RenderTexture>(
 		new RenderTexture(ScreenWidth, ScreenHeight));
 
-	mDirLightShadowMap = shared_ptr<ShadowMap>(new ShadowMap(SHADOW_MAP_SIZE, SHADOW_MAP_SIZE));
+	mCascadeShadowsManager = shared_ptr<CascadedShadowsManager>(new CascadedShadowsManager(SHADOW_MAP_SIZE));
 
 	mGrayShadowMap = shared_ptr<RenderTexture>(new RenderTexture(ScreenWidth, ScreenHeight));
 
@@ -253,6 +253,8 @@ bool GraphicsSystem::Frame()
 	}
 
 	GCamera->UpdateViewMatrix();
+
+	mCascadeShadowsManager->Update();
 
 	return true;
 }
@@ -596,27 +598,31 @@ void GraphicsSystem::RenderFinalShadingPass()
 
 void GraphicsSystem::RenderShadowMapPass()
 {
-	mDirLightShadowMap->SetRenderTarget();
-
+		
 	//渲染需要投射阴影的物体到RT上
-	for (int index = 0; index < GGameObjectManager->m_vecGameObject.size(); ++index)
+	//后面可以考虑用GeometryShader减少DrawCall
+	for (int nCascadeIndex = 0; nCascadeIndex < CASCADE_SHADOW_MAP_NUM; ++nCascadeIndex)
 	{
-		shared_ptr<GameObject> memGo = GGameObjectManager->m_vecGameObject[index];
-		if (memGo->m_pMesh && !memGo->m_pMesh->bTransparent)
+		mCascadeShadowsManager->SetRenderTarget(nCascadeIndex);
+
+		for (int index = 0; index < GGameObjectManager->m_vecGameObject.size(); ++index)
 		{
-			if (memGo->m_pMesh->bCastShadow)
+			shared_ptr<GameObject> memGo = GGameObjectManager->m_vecGameObject[index];
+			if (memGo->m_pMesh && !memGo->m_pMesh->bTransparent)
 			{
-				GShaderManager->SetLightDepthShader(memGo->GetWorldMatrix());
-				memGo->RenderMesh();
-			}	
+				if (memGo->m_pMesh->bCastShadow)
+				{
+					GShaderManager->SetLightDepthShader(memGo->GetWorldMatrix(), mCascadeShadowsManager->mArrayLightOrthoMatrix[nCascadeIndex]);
+					memGo->RenderMesh();
+				}
+			}
 		}
 	}
 
 	//渲染得到阴影
 	mGrayShadowMap->SetRenderTarget();
-	//GDirectxCore->SetBackBufferRender();
 	GDirectxCore->TurnOffZBuffer();
-	GShaderManager->SetShadowMapShader(mGeometryBuffer->GetGBufferSRV(GBufferType::Pos), mDirLightShadowMap->GetShadowMap(), 0);
+	GShaderManager->SetShadowMapShader(mGeometryBuffer->GetGBufferSRV(GBufferType::Pos), mCascadeShadowsManager.get());
 	mQuad->Render();
 	GDirectxCore->RecoverDefaultDSS();
 }

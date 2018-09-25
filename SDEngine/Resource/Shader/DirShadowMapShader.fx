@@ -1,11 +1,14 @@
 Texture2D WorldPosTex:register(t0);
-Texture2D LightDepthMap:register(t1);
+Texture2DArray ArrayLightDepthMap:register(t1);
+
+
 
 SamplerState wrapLinearSample:register(s0);
 SamplerState clampLinearSample:register(s1);
 SamplerState clampPointSample:register(s2);
 
 static const int PCF_KERNEL_COUNT = 9;
+static const int CASCADE_SHADOW_NUM = 3;
 
 cbuffer CBMatrix:register(b0)
 {
@@ -20,7 +23,9 @@ cbuffer CBMatrix:register(b0)
 cbuffer CBShadow:register(b1)
 {
 	matrix dirView;
-	matrix dirProj;
+	matrix arrayDirProj[CASCADE_SHADOW_NUM];
+	float3 cameraZ;
+	float shadowBias;
 };
 
 struct VertexIn
@@ -36,10 +41,10 @@ struct VertexOut
 	float2 Tex:TEXCOORD0;
 };
 
-float2 texSize(Texture2D tex)
+float2 texSize(Texture2DArray tex)
 {
-	uint texWidth, texHeight;
-	tex.GetDimensions(texWidth, texHeight);
+	float texWidth, texHeight, textureNum;
+	tex.GetDimensions(texWidth, texHeight, textureNum);
 	return float2(texWidth, texHeight);
 }
 
@@ -55,9 +60,32 @@ VertexOut VS(VertexIn ina)
 float4 PS(VertexOut outa) : SV_Target
 {
 	float3 worldPos = WorldPosTex.Sample(clampLinearSample, outa.Tex).xyz;
+	float4 viewSpacePos = mul(float4(worldPos, 1.0f), View);
 	float4 lightSpaceWSPos = mul(float4(worldPos, 1.0f), dirView);
-	lightSpaceWSPos = mul(lightSpaceWSPos, dirProj);
 	float4 color;
+	int projMatrixIndex = 0;
+	float4 debugColor = float4(1.0, 1.0, 1.0, 1.0);
+	if (viewSpacePos.z < cameraZ.x)
+	{
+		projMatrixIndex = 0;
+		debugColor = float4(1.0, 0.0, 0.0, 1.0);
+	}
+	else if (viewSpacePos.z < cameraZ.y)
+	{
+		projMatrixIndex = 1;
+		debugColor = float4(0.0, 1.0, 0.0, 1.0);
+	}
+	else if (viewSpacePos.z < cameraZ.z)
+	{
+		projMatrixIndex = 2;
+		debugColor = float4(0.0, 0.0, 1.0, 1.0);
+	}
+	else
+	{
+		return float4(1.0, 1.0, 1.0, 1.0);
+	}
+	
+	lightSpaceWSPos = mul(lightSpaceWSPos, arrayDirProj[projMatrixIndex]);
 	float2 lightDepthUV = (lightSpaceWSPos.xy / lightSpaceWSPos.w) * float2(0.5, -0.5) + float2(0.5, 0.5);
 	float2 pcf_kernel[PCF_KERNEL_COUNT] =
 	{
@@ -65,30 +93,28 @@ float4 PS(VertexOut outa) : SV_Target
 		float2(-1, 0), float2(0, 0), float2(1, 0),
 		float2(-1, 1), float2(0, 1), float2(1, 1),
 	};
-	/*bool isOutOfOrthoFrustum = (lightDepthUV.x >= 0.0) && (lightDepthUV.x <= 1.0) && (lightDepthUV.y >= 0.0) && (lightDepthUV.y <= 1.0);
-	float nearestDepth = LightDepthMap.Sample(clampPointSample, lightDepthUV).r;
-	float z = lightSpaceWSPos.z / lightSpaceWSPos.w;
-	bool isShadowed = z > (nearestDepth + 0.003);
-	float4 color = (int)isShadowed * (int)isOutOfOrthoFrustum ? float4(0.0, 0.0, 0.0, 1.0) : float4(1.0, 1.0, 1.0, 1.0);*/
-	float2 lightDepthMapTexSize = 1.0 / texSize(LightDepthMap);
+
+	float2 lightDepthMapTexSize = 1.0 / texSize(ArrayLightDepthMap);
+
 	if ((lightDepthUV.x >= 0.0) && (lightDepthUV.x <= 1.0) && (lightDepthUV.y >= 0.0) && (lightDepthUV.y <= 1.0))
 	{
 		for (int index = 0; index < PCF_KERNEL_COUNT; ++index)
 		{
 			float2 uv = lightDepthUV.xy + pcf_kernel[index] * lightDepthMapTexSize;
-			float nearestDepth = LightDepthMap.SampleLevel(clampPointSample, uv, 0).r;
+			float nearestDepth = ArrayLightDepthMap.SampleLevel(clampPointSample, float3(uv, projMatrixIndex), 0).r;
 			float z = lightSpaceWSPos.z / lightSpaceWSPos.w;
 			bool isShadowed = z > (nearestDepth + 0.003);
 			color += isShadowed ? float4(0.0, 0.0, 0.0, 1.0) : float4(1.0, 1.0, 1.0, 1.0);
 		}
 
-		color /= (float)PCF_KERNEL_COUNT;
-	
+		color /= (float)PCF_KERNEL_COUNT;	
 	}
 	else
 	{
 		color = float4(1.0, 1.0, 1.0, 1.0);
 	}
+
+	color = color * debugColor;
 
 	return color;
 }

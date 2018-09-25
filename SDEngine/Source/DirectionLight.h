@@ -20,9 +20,10 @@ public:
 	
 	void SetAmbientLight(XMFLOAT3  ambientLight);
 	XMFLOAT3 GetAmbientLight();
-	void GetDirLightViewAndProjMatrix(XMMATRIX& lightViewMatrix, XMMATRIX& lightOrthoProjMatrix);
+	XMMATRIX GetViewMatrix();
 private:
 	XMFLOAT3 m_DirLightDiretion;
+
 	XMFLOAT3 m_AmbientLight;
 };
 

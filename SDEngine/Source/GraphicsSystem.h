@@ -24,21 +24,9 @@
 #include "GrussianBlurCS.h"
 #include "RWRenderTexture.h"
 #include "LightManager.h"
-#include "ShadowMap.h"
+#include "CascadeShadowMapManager.h"
+#include "GraphicsConfig.h"
 
-
-//全局变量
-const bool FULL_SCREEN = false;
-const bool VSYNC_ENABLE = false;  //是尽可能快渲染还是限制帧渲染
-const float SCREEN_FAR = 400.0f;  //视截体远裁面
-const float SCREEN_NEAR = 1.0f;  //视截体近裁面
-const float CAMERA_SPEED = 10.0f;
-const int LIGHT_MAP_DOWN_SMAPLE = 1;
-const int SHADOW_MAP_SIZE = 3072;
-
-//#define POST_EFFECT
-//#define SSR
-#define DEBUG_GBUFFER
 
 class GraphicsSystem
 {
@@ -64,7 +52,7 @@ private:
 	shared_ptr<RenderTexture> mSrcRT;
 	shared_ptr<RenderTexture> mLightBuffer;
 	shared_ptr<RenderTexture> mGrayShadowMap;
-	shared_ptr<ShadowMap> mDirLightShadowMap;
+	shared_ptr<CascadedShadowsManager> mCascadeShadowsManager;
 
 	//GeometryBuffer
 	shared_ptr<GeometryBuffer> mGeometryBuffer;
