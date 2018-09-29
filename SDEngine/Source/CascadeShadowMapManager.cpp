@@ -1,5 +1,6 @@
 #include "CascadeShadowMapManager.h"
 #include "Camera.h"
+#include "CascadeShadowMap.h"
 
 CascadedShadowsManager::CascadedShadowsManager(int nShadowMapResolution)
 {
@@ -18,10 +19,9 @@ CascadedShadowsManager::~CascadedShadowsManager()
 
 void CascadedShadowsManager::InitShadowMap(int nShadowMapResolution)
 {
-	for (int index = 0; index < CASCADE_SHADOW_MAP_NUM; ++index)
-	{
-		mArrayShadowMap[index] = shared_ptr<ShadowMap>(new ShadowMap(nShadowMapResolution, nShadowMapResolution));
-	}
+
+	mCascadeShadowMap = shared_ptr<CascadeShadowMap>(new CascadeShadowMap(nShadowMapResolution, nShadowMapResolution, CASCADE_SHADOW_MAP_NUM));
+	
 }
 
 void CascadedShadowsManager::Update()
@@ -37,7 +37,8 @@ void CascadedShadowsManager::Update()
 	for (int nCascadeindex = 0; nCascadeindex < CASCADE_SHADOW_MAP_NUM; ++nCascadeindex)
 	{
 
-		float fNearPlane = (GCamera->mFarPlane - GCamera->mNearPlane) * CASCADE_PERCENT[nCascadeindex] + GCamera->mNearPlane;
+		//float fNearPlane = (GCamera->mFarPlane - GCamera->mNearPlane) * CASCADE_PERCENT[nCascadeindex] + GCamera->mNearPlane;
+		float fNearPlane =  GCamera->mNearPlane;
 		float fNearY = tan(fFov / 2.0f) * fNearPlane;
 		float fNearX = fNearY / fAspect;
 
@@ -99,14 +100,17 @@ void CascadedShadowsManager::Update()
 	}	
 }
 
-void CascadedShadowsManager::SetRenderTarget(int index)
+void CascadedShadowsManager::SetRenderTarget(int nCascadeIndex)
 {
-	mArrayShadowMap[index]->SetRenderTarget();
+	mCascadeShadowMap->SetRenderTarget(nCascadeIndex);
 }
 
-ID3D11ShaderResourceView* CascadedShadowsManager::GetShadowMapSRV(int index)
+ID3D11ShaderResourceView* CascadedShadowsManager::GetShadowMapSRV()
 {
-	return mArrayShadowMap[index]->GetShadowMap();
+	return mCascadeShadowMap->GetShadowMap();
 }
 
-
+void CascadedShadowsManager::ClearDepthBuffer()
+{
+	mCascadeShadowMap->ClearDepthBuffer();
+}

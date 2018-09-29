@@ -1,10 +1,10 @@
 #pragma once
-#ifndef _SHADOW_MAP_H
-#define _SHADOW_MAP_H
+#ifndef _CASCADE_SHADOW_MAP_H
+#define _CASCADE_SHADOW_MAP_H
 
 #include "CoreMini.h"
 
-class ShadowMap
+class CascadeShadowMap
 {
 private:
 
@@ -18,15 +18,15 @@ public:
 	int m_nTextureWidth, m_nTextureHeight;
 
 public:
-	ShadowMap(int nTextureWidth, int nTexureHeight);
-	ShadowMap(const ShadowMap&other);
-	~ShadowMap();
+	CascadeShadowMap(int nTextureWidth, int nTexureHeight, int nCascadeNum);
+	CascadeShadowMap(const CascadeShadowMap&other);
+	~CascadeShadowMap();
 
 public:
-	bool Init(int nTextureWidth, int nTexureHeight);
+	bool Init(int nTextureWidth, int nTexureHeight, int nCascadeNum);
 	void ShutDown();
 
-	void SetRenderTarget();
+	void SetRenderTarget(int nCascadeIndex);
 	void ClearDepthBuffer();
 
 	ID3D11ShaderResourceView* GetShadowMap();

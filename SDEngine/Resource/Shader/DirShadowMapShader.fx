@@ -1,5 +1,5 @@
 Texture2D WorldPosTex:register(t0);
-Texture2DArray ArrayLightDepthMap:register(t1);
+Texture2D CascadeLightDepthMap:register(t1);
 
 
 
@@ -41,10 +41,10 @@ struct VertexOut
 	float2 Tex:TEXCOORD0;
 };
 
-float2 texSize(Texture2DArray tex)
+float2 texSize(Texture2D tex)
 {
-	float texWidth, texHeight, textureNum;
-	tex.GetDimensions(texWidth, texHeight, textureNum);
+	float texWidth, texHeight;
+	tex.GetDimensions(texWidth, texHeight);
 	return float2(texWidth, texHeight);
 }
 
@@ -94,14 +94,17 @@ float4 PS(VertexOut outa) : SV_Target
 		float2(-1, 1), float2(0, 1), float2(1, 1),
 	};
 
-	float2 lightDepthMapTexSize = 1.0 / texSize(ArrayLightDepthMap);
+	//U方向和V方向步进的单位不同
+	float2 lightDepthMapTexSize = 1.0 / texSize(CascadeLightDepthMap);
+
 
 	if ((lightDepthUV.x >= 0.0) && (lightDepthUV.x <= 1.0) && (lightDepthUV.y >= 0.0) && (lightDepthUV.y <= 1.0))
 	{
 		for (int index = 0; index < PCF_KERNEL_COUNT; ++index)
 		{
-			float2 uv = lightDepthUV.xy + pcf_kernel[index] * lightDepthMapTexSize;
-			float nearestDepth = ArrayLightDepthMap.SampleLevel(clampPointSample, float3(uv, projMatrixIndex), 0).r;
+			float2 uv = float2(((lightDepthUV.x + (float)projMatrixIndex) / (float)CASCADE_SHADOW_NUM), lightDepthUV.y)
+			+ pcf_kernel[index] * lightDepthMapTexSize;
+			float nearestDepth = CascadeLightDepthMap.SampleLevel(clampPointSample, uv, 0).r;
 			float z = lightSpaceWSPos.z / lightSpaceWSPos.w;
 			bool isShadowed = z > (nearestDepth + 0.003);
 			color += isShadowed ? float4(0.0, 0.0, 0.0, 1.0) : float4(1.0, 1.0, 1.0, 1.0);

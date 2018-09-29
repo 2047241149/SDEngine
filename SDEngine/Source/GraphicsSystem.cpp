@@ -38,6 +38,7 @@ bool GraphicsSystem::Init(int ScreenWidth, int ScreenHeight, HWND hwnd,HINSTANCE
 	m_spDirLight->SetLightDiretion(XMFLOAT3(-0.5f, -1.0f, 0.0f));
 	m_spDirLight->SetAmbientLight(XMFLOAT3(0.1f, 0.1f, 0.1f));
 	m_spDirLight->SetLightColor(XMFLOAT3(1.0f, 1.0f, 1.0f));
+	m_spDirLight->SetLightPostion(XMFLOAT3(10.0f, 10.0f, 10.0f));
 	GLightManager->Add(m_spDirLight);
 
 	shared_ptr<PointLight> m_PointLight = shared_ptr<PointLight>(new PointLight());
@@ -601,6 +602,7 @@ void GraphicsSystem::RenderShadowMapPass()
 		
 	//渲染需要投射阴影的物体到RT上
 	//后面可以考虑用GeometryShader减少DrawCall
+	mCascadeShadowsManager->ClearDepthBuffer();
 	for (int nCascadeIndex = 0; nCascadeIndex < CASCADE_SHADOW_MAP_NUM; ++nCascadeIndex)
 	{
 		mCascadeShadowsManager->SetRenderTarget(nCascadeIndex);

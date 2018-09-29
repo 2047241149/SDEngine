@@ -122,7 +122,6 @@ bool ShadowMapShader::SetShaderCB(ID3D11ShaderResourceView* worldPosTex, Cascade
 	auto pCBShadowMap = reinterpret_cast<CBShadowMap*>(mappedSSShadowMap.pData);
 
 	XMMATRIX lightViewMatrix;
-	XMMATRIX lightOrthoProjMatrix;
 	lightViewMatrix = pDirLight->GetViewMatrix();
 	XMFLOAT3 lightColor = pDirLight->GetLightColor();
 	pCBShadowMap->lightViewMatrix = XMMatrixTranspose(lightViewMatrix);
@@ -140,18 +139,16 @@ bool ShadowMapShader::SetShaderCB(ID3D11ShaderResourceView* worldPosTex, Cascade
 
 	g_pDeviceContext->Unmap(mCBShadowMap, 0);
 
-	ID3D11ShaderResourceView* arrayLightDepthMap[CASCADE_SHADOW_MAP_NUM];
-	for (int nCascadeIndex = 0; nCascadeIndex < CASCADE_SHADOW_MAP_NUM; ++nCascadeIndex)
-	{
-		arrayLightDepthMap[nCascadeIndex] = mCascadeShadowManager->GetShadowMapSRV(nCascadeIndex);
-	}
+
+	
+	ID3D11ShaderResourceView* cascadeDirShadowMap = mCascadeShadowManager->GetShadowMapSRV();
 
 	//第三,设置在VertexShader的常量缓存的值(带着更新的值)
 	g_pDeviceContext->VSSetConstantBuffers(0, 1, &mCBCommon);
 	g_pDeviceContext->PSSetConstantBuffers(0, 1, &mCBCommon);
 	g_pDeviceContext->PSSetConstantBuffers(1, 1, &mCBShadowMap);
 	g_pDeviceContext->PSSetShaderResources(0, 1, &worldPosTex);
-	g_pDeviceContext->PSSetShaderResources(1, CASCADE_SHADOW_MAP_NUM, arrayLightDepthMap);
+	g_pDeviceContext->PSSetShaderResources(1, 1, &cascadeDirShadowMap);
 
 	return true;
 }

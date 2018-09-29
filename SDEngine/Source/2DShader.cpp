@@ -87,7 +87,7 @@ bool Shader_2D::InitShader(WCHAR* VSFileName, WCHAR* PSFileName)
 		}
 	}
 
-	HR(g_pDevice->CreateVertexShader(pVertexShaderBlob->GetBufferPointer(),
+ 	HR(g_pDevice->CreateVertexShader(pVertexShaderBlob->GetBufferPointer(),
 		pVertexShaderBlob->GetBufferSize(), NULL, &m_pVertexShader));
 
 

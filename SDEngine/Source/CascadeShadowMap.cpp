@@ -1,7 +1,7 @@
-#include "ShadowMap.h"
+#include "CascadeShadowMap.h"
 
 
-ShadowMap::ShadowMap(int nTextureWidth, int nTexureHeight) :
+CascadeShadowMap::CascadeShadowMap(int nTextureWidth, int nTexureHeight, int nCascadeNum):
 	m_nTextureWidth(nTextureWidth),
 	m_nTextureHeight(nTexureHeight),
 	m_pDSV(nullptr),
@@ -9,27 +9,27 @@ ShadowMap::ShadowMap(int nTextureWidth, int nTexureHeight) :
 	m_pShadowMap(nullptr)
 {
 
-	Init(nTextureWidth, nTexureHeight);
+	Init(nTextureWidth, nTexureHeight, nCascadeNum);
 }
 
 
-ShadowMap::ShadowMap(const ShadowMap&other)
+CascadeShadowMap::CascadeShadowMap(const CascadeShadowMap&other)
 {
 
 }
 
-ShadowMap::~ShadowMap()
+CascadeShadowMap::~CascadeShadowMap()
 {
 	ShutDown();
 }
 
-bool ShadowMap::Init(int nTextureWidth, int nTexureHeight)
+bool CascadeShadowMap::Init(int nTextureWidth, int nTexureHeight, int nCascadeNum)
 {
 
 	//创建深度缓存(模板缓存)
 	D3D11_TEXTURE2D_DESC depthStencilDesc;
 	ZeroMemory(&depthStencilDesc, sizeof(depthStencilDesc));
-	depthStencilDesc.Width = nTextureWidth;
+	depthStencilDesc.Width = nTextureWidth * 3;
 	depthStencilDesc.Height = nTexureHeight;
 	depthStencilDesc.MipLevels = 1;
 	depthStencilDesc.ArraySize = 1;
@@ -67,21 +67,12 @@ bool ShadowMap::Init(int nTextureWidth, int nTexureHeight)
 
 	HR(g_pDevice->CreateShaderResourceView(m_pDepthTexture2D, &shaderResourceViewDesc, &m_pShadowMap));
 
-
-	//设置渲染的视口
-	m_ViewPort.Width = static_cast<float>(nTextureWidth);
-	m_ViewPort.Height = static_cast<float>(nTexureHeight);
-	m_ViewPort.MinDepth = 0.0f;
-	m_ViewPort.MaxDepth = 1.0f;
-	m_ViewPort.TopLeftX = 0.0f;
-	m_ViewPort.TopLeftY = 0.0f;
-
 	return true;
 
 }
 
 
-void ShadowMap::ShutDown()
+void CascadeShadowMap::ShutDown()
 {
 	ReleaseCOM(m_pShadowMap);
 	ReleaseCOM(m_pDepthTexture2D);
@@ -90,20 +81,28 @@ void ShadowMap::ShutDown()
 
 
 //让此时所有图形渲染到这个目前渲染的位置
-void ShadowMap::SetRenderTarget()
+void CascadeShadowMap::SetRenderTarget(int nCascadeIndex)
 {
 	//绑定渲染目标视图和深度模板视图到输出渲染管线，此时渲染输出到两张纹理中
 	ID3D11RenderTargetView* rtv[1] = { nullptr };
 	g_pDeviceContext->OMSetRenderTargets(1, rtv, m_pDSV);
+//	ClearDepthBuffer();
 
+	//设置渲染的视口
+	m_ViewPort.Width = static_cast<float>(m_nTextureWidth);
+	m_ViewPort.Height = static_cast<float>(m_nTextureHeight);
+	m_ViewPort.MinDepth = 0.0f;
+	m_ViewPort.MaxDepth = 1.0f;
+	m_ViewPort.TopLeftX = (float)m_nTextureWidth * (float)nCascadeIndex;
+	m_ViewPort.TopLeftY = 0.0f;
 	//设置相应的视口
 	g_pDeviceContext->RSSetViewports(1, &m_ViewPort);
 
-	ClearDepthBuffer();
+	
 }
 
 
-void ShadowMap::ClearDepthBuffer()
+void CascadeShadowMap::ClearDepthBuffer()
 {
 	//清除深度缓存和模板缓存
 	g_pDeviceContext->ClearDepthStencilView(m_pDSV, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
@@ -111,13 +110,13 @@ void ShadowMap::ClearDepthBuffer()
 
 
 
-ID3D11ShaderResourceView* ShadowMap::GetShadowMap()
+ID3D11ShaderResourceView* CascadeShadowMap::GetShadowMap()
 {
 	return m_pShadowMap;
 }
 
 
-ID3D11DepthStencilView* ShadowMap::GetDSV()
+ID3D11DepthStencilView* CascadeShadowMap::GetDSV()
 {
 	return m_pDSV;
 }

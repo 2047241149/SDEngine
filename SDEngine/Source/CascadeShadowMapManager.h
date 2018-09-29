@@ -1,11 +1,10 @@
 #pragma once
-#ifndef _CASCADE_SHADOW_MAP_H
-#define _CASCADE_SHADOW_MAP_H
+#ifndef _CASCADE_SHADOW_MAP_MANAGER_H
+#define _CASCADE_SHADOW_MAP_MANAGER_H
 
 #include "CoreMini.h"
-#include "ShadowMap.h"
 #include "GraphicsConfig.h"
-
+class CascadeShadowMap;
 
 class CascadedShadowsManager
 {
@@ -17,12 +16,13 @@ public:
 public:
 	void Update();
 	void InitShadowMap(int nShadowMapResolution);
-	void SetRenderTarget(int index);
-	ID3D11ShaderResourceView* GetShadowMapSRV(int index);
+	void SetRenderTarget(int nCascadeIndex);
+	void ClearDepthBuffer();
+	ID3D11ShaderResourceView* GetShadowMapSRV();
 
 public:
 	XMMATRIX mArrayLightOrthoMatrix[CASCADE_SHADOW_MAP_NUM];
-	shared_ptr<ShadowMap> mArrayShadowMap[CASCADE_SHADOW_MAP_NUM];
+	shared_ptr<CascadeShadowMap> mCascadeShadowMap;
 	float mfCameraZ[3];
 
 };
