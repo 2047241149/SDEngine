@@ -2,7 +2,6 @@ Texture2D WorldPosTex:register(t0);
 Texture2D CascadeLightDepthMap:register(t1);
 
 
-
 SamplerState wrapLinearSample:register(s0);
 SamplerState clampLinearSample:register(s1);
 SamplerState clampPointSample:register(s2);
@@ -68,17 +67,17 @@ float4 PS(VertexOut outa) : SV_Target
 	if (viewSpacePos.z < cameraZ.x)
 	{
 		projMatrixIndex = 0;
-		debugColor = float4(1.0, 0.0, 0.0, 1.0);
+		debugColor = float4(1.0, 1.0, 1.0, 1.0);
 	}
 	else if (viewSpacePos.z < cameraZ.y)
 	{
 		projMatrixIndex = 1;
-		debugColor = float4(0.0, 1.0, 0.0, 1.0);
+		debugColor = float4(1.0, 1.0, 1.0, 1.0);
 	}
 	else if (viewSpacePos.z < cameraZ.z)
 	{
 		projMatrixIndex = 2;
-		debugColor = float4(0.0, 0.0, 1.0, 1.0);
+		debugColor = float4(1.0, 1.0, 1.0, 1.0);
 	}
 	else
 	{
