@@ -36,31 +36,24 @@ void CascadedShadowsManager::Update()
 	for (int nCascadeindex = 0; nCascadeindex < CASCADE_SHADOW_MAP_NUM; ++nCascadeindex)
 	{
 
-		float fNearPlane = (GCamera->mFarPlane - GCamera->mNearPlane) * CASCADE_PERCENT[nCascadeindex] + GCamera->mNearPlane;
-		//float fNearPlane =  GCamera->mNearPlane;
-		float fNearY = tan(fFov / 2.0f) * fNearPlane;
-		float fNearX = fNearY / fAspect;
-
-		float fFarPlane = (GCamera->mFarPlane - GCamera->mNearPlane) * CASCADE_PERCENT[nCascadeindex + 1] + GCamera->mNearPlane;
+		float fNearPlane = 0;
+		float fFarPlane = GCamera->mFarPlane * CASCADE_PERCENT[nCascadeindex + 1];
 		mfCameraZ[nCascadeindex] = fFarPlane;
 		float fFarY = tan(fFov / 2.0f) * fFarPlane;
 		float fFarX = fFarY / fAspect;
 
-		frustumPoint[0] = XMVectorSet(fNearX, fNearY, fNearPlane, 1.0f); //近平面右上角
-		frustumPoint[1] = XMVectorSet(fNearX, -fNearY, fNearPlane, 1.0f); //近平面左下角
-		frustumPoint[2] = XMVectorSet(-fNearX, fNearY, fNearPlane, 1.0f); //近平面左上角
-		frustumPoint[3] = XMVectorSet(-fNearX, -fNearY, fNearPlane, 1.0f); //近平面左下角
+		frustumPoint[0] = XMVectorSet(fNearPlane, fNearPlane, fNearPlane, 1.0f); //近平面右上角
+		frustumPoint[1] = XMVectorSet(fNearPlane, fNearPlane, fNearPlane, 1.0f); //近平面右下角
+		frustumPoint[2] = XMVectorSet(fNearPlane, fNearPlane, fNearPlane, 1.0f); //近平面左上角
+		frustumPoint[3] = XMVectorSet(fNearPlane, fNearPlane, fNearPlane, 1.0f); //近平面左下角
 		frustumPoint[4] = XMVectorSet(fFarX, fFarY, fFarPlane, 1.0f); //远平面右上角
-		frustumPoint[5] = XMVectorSet(fFarX, -fFarY, fFarPlane, 1.0f); //远平面左下角
+		frustumPoint[5] = XMVectorSet(fFarX, -fFarY, fFarPlane, 1.0f); //远平面右下角
 		frustumPoint[6] = XMVectorSet(-fFarX, fFarY, fFarPlane, 1.0f); //远平面左上角
 		frustumPoint[7] = XMVectorSet(-fFarX, -fFarY, fFarPlane, 1.0f); //远平面左下角
 
 
 		XMMATRIX viewMatrix = GCamera->GetViewMatrix();
-		XMVECTOR det = XMMatrixDeterminant(viewMatrix);
-		XMMATRIX invenseViewMatrix = XMMatrixInverse(&det, viewMatrix);
-		XMVECTOR wsSceneAABBMax = XMVectorSet(FLT_MIN, FLT_MIN, FLT_MIN, FLT_MIN);
-		XMVECTOR wsSceneAABBMin = XMVectorSet(FLT_MAX, FLT_MAX, FLT_MAX, FLT_MAX);
+		XMMATRIX invenseViewMatrix = XMMatrixInverse(nullptr, viewMatrix);
 		XMVECTOR lightVsSceneAABBMax = XMVectorSet(FLT_MIN, FLT_MIN, FLT_MIN, FLT_MIN);
 		XMVECTOR lightVsSceneAABBMin = XMVectorSet(FLT_MAX, FLT_MAX, FLT_MAX, FLT_MAX);
 		XMVECTOR tempFrustumPoint;
@@ -69,8 +62,6 @@ void CascadedShadowsManager::Update()
 		for (int nFrustumindex = 0; nFrustumindex < FRUSTUN_VERTEX_NUM; ++nFrustumindex)
 		{
 			frustumPoint[nFrustumindex] = XMVector3TransformCoord(frustumPoint[nFrustumindex], invenseViewMatrix);
-			wsSceneAABBMax = XMVectorMax(wsSceneAABBMax, frustumPoint[nFrustumindex]);
-			wsSceneAABBMin = XMVectorMin(wsSceneAABBMin, frustumPoint[nFrustumindex]);
 		}
 
 		// 将主相机视截体的八个顶点变换到光源相机空间
@@ -81,16 +72,38 @@ void CascadedShadowsManager::Update()
 			lightVsSceneAABBMin = XMVectorMin(lightVsSceneAABBMin, tempFrustumPoint);
 		}
 
+		float fLightVsSceneAABBMinZ = XMVectorGetZ(lightVsSceneAABBMin);
+		float fLightVsSceneAABBMaxZ = XMVectorGetZ(lightVsSceneAABBMax);
+
 		//在XY范围上，谨记一点，lightVsSceneAABBMax和lightVsSceneAABBMin由于形变原因并不一定包围整个视截体范围，我们得扩大lightVsSceneAABB的范围
 		//lightVsSceneAABB的范围应该以世界空间的包围范围为准，因此核对世界空间的梯形对角线大小
-		XMVECTOR vDiagonal = wsSceneAABBMax - wsSceneAABBMin;
+		XMVECTOR vDiagonal = frustumPoint[0] - frustumPoint[7];
 		vDiagonal = XMVector3Length(vDiagonal);
+		float fCascadeDiagonal = XMVectorGetX(vDiagonal);
 		XMVECTOR vBorderoffset = (vDiagonal - (lightVsSceneAABBMax - lightVsSceneAABBMin)) * XMVectorSet(0.5f, 0.5f, 0.0, 0.0f);
 
 		//防止vBorderoffset的X或Y为负数的情况下，可能产生lightVsSceneAABBMin > lightVsSceneAABBMax的结果
-		XMVECTOR vZero = XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f);
-		lightVsSceneAABBMax += XMVectorMax(vZero,vBorderoffset);
-		lightVsSceneAABBMin -= XMVectorMax(vZero, vBorderoffset);
+		//XMVECTOR vZero = XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f);
+		lightVsSceneAABBMax += vBorderoffset;
+		lightVsSceneAABBMin -= vBorderoffset;
+
+
+		//纠正lightVsSceneAABBMax和lightVsSceneAABBMin的大小，对应ShadowMap的
+		//(1)世界空间的OrthoViewFrustum大小应该ShadowMap大小的整数倍
+		//fWorldUnitPerTexel -->OrthoViewFrustum 每个ShadowMap纹素对应多少个世界单位
+		float fWorldUnitPerTexel = fCascadeDiagonal / (float)SHADOW_MAP_SIZE;
+		XMVECTOR vWorldUnitPerTexel = XMVectorSet(fWorldUnitPerTexel, fWorldUnitPerTexel, 0, 0);
+
+		//(2)lightVsSceneAABBMax，lightVsSceneAABBMin对应到整数个fWorldUnitPerTexel单位
+		//综上(1)(2)ightVsSceneAABBMax，lightVsSceneAABBMin就可以对应整数个ShadowMap的纹素,
+		//就消除了之前浮点数个ShadowMap纹素造成的闪烁问题
+		lightVsSceneAABBMin /= vWorldUnitPerTexel;
+		lightVsSceneAABBMin = XMVectorFloor(lightVsSceneAABBMin);
+		lightVsSceneAABBMin *= vWorldUnitPerTexel;
+
+		lightVsSceneAABBMax /= vWorldUnitPerTexel;
+		lightVsSceneAABBMax = XMVectorFloor(lightVsSceneAABBMax);
+		lightVsSceneAABBMax *= vWorldUnitPerTexel;
 
 
 		XMFLOAT3 f3LightVsSceneAABBMax;
@@ -103,7 +116,7 @@ void CascadedShadowsManager::Update()
 		(
 			f3LightVsSceneAABBMin.x, f3LightVsSceneAABBMax.x,
 			f3LightVsSceneAABBMin.y, f3LightVsSceneAABBMax.y,
-			f3LightVsSceneAABBMin.z - GCamera->mFarPlane * 0.5f, f3LightVsSceneAABBMax.z
+			fLightVsSceneAABBMinZ - GCamera->mFarPlane, fLightVsSceneAABBMaxZ
 		);
 	}	
 }

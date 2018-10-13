@@ -44,7 +44,7 @@ XMMATRIX PointLight::GetWorldMatrix()
 {
 	float fScale = m_fRadius / SPHERE_MESH_RADIUS;
 	XMMATRIX worldMatrix = XMMatrixScaling(fScale, fScale, fScale) * 
-		XMMatrixTranslation(m_Position.x, m_Position.y, m_Position.z);
+		XMMatrixTranslation(m_LightPosition.x, m_LightPosition.y, m_LightPosition.z);
 
 	return worldMatrix;
 }

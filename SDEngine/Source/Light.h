@@ -17,7 +17,7 @@ public:
 
 protected:
 	XMFLOAT3 m_LightColor;
-	XMFLOAT3 m_Position;
+	XMFLOAT3 m_LightPosition;
 	float m_fLightIntensity;
 
 public:

@@ -23,7 +23,7 @@ private:
 private:
 	ID3D11Buffer* mCBCommon; 
 	ID3D11Buffer* mCBShadowMap;
-	ID3D11SamplerState* mClampPointSampler;
+	ID3D11SamplerState* mBorderLinearSample;
 
 private:
 	void CreateConstantBuffer();

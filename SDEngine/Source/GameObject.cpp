@@ -183,13 +183,15 @@ void GameObject::RenderMesh()
 
 XMMATRIX GameObject::GetWorldMatrix()
 {
-	XMMATRIX scale = XMMatrixScaling(m_pTransform->localScale.x, m_pTransform->localScale.y, m_pTransform->localScale.z);
+	XMMATRIX scale = XMMatrixScaling(m_pTransform->localScale.x * GAME_ENGINE_UNIT_SCALE, 
+		m_pTransform->localScale.y * GAME_ENGINE_UNIT_SCALE, m_pTransform->localScale.z * GAME_ENGINE_UNIT_SCALE);
 
 	XMMATRIX rotation = XMMatrixRotationX(m_pTransform->localRotation.x / 180.0f * XM_PI)
 		* XMMatrixRotationY(m_pTransform->localRotation.y / 180.0f * XM_PI)
 		* XMMatrixRotationZ(m_pTransform->localRotation.z / 180.0f * XM_PI);
 
-	XMMATRIX translation = XMMatrixTranslation(m_pTransform->localPosition.x, m_pTransform->localPosition.y, m_pTransform->localPosition.z);
+	XMMATRIX translation = XMMatrixTranslation(m_pTransform->localPosition.x * GAME_ENGINE_UNIT_SCALE,
+		m_pTransform->localPosition.y * GAME_ENGINE_UNIT_SCALE, m_pTransform->localPosition.z *  GAME_ENGINE_UNIT_SCALE);
 
 	XMMATRIX worldMatrix = scale * rotation * translation;
 

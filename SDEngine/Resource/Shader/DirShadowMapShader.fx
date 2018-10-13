@@ -1,5 +1,5 @@
 Texture2D WorldPosTex:register(t0);
-Texture2D CascadeLightDepthMap:register(t1);
+Texture2D CascadeLightDepthMap:register(t5);
 
 
 SamplerState wrapLinearSample:register(s0);
@@ -86,6 +86,13 @@ float4 PS(VertexOut outa) : SV_Target
 	
 	lightSpaceWSPos = mul(lightSpaceWSPos, arrayDirProj[projMatrixIndex]);
 	float2 lightDepthUV = (lightSpaceWSPos.xy / lightSpaceWSPos.w) * float2(0.5, -0.5) + float2(0.5, 0.5);
+	/*float2 pcf_kernel[PCF_KERNEL_COUNT] =
+	{
+		float2(0, 0), float2(0, 0), float2(0, 0),
+		float2(0, 0), float2(0, 0), float2(0, 0),
+		float2(0, 0), float2(0, 0), float2(0, 0),
+	};*/
+
 	float2 pcf_kernel[PCF_KERNEL_COUNT] =
 	{
 		float2(-1, -1), float2(0, -1), float2(1, -1),

@@ -33,7 +33,7 @@ bool CascadeShadowMap::Init(int nTextureWidth, int nTexureHeight, int nCascadeNu
 	depthStencilDesc.Height = nTexureHeight;
 	depthStencilDesc.MipLevels = 1;
 	depthStencilDesc.ArraySize = 1;
-	depthStencilDesc.Format = DXGI_FORMAT_R24G8_TYPELESS;
+	depthStencilDesc.Format = DXGI_FORMAT_R32_TYPELESS;
 	depthStencilDesc.SampleDesc.Count = 1;
 	depthStencilDesc.SampleDesc.Quality = 0;
 	depthStencilDesc.Usage = D3D11_USAGE_DEFAULT;
@@ -48,7 +48,7 @@ bool CascadeShadowMap::Init(int nTextureWidth, int nTexureHeight, int nCascadeNu
 	//第五,创建深度缓存(模板缓存)视图
 	D3D11_DEPTH_STENCIL_VIEW_DESC depthStencilViewDesc;
 	ZeroMemory(&depthStencilViewDesc, sizeof(depthStencilViewDesc));
-	depthStencilViewDesc.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
+	depthStencilViewDesc.Format = DXGI_FORMAT_D32_FLOAT;
 	depthStencilViewDesc.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2D;
 	depthStencilViewDesc.Texture2D.MipSlice = 0;
 
@@ -60,7 +60,7 @@ bool CascadeShadowMap::Init(int nTextureWidth, int nTexureHeight, int nCascadeNu
 
 	//创建着色器资源视图
 	D3D11_SHADER_RESOURCE_VIEW_DESC shaderResourceViewDesc;
-	shaderResourceViewDesc.Format = DXGI_FORMAT_R24_UNORM_X8_TYPELESS;
+	shaderResourceViewDesc.Format = DXGI_FORMAT_R32_FLOAT;
 	shaderResourceViewDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
 	shaderResourceViewDesc.Texture2D.MostDetailedMip = 0;
 	shaderResourceViewDesc.Texture2D.MipLevels = depthStencilDesc.MipLevels;

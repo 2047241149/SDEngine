@@ -3,7 +3,7 @@
 Light::Light():
 	m_bCastShadow(false),
 	m_LightColor(XMFLOAT3(1.0f,1.0f,1.0f)),
-	m_Position(XMFLOAT3(0.0f,0.0f,0.0f)),
+	m_LightPosition(XMFLOAT3(0.0f,0.0f,0.0f)),
 	m_fLightIntensity(1.0f)
 {
 
@@ -26,7 +26,7 @@ void Light::SetLightColor(XMFLOAT3 color)
 
 void Light::SetLightPostion(XMFLOAT3 pos)
 {
-	m_Position = pos;
+	m_LightPosition = pos;
 }
 
 XMFLOAT3 Light::GetLightColor()
@@ -38,7 +38,7 @@ XMFLOAT3 Light::GetLightColor()
 
 XMFLOAT3 Light::GetPosition()
 {
-	return m_Position;
+	return m_LightPosition;
 }
 
 
