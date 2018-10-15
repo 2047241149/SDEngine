@@ -116,7 +116,7 @@ void CascadedShadowsManager::Update()
 		(
 			f3LightVsSceneAABBMin.x, f3LightVsSceneAABBMax.x,
 			f3LightVsSceneAABBMin.y, f3LightVsSceneAABBMax.y,
-			fLightVsSceneAABBMinZ - GCamera->mFarPlane, fLightVsSceneAABBMaxZ
+			fLightVsSceneAABBMinZ - GCamera->mFarPlane * 0.5, fLightVsSceneAABBMaxZ + GCamera->mFarPlane * 0.15
 		);
 	}	
 }

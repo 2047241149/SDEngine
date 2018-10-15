@@ -6,8 +6,16 @@ SamplerState wrapLinearSample:register(s0);
 SamplerState clampLinearSample:register(s1);
 SamplerState clampPointSample:register(s2);
 
-static const int PCF_KERNEL_COUNT = 9;
 static const int CASCADE_SHADOW_NUM = 3;
+static const int PCF_KERNEL_COUNT = CASCADE_SHADOW_NUM * CASCADE_SHADOW_NUM;
+
+
+static const float4 ARRAY_DEBUG_COLOR[CASCADE_SHADOW_NUM] = 
+{
+	float4(1.0, 0.0, 0.0, 1.0),
+	float4(0.0, 1.0, 0.0, 1.0),
+	float4(0.0, 0.0, 1.0, 1.0),
+};
 
 cbuffer CBMatrix:register(b0)
 {
@@ -56,42 +64,16 @@ VertexOut VS(VertexIn ina)
 }
 
 
+
+
+
 float4 PS(VertexOut outa) : SV_Target
 {
 	float3 worldPos = WorldPosTex.Sample(clampLinearSample, outa.Tex).xyz;
-	float4 viewSpacePos = mul(float4(worldPos, 1.0f), View);
-	float4 lightSpaceWSPos = mul(float4(worldPos, 1.0f), dirView);
+	float4 lightSpacePos = mul(float4(worldPos, 1.0f), dirView);
 	float4 color;
-	int projMatrixIndex = 0;
-	float4 debugColor = float4(1.0, 1.0, 1.0, 1.0);
-	if (viewSpacePos.z < cameraZ.x)
-	{
-		projMatrixIndex = 0;
-		debugColor = float4(1.0, 1.0, 1.0, 1.0);
-	}
-	else if (viewSpacePos.z < cameraZ.y)
-	{
-		projMatrixIndex = 1;
-		debugColor = float4(1.0, 1.0, 1.0, 1.0);
-	}
-	else if (viewSpacePos.z < cameraZ.z)
-	{
-		projMatrixIndex = 2;
-		debugColor = float4(1.0, 1.0, 1.0, 1.0);
-	}
-	else
-	{
-		return float4(1.0, 1.0, 1.0, 1.0);
-	}
-	
-	lightSpaceWSPos = mul(lightSpaceWSPos, arrayDirProj[projMatrixIndex]);
-	float2 lightDepthUV = (lightSpaceWSPos.xy / lightSpaceWSPos.w) * float2(0.5, -0.5) + float2(0.5, 0.5);
-	/*float2 pcf_kernel[PCF_KERNEL_COUNT] =
-	{
-		float2(0, 0), float2(0, 0), float2(0, 0),
-		float2(0, 0), float2(0, 0), float2(0, 0),
-		float2(0, 0), float2(0, 0), float2(0, 0),
-	};*/
+	int nCascadeIndex = 0;
+	int nCascadeFound = 0;
 
 	float2 pcf_kernel[PCF_KERNEL_COUNT] =
 	{
@@ -102,26 +84,34 @@ float4 PS(VertexOut outa) : SV_Target
 
 	//U方向和V方向步进的单位不同
 	float2 lightDepthMapTexSize = 1.0 / texSize(CascadeLightDepthMap);
+	float2 lightDepthUV = float2(0.0, 0.0);
+	float4 lightSpaceWSPos;
 
-
-	if ((lightDepthUV.x >= 0.0) && (lightDepthUV.x <= 1.0) && (lightDepthUV.y >= 0.0) && (lightDepthUV.y <= 1.0))
+	for (int index = 0; index < CASCADE_SHADOW_NUM &&  0 == nCascadeFound; ++index)
 	{
-		for (int index = 0; index < PCF_KERNEL_COUNT; ++index)
+		lightSpaceWSPos = mul(lightSpacePos, arrayDirProj[index]);
+		lightDepthUV = (lightSpaceWSPos.xy / lightSpaceWSPos.w) * float2(0.5, -0.5) + float2(0.5, 0.5);
+		
+		if (min(lightDepthUV.x, lightDepthUV.y) > 0.0 && max(lightDepthUV.x, lightDepthUV.y) < 1.0)
 		{
-			float2 uv = float2(((lightDepthUV.x + (float)projMatrixIndex) / (float)CASCADE_SHADOW_NUM), lightDepthUV.y)
-			+ pcf_kernel[index] * lightDepthMapTexSize;
-			float nearestDepth = CascadeLightDepthMap.SampleLevel(clampPointSample, uv, 0).r;
-			float z = lightSpaceWSPos.z / lightSpaceWSPos.w;
-			bool isShadowed = z > (nearestDepth + 0.003);
-			color += isShadowed ? float4(0.0, 0.0, 0.0, 1.0) : float4(1.0, 1.0, 1.0, 1.0);
+			nCascadeIndex = index;
+			nCascadeFound = 1;
 		}
+	}
 
-		color /= (float)PCF_KERNEL_COUNT;	
-	}
-	else
+	float4 debugColor = ARRAY_DEBUG_COLOR[nCascadeIndex];
+
+	for (int nKernelIndex = 0; nKernelIndex < PCF_KERNEL_COUNT; ++nKernelIndex)
 	{
-		color = float4(1.0, 1.0, 1.0, 1.0);
+		float2 uv = float2(((lightDepthUV.x + (float)nCascadeIndex) / (float)CASCADE_SHADOW_NUM), lightDepthUV.y)
+		+ pcf_kernel[nKernelIndex] * lightDepthMapTexSize;
+		float nearestDepth = CascadeLightDepthMap.SampleLevel(clampPointSample, uv, 0).r;
+		float z = lightSpaceWSPos.z / lightSpaceWSPos.w;
+		bool isShadowed = z > (nearestDepth + 0.003);
+		color += isShadowed ? float4(0.0, 0.0, 0.0, 1.0) : float4(1.0, 1.0, 1.0, 1.0);
 	}
+	
+	color /= (float)PCF_KERNEL_COUNT;	
 
 	color = color * debugColor;
 
