@@ -112,6 +112,7 @@ void CascadedShadowsManager::Update()
 		XMStoreFloat3(&f3LightVsSceneAABBMin, lightVsSceneAABBMin);
 
 		//这里Z远近距离省略了整个场景AABB包围盒的求交(过程略为复杂)，直接回退GCamera->mFarPlane * 0.5f
+		//前进GCamera->mFarPlane * 0.15是了Othrho远端ZBuffer 1.0冲突
 		mArrayLightOrthoMatrix[nCascadeindex] = XMMatrixOrthographicOffCenterLH
 		(
 			f3LightVsSceneAABBMin.x, f3LightVsSceneAABBMax.x,

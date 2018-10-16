@@ -86,20 +86,22 @@ float4 PS(VertexOut outa) : SV_Target
 	float2 lightDepthMapTexSize = 1.0 / texSize(CascadeLightDepthMap);
 	float2 lightDepthUV = float2(0.0, 0.0);
 	float4 lightSpaceWSPos;
-
+	float xyBiggerTexSize = max(lightDepthMapTexSize.x, lightDepthMapTexSize.y);
 	for (int index = 0; index < CASCADE_SHADOW_NUM &&  0 == nCascadeFound; ++index)
 	{
 		lightSpaceWSPos = mul(lightSpacePos, arrayDirProj[index]);
 		lightDepthUV = (lightSpaceWSPos.xy / lightSpaceWSPos.w) * float2(0.5, -0.5) + float2(0.5, 0.5);
 		
-		if (min(lightDepthUV.x, lightDepthUV.y) > 0.0 && max(lightDepthUV.x, lightDepthUV.y) < 1.0)
+		//当处于两个层级之间的边缘时，则选择下一个更大的层级
+		if (min(lightDepthUV.x, lightDepthUV.y) > xyBiggerTexSize && max(lightDepthUV.x, lightDepthUV.y) < 1.0 - xyBiggerTexSize)
 		{
 			nCascadeIndex = index;
 			nCascadeFound = 1;
 		}
 	}
 
-	float4 debugColor = ARRAY_DEBUG_COLOR[nCascadeIndex];
+	//float4 debugColor = ARRAY_DEBUG_COLOR[nCascadeIndex];
+	float4 debugColor = float4(1.0, 1.0, 1.0, 1.0);
 
 	for (int nKernelIndex = 0; nKernelIndex < PCF_KERNEL_COUNT; ++nKernelIndex)
 	{
