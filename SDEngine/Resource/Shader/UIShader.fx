@@ -8,9 +8,6 @@ cbuffer CBMatrix:register(b0)
 	matrix UIOrtho;
 };
 
-
-
-
 struct VertexIn
 {
 	float3 Pos:POSITION;
@@ -39,8 +36,5 @@ VertexOut VS(VertexIn ina)
 
 float4 PS(VertexOut outa) : SV_Target
 {
-	float4 color;
-
-
 	return ShaderTexture.Sample(SampleType, outa.Tex);
 }

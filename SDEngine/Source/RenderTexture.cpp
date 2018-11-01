@@ -1,6 +1,6 @@
 #include "RenderTexture.h"
 
-RenderTexture::RenderTexture(int nTextureWidth, int nTexureHeight):
+RenderTexture::RenderTexture(int nTextureWidth, int nTexureHeight, TextureFormat eTextureFormat):
 	m_nTextureWidth(nTextureWidth),
 	m_nTextureHeight(nTexureHeight),
 	m_pRTV(nullptr),
@@ -25,19 +25,40 @@ RenderTexture::~RenderTexture()
 }
 
 
-bool RenderTexture::Init(int nTextureWidth, int nTexureHeight)
+bool RenderTexture::Init(int nTextureWidth, int nTexureHeight, TextureFormat eTextureFormat)
 {
-
-	
-	//第一,填充2D纹理形容结构体,并创建2D渲染目标纹理
 	D3D11_TEXTURE2D_DESC textureDesc;
+	D3D11_RENDER_TARGET_VIEW_DESC renderTargetViewDesc;
+	D3D11_SHADER_RESOURCE_VIEW_DESC shaderResourceViewDesc;
+	D3D11_TEXTURE2D_DESC depthStencilDesc;
+	D3D11_DEPTH_STENCIL_VIEW_DESC depthStencilViewDesc;
 	ZeroMemory(&textureDesc, sizeof(textureDesc));
+	ZeroMemory(&depthStencilDesc, sizeof(depthStencilDesc));
+
+	switch (eTextureFormat)
+	{
+	case R32G32B32A32:
+		textureDesc.Format = DXGI_FORMAT_R32G32B32A32_FLOAT;
+	
+		break;
+	case R32:
+		textureDesc.Format = DXGI_FORMAT_R32_FLOAT;
+		break;
+	default:
+		return false;
+	}
+
+	depthStencilDesc.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
+	renderTargetViewDesc.Format = textureDesc.Format;
+	shaderResourceViewDesc.Format = textureDesc.Format;
+	depthStencilViewDesc.Format = depthStencilDesc.Format;
+
+	//第一,填充2D纹理形容结构体,并创建2D渲染目标纹理
 
 	textureDesc.Width = nTextureWidth;
 	textureDesc.Height = nTexureHeight;
 	textureDesc.MipLevels = 1;
 	textureDesc.ArraySize = 1;
-	textureDesc.Format = DXGI_FORMAT_R32G32B32A32_FLOAT;  //纹理像素为12个字节
 	textureDesc.SampleDesc.Count = 1;
 	textureDesc.Usage = D3D11_USAGE_DEFAULT;
 	textureDesc.BindFlags = D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE;
@@ -48,16 +69,12 @@ bool RenderTexture::Init(int nTextureWidth, int nTexureHeight)
 	
 
 	//第二，填充渲染目标视图形容体,并进行创建目标渲染视图
-	D3D11_RENDER_TARGET_VIEW_DESC renderTargetViewDesc;
-	renderTargetViewDesc.Format = textureDesc.Format;
 	renderTargetViewDesc.ViewDimension = D3D11_RTV_DIMENSION_TEXTURE2D;
 	renderTargetViewDesc.Texture2D.MipSlice = 0;
 	HR(g_pDevice->CreateRenderTargetView(m_pBackTexture2D, &renderTargetViewDesc, &m_pRTV));
 	
 
 	//第三,创建着色器资源视图
-	D3D11_SHADER_RESOURCE_VIEW_DESC shaderResourceViewDesc;
-	shaderResourceViewDesc.Format = textureDesc.Format;
 	shaderResourceViewDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
 	shaderResourceViewDesc.Texture2D.MostDetailedMip = 0;
 	shaderResourceViewDesc.Texture2D.MipLevels = 1;
@@ -67,13 +84,10 @@ bool RenderTexture::Init(int nTextureWidth, int nTexureHeight)
 
 	
 	//第四,创建深度缓存(模板缓存)
-	D3D11_TEXTURE2D_DESC depthStencilDesc;
-	ZeroMemory(&depthStencilDesc, sizeof(depthStencilDesc));
 	depthStencilDesc.Width = nTextureWidth;
 	depthStencilDesc.Height = nTexureHeight;
 	depthStencilDesc.MipLevels = 1;
 	depthStencilDesc.ArraySize = 1;
-	depthStencilDesc.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
 	depthStencilDesc.SampleDesc.Count = 1;
 	depthStencilDesc.SampleDesc.Quality = 0;
 	depthStencilDesc.Usage = D3D11_USAGE_DEFAULT;
@@ -86,9 +100,7 @@ bool RenderTexture::Init(int nTextureWidth, int nTexureHeight)
 
 
 	//第五,创建深度缓存(模板缓存)视图
-	D3D11_DEPTH_STENCIL_VIEW_DESC depthStencilViewDesc;
 	ZeroMemory(&depthStencilViewDesc, sizeof(depthStencilViewDesc));
-	depthStencilViewDesc.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
 	depthStencilViewDesc.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2D;
 	depthStencilViewDesc.Texture2D.MipSlice = 0;
 

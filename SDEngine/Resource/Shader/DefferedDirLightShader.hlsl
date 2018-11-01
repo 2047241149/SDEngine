@@ -8,21 +8,14 @@ SamplerState clampLinearSample:register(s1);
 
 cbuffer CBMatrix:register(b0)
 {
-	matrix World;
-	matrix View;
-	matrix Proj;
-	matrix WorldInvTranspose;
 	float3 cameraPos;
-	float pad1;
 };
 
 cbuffer CBDirLight:register(b1)
 {
-	float4 lightColor;
+	float4 lightColor;  //w存在的为强度
 	float3 lightDir;
-	float pad2;
 	float3 ambientLight;
-	float2 pad3;
 };
 
 struct VertexIn
@@ -39,13 +32,6 @@ struct VertexOut
 };
 
 
-VertexOut VS(VertexIn ina)
-{
-	VertexOut outa;
-	outa.Pos = float4(ina.Pos.xy,1.0,1.0);
-	outa.Tex= ina.Tex;
-	return outa;
-}
 
 
 float4 PS(VertexOut outa) : SV_Target
@@ -72,4 +58,13 @@ float4 PS(VertexOut outa) : SV_Target
 	color.w = specularFactor;
 
 	return color;
+}
+
+
+VertexOut VS(VertexIn ina)
+{
+	VertexOut outa;
+	outa.Pos = float4(ina.Pos.xy, 1.0, 1.0);
+	outa.Tex = ina.Tex;
+	return outa;
 }

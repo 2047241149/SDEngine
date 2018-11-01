@@ -113,11 +113,11 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Source\CascadeShadowMapManager.cpp" />
+    <ClCompile Include="Source\Shader.cpp" />
     <ClCompile Include="Source\ShadowMapShader.cpp" />
     <ClCompile Include="Source\LightDepthShader.cpp" />
     <ClCompile Include="Source\CascadeShadowMap.cpp" />
     <ClCompile Include="Source\DefferedFinalShader.cpp" />
-    <ClCompile Include="Source\DefferedPointLightShader.cpp" />
     <ClCompile Include="Source\DirectxFrame\DirectxFrame.cpp" />
     <ClCompile Include="Source\FxaaShader.cpp" />
     <ClCompile Include="Source\GameObjectManager.cpp" />
@@ -133,7 +133,6 @@
     <ClCompile Include="Source\CommonFunction.cpp" />
     <ClCompile Include="Source\DirectxCore.cpp" />
     <ClCompile Include="Source\Debugwindow.cpp" />
-    <ClCompile Include="Source\BlurShader.cpp" />
     <ClCompile Include="Source\DirectionWave.cpp" />
     <ClCompile Include="Source\GerstnerWave.cpp" />
     <ClCompile Include="Source\GerstnerWaveCS.cpp" />
@@ -142,17 +141,12 @@
     <ClCompile Include="Source\LoadTexture\WICTextureLoader.cpp" />
     <ClCompile Include="Source\Log.cpp" />
     <ClCompile Include="Source\RWRenderTexture.cpp" />
+    <ClCompile Include="Source\TextureSamplerManager.cpp" />
     <ClCompile Include="Source\WaveShader.cpp" />
     <ClCompile Include="Source\ScreenSpaceReflectShader.cpp" />
     <ClCompile Include="Source\SSRGBufferShader.cpp" />
-    <ClCompile Include="Source\DOFShader.cpp" />
     <ClCompile Include="Source\GraphicsBlitShader.cpp" />
     <ClCompile Include="Source\GeometryBuffer.cpp" />
-    <ClCompile Include="Source\DepthShader.cpp" />
-    <ClCompile Include="Source\DiffuseNormalShader.cpp" />
-    <ClCompile Include="Source\DiffuseNormalSpecShader.cpp" />
-    <ClCompile Include="Source\DiffuseShader.cpp" />
-    <ClCompile Include="Source\DiffuseSpecShader.cpp" />
     <ClCompile Include="Source\FPS.cpp" />
     <ClCompile Include="Source\GameObject.cpp" />
     <ClCompile Include="Source\GraphicsSystem.cpp" />
@@ -160,27 +154,24 @@
     <ClCompile Include="Source\Input.cpp" />
     <ClCompile Include="Source\Light.cpp" />
     <ClCompile Include="Source\MathTool.cpp" />
-    <ClCompile Include="Source\PureColorShader.cpp" />
     <ClCompile Include="Source\Quad.cpp" />
     <ClCompile Include="Source\DepthBufferRT.cpp" />
-    <ClCompile Include="Source\DefferedDirLightShader.cpp" />
     <ClCompile Include="Source\3DShader.cpp" />
     <ClCompile Include="Source\ShaderManager.cpp" />
     <ClCompile Include="Source\SSRGBuffer.cpp" />
     <ClCompile Include="Source\SDEngine.cpp" />
     <ClCompile Include="Source\Texture.cpp" />
-    <ClCompile Include="Source\UIShader.cpp" />
     <ClCompile Include="Source\Wave.cpp" />
     <ClCompile Include="Source\源.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\CascadeShadowMapManager.h" />
     <ClInclude Include="Source\GraphicsConfig.h" />
+    <ClInclude Include="Source\Shader.h" />
     <ClInclude Include="Source\ShadowMapShader.h" />
     <ClInclude Include="Source\LightDepthShader.h" />
     <ClInclude Include="Source\CascadeShadowMap.h" />
     <ClInclude Include="Source\DefferedFinalShader.h" />
-    <ClInclude Include="Source\DefferedPointLightShader.h" />
     <ClInclude Include="Source\DirectxFrame\DirectxFrame.h" />
     <ClInclude Include="Source\FxaaShader.h" />
     <ClInclude Include="Source\GameObjectManager.h" />
@@ -199,7 +190,6 @@
     <ClInclude Include="Source\CommonFunction.h" />
     <ClInclude Include="Source\DirectxCore.h" />
     <ClInclude Include="Source\Debugwindow.h" />
-    <ClInclude Include="Source\BlurShader.h" />
     <ClInclude Include="Source\DirectionWave.h" />
     <ClInclude Include="Source\GerstnerWave.h" />
     <ClInclude Include="Source\GerstnerWaveCS.h" />
@@ -208,17 +198,13 @@
     <ClInclude Include="Source\LoadTexture\WICTextureLoader.h" />
     <ClInclude Include="Source\Log.h" />
     <ClInclude Include="Source\RWRenderTexture.h" />
+    <ClInclude Include="Source\TextureSamplerManager.h" />
+    <ClInclude Include="Source\UtilityEnum.h" />
     <ClInclude Include="Source\WaveShader.h" />
     <ClInclude Include="Source\ScreenSpaceReflectShader.h" />
     <ClInclude Include="Source\SSRGBufferShader.h" />
-    <ClInclude Include="Source\DOFShader.h" />
     <ClInclude Include="Source\GraphicsBlitShader.h" />
     <ClInclude Include="Source\GeometryBuffer.h" />
-    <ClInclude Include="Source\DepthShader.h" />
-    <ClInclude Include="Source\DiffuseNormalShader.h" />
-    <ClInclude Include="Source\DiffuseNormalSpecShader.h" />
-    <ClInclude Include="Source\DiffuseShader.h" />
-    <ClInclude Include="Source\DiffuseSpecShader.h" />
     <ClInclude Include="Source\FPS.h" />
     <ClInclude Include="Source\GameObject.h" />
     <ClInclude Include="Source\GraphicsSystem.h" />
@@ -228,16 +214,13 @@
     <ClInclude Include="Source\Light.h" />
     <ClInclude Include="Source\Macro.h" />
     <ClInclude Include="Source\MathTool.h" />
-    <ClInclude Include="Source\PureColorShader.h" />
     <ClInclude Include="Source\Quad.h" />
     <ClInclude Include="Source\DepthBufferRT.h" />
-    <ClInclude Include="Source\DefferedDirLightShader.h" />
     <ClInclude Include="Source\3DShader.h" />
     <ClInclude Include="Source\ShaderManager.h" />
     <ClInclude Include="Source\SSRGBuffer.h" />
     <ClInclude Include="Source\SDEngine.h" />
     <ClInclude Include="Source\Texture.h" />
-    <ClInclude Include="Source\UIShader.h" />
     <ClInclude Include="Source\Wave.h" />
   </ItemGroup>
   <ItemGroup>
@@ -282,11 +265,6 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resource\Shader\BlurShader.fx">
-      <FileType>Document</FileType>
-    </None>
-  </ItemGroup>
-  <ItemGroup>
     <None Include="Resource\Shader\ScreenSpaceReflectShader.fx">
       <FileType>Document</FileType>
     </None>
@@ -322,7 +300,7 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resource\Shader\DefferedDirLightShader.fx">
+    <None Include="Resource\Shader\DefferedDirLightShader.hlsl">
       <FileType>Document</FileType>
     </None>
     <None Include="Resource\Shader\DefferedPointLightShader.fx">
@@ -344,6 +322,11 @@
       <FileType>Document</FileType>
     </None>
     <None Include="Resource\Shader\LightDepthMap.fx">
+      <FileType>Document</FileType>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resource\Shader\ForwardPureShader.fx">
       <FileType>Document</FileType>
     </None>
   </ItemGroup>

@@ -113,7 +113,6 @@ bool Shader_3D::InitShader(WCHAR* VSFileName, WCHAR* PSFileName)
 		{ "NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 24, D3D11_INPUT_PER_VERTEX_DATA, 0 },
 		{ "TANGENT", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 36, D3D11_INPUT_PER_VERTEX_DATA, 0 },
 		{ "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 48, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-		
 	};
 
 	//布局数量
@@ -122,9 +121,67 @@ bool Shader_3D::InitShader(WCHAR* VSFileName, WCHAR* PSFileName)
 	HR(g_pDevice->CreateInputLayout(VertexInputLayout, numElements, pVertexShaderBlob->GetBufferPointer(),
 		pVertexShaderBlob->GetBufferSize(), &m_pInputLayout));
 
+	ID3D11ShaderReflection* pReflection = nullptr;
+	HR(D3DReflect(pVertexShaderBlob->GetBufferPointer(), pVertexShaderBlob->GetBufferSize(), IID_ID3D11ShaderReflection, (void**)&pReflection));
+	D3D11_SHADER_DESC vertexShaderDesc;
+	HR(pReflection->GetDesc(&vertexShaderDesc));
+	
+	for (int nCBIndex = 0; nCBIndex < vertexShaderDesc.ConstantBuffers; ++nCBIndex)
+	{
+		unsigned int register_index = 0;
+		ID3D11ShaderReflectionConstantBuffer* buffer = nullptr;
+		buffer = pReflection->GetConstantBufferByIndex(nCBIndex);
+
+		D3D11_SHADER_BUFFER_DESC shaderBufferDesc;
+		buffer->GetDesc(&shaderBufferDesc);
+		for (int s = 0; s < shaderBufferDesc.Variables; ++s)
+		{
+			ID3D11ShaderReflectionVariable* pShaderRefVarible = buffer->GetVariableByIndex(s);
+			D3D11_SHADER_VARIABLE_DESC shaderVarDesc;
+			pShaderRefVarible->GetDesc(&shaderVarDesc);
+			int a = shaderVarDesc.StartOffset;
+		}
+	
+	
+		for (int nBindResourceIndex = 0; nBindResourceIndex < vertexShaderDesc.BoundResources; ++nBindResourceIndex)
+		{
+			D3D11_SHADER_INPUT_BIND_DESC shaderInputBindDesc;
+			pReflection->GetResourceBindingDesc(nBindResourceIndex, &shaderInputBindDesc);
+			if (!strcmp(shaderInputBindDesc.Name, shaderBufferDesc.Name))
+				register_index = shaderInputBindDesc.BindPoint;
+		}
+	}
+
+
+	HR(D3DReflect(pPixelShaderBob->GetBufferPointer(), pPixelShaderBob->GetBufferSize(), IID_ID3D11ShaderReflection, (void**)&pReflection));
+	HR(pReflection->GetDesc(&vertexShaderDesc));
+
+
+	for (int nCBIndex = 0; nCBIndex < vertexShaderDesc.ConstantBuffers; ++nCBIndex)
+	{
+		unsigned int register_index = 0;
+		ID3D11ShaderReflectionConstantBuffer* buffer = nullptr;
+		buffer = pReflection->GetConstantBufferByIndex(nCBIndex);
+
+		D3D11_SHADER_BUFFER_DESC shaderBufferDesc;
+		buffer->GetDesc(&shaderBufferDesc);
+
+		for (int nBindResourceIndex = 0; nBindResourceIndex < vertexShaderDesc.BoundResources; ++nBindResourceIndex)
+		{
+			D3D11_SHADER_INPUT_BIND_DESC shaderInputBindDesc;
+			pReflection->GetResourceBindingDesc(nBindResourceIndex, &shaderInputBindDesc);
+			if (!strcmp(shaderInputBindDesc.Name, shaderBufferDesc.Name))
+				register_index = shaderInputBindDesc.BindPoint;
+		}
+	}
+
+
+
 	//第五,释放pVertexShaderBlob和pPixelShaderBob
 	ReleaseCOM(pVertexShaderBlob);
 	ReleaseCOM(pPixelShaderBob);
+
+
 
 	//第六,设置(变换矩阵常量)缓存形容结构体,并创建矩阵常量缓存
 	D3D11_BUFFER_DESC commonBufferDesc;

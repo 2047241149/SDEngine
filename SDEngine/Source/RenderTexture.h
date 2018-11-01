@@ -3,6 +3,7 @@
 #define _RENDER_TEXTURE_H
 
 #include "CoreMini.h"
+#include "UtilityEnum.h"
 
 class RenderTexture
 {
@@ -21,13 +22,13 @@ public:
 	int m_nTextureWidth, m_nTextureHeight;
 
 public:
-	RenderTexture(int nTextureWidth, int nTexureHeight);
+	RenderTexture(int nTextureWidth, int nTexureHeight, TextureFormat eTextureFormat = TextureFormat::R32G32B32A32);
 	RenderTexture(const RenderTexture&other);
 	~RenderTexture();
 
 
 public:
-	bool Init(int nTextureWidth, int nTexureHeight);
+	bool Init(int nTextureWidth, int nTexureHeight, TextureFormat eTextureFormat = TextureFormat::R32G32B32A32);
 	void ShutDown();
 
 	void SetRenderTarget(float fRed = 0.0f, float fGreen = 0.0f, float fBlue = 0.0f, float fAlpha = 1.0f);

@@ -52,6 +52,7 @@ private:
 	shared_ptr<RenderTexture> mSrcRT;
 	shared_ptr<RenderTexture> mLightBuffer;
 	shared_ptr<RenderTexture> mGrayShadowMap;
+	shared_ptr<RenderTexture> ssaoRT;;
 	shared_ptr<CascadedShadowsManager> mCascadeShadowsManager;
 
 	//GeometryBuffer

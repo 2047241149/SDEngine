@@ -107,7 +107,7 @@ bool GraphicsSystem::Init(int ScreenWidth, int ScreenHeight, HWND hwnd,HINSTANCE
 
 	mTransSphereObject = shared_ptr<GameObject>(new GameObject());
 	mTransSphereObject->SetMesh(pTransparentSphereMesh);
-	mTransSphereObject->m_pTransform->localPosition = XMFLOAT3(10.0f, 10.0f, 0.0f);
+	mTransSphereObject->m_pTransform->localPosition = XMFLOAT3(0.0f, 20.0f, 0.0f);
 
 	m_pPointVolume = shared_ptr<GameObject>(new GameObject());
 	m_pPointVolume->SetMesh(pPointLightVolume);
@@ -129,9 +129,11 @@ bool GraphicsSystem::Init(int ScreenWidth, int ScreenHeight, HWND hwnd,HINSTANCE
 
 	mCascadeShadowsManager = shared_ptr<CascadedShadowsManager>(new CascadedShadowsManager(SHADOW_MAP_SIZE));
 
-	mGrayShadowMap = shared_ptr<RenderTexture>(new RenderTexture(ScreenWidth, ScreenHeight));
+	mGrayShadowMap = shared_ptr<RenderTexture>(new RenderTexture(ScreenWidth, ScreenHeight, TextureFormat::R32));
 
-	mLightBuffer = shared_ptr<RenderTexture>(new RenderTexture(ScreenWidth, ScreenHeight));
+	mLightBuffer = shared_ptr<RenderTexture>(new RenderTexture(ScreenWidth, ScreenHeight, TextureFormat::R32));
+
+	ssaoRT = shared_ptr<RenderTexture>(new RenderTexture(ScreenWidth, ScreenHeight, TextureFormat::R32));
 
 	mGeometryBuffer = shared_ptr<GeometryBuffer>(new 
 		GeometryBuffer(ScreenWidth,ScreenHeight,SCREEN_FAR,SCREEN_NEAR));
@@ -145,7 +147,6 @@ bool GraphicsSystem::Init(int ScreenWidth, int ScreenHeight, HWND hwnd,HINSTANCE
 	mSSRBuffer = shared_ptr<SSRGBuffer>(new 
 		SSRGBuffer(ScreenWidth, ScreenHeight, SCREEN_FAR, SCREEN_NEAR));
 
-	
 	return true;
 }
 
@@ -267,28 +268,37 @@ void GraphicsSystem::Render()
 	//绘制整个场景
 	//*************************************************************************
 
+	g_RenderMask->BeginEvent(L"BeginScene");
 	GDirectxCore->BeginScene(0.3f, 0.0f, 1.0f, 1.0f);
+	g_RenderMask->EndEvent();
+
 
 	//绘制不透明物体
+	g_RenderMask->BeginEvent(L"RenderOpacity");
 	RenderOpacity();
+	g_RenderMask->EndEvent();
 
 	//获取整个场景的BackDepthBuffer
-	#if defined(SSR)
+	#if SSR
+	g_RenderMask->BeginEvent(L"RenderSceneBackDepthBuffer");
 	RenderSceneBackDepthBuffer();
+	g_RenderMask->EndEvent();
 	#endif
 	
 
 	//绘制透明物体(普通的透明物体，SSR)
-	//RenderTransparency();
+	g_RenderMask->BeginEvent(L"RenderTransparency");
+	RenderTransparency();
+	g_RenderMask->EndEvent();
 
 	/*#if defined(POST_EFFECT)
 		RenderPostEffectPass();
 	#endif // POST_EFFECT*/
 
-	RenderShadowMapPass();
-
-	#if defined(DEBUG_GBUFFER)
-		RenderDebugWindow();
+	#if DEBUG_GBUFFER
+	g_RenderMask->BeginEvent(L"DEBUG_GBUFFER");
+	RenderDebugWindow();
+	g_RenderMask->EndEvent();
 	#endif
 
 	//**************************************************************************
@@ -329,11 +339,13 @@ void GraphicsSystem::RenderLightingPass()
 	RenderPointLightPass();
 	RenderFinalShadingPass();
 
+	g_RenderMask->BeginEvent(L"FXAA");
 	GDirectxCore->SetBackBufferRender();
 	GDirectxCore->SetViewPort();
 	GDirectxCore->TurnOffZBuffer();
 	GShaderManager->SetFXAAShader(mSrcRT->GetSRV(), (float)m_nScreenWidth, (float)m_nScreenHeight);
 	mQuad->Render();
+	g_RenderMask->EndEvent();
 
 	GDirectxCore->TurnOnZBuffer();
 }
@@ -350,31 +362,43 @@ void GraphicsSystem::RenderDebugWindow()
 	GDirectxCore->SetViewPort();
 	GDirectxCore->TurnOffZBuffer();
 
+	GShaderManager->uiShader->SetMatrix("UIView", GCamera->GetUIViewMatrix());
+	GShaderManager->uiShader->SetMatrix("UIOrtho", GCamera->GetUIOrthoMatrix());
+
 	//diffuse
-	GShaderManager->SetUIShader
-	(mGeometryBuffer->GetGBufferSRV(GBufferType::Diffuse));
+	GShaderManager->uiShader->SetTexture("ShaderTexture", 
+		mGeometryBuffer->GetGBufferSRV(GBufferType::Diffuse));
+	GShaderManager->uiShader->Apply();
 	mDebugWindow->Render(10, 600);
 
 	//pos
-	GShaderManager->SetUIShader
-	(mGeometryBuffer->GetGBufferSRV(GBufferType::Pos));
+	GShaderManager->uiShader->SetTexture("ShaderTexture",
+		mGeometryBuffer->GetGBufferSRV(GBufferType::Pos));
+	GShaderManager->uiShader->Apply();
 	mDebugWindow->Render(130, 600);
 
 	//normal
-	GShaderManager->SetUIShader
-	(mGeometryBuffer->GetGBufferSRV(GBufferType::Normal));
+	GShaderManager->uiShader->SetTexture("ShaderTexture",
+		mGeometryBuffer->GetGBufferSRV(GBufferType::Normal));
+	GShaderManager->uiShader->Apply();
 	mDebugWindow->Render(250, 600);
 
 	//specular
-	GShaderManager->SetUIShader
-	(mGeometryBuffer->GetGBufferSRV(GBufferType::Specular));
+	GShaderManager->uiShader->SetTexture("ShaderTexture",
+		mGeometryBuffer->GetGBufferSRV(GBufferType::Specular));
+	GShaderManager->uiShader->Apply();
 	mDebugWindow->Render(370, 600);
 
-	GShaderManager->SetDepthShader
-	(mGeometryBuffer->GetGBufferSRV(GBufferType::Depth));
+	//Depth
+	GShaderManager->uiShader->SetTexture("ShaderTexture",
+		mGeometryBuffer->GetGBufferSRV(GBufferType::Depth));
+	GShaderManager->uiShader->Apply();
 	mDebugWindow->Render(490, 600);
 
-	GShaderManager->SetUIShader(mGrayShadowMap->GetSRV());
+	//
+	GShaderManager->uiShader->SetTexture("ShaderTexture",
+		mGrayShadowMap->GetSRV());
+	GShaderManager->uiShader->Apply();
 	mDebugWindow->Render(610, 600);
 
 	#if SSR
@@ -424,9 +448,17 @@ void GraphicsSystem::RenderSSRPass()
 
 void GraphicsSystem::RenderOpacity()
 {
+	g_RenderMask->BeginEvent(L"RenderGeometryPass");
 	RenderGeometryPass();
+	g_RenderMask->EndEvent();
+
+	g_RenderMask->BeginEvent(L"RenderShadowMapPass");
 	RenderShadowMapPass();
+	g_RenderMask->EndEvent();
+
+	g_RenderMask->BeginEvent(L"RenderLightingPass");
 	RenderLightingPass();
+	g_RenderMask->EndEvent();
 }
 
 //绘制透明物体分为绘制透明
@@ -434,7 +466,7 @@ void GraphicsSystem::RenderTransparency()
 {
 	RenderGeneralTransparency();
 
-	#if defined(SSR)
+	#if SSR
 	RenderSSR();
 	#endif
 }
@@ -455,9 +487,13 @@ void GraphicsSystem::RenderGeneralTransparency()
 		shared_ptr<GameObject> pGameObject = vecGameObject[index];
 		if (pGameObject->m_pMesh->bTransparent && !pGameObject->m_pMesh->bReflect)
 		{	
-			XMMATRIX worldMatrix = pGameObject->GetWorldMatrix();
-			GShaderManager->SetForwardPureColorShader(worldMatrix, XMVectorSet(1.0f, 0.0f, 0.0f, 1.0f));
-			pGameObject->RenderMesh();
+			/*XMMATRIX worldMatrix = pGameObject->GetWorldMatrix();
+			//GShaderManager->(worldMatrix, XMVectorSet(1.0f, 0.0f, 0.0f, 1.0f));
+			GShaderManager->mShader->SetMatrix("World", worldMatrix);
+			GShaderManager->mShader->SetMatrix("View", GCamera->GetViewMatrix());
+			GShaderManager->mShader->SetMatrix("Proj", GCamera->GetProjectionMatrix());
+			GShaderManager->mShader->Apply();
+			pGameObject->RenderMesh();*/
 		}
 	}
 
@@ -541,13 +577,31 @@ void GraphicsSystem::RenderPointLightPass()
 		GDirectxCore->TurnOnMaskLightVolumeDSS();
 		GDirectxCore->TurnOffFaceCull();
 		shared_ptr<PointLight> pPoinntLight = GLightManager->m_vecPointLight[index];
-		GShaderManager->SetForwardPureColorShader(pPoinntLight->GetWorldMatrix(), XMVectorSet(1.0f,1.0f,1.0,1.0f));
+		GShaderManager->forwardPureColorShader->SetMatrix("World", pPoinntLight->GetWorldMatrix());
+		GShaderManager->forwardPureColorShader->SetMatrix("View", GCamera->GetViewMatrix());
+		GShaderManager->forwardPureColorShader->SetMatrix("Proj", GCamera->GetProjectionMatrix());
+		GShaderManager->forwardPureColorShader->SetMatrix("WorldInvTranspose", MathTool::GetInvenseTranspose(pPoinntLight->GetWorldMatrix()));
+		GShaderManager->forwardPureColorShader->Apply();
 		m_pPointVolume->RenderMesh();
 
 		g_pDeviceContext->OMSetRenderTargets(1, &pLightRTV, opacityDSV);
 		GDirectxCore->TurnOnLightBlend();
 		GDirectxCore->TurnOnRenderLightVolumeDSS();
-		GShaderManager->SetDefferedPointLightShader(shaderResourceView, index);
+		shared_ptr<PointLight> pPointLight = GLightManager->m_vecPointLight[index];
+		XMFLOAT3 lightCol = pPointLight->GetLightColor();
+		XMFLOAT4 lightColor = XMFLOAT4(lightCol.x, lightCol.y, lightCol.z, pPointLight->GetLightIntensity());
+		GShaderManager->defferedPointLightShader->SetTexture("WorldPosTex", shaderResourceView[0]);
+		GShaderManager->defferedPointLightShader->SetTexture("WorldNormalTex", shaderResourceView[1]);
+		GShaderManager->defferedPointLightShader->SetTexture("SpecularTex", shaderResourceView[2]);
+		GShaderManager->defferedPointLightShader->SetMatrix("World", pPointLight->GetWorldMatrix());
+		GShaderManager->defferedPointLightShader->SetMatrix("View", GCamera->GetViewMatrix());
+		GShaderManager->defferedPointLightShader->SetMatrix("Proj", GCamera->GetProjectionMatrix());
+		GShaderManager->defferedPointLightShader->SetFloat3("cameraPos", GCamera->GetPosition());
+		GShaderManager->defferedPointLightShader->SetFloat4("lightColor", lightColor);
+		GShaderManager->defferedPointLightShader->SetFloat3("lightPos", pPointLight->GetPosition());
+		GShaderManager->defferedPointLightShader->SetFloat("radius", pPointLight->GetRadius());
+		GShaderManager->defferedPointLightShader->SetFloat4("attenuation", pPointLight->GetLightAttenuation());
+		GShaderManager->defferedPointLightShader->Apply();
 		m_pPointVolume->RenderMesh();
 		GDirectxCore->TurnOffAlphaBlend();
 	}
@@ -572,7 +626,18 @@ void GraphicsSystem::RenderDirLightPass()
 
 	for (int index = 0; index < (int)GLightManager->m_vecDirLight.size(); ++index)
 	{
-		GShaderManager->SetDefferedDirLightShader(shaderResourceView, index);
+		shared_ptr<DirectionLight> pDirLight = GLightManager->m_vecDirLight[index];
+		XMFLOAT3 lightCo = pDirLight->GetLightColor();
+		XMFLOAT4 lightColor = XMFLOAT4(lightCo.x, lightCo.y, lightCo.z, pDirLight->GetLightIntensity());
+		GShaderManager->defferedDirLightShader->SetTexture("WorldPosTex", shaderResourceView[0]);
+		GShaderManager->defferedDirLightShader->SetTexture("WorldNormalTex", shaderResourceView[1]);
+		GShaderManager->defferedDirLightShader->SetTexture("SpecularTex", shaderResourceView[2]);
+		GShaderManager->defferedDirLightShader->SetTexture("DirLightShadowMap", shaderResourceView[3]);
+		GShaderManager->defferedDirLightShader->SetFloat3("cameraPos", pDirLight->GetPosition());
+		GShaderManager->defferedDirLightShader->SetFloat4("lightColor", lightColor);
+		GShaderManager->defferedDirLightShader->SetFloat3("lightDir", pDirLight->GetLightDirection());
+		GShaderManager->defferedDirLightShader->SetFloat3("ambientLight", pDirLight->GetAmbientLight());
+		GShaderManager->defferedDirLightShader->Apply();
 		mQuad->Render();
 	}
 
@@ -599,7 +664,6 @@ void GraphicsSystem::RenderFinalShadingPass()
 
 void GraphicsSystem::RenderShadowMapPass()
 {
-		
 	//渲染需要投射阴影的物体到RT上
 	//后面可以考虑用GeometryShader减少DrawCall
 	mCascadeShadowsManager->ClearDepthBuffer();

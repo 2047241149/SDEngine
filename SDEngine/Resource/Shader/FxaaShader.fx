@@ -1,5 +1,5 @@
 
-
+//算法来源于英伟达的FXAA的Samples
 
 #define FxaaInt2 int2
 #define FxaaFloat2 float2

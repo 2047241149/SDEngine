@@ -123,6 +123,10 @@ bool Shader_2D::InitShader(WCHAR* VSFileName, WCHAR* PSFileName)
 	HR(g_pDevice->CreateInputLayout(VertexInputLayout, numElements,
 		pVertexShaderBlob->GetBufferPointer(), pVertexShaderBlob->GetBufferSize(), &m_pInputLayout));
 
+
+	
+	
+
 	//µÚÎå,ÊÍ·ÅBlob
 	ReleaseCOM(pVertexShaderBlob);
 	ReleaseCOM(pPixelShaderBlob);

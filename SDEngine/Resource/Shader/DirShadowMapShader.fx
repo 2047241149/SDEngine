@@ -1,3 +1,5 @@
+//算法可参考directx-sdk-samples的CascadedShadowMaps11
+
 Texture2D WorldPosTex:register(t0);
 Texture2D CascadeLightDepthMap:register(t5);
 

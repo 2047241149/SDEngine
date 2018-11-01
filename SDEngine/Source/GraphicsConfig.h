@@ -16,7 +16,7 @@ const float CASCADE_PERCENT[CASCADE_SHADOW_MAP_NUM + 1] = { 0.0f, 0.05f, 0.15f, 
 
 //#define POST_EFFECT
 //#define SSR
-#define DEBUG_GBUFFER
+#define DEBUG_GBUFFER 1
 
 #endif // !_GRAPHICS_CONFIG_H
 

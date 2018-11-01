@@ -2,6 +2,7 @@
 #ifndef _2D_SHADER_H
 #define _2D_SHADER_H
 #include "CoreMini.h"
+#include <d3dcompiler.h>
 class Shader_2D
 {
 

@@ -416,6 +416,8 @@ bool DirectxCore::Init(int ScreenWidth, int ScreenHeight, bool vsync, HWND hwnd,
 	blendStateDescription.RenderTarget[0].BlendEnable = false;
 	HR(md3dDevice->CreateBlendState(&blendStateDescription, &md3dDisableBlendState));
 
+	//用于标记渲染阶段
+	HR(md3dImmediateContext->QueryInterface(__uuidof(ID3DUserDefinedAnnotation), (void**)&d3dUserDefinedAnnot));
 
 	return true;
 

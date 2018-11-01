@@ -1,5 +1,5 @@
 #include"GameObject.h"
-
+#include "TextureSamplerManager.h"
 GameObject::GameObject()
 {
 	Init();
@@ -34,11 +34,8 @@ void GameObject::Shutdown()
 void GameObject::Render()
 {
 	MaterialType eMaterialType = m_pMesh->m_eMaterialType;
-	XMVECTOR surfaceColor = XMLoadFloat4(&m_pMesh->pureColor);
-
-
 	XMMATRIX worldMatrix = this->GetWorldMatrix();
-	XMVECTOR errorShaderColor = XMVectorSet(1.0f, 0.0f, 0.0f, 1.0f);
+	XMFLOAT4 errorShaderColor = XMFLOAT4(1.0f, 0.0f, 0.0f, 1.0f);
 
 	//三角形片元
 	g_pDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
@@ -66,18 +63,34 @@ void GameObject::Render()
 			//纯颜色绘制模式
 			if (eMaterialType == MaterialType::PURE_COLOR)
 			{
-				GShaderManager->SetPureColorShader(worldMatrix,surfaceColor);
+				GShaderManager->pureColorShader->SetMatrix("World", worldMatrix);
+				GShaderManager->pureColorShader->SetMatrix("View", GCamera->GetViewMatrix());
+				GShaderManager->pureColorShader->SetMatrix("Proj", GCamera->GetProjectionMatrix());
+				GShaderManager->pureColorShader->SetMatrix("WorldInvTranspose", MathTool::GetInvenseTranspose(worldMatrix));
+				GShaderManager->pureColorShader->SetFloat4("surfaceColor", m_pMesh->pureColor);
+				GShaderManager->pureColorShader->Apply();
 			}
 			//漫反射贴图(仅仅有)
 			else if (eMaterialType == MaterialType::DIFFUSE)
 			{
 				if (diffuseSRV == nullptr|| material.diffuseMapFileName =="")
 				{
-					GShaderManager->SetPureColorShader(worldMatrix,errorShaderColor);
+					GShaderManager->pureColorShader->SetMatrix("World", worldMatrix);
+					GShaderManager->pureColorShader->SetMatrix("View", GCamera->GetViewMatrix());
+					GShaderManager->pureColorShader->SetMatrix("Proj", GCamera->GetProjectionMatrix());
+					GShaderManager->pureColorShader->SetMatrix("WorldInvTranspose", MathTool::GetInvenseTranspose(worldMatrix));
+					GShaderManager->pureColorShader->SetFloat4("surfaceColor", errorShaderColor);
+					GShaderManager->pureColorShader->Apply();
 				}
 				else if (diffuseSRV)
 				{
-					GShaderManager->SetDiffuseShader(worldMatrix,diffuseSRV);
+					//考虑ViewMatrix,ProjMatrix,UIOrthoMatrix作为全局CB,以及全局SamplerState????
+					GShaderManager->diffuseShader->SetMatrix("World", worldMatrix);
+					GShaderManager->diffuseShader->SetMatrix("View", GCamera->GetViewMatrix());
+					GShaderManager->diffuseShader->SetMatrix("Proj", GCamera->GetProjectionMatrix());
+					GShaderManager->diffuseShader->SetMatrix("WorldInvTranspose", MathTool::GetInvenseTranspose(worldMatrix));
+					GShaderManager->diffuseShader->SetTexture("DiffuseTexture", diffuseSRV);
+					GShaderManager->diffuseShader->Apply();
 				}
 			}
 			//漫反射 + 法线贴图
@@ -85,12 +98,22 @@ void GameObject::Render()
 			{
 				if (diffuseSRV && bumpSRV&&material.bumpMapFileName != "")
 				{
-
-					GShaderManager->SetDiffuseNormalShader(worldMatrix,diffuseSRV, bumpSRV);
+					GShaderManager->diffuseNormalShader->SetMatrix("World", worldMatrix);
+					GShaderManager->diffuseNormalShader->SetMatrix("View", GCamera->GetViewMatrix());
+					GShaderManager->diffuseNormalShader->SetMatrix("Proj", GCamera->GetProjectionMatrix());
+					GShaderManager->diffuseNormalShader->SetMatrix("WorldInvTranspose", MathTool::GetInvenseTranspose(worldMatrix));
+					GShaderManager->diffuseNormalShader->SetTexture("DiffuseTexture", diffuseSRV);
+					GShaderManager->diffuseNormalShader->SetTexture("NormalTexture", bumpSRV);
+					GShaderManager->diffuseNormalShader->Apply();
 				}
 				else
 				{
-					GShaderManager->SetPureColorShader(worldMatrix,errorShaderColor);
+					GShaderManager->pureColorShader->SetMatrix("World", worldMatrix);
+					GShaderManager->pureColorShader->SetMatrix("View", GCamera->GetViewMatrix());
+					GShaderManager->pureColorShader->SetMatrix("Proj", GCamera->GetProjectionMatrix());
+					GShaderManager->pureColorShader->SetMatrix("WorldInvTranspose", MathTool::GetInvenseTranspose(worldMatrix));
+					GShaderManager->pureColorShader->SetFloat4("surfaceColor", errorShaderColor);
+					GShaderManager->pureColorShader->Apply();
 				}
 			}
 			//漫反射 + 镜面贴图
@@ -99,11 +122,22 @@ void GameObject::Render()
 				if (diffuseSRV && specSRV&&material.specularMapFileName != "")
 				{
 				
-					GShaderManager->SetDiffuseSpecShader(worldMatrix,diffuseSRV, specSRV);
+					GShaderManager->diffuseSpecShader->SetMatrix("World", worldMatrix);
+					GShaderManager->diffuseSpecShader->SetMatrix("View", GCamera->GetViewMatrix());
+					GShaderManager->diffuseSpecShader->SetMatrix("Proj", GCamera->GetProjectionMatrix());
+					GShaderManager->diffuseSpecShader->SetMatrix("WorldInvTranspose", MathTool::GetInvenseTranspose(worldMatrix));
+					GShaderManager->diffuseSpecShader->SetTexture("DiffuseTexture", diffuseSRV);
+					GShaderManager->diffuseSpecShader->SetTexture("SpecularTexture", specSRV);
+					GShaderManager->diffuseSpecShader->Apply();
 				}
 				else
 				{
-					GShaderManager->SetPureColorShader(worldMatrix, errorShaderColor);
+					GShaderManager->pureColorShader->SetMatrix("World", worldMatrix);
+					GShaderManager->pureColorShader->SetMatrix("View", GCamera->GetViewMatrix());
+					GShaderManager->pureColorShader->SetMatrix("Proj", GCamera->GetProjectionMatrix());
+					GShaderManager->pureColorShader->SetMatrix("WorldInvTranspose", MathTool::GetInvenseTranspose(worldMatrix));
+					GShaderManager->pureColorShader->SetFloat4("surfaceColor", errorShaderColor);
+					GShaderManager->pureColorShader->Apply();
 				}
 			}
 			//漫反射贴图 + 法线贴图 + 镜面贴图
@@ -111,24 +145,51 @@ void GameObject::Render()
 			{
 				if (diffuseSRV && bumpSRV&&specSRV && material.bumpMapFileName != "" &&  material.specularMapFileName!="")
 				{
-					GShaderManager->SetDiffuseNormalSpecShader(worldMatrix,
-						diffuseSRV, bumpSRV, specSRV);
+					/*GShaderManager->SetDiffuseNormalSpecShader(worldMatrix,
+						diffuseSRV, bumpSRV, specSRV);*/
+					GShaderManager->diffuseNormalSpecShader->SetMatrix("World", worldMatrix);
+					GShaderManager->diffuseNormalSpecShader->SetMatrix("View", GCamera->GetViewMatrix());
+					GShaderManager->diffuseNormalSpecShader->SetMatrix("Proj", GCamera->GetProjectionMatrix());
+					GShaderManager->diffuseNormalSpecShader->SetMatrix("WorldInvTranspose", MathTool::GetInvenseTranspose(worldMatrix));
+					GShaderManager->diffuseNormalSpecShader->SetTexture("DiffuseTexture", diffuseSRV);
+					GShaderManager->diffuseNormalSpecShader->SetTexture("NormalTexture", bumpSRV);
+					GShaderManager->diffuseNormalSpecShader->SetTexture("SpecularTexture", specSRV);
+					GShaderManager->diffuseNormalSpecShader->SetTextureSampler("SampleWrapLinear", 
+						GTextureSamplerManager->GetTextureSampler(TextureSampler::BilinearFliterWrap));
+
+					GShaderManager->diffuseNormalSpecShader->SetTextureSampler("SampleClampPoint", 
+						GTextureSamplerManager->GetTextureSampler(TextureSampler::PointClamp));
+					GShaderManager->diffuseNormalSpecShader->Apply();
 				}
 				else
 				{
-					GShaderManager->SetPureColorShader(worldMatrix,errorShaderColor);
+					GShaderManager->pureColorShader->SetMatrix("World", worldMatrix);
+					GShaderManager->pureColorShader->SetMatrix("View", GCamera->GetViewMatrix());
+					GShaderManager->pureColorShader->SetMatrix("Proj", GCamera->GetProjectionMatrix());
+					GShaderManager->pureColorShader->SetMatrix("WorldInvTranspose", MathTool::GetInvenseTranspose(worldMatrix));
+					GShaderManager->pureColorShader->SetFloat4("surfaceColor", errorShaderColor);
+					GShaderManager->pureColorShader->Apply();
 				}
 			}
 			//线框绘制模式
 			else if(eMaterialType == MaterialType::WIRE_FRAME)
 			{
-				GShaderManager->SetPureColorShader(worldMatrix, XMVectorSet(1.0f, 1.0f, 1.0f, 1.0f));
+				GShaderManager->pureColorShader->SetMatrix("World", worldMatrix);
+				GShaderManager->pureColorShader->SetMatrix("View", GCamera->GetViewMatrix());
+				GShaderManager->pureColorShader->SetMatrix("Proj", GCamera->GetProjectionMatrix());
+				GShaderManager->pureColorShader->SetMatrix("WorldInvTranspose", MathTool::GetInvenseTranspose(worldMatrix));
+				GShaderManager->pureColorShader->SetFloat4("surfaceColor", XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f));
+				GShaderManager->pureColorShader->Apply();
+
 			} 
 
 			//仅仅获取深度缓存
 			else if (eMaterialType == MaterialType::DEPTH_BUFFER)
 			{
-				GShaderManager->SetDepthGetShader(worldMatrix);
+				GShaderManager->depthGetShader->SetMatrix("World", worldMatrix);
+				GShaderManager->depthGetShader->SetMatrix("View", GCamera->GetViewMatrix());
+				GShaderManager->depthGetShader->SetMatrix("Proj", GCamera->GetProjectionMatrix());
+				GShaderManager->depthGetShader->Apply();
 			}
 
 	

@@ -10,9 +10,7 @@ cbuffer CBMatrix:register(b0)
 	matrix World;
 	matrix View;
 	matrix Proj;
-	matrix WorldInvTranspose;
 	float3 cameraPos;
-	float pad;
 };
 
 

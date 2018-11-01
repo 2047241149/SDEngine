@@ -24,6 +24,8 @@ public:
 	//单例模式
 	static shared_ptr<DirectxCore> Get();
 
+	ID3DUserDefinedAnnotation* d3dUserDefinedAnnot;
+
 	//DirectxCore初始化函数
 	bool Init(int ScreenWidth, int ScreenHeight, bool vsync, HWND hwnd, bool fullscreen, float ScreenDepth, float ScreenNear);
 
@@ -112,6 +114,7 @@ private:
 	ID3D11BlendState* md3dDisableBlendState; //关闭alpha的混合状态
 	ID3D11BlendState* m_pLightBlendState;
 	D3D11_VIEWPORT mViewport;
+
 };
 
 
@@ -120,4 +123,8 @@ private:
 #define g_pDeviceContext DirectxCore::Get()->GetDeviceContext()
 #define g_pDevice  DirectxCore::Get()->GetDevice()
 #define g_DXGIOutput DirectxCore::Get()->GetDXGIOutput()
+#define	g_RenderMask  DirectxCore::Get()->d3dUserDefinedAnnot
+
+
+
 #endif 

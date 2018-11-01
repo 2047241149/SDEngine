@@ -9,8 +9,6 @@ cbuffer CBMatrix:register(b0)
 	matrix View;
 	matrix Proj;
 	matrix WorldInvTranspose;
-	float3 cameraPos;
-	float pad1;
 };
 
 struct VertexIn
@@ -50,12 +48,12 @@ VertexOut VS(VertexIn ina)
 	outa.Pos = mul(outa.Pos, Proj);
 	outa.W_Normal = mul(ina.Normal, (float3x3)WorldInvTranspose);  //此事世界逆转置矩阵的第四行本来就没啥用
 	outa.W_Normal = normalize(outa.W_Normal);
-	outa.Tex= ina.Tex;
+	outa.Tex = ina.Tex;
 	return outa;
 }
 
 
-float4 PS(VertexOut outa) : SV_Target
+PixelOut PS(VertexOut outa) : SV_Target
 {
 	PixelOut pixelOut;
 
