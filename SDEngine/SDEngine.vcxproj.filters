@@ -54,9 +54,6 @@
     <ClCompile Include="Source\GerstnerWaveCS.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="Source\GraphicsBlitShader.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
     <ClCompile Include="Source\GrussianBlurCS.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
@@ -90,16 +87,10 @@
     <ClCompile Include="Source\RWRenderTexture.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="Source\ScreenSpaceReflectShader.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
     <ClCompile Include="Source\ShaderManager.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="Source\SSRGBuffer.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\SSRGBufferShader.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="Source\Texture.cpp">
@@ -108,16 +99,7 @@
     <ClCompile Include="Source\Wave.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="Source\WaveShader.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
     <ClCompile Include="Source\源.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\2DShader.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\3DShader.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="Source\LoadTexture\DDSTextureLoader.cpp">
@@ -138,34 +120,22 @@
     <ClCompile Include="Source\DirectxFrame\DirectxFrame.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="Source\DefferedFinalShader.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
     <ClCompile Include="Source\GraphicsSystem.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="Source\SDEngine.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="Source\FxaaShader.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\LightDepthShader.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\ShadowMapShader.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
     <ClCompile Include="Source\CascadeShadowMapManager.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\CascadeShadowMap.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="Source\Shader.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="Source\TextureSamplerManager.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\CascadeShadowMap.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>
@@ -218,9 +188,6 @@
     <ClInclude Include="Source\GerstnerWaveCS.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="Source\GraphicsBlitShader.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
     <ClInclude Include="Source\GrussianBlurCS.h">
       <Filter>头文件</Filter>
     </ClInclude>
@@ -260,31 +227,16 @@
     <ClInclude Include="Source\RWRenderTexture.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="Source\ScreenSpaceReflectShader.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
     <ClInclude Include="Source\ShaderManager.h">
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="Source\SSRGBuffer.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="Source\SSRGBufferShader.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
     <ClInclude Include="Source\Texture.h">
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="Source\Wave.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\WaveShader.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\2DShader.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\3DShader.h">
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="Source\LoadTexture\DDSTextureLoader.h">
@@ -305,31 +257,16 @@
     <ClInclude Include="Source\DirectxFrame\DirectxFrame.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="Source\DefferedFinalShader.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
     <ClInclude Include="Source\GraphicsSystem.h">
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="Source\SDEngine.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="Source\FxaaShader.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\LightDepthShader.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\ShadowMapShader.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
     <ClInclude Include="Source\CascadeShadowMapManager.h">
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="Source\GraphicsConfig.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\CascadeShadowMap.h">
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="Source\UtilityEnum.h">
@@ -339,6 +276,9 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="Source\TextureSamplerManager.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\CascadeShadowMap.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>

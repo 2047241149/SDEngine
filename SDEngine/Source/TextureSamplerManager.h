@@ -11,7 +11,8 @@ enum TextureSampler
 	TrilinearFliterClamp,
 	PointWrap,
 	BilinearFliterWrap,
-	TrilinearFliterWrap
+	TrilinearFliterWrap,
+	Anisotropic,
 };
 
 class TextureSamplerManager

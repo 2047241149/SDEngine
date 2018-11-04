@@ -75,6 +75,7 @@ protected:
 public:
 	void Apply();
 	bool SetMatrix(const string& variableName, const CXMMATRIX& matrix);
+	bool SetMatrixArrayElement(const string& variableName, const CXMMATRIX& matrix, int index);
 	bool SetFloat(const string& variableName, float value);
 	bool SetFloat2(const string& variableName, XMFLOAT2 value);
 	bool SetFloat3(const string& variableName, XMFLOAT3 value);
@@ -88,7 +89,6 @@ private:
 	bool ReflectShaderSampler(ID3D11ShaderReflection* shaderReflection);
 	bool ReflectInputLayout(ID3D11ShaderReflection* vertexShaderReflection, ID3D10Blob* vertexShaderBlob);
 	bool CreateConstantBuffer();
-	void CheckUpdateConstantBuffer();
 	bool UpdateConstantBuffer();
 
 private:

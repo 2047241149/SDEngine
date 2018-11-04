@@ -1,13 +1,6 @@
 #pragma once
 #ifndef _SHADER_MANAGER_H
 #define _SHADER_MANAGER_H
-#include "ScreenSpaceReflectShader.h"
-#include "SSRGBufferShader.h"
-#include "DefferedFinalShader.h"
-#include "WaveShader.h"
-#include "FxaaShader.h"
-#include "LightDepthShader.h"
-#include "ShadowMapShader.h"
 #include "Shader.h"
 #include<memory>
 #include"Macro.h"
@@ -30,15 +23,16 @@ public:
 	shared_ptr<Shader> graphicsBlitShader;
 	shared_ptr<Shader> forwardPureColorShader;
 	shared_ptr<Shader> depthGetShader;
-	shared_ptr<SSRShader> mSSRShader;
-	shared_ptr<SSRGBufferShader> mSSRGBufferShader;
-	shared_ptr<WaveShader> mWaveShader;
-	shared_ptr<DefferedFinalShader> mDefferedFinalShader;
-	shared_ptr<FxaaShader> mFxaaShader;
-	shared_ptr<LightDepthShader> mLightDepthShader;
-	shared_ptr<ShadowMapShader> mShadowMapShader;
+	shared_ptr<Shader> ssrShader;
+	shared_ptr<Shader> ssrGBufferShader;
+	shared_ptr<Shader> waveShader;
+	shared_ptr<Shader> defferedFinalShader;
+	shared_ptr<Shader> fxaaShader;
+	shared_ptr<Shader> lightDepthShader;
+	shared_ptr<Shader> shadowMapShader;
+
 private:
-	static shared_ptr<ShaderManager> m_spShaderManager;
+	static shared_ptr<ShaderManager> single;
 	
 public:
 	ShaderManager();
@@ -46,24 +40,7 @@ public:
 	ShaderManager(const ShaderManager&);
 
 	bool Init();
-
 	static shared_ptr<ShaderManager> Get();
-
-	bool SetSSRShader(CXMMATRIX worldMatrix, ID3D11ShaderResourceView* arraySRV[5],
-		XMFLOAT2 perspectiveValue);
-
-	bool SetSSRGBufferShader(ID3D11ShaderResourceView* gBuffer[2]);
-
-	bool SetWaveShader(CXMMATRIX worldMatrix, FXMVECTOR surfaceColor, 
-		ID3D11ShaderResourceView* diffuse, ID3D11ShaderResourceView* normal);
-
-	bool SetDefferedFinalShader(ID3D11ShaderResourceView* gBuffer[2]);
-
-	bool SetFXAAShader(ID3D11ShaderResourceView* screenRT, float fScreenWidth, float fScreenHeight);
-
-	bool SetLightDepthShader(CXMMATRIX worldMatrix, CXMMATRIX lightOrthoProjMatrix);
-
-	bool SetShadowMapShader(ID3D11ShaderResourceView* worldPosTex, class CascadedShadowsManager* cascadeShadowManager);
 };
 #endif 
 

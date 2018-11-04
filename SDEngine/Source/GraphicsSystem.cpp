@@ -1,4 +1,5 @@
 #include "GraphicsSystem.h"
+#include "TextureSamplerManager.h"
 
 GraphicsSystem::GraphicsSystem(int ScreenWidth, int ScreenHeight, HWND hwnd, HINSTANCE hinstance)
 {
@@ -343,10 +344,12 @@ void GraphicsSystem::RenderLightingPass()
 	GDirectxCore->SetBackBufferRender();
 	GDirectxCore->SetViewPort();
 	GDirectxCore->TurnOffZBuffer();
-	GShaderManager->SetFXAAShader(mSrcRT->GetSRV(), (float)m_nScreenWidth, (float)m_nScreenHeight);
+	GShaderManager->fxaaShader->SetTexture("inputTexture", mSrcRT->GetSRV());
+	GShaderManager->fxaaShader->SetFloat2("rcpFrame", XMFLOAT2(1.0f / (float)m_nScreenWidth, 1.0f / (float)m_nScreenHeight));
+	GShaderManager->fxaaShader->SetTextureSampler("anisotropicSampler", GTextureSamplerManager->GetTextureSampler(TextureSampler::Anisotropic));
+	GShaderManager->fxaaShader->Apply();
 	mQuad->Render();
 	g_RenderMask->EndEvent();
-
 	GDirectxCore->TurnOnZBuffer();
 }
 
@@ -434,13 +437,17 @@ void GraphicsSystem::RenderSSRPass()
 	XMFLOAT2 perspectiveValues;
 	perspectiveValues.x = projFloat4X4.m[3][2];
 	perspectiveValues.y = -projFloat4X4.m[2][2];
-	ID3D11ShaderResourceView* arraySRV[5];
-	arraySRV[0] = mSrcRT->GetSRV();
-	arraySRV[1] = mGeometryBuffer->GetGBufferSRV(GBufferType::Depth);
-	arraySRV[2] = mBackDepthBufferRT->GetShaderResourceView();
-	arraySRV[3] = mSSRBuffer->GetGBufferSRV(SSRBufferType::VIEW_POS);
-	arraySRV[4] = mSSRBuffer->GetGBufferSRV(SSRBufferType::VIEW_NORMAL);
-	GShaderManager->SetSSRShader(worldMatrix,arraySRV,perspectiveValues);
+	GShaderManager->ssrShader->SetMatrix("View", GCamera->GetViewMatrix());
+	GShaderManager->ssrShader->SetMatrix("Proj", GCamera->GetProjectionMatrix());
+	GShaderManager->ssrShader->SetFloat("farPlane", GCamera->mFarPlane);
+	GShaderManager->ssrShader->SetFloat("nearPlane", GCamera->mNearPlane);
+	GShaderManager->ssrShader->SetFloat2("perspectiveValues", perspectiveValues);
+	GShaderManager->ssrShader->SetTexture("DiffuseTex", mSrcRT->GetSRV());
+	GShaderManager->ssrShader->SetTexture("FrontDepthTex", mGeometryBuffer->GetGBufferSRV(GBufferType::Depth));
+	GShaderManager->ssrShader->SetTexture("BackDepthTex", mBackDepthBufferRT->GetShaderResourceView());
+	GShaderManager->ssrShader->SetTexture("ViewPosTex", mSSRBuffer->GetGBufferSRV(SSRBufferType::VIEW_POS));
+	GShaderManager->ssrShader->SetTexture("ViewNormalTex", mSSRBuffer->GetGBufferSRV(SSRBufferType::VIEW_NORMAL));
+	GShaderManager->ssrShader->Apply();
 	mQuad->Render();
 	GDirectxCore->TurnOnZBuffer();
 	GDirectxCore->TurnOffAlphaBlend();
@@ -527,10 +534,10 @@ void GraphicsSystem::RenderSSRBufferPass()
 	ID3D11DepthStencilView* backDSV = mGeometryBuffer->GetDSV();
 	mSSRBuffer->SetRenderTarget(backDSV);
 	GDirectxCore->TurnOnEnableReflectDSS();
-	ID3D11ShaderResourceView* arraySRV[2];
-	arraySRV[0] = mGeometryBuffer->GetGBufferSRV(GBufferType::Pos);
-	arraySRV[1] = mGeometryBuffer->GetGBufferSRV(GBufferType::Normal);
-	GShaderManager->SetSSRGBufferShader(arraySRV);
+	GShaderManager->ssrGBufferShader->SetTexture("WorldPosTex", mGeometryBuffer->GetGBufferSRV(GBufferType::Pos));
+	GShaderManager->ssrGBufferShader->SetTexture("WorldNormalTex", mGeometryBuffer->GetGBufferSRV(GBufferType::Normal));
+	GShaderManager->ssrGBufferShader->SetMatrix("View", GCamera->GetViewMatrix());
+	GShaderManager->ssrGBufferShader->Apply();
 	mQuad->Render();
 	GDirectxCore->RecoverDefaultDSS();
 	GDirectxCore->SetBackBufferRender();
@@ -656,7 +663,9 @@ void GraphicsSystem::RenderFinalShadingPass()
 	ID3D11ShaderResourceView* pShaderViewArray[2];
 	pShaderViewArray[0] = mGeometryBuffer->GetGBufferSRV(GBufferType::Diffuse);
 	pShaderViewArray[1] = mLightBuffer->GetSRV();
-	GShaderManager->SetDefferedFinalShader(pShaderViewArray);
+	GShaderManager->defferedFinalShader->SetTexture("DiffuseTex", mGeometryBuffer->GetGBufferSRV(GBufferType::Diffuse));
+	GShaderManager->defferedFinalShader->SetTexture("LightBufferTex", mLightBuffer->GetSRV());
+	GShaderManager->defferedFinalShader->Apply();
 	mQuad->Render();
 	
 	GDirectxCore->RecoverDefaultDSS();
@@ -664,6 +673,11 @@ void GraphicsSystem::RenderFinalShadingPass()
 
 void GraphicsSystem::RenderShadowMapPass()
 {
+	if (GLightManager->m_vecDirLight.size() <= 0)
+		return;
+
+	XMMATRIX lightViewMatrix = GLightManager->GetMainLight()->GetViewMatrix();
+
 	//渲染需要投射阴影的物体到RT上
 	//后面可以考虑用GeometryShader减少DrawCall
 	mCascadeShadowsManager->ClearDepthBuffer();
@@ -678,7 +692,10 @@ void GraphicsSystem::RenderShadowMapPass()
 			{
 				if (memGo->m_pMesh->bCastShadow)
 				{
-					GShaderManager->SetLightDepthShader(memGo->GetWorldMatrix(), mCascadeShadowsManager->mArrayLightOrthoMatrix[nCascadeIndex]);
+					GShaderManager->lightDepthShader->SetMatrix("World", memGo->GetWorldMatrix());
+					GShaderManager->lightDepthShader->SetMatrix("View", lightViewMatrix);
+					GShaderManager->lightDepthShader->SetMatrix("Proj", mCascadeShadowsManager->mArrayLightOrthoMatrix[nCascadeIndex]);
+					GShaderManager->lightDepthShader->Apply();
 					memGo->RenderMesh();
 				}
 			}
@@ -688,7 +705,18 @@ void GraphicsSystem::RenderShadowMapPass()
 	//渲染得到阴影
 	mGrayShadowMap->SetRenderTarget();
 	GDirectxCore->TurnOffZBuffer();
-	GShaderManager->SetShadowMapShader(mGeometryBuffer->GetGBufferSRV(GBufferType::Pos), mCascadeShadowsManager.get());
+	GShaderManager->shadowMapShader->SetTexture("WorldPosTex", mGeometryBuffer->GetGBufferSRV(GBufferType::Pos));
+	GShaderManager->shadowMapShader->SetTexture("CascadeLightDepthMap", mCascadeShadowsManager->GetShadowMapSRV());
+	GShaderManager->shadowMapShader->SetMatrix("dirView", lightViewMatrix);
+	for (int nCascadeIndex = 0; nCascadeIndex < CASCADE_SHADOW_MAP_NUM; ++nCascadeIndex)
+	{
+		GShaderManager->shadowMapShader->SetMatrixArrayElement("arrayDirProj", 
+			mCascadeShadowsManager->mArrayLightOrthoMatrix[nCascadeIndex], nCascadeIndex);
+	}
+
+	GShaderManager->shadowMapShader->SetFloat("shadowBias", 0.003f);
+	GShaderManager->shadowMapShader->Apply();
 	mQuad->Render();
+
 	GDirectxCore->RecoverDefaultDSS();
 }

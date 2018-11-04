@@ -589,7 +589,7 @@ float3 FxaaPixelShader(
 
 
 cbuffer cbFxaa : register(b0) {
-	float4 rcpFrame : packoffset(c0);
+	float2 rcpFrame;
 };
 
 SamplerState SampleWrapLinear:register(s0);

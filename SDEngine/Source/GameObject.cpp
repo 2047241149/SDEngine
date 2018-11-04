@@ -1,5 +1,7 @@
 #include"GameObject.h"
 #include "TextureSamplerManager.h"
+#include "GraphicsConfig.h"
+
 GameObject::GameObject()
 {
 	Init();

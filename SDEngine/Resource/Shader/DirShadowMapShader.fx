@@ -19,21 +19,10 @@ static const float4 ARRAY_DEBUG_COLOR[CASCADE_SHADOW_NUM] =
 	float4(0.0, 0.0, 1.0, 1.0),
 };
 
-cbuffer CBMatrix:register(b0)
-{
-	matrix World;
-	matrix View;
-	matrix Proj;
-	matrix WorldInvTranspose;
-	float3 cameraPos;
-	float pad1;
-};
-
-cbuffer CBShadow:register(b1)
+cbuffer CBShadow:register(b0)
 {
 	matrix dirView;
 	matrix arrayDirProj[CASCADE_SHADOW_NUM];
-	float3 cameraZ;
 	float shadowBias;
 };
 

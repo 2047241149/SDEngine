@@ -112,17 +112,12 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Source\CascadeShadowMap.cpp" />
     <ClCompile Include="Source\CascadeShadowMapManager.cpp" />
     <ClCompile Include="Source\Shader.cpp" />
-    <ClCompile Include="Source\ShadowMapShader.cpp" />
-    <ClCompile Include="Source\LightDepthShader.cpp" />
-    <ClCompile Include="Source\CascadeShadowMap.cpp" />
-    <ClCompile Include="Source\DefferedFinalShader.cpp" />
     <ClCompile Include="Source\DirectxFrame\DirectxFrame.cpp" />
-    <ClCompile Include="Source\FxaaShader.cpp" />
     <ClCompile Include="Source\GameObjectManager.cpp" />
     <ClCompile Include="Source\LoadTexture\Resource.cpp" />
-    <ClCompile Include="Source\2DShader.cpp" />
     <ClCompile Include="Source\Camera.cpp" />
     <ClCompile Include="Source\CircleWave.cpp" />
     <ClCompile Include="Source\DirectionLight.cpp" />
@@ -142,10 +137,6 @@
     <ClCompile Include="Source\Log.cpp" />
     <ClCompile Include="Source\RWRenderTexture.cpp" />
     <ClCompile Include="Source\TextureSamplerManager.cpp" />
-    <ClCompile Include="Source\WaveShader.cpp" />
-    <ClCompile Include="Source\ScreenSpaceReflectShader.cpp" />
-    <ClCompile Include="Source\SSRGBufferShader.cpp" />
-    <ClCompile Include="Source\GraphicsBlitShader.cpp" />
     <ClCompile Include="Source\GeometryBuffer.cpp" />
     <ClCompile Include="Source\FPS.cpp" />
     <ClCompile Include="Source\GameObject.cpp" />
@@ -156,7 +147,6 @@
     <ClCompile Include="Source\MathTool.cpp" />
     <ClCompile Include="Source\Quad.cpp" />
     <ClCompile Include="Source\DepthBufferRT.cpp" />
-    <ClCompile Include="Source\3DShader.cpp" />
     <ClCompile Include="Source\ShaderManager.cpp" />
     <ClCompile Include="Source\SSRGBuffer.cpp" />
     <ClCompile Include="Source\SDEngine.cpp" />
@@ -165,18 +155,13 @@
     <ClCompile Include="Source\源.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Source\CascadeShadowMap.h" />
     <ClInclude Include="Source\CascadeShadowMapManager.h" />
     <ClInclude Include="Source\GraphicsConfig.h" />
     <ClInclude Include="Source\Shader.h" />
-    <ClInclude Include="Source\ShadowMapShader.h" />
-    <ClInclude Include="Source\LightDepthShader.h" />
-    <ClInclude Include="Source\CascadeShadowMap.h" />
-    <ClInclude Include="Source\DefferedFinalShader.h" />
     <ClInclude Include="Source\DirectxFrame\DirectxFrame.h" />
-    <ClInclude Include="Source\FxaaShader.h" />
     <ClInclude Include="Source\GameObjectManager.h" />
     <ClInclude Include="Source\LoadTexture\Resource.h" />
-    <ClInclude Include="Source\2DShader.h" />
     <ClInclude Include="Source\Camera.h" />
     <ClInclude Include="Source\CircleWave.h" />
     <ClInclude Include="Source\CoreMini.h" />
@@ -200,10 +185,6 @@
     <ClInclude Include="Source\RWRenderTexture.h" />
     <ClInclude Include="Source\TextureSamplerManager.h" />
     <ClInclude Include="Source\UtilityEnum.h" />
-    <ClInclude Include="Source\WaveShader.h" />
-    <ClInclude Include="Source\ScreenSpaceReflectShader.h" />
-    <ClInclude Include="Source\SSRGBufferShader.h" />
-    <ClInclude Include="Source\GraphicsBlitShader.h" />
     <ClInclude Include="Source\GeometryBuffer.h" />
     <ClInclude Include="Source\FPS.h" />
     <ClInclude Include="Source\GameObject.h" />
@@ -216,7 +197,6 @@
     <ClInclude Include="Source\MathTool.h" />
     <ClInclude Include="Source\Quad.h" />
     <ClInclude Include="Source\DepthBufferRT.h" />
-    <ClInclude Include="Source\3DShader.h" />
     <ClInclude Include="Source\ShaderManager.h" />
     <ClInclude Include="Source\SSRGBuffer.h" />
     <ClInclude Include="Source\SDEngine.h" />

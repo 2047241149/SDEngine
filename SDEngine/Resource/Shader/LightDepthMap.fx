@@ -1,14 +1,8 @@
-SamplerState SampleType:register(s0);   //采样方式
-
-
 cbuffer CBMatrix:register(b0)
 {
 	matrix World;
 	matrix View;
 	matrix Proj;
-	matrix WorldInvTranspose;
-	float3 cameraPos;
-	float pad1;
 };
 
 struct VertexIn
@@ -18,7 +12,6 @@ struct VertexIn
 	float3 Normal:NORMAL;
 	float3 Tangent:TANGENT;
 	float2 Tex:TEXCOORD;  
-
 };
 
 

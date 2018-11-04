@@ -222,30 +222,36 @@ bool Shader::ReflectShaderConstantBuffer(ID3D11ShaderReflection* reflection)
 
 					ShaderVariableType variableType =  ShaderVariableType::SHADER_MATRIX;
 					
-					switch (shaderVarDesc.Size)
+
+					if (0 == shaderVarDesc.Size % SHADER_MATRIX_SIZE)
 					{
-					case SHADER_MATRIX_SIZE:
 						variableType = ShaderVariableType::SHADER_MATRIX;
-						break;
-
-					case SHADER_FLOAT_SIZE:
-						variableType = ShaderVariableType::SHADER_FLOAT;
-						break;
-
-					case SHADER_TWO_FLOAT_SIZE:
-						variableType = ShaderVariableType::SHADER_FLOAT2;
-						break;
-
-					case SHADER_THREE_FLOAT_SIZE:
-						variableType = ShaderVariableType::SHADER_FLOAT3;
-						break;
-
-					case SHADER_FOUR_FLOAT_SIZE:
-						variableType = ShaderVariableType::SHADER_FLOAT4;
-						break;
-					default:
-						break;
 					}
+					else
+					{
+						switch (shaderVarDesc.Size)
+						{
+
+						case SHADER_FLOAT_SIZE:
+							variableType = ShaderVariableType::SHADER_FLOAT;
+							break;
+
+						case SHADER_TWO_FLOAT_SIZE:
+							variableType = ShaderVariableType::SHADER_FLOAT2;
+							break;
+
+						case SHADER_THREE_FLOAT_SIZE:
+							variableType = ShaderVariableType::SHADER_FLOAT3;
+							break;
+
+						case SHADER_FOUR_FLOAT_SIZE:
+							variableType = ShaderVariableType::SHADER_FLOAT4;
+							break;
+						default:
+							break;
+						}
+					}
+					
 					
 					shaderVarible->variableType = variableType;
 					shaderVarible->variablePre = malloc(shaderVarible->size);
@@ -358,45 +364,6 @@ bool Shader::SetFloat4(const string& variableName, XMFLOAT4 value)
 	}
 
 	return true;
-}
-
-
-void Shader::CheckUpdateConstantBuffer()
-{
-	/*for (auto cbIterator = mapShaderContantBuffer.begin(); cbIterator != mapShaderContantBuffer.end(); ++cbIterator)
-	{
-		shared_ptr<ShaderConstantBuffer> shaderConstantBuffer = cbIterator->second;
-		bool bNeedUpdate = false;
-		for (auto shaderVarIterator = shaderConstantBuffer->vecShaderVariableName.begin();
-			shaderVarIterator != shaderConstantBuffer->vecShaderVariableName.end(); ++shaderVarIterator)
-		{
-			if (mapShaderVariable.end() != mapShaderVariable.find(*shaderVarIterator))
-			{
-				shared_ptr<ShaderVariable> shaderVariable = mapShaderVariable[*shaderVarIterator];
-				switch (shaderVariable->variableType)
-				{
-				case SHADER_MATRIX:
-					XMMATRIX* preValue = (XMMATRIX*)shaderVariable->variablePre;
-					XMMATRIX* currentValue = (XMMATRIX*)shaderVariable->variableCurrent;
-					bNeedUpdate = true;
-					break;
-				case SHADER_FLOAT:
-					float* preValue = (float*)shaderVariable->variablePre;
-					float* currentValue = (float*)shaderVariable->variableCurrent;	
-					break;
-				case SHADER_FLOAT2:
-
-					break;
-				case SHADER_FLOAT3:
-					break;
-				case SHADER_FLOAT4:
-					break;
-				default:
-					break;
-				}
-			}
-		}
-	}*/
 }
 
 
@@ -568,8 +535,8 @@ bool Shader::SetTextureSampler(const string& variableName, ID3D11SamplerState* s
 
 	if (mapShaderSampler.end() != mapShaderSampler.find(variableName) && nullptr != sampler)
 	{
-		shared_ptr<ShaderTexture> shaderTexture = mapShaderTexture[variableName];
-		g_pDeviceContext->PSSetSamplers(shaderTexture->bindPoint, 1, &sampler);
+		shared_ptr<ShaderSampler> shaderSampler = mapShaderSampler[variableName];
+		g_pDeviceContext->PSSetSamplers(shaderSampler->bindPoint, 1, &sampler);
 	}
 	else
 	{
@@ -619,5 +586,22 @@ bool Shader::ReflectShaderSampler(ID3D11ShaderReflection* shaderReflection)
 			}
 		}
 	}
+	return true;
+}
+
+bool Shader::SetMatrixArrayElement(const string& variableName, const CXMMATRIX& matrix, int index)
+{
+	if (mapShaderVariable.find(variableName) != mapShaderVariable.end())
+	{
+		shared_ptr<ShaderVariable> shaderVariable = mapShaderVariable[variableName];
+		if (ShaderVariableType::SHADER_MATRIX == shaderVariable->variableType && 0 == shaderVariable->size % sizeof(CXMMATRIX))
+		{
+			XMMATRIX memMatrix = XMMatrixTranspose(matrix);
+			//暂时不支持记忆之前的值,等以后实现了3D数学库支持“==”在搞
+			//memcpy(shaderVariable->variablePre, shaderVariable->variableCurrent, shaderVariable->size);
+			memcpy((unsigned char*)shaderVariable->variableCurrent + index * sizeof(CXMMATRIX), (void*)&memMatrix, shaderVariable->size);
+		}
+	}
+
 	return true;
 }
