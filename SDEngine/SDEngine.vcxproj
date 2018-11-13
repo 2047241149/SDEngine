@@ -114,6 +114,7 @@
   <ItemGroup>
     <ClCompile Include="Source\CascadeShadowMap.cpp" />
     <ClCompile Include="Source\CascadeShadowMapManager.cpp" />
+    <ClCompile Include="Source\NoiseTexture.cpp" />
     <ClCompile Include="Source\Shader.cpp" />
     <ClCompile Include="Source\DirectxFrame\DirectxFrame.cpp" />
     <ClCompile Include="Source\GameObjectManager.cpp" />
@@ -158,6 +159,7 @@
     <ClInclude Include="Source\CascadeShadowMap.h" />
     <ClInclude Include="Source\CascadeShadowMapManager.h" />
     <ClInclude Include="Source\GraphicsConfig.h" />
+    <ClInclude Include="Source\NoiseTexture.h" />
     <ClInclude Include="Source\Shader.h" />
     <ClInclude Include="Source\DirectxFrame\DirectxFrame.h" />
     <ClInclude Include="Source\GameObjectManager.h" />
@@ -171,7 +173,6 @@
     <ClInclude Include="Source\PointLight.h" />
     <ClInclude Include="Source\RenderTexture.h" />
     <ClInclude Include="Source\CommomVertexFormat.h" />
-    <ClInclude Include="Source\CommonConstantBufferStruct.h" />
     <ClInclude Include="Source\CommonFunction.h" />
     <ClInclude Include="Source\DirectxCore.h" />
     <ClInclude Include="Source\Debugwindow.h" />
@@ -307,6 +308,11 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resource\Shader\ForwardPureShader.fx">
+      <FileType>Document</FileType>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resource\Shader\SSAOShader.hlsl">
       <FileType>Document</FileType>
     </None>
   </ItemGroup>

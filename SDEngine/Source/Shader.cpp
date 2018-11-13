@@ -11,9 +11,7 @@ const int SHADER_MATRIX_SIZE = SHADER_FLOAT_SIZE * 16;
 Shader::Shader(WCHAR* vsFilenPath, WCHAR* psFilenPath) :
 	vertexShader(nullptr),
 	pixelShader(nullptr),
-	inputLayout(nullptr),
-	m_pWrapLinearSampler(nullptr),
-	m_pClampPointSampler(nullptr)
+	inputLayout(nullptr)
 {
 	Init(vsFilenPath, psFilenPath);
 }
@@ -120,30 +118,6 @@ bool Shader::InitShader(WCHAR* VSFileName, WCHAR* PSFileName)
 	ReleaseCOM(pVertexShaderBlob);
 	ReleaseCOM(pPixelShaderBlob);
 
-
-	//填充采样形容结构体,并且创建采样状态
-	D3D11_SAMPLER_DESC samplerDesc;
-	samplerDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
-	samplerDesc.AddressU = D3D11_TEXTURE_ADDRESS_WRAP;
-	samplerDesc.AddressV = D3D11_TEXTURE_ADDRESS_WRAP;
-	samplerDesc.AddressW = D3D11_TEXTURE_ADDRESS_WRAP;
-	samplerDesc.MipLODBias = 0.0f;
-	samplerDesc.MaxAnisotropy = 1;
-	samplerDesc.ComparisonFunc = D3D11_COMPARISON_ALWAYS;
-	samplerDesc.BorderColor[0] = 0;
-	samplerDesc.BorderColor[1] = 0;
-	samplerDesc.BorderColor[2] = 0;
-	samplerDesc.BorderColor[3] = 0;
-	samplerDesc.MinLOD = 0;
-	samplerDesc.MaxLOD = D3D11_FLOAT32_MAX;
-
-	HR(g_pDevice->CreateSamplerState(&samplerDesc, &m_pWrapLinearSampler));
-
-	samplerDesc.AddressU = D3D11_TEXTURE_ADDRESS_CLAMP;
-	samplerDesc.AddressV = D3D11_TEXTURE_ADDRESS_CLAMP;
-	samplerDesc.AddressW = D3D11_TEXTURE_ADDRESS_CLAMP;
-	HR(g_pDevice->CreateSamplerState(&samplerDesc, &m_pClampPointSampler));
-
 	return true;
 }
 
@@ -154,12 +128,10 @@ void Shader::ShutDown()
 	ReleaseCOM(inputLayout);
 	ReleaseCOM(pixelShader);
 	ReleaseCOM(vertexShader);
-	ReleaseCOM(m_pWrapLinearSampler);
-	ReleaseCOM(m_pClampPointSampler);
 }
 
 
-void Shader::SetShaderState()
+void Shader::SetShaderParam()
 {
 	//设置顶点输入布局
 	g_pDeviceContext->IASetInputLayout(inputLayout);
@@ -167,11 +139,6 @@ void Shader::SetShaderState()
 	//设置VertexShader和PixelShader
 	g_pDeviceContext->VSSetShader(vertexShader, nullptr, 0);
 	g_pDeviceContext->PSSetShader(pixelShader, nullptr, 0);
-
-	//设置采样状态
-	g_pDeviceContext->PSSetSamplers(0, 1, &m_pWrapLinearSampler);
-	g_pDeviceContext->PSSetSamplers(1, 1, &m_pClampPointSampler);
-
 }
 
 bool Shader::ReflectShaderConstantBuffer(ID3D11ShaderReflection* reflection)
@@ -179,7 +146,7 @@ bool Shader::ReflectShaderConstantBuffer(ID3D11ShaderReflection* reflection)
 	D3D11_SHADER_DESC shaderDesc;
 	HR(reflection->GetDesc(&shaderDesc));
 
-	for (int cbIndex = 0; cbIndex < shaderDesc.ConstantBuffers; ++cbIndex)
+	for (int cbIndex = 0; cbIndex < (int)shaderDesc.ConstantBuffers; ++cbIndex)
 	{
 		int registerIndex = 0;
 		ID3D11ShaderReflectionConstantBuffer* buffer = nullptr;
@@ -188,7 +155,7 @@ bool Shader::ReflectShaderConstantBuffer(ID3D11ShaderReflection* reflection)
 		D3D11_SHADER_BUFFER_DESC shaderBufferDesc;
 		buffer->GetDesc(&shaderBufferDesc);
 
-		for (int brIndex = 0; brIndex < shaderDesc.BoundResources; ++brIndex)
+		for (int brIndex = 0; brIndex < (int)shaderDesc.BoundResources; ++brIndex)
 		{
 			D3D11_SHADER_INPUT_BIND_DESC shaderIbDesc;
 			reflection->GetResourceBindingDesc(brIndex, &shaderIbDesc);
@@ -207,7 +174,7 @@ bool Shader::ReflectShaderConstantBuffer(ID3D11ShaderReflection* reflection)
 
 			mapShaderContantBuffer[shaderBufferDesc.Name] = shaderCb;
 
-			for (int shaderVarIndex = 0; shaderVarIndex < shaderBufferDesc.Variables; ++shaderVarIndex)
+			for (int shaderVarIndex = 0; shaderVarIndex < (int)shaderBufferDesc.Variables; ++shaderVarIndex)
 			{
 				ID3D11ShaderReflectionVariable* shaderRefVarible = buffer->GetVariableByIndex(shaderVarIndex);		
 				D3D11_SHADER_VARIABLE_DESC shaderVarDesc;
@@ -370,7 +337,7 @@ bool Shader::SetFloat4(const string& variableName, XMFLOAT4 value)
 void Shader::Apply()
 {
 	UpdateConstantBuffer();
-	SetShaderState();
+	SetShaderParam();
 }
 
 bool Shader::UpdateConstantBuffer()
@@ -420,7 +387,7 @@ bool Shader::ReflectInputLayout(ID3D11ShaderReflection* vertexShaderReflection, 
 	
 	unsigned int alignedByteOffset = 0;
 	
-	for (int inputParamIndex = 0; inputParamIndex < vertexShaderDesc.InputParameters; ++inputParamIndex)
+	for (int inputParamIndex = 0; inputParamIndex < (int)vertexShaderDesc.InputParameters; ++inputParamIndex)
 	{
 		D3D11_SIGNATURE_PARAMETER_DESC signatureParamDesc;
 		vertexShaderReflection->GetInputParameterDesc(inputParamIndex, &signatureParamDesc);
@@ -549,7 +516,7 @@ bool Shader::ReflectShaderTexture(ID3D11ShaderReflection* shaderReflection)
 {
 	D3D11_SHADER_DESC shaderDesc;
 	HR(shaderReflection->GetDesc(&shaderDesc));
-	for (int brIndex = 0; brIndex < shaderDesc.BoundResources; ++brIndex)
+	for (int brIndex = 0; brIndex < (int)shaderDesc.BoundResources; ++brIndex)
 	{
 		D3D11_SHADER_INPUT_BIND_DESC shaderIbDesc;
 		shaderReflection->GetResourceBindingDesc(brIndex, &shaderIbDesc);
@@ -571,7 +538,7 @@ bool Shader::ReflectShaderSampler(ID3D11ShaderReflection* shaderReflection)
 {
 	D3D11_SHADER_DESC shaderDesc;
 	HR(shaderReflection->GetDesc(&shaderDesc));
-	for (int brIndex = 0; brIndex < shaderDesc.BoundResources; ++brIndex)
+	for (int brIndex = 0; brIndex < (int)shaderDesc.BoundResources; ++brIndex)
 	{
 		D3D11_SHADER_INPUT_BIND_DESC shaderIbDesc;
 		shaderReflection->GetResourceBindingDesc(brIndex, &shaderIbDesc);
@@ -597,9 +564,23 @@ bool Shader::SetMatrixArrayElement(const string& variableName, const CXMMATRIX& 
 		if (ShaderVariableType::SHADER_MATRIX == shaderVariable->variableType && 0 == shaderVariable->size % sizeof(CXMMATRIX))
 		{
 			XMMATRIX memMatrix = XMMatrixTranspose(matrix);
+
 			//暂时不支持记忆之前的值,等以后实现了3D数学库支持“==”在搞
-			//memcpy(shaderVariable->variablePre, shaderVariable->variableCurrent, shaderVariable->size);
 			memcpy((unsigned char*)shaderVariable->variableCurrent + index * sizeof(CXMMATRIX), (void*)&memMatrix, shaderVariable->size);
+		}
+	}
+
+	return true;
+}
+
+bool Shader::SetFloat3ArrayElement(const string& variableName, XMFLOAT3 value, int index)
+{
+	if (mapShaderVariable.find(variableName) != mapShaderVariable.end())
+	{
+		shared_ptr<ShaderVariable> shaderVariable = mapShaderVariable[variableName];
+		if (ShaderVariableType::SHADER_FLOAT3 == shaderVariable->variableType && 0 == shaderVariable->size % sizeof(XMFLOAT3))
+		{
+			memcpy((unsigned char*)shaderVariable->variableCurrent + index * sizeof(XMFLOAT3), (void*)&value, shaderVariable->size);
 		}
 	}
 

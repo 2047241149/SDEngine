@@ -1,4 +1,3 @@
-SamplerState SampleType:register(s0);   //采样方式
 
 
 cbuffer CBMatrix:register(b0)

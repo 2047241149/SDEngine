@@ -1,17 +1,17 @@
 
 #pragma once
-#ifndef _MATH_TOOL_H
-#define _MATH_TOOL_H
+#ifndef _FMATH_H
+#define _FMATH_H
 #include<DirectXMath.h>
 using namespace DirectX;
 
-namespace MathTool
+struct FMath
 {
 	//返回一个矩阵的逆矩阵的转置
-	XMMATRIX GetInvenseTranspose(CXMMATRIX ma);
-	float Max(float a, float b);
+	static XMMATRIX GetInvenseTranspose(CXMMATRIX ma);
+	static float Max(float left, float right);
+	static float lerp(float left, float right, float percent);
 };
-
 
 
 #endif

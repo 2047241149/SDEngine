@@ -138,6 +138,9 @@
     <ClCompile Include="Source\CascadeShadowMap.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="Source\NoiseTexture.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Camera.h">
@@ -147,9 +150,6 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="Source\CommomVertexFormat.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\CommonConstantBufferStruct.h">
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="Source\CommonFunction.h">
@@ -281,6 +281,9 @@
     <ClInclude Include="Source\CascadeShadowMap.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="Source\NoiseTexture.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="Resource\Shader\DefferLightingShader.fx" />
@@ -308,5 +311,6 @@
     <None Include="Resource\Shader\DirShadowMapShader.fx" />
     <None Include="Resource\Shader\DefferedDirLightShader.hlsl" />
     <None Include="Resource\Shader\ForwardPureShader.fx" />
+    <None Include="Resource\Shader\SSAOShader.hlsl" />
   </ItemGroup>
 </Project>

@@ -37,6 +37,7 @@ private:
 
 
 #define GTextureSamplerManager TextureSamplerManager::Get()
-
+#define GTextureSamplerBilinearWrap	GTextureSamplerManager->GetTextureSampler(TextureSampler::BilinearFliterWrap)
+#define GTextureSamplerBilinearClamp GTextureSamplerManager->GetTextureSampler(TextureSampler::BilinearFliterClamp)
 
 #endif // !_TEXTURE_SAMPLER_MANAGER_H

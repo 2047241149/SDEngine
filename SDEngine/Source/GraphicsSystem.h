@@ -26,8 +26,10 @@
 #include "LightManager.h"
 #include "CascadeShadowMapManager.h"
 #include "GraphicsConfig.h"
+#include "NoiseTexture.h"
 
-
+const int SSAO_NOISE_TEXTURE_SIZE = 16;
+const int SSAO_VEC_SCALE_NUM = 64;
 class GraphicsSystem
 {
 
@@ -52,7 +54,9 @@ private:
 	shared_ptr<RenderTexture> mSrcRT;
 	shared_ptr<RenderTexture> mLightBuffer;
 	shared_ptr<RenderTexture> mGrayShadowMap;
-	shared_ptr<RenderTexture> ssaoRT;;
+	shared_ptr<RenderTexture> ssaoRT;
+	shared_ptr<NoiseTexture> ssaoNoiseTexture;
+	XMFLOAT3 ssaoSampleArray[SSAO_VEC_SCALE_NUM];
 	shared_ptr<CascadedShadowsManager> mCascadeShadowsManager;
 
 	//GeometryBuffer
@@ -85,6 +89,7 @@ private:
 	void RenderPostEffectPass();
 	void RenderDebugWindow();
 	void RenderSSRPass();
+	void RenderSSAOPass();
 	void RenderSSRBufferPass();
 	void RenderSceneBackDepthBuffer();
 	void RenderPointLightPass();

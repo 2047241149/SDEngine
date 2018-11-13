@@ -1,6 +1,8 @@
 #include "GraphicsSystem.h"
 #include "TextureSamplerManager.h"
 
+
+
 GraphicsSystem::GraphicsSystem(int ScreenWidth, int ScreenHeight, HWND hwnd, HINSTANCE hinstance)
 {
 	Init(ScreenWidth, ScreenHeight, hwnd, hinstance);
@@ -136,6 +138,8 @@ bool GraphicsSystem::Init(int ScreenWidth, int ScreenHeight, HWND hwnd,HINSTANCE
 
 	ssaoRT = shared_ptr<RenderTexture>(new RenderTexture(ScreenWidth, ScreenHeight, TextureFormat::R32));
 
+	ssaoNoiseTexture = shared_ptr<NoiseTexture>(new NoiseTexture(SSAO_NOISE_TEXTURE_SIZE, SSAO_NOISE_TEXTURE_SIZE));
+	
 	mGeometryBuffer = shared_ptr<GeometryBuffer>(new 
 		GeometryBuffer(ScreenWidth,ScreenHeight,SCREEN_FAR,SCREEN_NEAR));
 
@@ -147,6 +151,21 @@ bool GraphicsSystem::Init(int ScreenWidth, int ScreenHeight, HWND hwnd,HINSTANCE
 
 	mSSRBuffer = shared_ptr<SSRGBuffer>(new 
 		SSRGBuffer(ScreenWidth, ScreenHeight, SCREEN_FAR, SCREEN_NEAR));
+
+	for (int index = 0; index < SSAO_VEC_SCALE_NUM; ++index)
+	{
+		float randomX = (rand() / RAND_MAX) * 2.0f - 1.0f;
+		float randomY = (rand() / RAND_MAX) * 2.0f - 1.0f;
+		float randomZ = rand() / RAND_MAX;
+		XMVECTOR random = XMVectorSet(randomX, randomY, randomZ, 0.0f);
+		random = XMVector3Normalize(random);
+		float randomFactor = rand() / RAND_MAX;
+		random = XMVectorMultiply(random, XMVectorSet(randomFactor, randomFactor, randomFactor, 0.0f));
+		float scale = float(index) / 64.0f;
+		scale = FMath::lerp(0.1f, 1.0f, scale * scale);
+		random = XMVectorMultiply(random, XMVectorSet(scale, scale, scale, 0.0f));
+		XMStoreFloat3(&ssaoSampleArray[index], random);
+	}
 
 	return true;
 }
@@ -587,7 +606,7 @@ void GraphicsSystem::RenderPointLightPass()
 		GShaderManager->forwardPureColorShader->SetMatrix("World", pPoinntLight->GetWorldMatrix());
 		GShaderManager->forwardPureColorShader->SetMatrix("View", GCamera->GetViewMatrix());
 		GShaderManager->forwardPureColorShader->SetMatrix("Proj", GCamera->GetProjectionMatrix());
-		GShaderManager->forwardPureColorShader->SetMatrix("WorldInvTranspose", MathTool::GetInvenseTranspose(pPoinntLight->GetWorldMatrix()));
+		GShaderManager->forwardPureColorShader->SetMatrix("WorldInvTranspose", FMath::GetInvenseTranspose(pPoinntLight->GetWorldMatrix()));
 		GShaderManager->forwardPureColorShader->Apply();
 		m_pPointVolume->RenderMesh();
 
@@ -608,6 +627,7 @@ void GraphicsSystem::RenderPointLightPass()
 		GShaderManager->defferedPointLightShader->SetFloat3("lightPos", pPointLight->GetPosition());
 		GShaderManager->defferedPointLightShader->SetFloat("radius", pPointLight->GetRadius());
 		GShaderManager->defferedPointLightShader->SetFloat4("attenuation", pPointLight->GetLightAttenuation());
+		GShaderManager->defferedPointLightShader->SetTextureSampler("clampLinearSample", GTextureSamplerBilinearClamp);
 		GShaderManager->defferedPointLightShader->Apply();
 		m_pPointVolume->RenderMesh();
 		GDirectxCore->TurnOffAlphaBlend();
@@ -644,6 +664,7 @@ void GraphicsSystem::RenderDirLightPass()
 		GShaderManager->defferedDirLightShader->SetFloat4("lightColor", lightColor);
 		GShaderManager->defferedDirLightShader->SetFloat3("lightDir", pDirLight->GetLightDirection());
 		GShaderManager->defferedDirLightShader->SetFloat3("ambientLight", pDirLight->GetAmbientLight());
+		GShaderManager->defferedDirLightShader->SetTextureSampler("clampLinearSample", GTextureSamplerBilinearClamp);
 		GShaderManager->defferedDirLightShader->Apply();
 		mQuad->Render();
 	}
@@ -665,6 +686,7 @@ void GraphicsSystem::RenderFinalShadingPass()
 	pShaderViewArray[1] = mLightBuffer->GetSRV();
 	GShaderManager->defferedFinalShader->SetTexture("DiffuseTex", mGeometryBuffer->GetGBufferSRV(GBufferType::Diffuse));
 	GShaderManager->defferedFinalShader->SetTexture("LightBufferTex", mLightBuffer->GetSRV());
+	GShaderManager->defferedFinalShader->SetTextureSampler("clampLinearSample", GTextureSamplerBilinearClamp);
 	GShaderManager->defferedFinalShader->Apply();
 	mQuad->Render();
 	
@@ -719,4 +741,9 @@ void GraphicsSystem::RenderShadowMapPass()
 	mQuad->Render();
 
 	GDirectxCore->RecoverDefaultDSS();
+}
+
+void GraphicsSystem::RenderSSAOPass()
+{
+
 }

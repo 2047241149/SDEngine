@@ -1,7 +1,8 @@
-Texture2D ShaderTexture:register(t0);  //纹理资源
-SamplerState SampleType:register(s0);   //采样方式
+Texture2D ShaderTexture:register(t0);
+SamplerState LinearClamp:register(s0);  
 
-//VertexShader
+
+
 cbuffer CBMatrix:register(b0)
 {
 	matrix UIView;
@@ -11,7 +12,7 @@ cbuffer CBMatrix:register(b0)
 struct VertexIn
 {
 	float3 Pos:POSITION;
-	float2 Tex:TEXCOORD;  //多重纹理可以用其它数字
+	float2 Tex:TEXCOORD;  
 
 };
 
@@ -36,5 +37,5 @@ VertexOut VS(VertexIn ina)
 
 float4 PS(VertexOut outa) : SV_Target
 {
-	return ShaderTexture.Sample(SampleType, outa.Tex);
+	return ShaderTexture.Sample(LinearClamp, outa.Tex);
 }

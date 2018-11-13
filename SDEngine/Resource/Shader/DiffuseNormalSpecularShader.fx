@@ -2,7 +2,6 @@ Texture2D DiffuseTexture:register(t0);  //纹理资源
 Texture2D NormalTexture:register(t1);  //纹理资源
 Texture2D SpecularTexture:register(t2);  //纹理资源
 SamplerState SampleWrapLinear:register(s0);
-SamplerState SampleClampPoint:register(s1);
 
 cbuffer CBMatrix:register(b0)
 {

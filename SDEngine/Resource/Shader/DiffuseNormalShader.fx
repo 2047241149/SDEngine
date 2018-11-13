@@ -1,7 +1,6 @@
 Texture2D DiffuseTexture:register(t0); 
 Texture2D NormalTexture:register(t1);
 SamplerState SampleWrapLinear:register(s0);
-SamplerState SampleClampPoint:register(s1);
 
 cbuffer CBMatrix:register(b0)
 {

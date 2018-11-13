@@ -30,9 +30,6 @@ void GameObject::Shutdown()
 
 }
 
-
-
-
 void GameObject::Render()
 {
 	MaterialType eMaterialType = m_pMesh->m_eMaterialType;
@@ -68,7 +65,7 @@ void GameObject::Render()
 				GShaderManager->pureColorShader->SetMatrix("World", worldMatrix);
 				GShaderManager->pureColorShader->SetMatrix("View", GCamera->GetViewMatrix());
 				GShaderManager->pureColorShader->SetMatrix("Proj", GCamera->GetProjectionMatrix());
-				GShaderManager->pureColorShader->SetMatrix("WorldInvTranspose", MathTool::GetInvenseTranspose(worldMatrix));
+				GShaderManager->pureColorShader->SetMatrix("WorldInvTranspose", FMath::GetInvenseTranspose(worldMatrix));
 				GShaderManager->pureColorShader->SetFloat4("surfaceColor", m_pMesh->pureColor);
 				GShaderManager->pureColorShader->Apply();
 			}
@@ -80,7 +77,7 @@ void GameObject::Render()
 					GShaderManager->pureColorShader->SetMatrix("World", worldMatrix);
 					GShaderManager->pureColorShader->SetMatrix("View", GCamera->GetViewMatrix());
 					GShaderManager->pureColorShader->SetMatrix("Proj", GCamera->GetProjectionMatrix());
-					GShaderManager->pureColorShader->SetMatrix("WorldInvTranspose", MathTool::GetInvenseTranspose(worldMatrix));
+					GShaderManager->pureColorShader->SetMatrix("WorldInvTranspose", FMath::GetInvenseTranspose(worldMatrix));
 					GShaderManager->pureColorShader->SetFloat4("surfaceColor", errorShaderColor);
 					GShaderManager->pureColorShader->Apply();
 				}
@@ -90,8 +87,9 @@ void GameObject::Render()
 					GShaderManager->diffuseShader->SetMatrix("World", worldMatrix);
 					GShaderManager->diffuseShader->SetMatrix("View", GCamera->GetViewMatrix());
 					GShaderManager->diffuseShader->SetMatrix("Proj", GCamera->GetProjectionMatrix());
-					GShaderManager->diffuseShader->SetMatrix("WorldInvTranspose", MathTool::GetInvenseTranspose(worldMatrix));
+					GShaderManager->diffuseShader->SetMatrix("WorldInvTranspose", FMath::GetInvenseTranspose(worldMatrix));
 					GShaderManager->diffuseShader->SetTexture("DiffuseTexture", diffuseSRV);
+					GShaderManager->diffuseShader->SetTextureSampler("SampleWrapLinear", GTextureSamplerBilinearWrap);
 					GShaderManager->diffuseShader->Apply();
 				}
 			}
@@ -103,9 +101,10 @@ void GameObject::Render()
 					GShaderManager->diffuseNormalShader->SetMatrix("World", worldMatrix);
 					GShaderManager->diffuseNormalShader->SetMatrix("View", GCamera->GetViewMatrix());
 					GShaderManager->diffuseNormalShader->SetMatrix("Proj", GCamera->GetProjectionMatrix());
-					GShaderManager->diffuseNormalShader->SetMatrix("WorldInvTranspose", MathTool::GetInvenseTranspose(worldMatrix));
+					GShaderManager->diffuseNormalShader->SetMatrix("WorldInvTranspose", FMath::GetInvenseTranspose(worldMatrix));
 					GShaderManager->diffuseNormalShader->SetTexture("DiffuseTexture", diffuseSRV);
 					GShaderManager->diffuseNormalShader->SetTexture("NormalTexture", bumpSRV);
+					GShaderManager->diffuseNormalShader->SetTextureSampler("SampleWrapLinear", GTextureSamplerBilinearWrap);
 					GShaderManager->diffuseNormalShader->Apply();
 				}
 				else
@@ -113,7 +112,7 @@ void GameObject::Render()
 					GShaderManager->pureColorShader->SetMatrix("World", worldMatrix);
 					GShaderManager->pureColorShader->SetMatrix("View", GCamera->GetViewMatrix());
 					GShaderManager->pureColorShader->SetMatrix("Proj", GCamera->GetProjectionMatrix());
-					GShaderManager->pureColorShader->SetMatrix("WorldInvTranspose", MathTool::GetInvenseTranspose(worldMatrix));
+					GShaderManager->pureColorShader->SetMatrix("WorldInvTranspose", FMath::GetInvenseTranspose(worldMatrix));
 					GShaderManager->pureColorShader->SetFloat4("surfaceColor", errorShaderColor);
 					GShaderManager->pureColorShader->Apply();
 				}
@@ -127,9 +126,10 @@ void GameObject::Render()
 					GShaderManager->diffuseSpecShader->SetMatrix("World", worldMatrix);
 					GShaderManager->diffuseSpecShader->SetMatrix("View", GCamera->GetViewMatrix());
 					GShaderManager->diffuseSpecShader->SetMatrix("Proj", GCamera->GetProjectionMatrix());
-					GShaderManager->diffuseSpecShader->SetMatrix("WorldInvTranspose", MathTool::GetInvenseTranspose(worldMatrix));
+					GShaderManager->diffuseSpecShader->SetMatrix("WorldInvTranspose", FMath::GetInvenseTranspose(worldMatrix));
 					GShaderManager->diffuseSpecShader->SetTexture("DiffuseTexture", diffuseSRV);
 					GShaderManager->diffuseSpecShader->SetTexture("SpecularTexture", specSRV);
+					GShaderManager->diffuseSpecShader->SetTextureSampler("SampleWrapLinear", GTextureSamplerBilinearWrap);
 					GShaderManager->diffuseSpecShader->Apply();
 				}
 				else
@@ -137,7 +137,7 @@ void GameObject::Render()
 					GShaderManager->pureColorShader->SetMatrix("World", worldMatrix);
 					GShaderManager->pureColorShader->SetMatrix("View", GCamera->GetViewMatrix());
 					GShaderManager->pureColorShader->SetMatrix("Proj", GCamera->GetProjectionMatrix());
-					GShaderManager->pureColorShader->SetMatrix("WorldInvTranspose", MathTool::GetInvenseTranspose(worldMatrix));
+					GShaderManager->pureColorShader->SetMatrix("WorldInvTranspose", FMath::GetInvenseTranspose(worldMatrix));
 					GShaderManager->pureColorShader->SetFloat4("surfaceColor", errorShaderColor);
 					GShaderManager->pureColorShader->Apply();
 				}
@@ -152,15 +152,12 @@ void GameObject::Render()
 					GShaderManager->diffuseNormalSpecShader->SetMatrix("World", worldMatrix);
 					GShaderManager->diffuseNormalSpecShader->SetMatrix("View", GCamera->GetViewMatrix());
 					GShaderManager->diffuseNormalSpecShader->SetMatrix("Proj", GCamera->GetProjectionMatrix());
-					GShaderManager->diffuseNormalSpecShader->SetMatrix("WorldInvTranspose", MathTool::GetInvenseTranspose(worldMatrix));
+					GShaderManager->diffuseNormalSpecShader->SetMatrix("WorldInvTranspose", FMath::GetInvenseTranspose(worldMatrix));
 					GShaderManager->diffuseNormalSpecShader->SetTexture("DiffuseTexture", diffuseSRV);
 					GShaderManager->diffuseNormalSpecShader->SetTexture("NormalTexture", bumpSRV);
 					GShaderManager->diffuseNormalSpecShader->SetTexture("SpecularTexture", specSRV);
 					GShaderManager->diffuseNormalSpecShader->SetTextureSampler("SampleWrapLinear", 
-						GTextureSamplerManager->GetTextureSampler(TextureSampler::BilinearFliterWrap));
-
-					GShaderManager->diffuseNormalSpecShader->SetTextureSampler("SampleClampPoint", 
-						GTextureSamplerManager->GetTextureSampler(TextureSampler::PointClamp));
+						GTextureSamplerBilinearWrap);
 					GShaderManager->diffuseNormalSpecShader->Apply();
 				}
 				else
@@ -168,7 +165,7 @@ void GameObject::Render()
 					GShaderManager->pureColorShader->SetMatrix("World", worldMatrix);
 					GShaderManager->pureColorShader->SetMatrix("View", GCamera->GetViewMatrix());
 					GShaderManager->pureColorShader->SetMatrix("Proj", GCamera->GetProjectionMatrix());
-					GShaderManager->pureColorShader->SetMatrix("WorldInvTranspose", MathTool::GetInvenseTranspose(worldMatrix));
+					GShaderManager->pureColorShader->SetMatrix("WorldInvTranspose", FMath::GetInvenseTranspose(worldMatrix));
 					GShaderManager->pureColorShader->SetFloat4("surfaceColor", errorShaderColor);
 					GShaderManager->pureColorShader->Apply();
 				}
@@ -179,7 +176,7 @@ void GameObject::Render()
 				GShaderManager->pureColorShader->SetMatrix("World", worldMatrix);
 				GShaderManager->pureColorShader->SetMatrix("View", GCamera->GetViewMatrix());
 				GShaderManager->pureColorShader->SetMatrix("Proj", GCamera->GetProjectionMatrix());
-				GShaderManager->pureColorShader->SetMatrix("WorldInvTranspose", MathTool::GetInvenseTranspose(worldMatrix));
+				GShaderManager->pureColorShader->SetMatrix("WorldInvTranspose", FMath::GetInvenseTranspose(worldMatrix));
 				GShaderManager->pureColorShader->SetFloat4("surfaceColor", XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f));
 				GShaderManager->pureColorShader->Apply();
 

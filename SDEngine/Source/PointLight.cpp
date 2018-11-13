@@ -52,7 +52,7 @@ XMMATRIX PointLight::GetWorldMatrix()
 void PointLight::CalculateQuadratic()
 {
 	float fMaxLightIntensity = 
-		MathTool::Max(MathTool::Max(m_LightColor.x, m_LightColor.y), m_LightColor.z) * m_fLightIntensity;
+		FMath::Max(FMath::Max(m_LightColor.x, m_LightColor.y), m_LightColor.z) * m_fLightIntensity;
 
 	float num1 = (fMaxLightIntensity / EDGE_LIGHT_INTENSITY) - m_lightAttenuation.x - m_lightAttenuation.y * m_fRadius;
 	m_lightAttenuation.z = num1 / (m_fRadius * m_fRadius);

@@ -70,7 +70,7 @@ public:
 protected:
 	// Õ∑≈Shader
 	virtual void ShutDown();
-	virtual void SetShaderState();
+	virtual void SetShaderParam();
 
 public:
 	void Apply();
@@ -79,6 +79,7 @@ public:
 	bool SetFloat(const string& variableName, float value);
 	bool SetFloat2(const string& variableName, XMFLOAT2 value);
 	bool SetFloat3(const string& variableName, XMFLOAT3 value);
+	bool SetFloat3ArrayElement(const string& variableName, XMFLOAT3 value, int index);
 	bool SetFloat4(const string& variableName, XMFLOAT4 value);
 	bool SetTexture(const string& variableName, ID3D11ShaderResourceView* texture);
 	bool SetTextureSampler(const string& variableName, ID3D11SamplerState* sampler);
@@ -95,8 +96,6 @@ private:
 	ID3D11VertexShader* vertexShader;
 	ID3D11PixelShader* pixelShader;
 	ID3D11InputLayout* inputLayout;
-	ID3D11SamplerState *m_pWrapLinearSampler;
-	ID3D11SamplerState *m_pClampPointSampler;
 	map<string, shared_ptr<ShaderConstantBuffer>> mapShaderContantBuffer;
 	map<string, shared_ptr<ShaderVariable>> mapShaderVariable;
 	map<string, shared_ptr<ShaderTexture>> mapShaderTexture;

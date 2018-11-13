@@ -1,9 +1,7 @@
 Texture2D WorldPosTex:register(t0);
 Texture2D WorldNormalTex:register(t1);
 Texture2D SpecularTex:register(t2);
-
-SamplerState wrapLinearSample:register(s0);  
-SamplerState clampLinearSample:register(s1);  
+SamplerState clampLinearSample:register(s0);  
 
 cbuffer CBMatrix:register(b0)
 {
@@ -57,7 +55,7 @@ float4 PS(VertexOut outa) : SV_Target
 	float3 worldPos = WorldPosTex.Sample(clampLinearSample, uv).xyz;
 	float3 worldNormal = WorldNormalTex.Sample(clampLinearSample, uv).xyz;
 	worldNormal = normalize(worldNormal);
-	float specular = SpecularTex.Sample(wrapLinearSample, uv).x;
+	float specular = SpecularTex.Sample(clampLinearSample, uv).x;
 
 	//º∆À„DiffuseLight
 	float3 pixelToLightDir = lightPos - worldPos;

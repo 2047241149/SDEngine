@@ -19,7 +19,6 @@
 #include "Macro.h"
 #include "MathTool.h"
 #include "CommomVertexFormat.h"
-#include "CommonConstantBufferStruct.h"
 #include "CommonFunction.h"
 #include "Log.h"
 

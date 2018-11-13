@@ -1,8 +1,6 @@
 Texture2D DiffuseTex:register(t0);
 Texture2D LightBufferTex:register(t1);
-
-SamplerState wrapLinearSample:register(s0);  
-SamplerState clampLinearSample:register(s1);  
+SamplerState clampLinearSample:register(s0);  
 
 
 struct VertexIn
