@@ -2,6 +2,7 @@ Texture2D WorldPosTex:register(t0);
 Texture2D WorldNormalTex:register(t1);
 Texture2D SpecularTex:register(t2);
 Texture2D DirLightShadowMap:register(t3);
+Texture2D SSAORT:register(t4);
 
 SamplerState clampLinearSample:register(s0);  
 
@@ -50,10 +51,11 @@ float4 PS(VertexOut outa) : SV_Target
 	float3 halfDir = normalize(invLightDir + viewDir);
 	float specularFactor = pow(saturate(dot(halfDir, worldNormal)), 32) * specular * 0.05;
 
+	float ao = SSAORT.Sample(clampLinearSample, outa.Tex).r;
 
 	//¿˚”√DirLightShadowMap
 	float3 shadowFactor = DirLightShadowMap.Sample(clampLinearSample, outa.Tex).rgb;
-	color = float4(ambientLight + lightColor.xyz * diffuseFactor * shadowFactor * lightColor.w, 1.0);
+	color = float4(ambientLight * ao + lightColor.xyz * diffuseFactor * shadowFactor * lightColor.w, 1.0);
 	color.w = specularFactor;
 
 	return color;

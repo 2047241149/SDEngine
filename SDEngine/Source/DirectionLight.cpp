@@ -37,12 +37,10 @@ void DirectionLight::SetLightDiretion(XMFLOAT3 lightDir)
 	m_DirLightDiretion = lightDir;
 }
 
-
 XMFLOAT3 DirectionLight::GetLightDirection()
 {
 	return m_DirLightDiretion;
 }
-
 
 //相机的位置当作平行光源的位置
 XMMATRIX DirectionLight::GetViewMatrix()

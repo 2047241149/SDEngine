@@ -82,6 +82,12 @@ bool ShaderManager::Init()
 	shadowMapShader = shared_ptr<Shader>(new
 		Shader(L"Resource/Shader/DirShadowMapShader.fx", L"Resource/Shader/DirShadowMapShader.fx"));
 	
+	ssaoShader = shared_ptr<Shader>(new
+		Shader(L"Resource/Shader/SSAOShader.hlsl", L"Resource/Shader/SSAOShader.hlsl"));
+
+	ssaoBlurShader = shared_ptr<Shader>(new
+		Shader(L"Resource/Shader/SSAOBlurShader.hlsl", L"Resource/Shader/SSAOBlurShader.hlsl"));
+
 	return true;
 }
 

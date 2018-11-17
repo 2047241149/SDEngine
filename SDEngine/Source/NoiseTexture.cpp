@@ -1,5 +1,5 @@
 #include "NoiseTexture.h"
-
+#include <time.h>
 NoiseTexture::NoiseTexture(int textureWidth, int textureHeight)
 {
 	Init(textureWidth, textureHeight);
@@ -20,6 +20,7 @@ bool NoiseTexture::Init(int textureWidth, int textureHeight)
 	if (0 == textureWidth || 0 == textureHeight)
 		return false;
 
+	srand((unsigned)time(NULL));
 	XMFLOAT3* color = new XMFLOAT3[textureWidth * textureHeight];
 	D3D11_TEXTURE2D_DESC textureDesc;
 	D3D11_SHADER_RESOURCE_VIEW_DESC shaderResourceViewDesc;
@@ -32,7 +33,7 @@ bool NoiseTexture::Init(int textureWidth, int textureHeight)
 		for (int y = 0; y < textureHeight; ++y)
 		{
 			//-1.0 - 1.0  -1.0 - 1.0  0.0
-			color[y * textureWidth + x] = XMFLOAT3((rand() / RAND_MAX) * 2.0f -  1.0f, (rand() / RAND_MAX)* 2.0f - 1.0f, 0.0f);
+			color[y * textureWidth + x] = XMFLOAT3(((float)rand() / (float)RAND_MAX) * 2.0f -  1.0f, ((float)rand() / (float)RAND_MAX)* 2.0f - 1.0f, 0.0f);
 		}
 	}
 

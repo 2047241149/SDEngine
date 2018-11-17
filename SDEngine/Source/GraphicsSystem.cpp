@@ -39,7 +39,7 @@ bool GraphicsSystem::Init(int ScreenWidth, int ScreenHeight, HWND hwnd,HINSTANCE
 	//给游戏添加灯光 
 	shared_ptr<DirectionLight> m_spDirLight = shared_ptr<DirectionLight>(new DirectionLight());
 	m_spDirLight->SetLightDiretion(XMFLOAT3(-0.5f, -1.0f, 0.0f));
-	m_spDirLight->SetAmbientLight(XMFLOAT3(0.1f, 0.1f, 0.1f));
+	m_spDirLight->SetAmbientLight(XMFLOAT3(0.15f, 0.15f, 0.15f));
 	m_spDirLight->SetLightColor(XMFLOAT3(1.0f, 1.0f, 1.0f));
 	m_spDirLight->SetLightPostion(XMFLOAT3(10.0f, 10.0f, 10.0f));
 	GLightManager->Add(m_spDirLight);
@@ -135,10 +135,6 @@ bool GraphicsSystem::Init(int ScreenWidth, int ScreenHeight, HWND hwnd,HINSTANCE
 	mGrayShadowMap = shared_ptr<RenderTexture>(new RenderTexture(ScreenWidth, ScreenHeight, TextureFormat::R32));
 
 	mLightBuffer = shared_ptr<RenderTexture>(new RenderTexture(ScreenWidth, ScreenHeight, TextureFormat::R32));
-
-	ssaoRT = shared_ptr<RenderTexture>(new RenderTexture(ScreenWidth, ScreenHeight, TextureFormat::R32));
-
-	ssaoNoiseTexture = shared_ptr<NoiseTexture>(new NoiseTexture(SSAO_NOISE_TEXTURE_SIZE, SSAO_NOISE_TEXTURE_SIZE));
 	
 	mGeometryBuffer = shared_ptr<GeometryBuffer>(new 
 		GeometryBuffer(ScreenWidth,ScreenHeight,SCREEN_FAR,SCREEN_NEAR));
@@ -152,20 +148,9 @@ bool GraphicsSystem::Init(int ScreenWidth, int ScreenHeight, HWND hwnd,HINSTANCE
 	mSSRBuffer = shared_ptr<SSRGBuffer>(new 
 		SSRGBuffer(ScreenWidth, ScreenHeight, SCREEN_FAR, SCREEN_NEAR));
 
-	for (int index = 0; index < SSAO_VEC_SCALE_NUM; ++index)
-	{
-		float randomX = (rand() / RAND_MAX) * 2.0f - 1.0f;
-		float randomY = (rand() / RAND_MAX) * 2.0f - 1.0f;
-		float randomZ = rand() / RAND_MAX;
-		XMVECTOR random = XMVectorSet(randomX, randomY, randomZ, 0.0f);
-		random = XMVector3Normalize(random);
-		float randomFactor = rand() / RAND_MAX;
-		random = XMVectorMultiply(random, XMVectorSet(randomFactor, randomFactor, randomFactor, 0.0f));
-		float scale = float(index) / 64.0f;
-		scale = FMath::lerp(0.1f, 1.0f, scale * scale);
-		random = XMVectorMultiply(random, XMVectorSet(scale, scale, scale, 0.0f));
-		XMStoreFloat3(&ssaoSampleArray[index], random);
-	}
+	whiteTexture = shared_ptr<Texture>(new Texture(L"Resource/Texture/white.png"));
+
+	ssaoManager = shared_ptr<SSAOManager>(new SSAOManager(ScreenWidth, ScreenHeight));
 
 	return true;
 }
@@ -228,7 +213,6 @@ bool GraphicsSystem::Frame()
 			GCamera->UpDown(deltaTime*CAMERA_SPEED);
 		}
 
-
 		//进行视角上下的旋转(跟刚开始的旋转角度在正负90度之间)
 		if (rotateY <= 90.0f&&rotateY >= -90.0f)
 		{
@@ -265,6 +249,15 @@ bool GraphicsSystem::Frame()
 	if (mInputClass->IsKeyDown(DIK_6))
 	{
 		materialType = MaterialType::DIFFUSE_NORMAL_SPECULAR;
+	}
+
+	if (mInputClass->IsKeyDown(DIK_7))
+	{
+		bSSAO = false;
+	}
+	else
+	{
+		bSSAO = true;
 	}
 
 	GCamera->UpdateViewMatrix();
@@ -311,9 +304,9 @@ void GraphicsSystem::Render()
 	RenderTransparency();
 	g_RenderMask->EndEvent();
 
-	/*#if defined(POST_EFFECT)
-		RenderPostEffectPass();
-	#endif // POST_EFFECT*/
+	g_RenderMask->BeginEvent(L"RenderPostEffect");
+	RenderPostEffectPass();
+	g_RenderMask->EndEvent();
 
 	#if DEBUG_GBUFFER
 	g_RenderMask->BeginEvent(L"DEBUG_GBUFFER");
@@ -358,7 +351,11 @@ void GraphicsSystem::RenderLightingPass()
 	RenderDirLightPass();
 	RenderPointLightPass();
 	RenderFinalShadingPass();
+}
 
+
+void GraphicsSystem::RenderPostEffectPass()
+{
 	g_RenderMask->BeginEvent(L"FXAA");
 	GDirectxCore->SetBackBufferRender();
 	GDirectxCore->SetViewPort();
@@ -368,14 +365,8 @@ void GraphicsSystem::RenderLightingPass()
 	GShaderManager->fxaaShader->SetTextureSampler("anisotropicSampler", GTextureSamplerManager->GetTextureSampler(TextureSampler::Anisotropic));
 	GShaderManager->fxaaShader->Apply();
 	mQuad->Render();
-	g_RenderMask->EndEvent();
 	GDirectxCore->TurnOnZBuffer();
-}
-
-
-void GraphicsSystem::RenderPostEffectPass()
-{
-
+	g_RenderMask->EndEvent();
 }
 
 void GraphicsSystem::RenderDebugWindow()
@@ -422,6 +413,11 @@ void GraphicsSystem::RenderDebugWindow()
 		mGrayShadowMap->GetSRV());
 	GShaderManager->uiShader->Apply();
 	mDebugWindow->Render(610, 600);
+
+	GShaderManager->uiShader->SetTexture("ShaderTexture",
+		ssaoManager->GetSsaoSRV());
+	GShaderManager->uiShader->Apply();
+	mDebugWindow->Render(730, 600);
 
 	#if SSR
 	GShaderManager->SetDepthShader
@@ -480,6 +476,10 @@ void GraphicsSystem::RenderOpacity()
 
 	g_RenderMask->BeginEvent(L"RenderShadowMapPass");
 	RenderShadowMapPass();
+	g_RenderMask->EndEvent();
+
+	g_RenderMask->BeginEvent(L"RenderSSAOPass");
+	RenderSSAOPass();
 	g_RenderMask->EndEvent();
 
 	g_RenderMask->BeginEvent(L"RenderLightingPass");
@@ -665,6 +665,16 @@ void GraphicsSystem::RenderDirLightPass()
 		GShaderManager->defferedDirLightShader->SetFloat3("lightDir", pDirLight->GetLightDirection());
 		GShaderManager->defferedDirLightShader->SetFloat3("ambientLight", pDirLight->GetAmbientLight());
 		GShaderManager->defferedDirLightShader->SetTextureSampler("clampLinearSample", GTextureSamplerBilinearClamp);
+		ID3D11ShaderResourceView* memSSAORT = nullptr;
+		if (bSSAO)
+		{
+			memSSAORT = ssaoManager->GetSsaoSRV();
+		}
+		else
+		{
+			memSSAORT = whiteTexture->GetTexture();
+		}
+		GShaderManager->defferedDirLightShader->SetTexture("SSAORT", memSSAORT);
 		GShaderManager->defferedDirLightShader->Apply();
 		mQuad->Render();
 	}
@@ -745,5 +755,6 @@ void GraphicsSystem::RenderShadowMapPass()
 
 void GraphicsSystem::RenderSSAOPass()
 {
-
+	//渲染得到SSAORT
+	ssaoManager->Render(mGeometryBuffer.get());
 }

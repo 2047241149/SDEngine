@@ -30,6 +30,8 @@ public:
 	shared_ptr<Shader> fxaaShader;
 	shared_ptr<Shader> lightDepthShader;
 	shared_ptr<Shader> shadowMapShader;
+	shared_ptr<Shader> ssaoShader;
+	shared_ptr<Shader> ssaoBlurShader;
 
 private:
 	static shared_ptr<ShaderManager> single;

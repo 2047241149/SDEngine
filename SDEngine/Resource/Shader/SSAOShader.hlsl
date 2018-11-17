@@ -5,13 +5,14 @@ SamplerState clampPointSample:register(s0);
 SamplerState wrapPointSample:register(s1);
 
 static const int SSAO_NUM = 64;
-static const float bias = 0.025;
-static const float radius = 0.5;
-
+static const float bias = 0.0;
+static const float radius = 1.5f;
+	
 cbuffer CBSSAO:register(b0)
 {
 	matrix View;
 	matrix Proj;
+	matrix ViewInvTranspose;
 	float3 ssaoSamples[SSAO_NUM];
 };
 
@@ -51,7 +52,7 @@ float4 PS(VertexOut outa) : SV_Target
 	float3 worldPos = WorldPosTex.Sample(clampPointSample, outa.Tex).rgb;
 	float3 worldNormal = WorldNormalTex.Sample(clampPointSample, outa.Tex).rgb;
 	float3 viewPos = mul(float4(worldPos, 1.0), View).xyz;
-	float3 viewNormal = mul(float4(worldNormal, 1.0), View).xyz;
+	float3 viewNormal = mul(worldNormal, (float3x3)ViewInvTranspose).xyz;
 	float2 noiseTextureCoordScale = texSize(WorldPosTex) / 4.0;
 	float3 randomVec = SSaoNoiseTexture.Sample(wrapPointSample, outa.Tex * noiseTextureCoordScale).rgb;
 	float3 tangent = normalize(randomVec - viewNormal * dot(randomVec, viewNormal));
@@ -69,13 +70,13 @@ float4 PS(VertexOut outa) : SV_Target
 		offset.xyz /= offset.w;
 		offset.xy = offset.xy * float2(0.5, -0.5) + float2(0.5, 0.5);
 
-		float3 samplPos = WorldPosTex.Sample(clampPointSample, outa.Tex).xyz;
+		float3 samplPos = WorldPosTex.Sample(clampPointSample, offset.xy).xyz;
 		float sampleDepth = mul(float4(samplPos, 1.0), View).z;
 		float rangeCheck = smoothstep(0.0, 1.0, radius / (abs(sampleDepth - viewPos.z)));
 
 		//在角落处往往形成sampleDepth < sampleVec.z + bias
 		//opengl和dx11的相机空间的Z值相反的
-		occulusion += (sampleDepth < sampleVec.z + bias ? 1.0 : 0.0) * rangeCheck;
+		occulusion += ((sampleDepth + bias < sampleVec.z) ? 1.0 : 0.0) * rangeCheck;
 	}
 
 	occulusion = 1.0 - (occulusion / SSAO_NUM);

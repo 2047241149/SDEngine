@@ -566,7 +566,7 @@ bool Shader::SetMatrixArrayElement(const string& variableName, const CXMMATRIX& 
 			XMMATRIX memMatrix = XMMatrixTranspose(matrix);
 
 			//暂时不支持记忆之前的值,等以后实现了3D数学库支持“==”在搞
-			memcpy((unsigned char*)shaderVariable->variableCurrent + index * sizeof(CXMMATRIX), (void*)&memMatrix, shaderVariable->size);
+			memcpy((unsigned char*)shaderVariable->variableCurrent + index * sizeof(CXMMATRIX), (void*)&memMatrix, sizeof(CXMMATRIX));
 		}
 	}
 
@@ -578,10 +578,7 @@ bool Shader::SetFloat3ArrayElement(const string& variableName, XMFLOAT3 value, i
 	if (mapShaderVariable.find(variableName) != mapShaderVariable.end())
 	{
 		shared_ptr<ShaderVariable> shaderVariable = mapShaderVariable[variableName];
-		if (ShaderVariableType::SHADER_FLOAT3 == shaderVariable->variableType && 0 == shaderVariable->size % sizeof(XMFLOAT3))
-		{
-			memcpy((unsigned char*)shaderVariable->variableCurrent + index * sizeof(XMFLOAT3), (void*)&value, shaderVariable->size);
-		}
+		memcpy((unsigned char*)shaderVariable->variableCurrent + index * sizeof(XMFLOAT4), (void*)&value, sizeof(XMFLOAT3));
 	}
 
 	return true;

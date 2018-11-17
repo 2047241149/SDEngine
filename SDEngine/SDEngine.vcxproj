@@ -137,6 +137,7 @@
     <ClCompile Include="Source\LoadTexture\WICTextureLoader.cpp" />
     <ClCompile Include="Source\Log.cpp" />
     <ClCompile Include="Source\RWRenderTexture.cpp" />
+    <ClCompile Include="Source\SSAOManager.cpp" />
     <ClCompile Include="Source\TextureSamplerManager.cpp" />
     <ClCompile Include="Source\GeometryBuffer.cpp" />
     <ClCompile Include="Source\FPS.cpp" />
@@ -184,6 +185,7 @@
     <ClInclude Include="Source\LoadTexture\WICTextureLoader.h" />
     <ClInclude Include="Source\Log.h" />
     <ClInclude Include="Source\RWRenderTexture.h" />
+    <ClInclude Include="Source\SSAOManager.h" />
     <ClInclude Include="Source\TextureSamplerManager.h" />
     <ClInclude Include="Source\UtilityEnum.h" />
     <ClInclude Include="Source\GeometryBuffer.h" />
@@ -313,6 +315,11 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resource\Shader\SSAOShader.hlsl">
+      <FileType>Document</FileType>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resource\Shader\SSAOBlurShader.hlsl">
       <FileType>Document</FileType>
     </None>
   </ItemGroup>

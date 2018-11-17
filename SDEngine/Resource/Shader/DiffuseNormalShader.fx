@@ -82,7 +82,7 @@ PixelOut PS(VertexOut outa) : SV_Target
 	worldNormal.z = normal.x * T.z + normal.y * B.z + normal.z * N.z;
 	worldNormal = normalize(worldNormal);
 
-	pixelOut.worldNormal = float4(worldNormal,1.0f);
+	pixelOut.worldNormal = float4(worldNormal, 1.0f);
 
 	//specular
 	pixelOut.specular = float4(0.0f, 0.0f, 0.0f, 1.0f);

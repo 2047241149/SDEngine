@@ -13,6 +13,7 @@ const int SHADOW_MAP_SIZE = 1024;
 const int CASCADE_SHADOW_MAP_NUM = 3;
 const float GAME_ENGINE_UNIT_SCALE = 3.0f;
 const float CASCADE_PERCENT[CASCADE_SHADOW_MAP_NUM + 1] = { 0.0f, 0.05f, 0.15f, 0.6f };
+static bool bSSAO = true;
 
 //#define POST_EFFECT
 //#define SSR
