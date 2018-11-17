@@ -2,7 +2,6 @@
 #include "TextureSamplerManager.h"
 
 
-
 GraphicsSystem::GraphicsSystem(int ScreenWidth, int ScreenHeight, HWND hwnd, HINSTANCE hinstance)
 {
 	Init(ScreenWidth, ScreenHeight, hwnd, hinstance);
@@ -83,7 +82,6 @@ bool GraphicsSystem::Init(int ScreenWidth, int ScreenHeight, HWND hwnd,HINSTANCE
 	pSponzaBottom->m_eMaterialType = MaterialType::DIFFUSE;
 	pSponzaBottom->bReflect = true;
 	pSponzaBottom->bTransparent = false;
-
 	
 	shared_ptr<Mesh> pSponzaNoBottom = shared_ptr<Mesh>(new Mesh("Resource\\FBXModel\\sponza\\sponza_no_bottom.FBX"));
 	pSponzaNoBottom->m_eMaterialType = MaterialType::DIFFUSE;
