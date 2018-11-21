@@ -2,31 +2,27 @@
 #ifndef _GRAPHICS_SYSTEM_H
 #define _GRAPHICS_SYSTEM_H
 
+class SkyBox;
+class RenderTexture;
+class Input;
+class Quad;
+class SSAOManager;
+class CascadedShadowsManager;
+class SSRGBuffer;
+class DebugWindow;
+class GeometryBuffer;
+class DepthBufferRT;
+class Texture;
+class GameObject;
+
+
 #include "DirectxCore.h"
-#include "GameObjectManager.h"
 #include"Macro.h"
 #include"Light.h"
 #include"FPS.h"
-#include"Input.h"
-#include"ShaderManager.h"
-#include"GeometryBuffer.h"
-#include "DepthBufferRT.h"
 #include<memory>
-#include"Quad.h"
-#include"Debugwindow.h"
-#include "RenderTexture.h"
-#include "Camera.h"
-#include "SSRGBuffer.h"
-#include "DirectionWave.h"
-#include "CircleWave.h"
-#include "GerstnerWave.h"
-#include "GerstnerWaveCS.h"
-#include "GrussianBlurCS.h"
-#include "RWRenderTexture.h"
-#include "LightManager.h"
-#include "CascadeShadowMapManager.h"
 #include "GraphicsConfig.h"
-#include "SSAOManager.h"
+#include "Mesh.h"
 
 class GraphicsSystem
 {
@@ -50,6 +46,9 @@ private:
 	shared_ptr<GameObject> mSponzaNoBottom;
 	shared_ptr<GameObject> mSponzaBottom;
 	shared_ptr<GameObject> m_pPointVolume;
+
+	//Ìì¿ÕºÐ×Ó
+	shared_ptr<SkyBox> skyBox;
 
 	shared_ptr<RenderTexture> mSSRRT;
 	shared_ptr<RenderTexture> mSrcRT;
@@ -90,6 +89,7 @@ private:
 	void RenderSSRPass();
 	void RenderSSAOPass();
 	void RenderSSRBufferPass();
+	void RenderSkyBoxPass();
 	void RenderSceneBackDepthBuffer();
 	void RenderPointLightPass();
 	void RenderDirLightPass();

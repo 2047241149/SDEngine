@@ -6,7 +6,7 @@
 //全局变量
 const bool FULL_SCREEN = false;
 const bool VSYNC_ENABLE = false;  //是尽可能快渲染还是限制帧渲染
-const float SCREEN_FAR = 400.0f;  //视截体远裁面
+const float SCREEN_FAR = 600.0f;  //视截体远裁面
 const float SCREEN_NEAR = 0.1f;  //视截体近裁面
 const float CAMERA_SPEED = 35.0f;
 const int SHADOW_MAP_SIZE = 1024;

@@ -18,7 +18,7 @@ public:
 	shared_ptr<Shader> uiShader;
 	shared_ptr<Shader> defferedDirLightShader;
 	shared_ptr<Shader> defferedPointLightShader;
-	shared_ptr<Shader> depthShader;
+	shared_ptr<Shader> depthDisplayShader;
 	shared_ptr<Shader> pureColorShader;
 	shared_ptr<Shader> graphicsBlitShader;
 	shared_ptr<Shader> forwardPureColorShader;
@@ -32,6 +32,7 @@ public:
 	shared_ptr<Shader> shadowMapShader;
 	shared_ptr<Shader> ssaoShader;
 	shared_ptr<Shader> ssaoBlurShader;
+	shared_ptr<Shader> skyBoxShader;
 
 private:
 	static shared_ptr<ShaderManager> single;

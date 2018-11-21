@@ -137,6 +137,7 @@
     <ClCompile Include="Source\LoadTexture\WICTextureLoader.cpp" />
     <ClCompile Include="Source\Log.cpp" />
     <ClCompile Include="Source\RWRenderTexture.cpp" />
+    <ClCompile Include="Source\SkyBox.cpp" />
     <ClCompile Include="Source\SSAOManager.cpp" />
     <ClCompile Include="Source\TextureSamplerManager.cpp" />
     <ClCompile Include="Source\GeometryBuffer.cpp" />
@@ -185,6 +186,7 @@
     <ClInclude Include="Source\LoadTexture\WICTextureLoader.h" />
     <ClInclude Include="Source\Log.h" />
     <ClInclude Include="Source\RWRenderTexture.h" />
+    <ClInclude Include="Source\SkyBox.h" />
     <ClInclude Include="Source\SSAOManager.h" />
     <ClInclude Include="Source\TextureSamplerManager.h" />
     <ClInclude Include="Source\UtilityEnum.h" />
@@ -207,7 +209,7 @@
     <ClInclude Include="Source\Wave.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resource\Shader\DepthShader.fx">
+    <None Include="Resource\Shader\DepthDisplayShader.fx">
       <FileType>Document</FileType>
     </None>
     <None Include="Resource\Shader\DiffuseNormalShader.fx">
@@ -320,6 +322,11 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resource\Shader\SSAOBlurShader.hlsl">
+      <FileType>Document</FileType>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resource\Shader\SkyBoxShader.hlsl">
       <FileType>Document</FileType>
     </None>
   </ItemGroup>

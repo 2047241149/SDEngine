@@ -66,6 +66,8 @@ public:
 	//打开进行反射的DSS
 	void TurnOnEnableReflectDSS();
 
+	void TurnOnRenderSkyBoxDSS();
+
 	//剔除前面
 	void TurnOnCullFront();
 
@@ -106,6 +108,7 @@ private:
 	ID3D11DepthStencilState* md3dDSSEnableReflect; //进行反射面
 	ID3D11DepthStencilState* m_pDSSAddLightVolumeStencil; //标记像素在光源体积内的DSS
 	ID3D11DepthStencilState* m_pDSSRenderLightVolume; //渲染光源体积的DSS
+	ID3D11DepthStencilState* renderSkyBoxDSS;
 	ID3D11RasterizerState* md3dRasterizerState; //D3D的光栅化状态
 	ID3D11RasterizerState* md3dWireFrameRS; //D3D的光栅化状态
 	ID3D11RasterizerState* md3dCullFrontRS; //剔除前面

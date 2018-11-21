@@ -144,6 +144,9 @@
     <ClCompile Include="Source\SSAOManager.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="Source\SkyBox.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Camera.h">
@@ -290,11 +293,13 @@
     <ClInclude Include="Source\SSAOManager.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="Source\SkyBox.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="Resource\Shader\DefferLightingShader.fx" />
     <None Include="Resource\Shader\DepthGetShader.fx" />
-    <None Include="Resource\Shader\DepthShader.fx" />
     <None Include="Resource\Shader\DiffuseNormalShader.fx" />
     <None Include="Resource\Shader\DiffuseNormalSpecularShader.fx" />
     <None Include="Resource\Shader\DiffuseShader.fx" />
@@ -319,5 +324,7 @@
     <None Include="Resource\Shader\ForwardPureShader.fx" />
     <None Include="Resource\Shader\SSAOShader.hlsl" />
     <None Include="Resource\Shader\SSAOBlurShader.hlsl" />
+    <None Include="Resource\Shader\SkyBoxShader.hlsl" />
+    <None Include="Resource\Shader\DepthDisplayShader.fx" />
   </ItemGroup>
 </Project>

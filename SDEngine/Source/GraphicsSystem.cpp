@@ -1,5 +1,17 @@
 #include "GraphicsSystem.h"
 #include "TextureSamplerManager.h"
+#include "SkyBox.h"
+#include "Camera.h"
+#include "GameObjectManager.h"
+#include "RenderTexture.h"
+#include "Input.h"
+#include "CascadeShadowMapManager.h"
+#include "Quad.h"
+#include "Debugwindow.h"
+#include "GeometryBuffer.h"
+#include "SSRGBuffer.h"
+#include "DepthBufferRT.h"
+#include "SSAOManager.h"
 
 
 GraphicsSystem::GraphicsSystem(int ScreenWidth, int ScreenHeight, HWND hwnd, HINSTANCE hinstance)
@@ -150,6 +162,8 @@ bool GraphicsSystem::Init(int ScreenWidth, int ScreenHeight, HWND hwnd,HINSTANCE
 
 	ssaoManager = shared_ptr<SSAOManager>(new SSAOManager(ScreenWidth, ScreenHeight));
 
+	skyBox = shared_ptr<SkyBox>(new SkyBox(L"Resource/Texture/sunsetcube.dds"));
+	
 	return true;
 }
 
@@ -306,6 +320,10 @@ void GraphicsSystem::Render()
 	RenderPostEffectPass();
 	g_RenderMask->EndEvent();
 
+	g_RenderMask->BeginEvent(L"RenderSkyBox");
+	RenderSkyBoxPass();
+	g_RenderMask->EndEvent();
+
 	#if DEBUG_GBUFFER
 	g_RenderMask->BeginEvent(L"DEBUG_GBUFFER");
 	RenderDebugWindow();
@@ -400,22 +418,28 @@ void GraphicsSystem::RenderDebugWindow()
 	GShaderManager->uiShader->Apply();
 	mDebugWindow->Render(370, 600);
 
-	//Depth
-	GShaderManager->uiShader->SetTexture("ShaderTexture",
-		mGeometryBuffer->GetGBufferSRV(GBufferType::Depth));
-	GShaderManager->uiShader->Apply();
-	mDebugWindow->Render(490, 600);
 
-	//
+	//ShadowMap
 	GShaderManager->uiShader->SetTexture("ShaderTexture",
 		mGrayShadowMap->GetSRV());
 	GShaderManager->uiShader->Apply();
 	mDebugWindow->Render(610, 600);
 
+	//SSAO
 	GShaderManager->uiShader->SetTexture("ShaderTexture",
 		ssaoManager->GetSsaoSRV());
 	GShaderManager->uiShader->Apply();
 	mDebugWindow->Render(730, 600);
+
+	//Depth
+	GShaderManager->depthDisplayShader->SetTexture("ShaderTexture",
+		mGeometryBuffer->GetGBufferSRV(GBufferType::Depth));
+	GShaderManager->depthDisplayShader->SetMatrix("UIView", GCamera->GetUIViewMatrix());
+	GShaderManager->depthDisplayShader->SetMatrix("UIOrtho", GCamera->GetUIOrthoMatrix());
+	GShaderManager->depthDisplayShader->SetFloat("farPlane", GCamera->mFarPlane);
+	GShaderManager->depthDisplayShader->SetFloat("nearPlane", GCamera->mNearPlane);
+	GShaderManager->depthDisplayShader->Apply();
+	mDebugWindow->Render(490, 600);
 
 	#if SSR
 	GShaderManager->SetDepthShader
@@ -755,4 +779,9 @@ void GraphicsSystem::RenderSSAOPass()
 {
 	//äÖÈ¾µÃµ½SSAORT
 	ssaoManager->Render(mGeometryBuffer.get());
+}
+
+void GraphicsSystem::RenderSkyBoxPass()
+{
+	skyBox->Render(mGeometryBuffer.get());
 }

@@ -13,7 +13,8 @@ DirectxCore::DirectxCore():
 	md3dEnableBlendState(nullptr),
 	md3dDisableBlendState(nullptr),
 	md3dWireFrameRS(nullptr),
-	m_pLightBlendState(nullptr)
+	m_pLightBlendState(nullptr),
+	renderSkyBoxDSS(nullptr)
 {
 	
 }
@@ -300,7 +301,6 @@ bool DirectxCore::Init(int ScreenWidth, int ScreenHeight, bool vsync, HWND hwnd,
 	HR(md3dDevice->CreateDepthStencilState(&DisableDepthWriteDESC, &md3dDisableZWriteDSS));
 
 
-
 	//创建一个标记反射面的DepthStencilState状态
 	D3D11_DEPTH_STENCIL_DESC MaskReflectDESC;
 	ZeroMemory(&MaskReflectDESC, sizeof(MaskReflectDESC));
@@ -384,6 +384,26 @@ bool DirectxCore::Init(int ScreenWidth, int ScreenHeight, bool vsync, HWND hwnd,
 	RenderLightVolumeDESC.BackFace.StencilFunc = D3D11_COMPARISON_EQUAL;
 	HR(md3dDevice->CreateDepthStencilState(&RenderLightVolumeDESC, &m_pDSSRenderLightVolume));
 
+	//创建一个渲染SkyBox的DSS
+	D3D11_DEPTH_STENCIL_DESC SkyBoxDESC;
+	ZeroMemory(&SkyBoxDESC, sizeof(SkyBoxDESC));
+	SkyBoxDESC.DepthEnable = true;
+	SkyBoxDESC.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL;
+	SkyBoxDESC.DepthFunc = D3D11_COMPARISON_LESS_EQUAL;
+	SkyBoxDESC.StencilEnable = true;
+	SkyBoxDESC.StencilReadMask = 0xff;
+	SkyBoxDESC.StencilWriteMask = 0xff;
+	//前面设定
+	SkyBoxDESC.FrontFace.StencilFailOp = D3D11_STENCIL_OP_KEEP;
+	SkyBoxDESC.FrontFace.StencilDepthFailOp = D3D11_STENCIL_OP_KEEP;
+	SkyBoxDESC.FrontFace.StencilPassOp = D3D11_STENCIL_OP_REPLACE;
+	SkyBoxDESC.FrontFace.StencilFunc = D3D11_COMPARISON_ALWAYS;
+	//背面设定,在光栅化状态剔除背面时这个设定没用,但是依然要设定,不然无法创建深度(模板)状态
+	SkyBoxDESC.BackFace.StencilFailOp = D3D11_STENCIL_OP_KEEP;
+	SkyBoxDESC.BackFace.StencilDepthFailOp = D3D11_STENCIL_OP_KEEP;
+	SkyBoxDESC.BackFace.StencilPassOp = D3D11_STENCIL_OP_KEEP;
+	SkyBoxDESC.BackFace.StencilFunc = D3D11_COMPARISON_ALWAYS;
+	HR(md3dDevice->CreateDepthStencilState(&SkyBoxDESC, &renderSkyBoxDSS));
 
 	//创建alpha混合开启的混合状态
 	D3D11_BLEND_DESC blendStateDescription;
@@ -410,7 +430,6 @@ bool DirectxCore::Init(int ScreenWidth, int ScreenHeight, bool vsync, HWND hwnd,
 	lightBlendStateDesc.RenderTarget[0].BlendOpAlpha = D3D11_BLEND_OP_ADD;
 	lightBlendStateDesc.RenderTarget[0].RenderTargetWriteMask = 0x0f;
 	HR(md3dDevice->CreateBlendState(&lightBlendStateDesc, &m_pLightBlendState));
-
 
 	//创建alpha混合关闭的混合状态
 	blendStateDescription.RenderTarget[0].BlendEnable = false;
@@ -594,6 +613,11 @@ void DirectxCore::TurnOnMaskLightVolumeDSS()
 void DirectxCore::TurnOnRenderLightVolumeDSS()
 {
 	md3dImmediateContext->OMSetDepthStencilState(m_pDSSRenderLightVolume, 1);
+}
+
+void DirectxCore::TurnOnRenderSkyBoxDSS()
+{
+	md3dImmediateContext->OMSetDepthStencilState(renderSkyBoxDSS, 0);
 }
 
 

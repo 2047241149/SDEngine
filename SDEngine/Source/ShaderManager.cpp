@@ -43,8 +43,8 @@ bool ShaderManager::Init()
 	defferedFinalShader = shared_ptr<Shader>(new
 		Shader(L"Resource/Shader/DefferedFinalShader.fx", L"Resource/Shader/DefferedFinalShader.fx"));
 
-	depthShader = shared_ptr<Shader>(new
-		Shader(L"Resource/Shader/DepthShader.fx", L"Resource/Shader/DepthShader.fx"));
+	depthDisplayShader = shared_ptr<Shader>(new
+		Shader(L"Resource/Shader/DepthDisplayShader.fx", L"Resource/Shader/DepthDisplayShader.fx"));
 
 	pureColorShader = shared_ptr<Shader>(new
 		Shader(L"Resource/Shader/PureColorShader.fx", L"Resource/Shader/PureColorShader.fx"));
@@ -87,6 +87,9 @@ bool ShaderManager::Init()
 
 	ssaoBlurShader = shared_ptr<Shader>(new
 		Shader(L"Resource/Shader/SSAOBlurShader.hlsl", L"Resource/Shader/SSAOBlurShader.hlsl"));
+
+	skyBoxShader = shared_ptr<Shader>(new
+		Shader(L"Resource/Shader/SkyBoxShader.hlsl", L"Resource/Shader/SkyBoxShader.hlsl"));
 
 	return true;
 }
