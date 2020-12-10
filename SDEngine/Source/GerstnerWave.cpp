@@ -40,7 +40,7 @@ void GerstnerWave::CalculateVertexPos(float time)
 			//pos
 			mWaveVertexData[index].pos.x = fGerstnerX;
 			mWaveVertexData[index].pos.z = fGerstnerZ;
-			mWaveVertexData[index].pos.y = (float)GetWaveVertexHeight(fPositionX, fPositionZ, time);
+			mWaveVertexData[index].pos.y = (float)GetWaveVertexHeight((float)fPositionX, (float)fPositionZ, time);
 			++index;
 		}
 	}

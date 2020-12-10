@@ -50,21 +50,19 @@ bool GraphicsSystem::Init(int ScreenWidth, int ScreenHeight, HWND hwnd,HINSTANCE
 	//给游戏添加灯光 
 	shared_ptr<DirectionLight> m_spDirLight = shared_ptr<DirectionLight>(new DirectionLight());
 	m_spDirLight->SetLightDiretion(XMFLOAT3(-0.5f, -1.0f, 0.0f));
-	m_spDirLight->SetAmbientLight(XMFLOAT3(0.15f, 0.15f, 0.15f));
-	m_spDirLight->SetLightColor(XMFLOAT3(1.0f, 1.0f, 1.0f));
+	m_spDirLight->SetAmbientLight(XMFLOAT3(0.1f, 0.1f, 0.1f));
+	m_spDirLight->SetLightColor(XMFLOAT3(0.3f, 0.3f, 0.3f));
 	m_spDirLight->SetLightPostion(XMFLOAT3(10.0f, 10.0f, 10.0f));
 	GLightManager->Add(m_spDirLight);
 
 	shared_ptr<PointLight> m_PointLight = shared_ptr<PointLight>(new PointLight());
 	m_PointLight->SetLightColor(XMFLOAT3(1.0f, 1.0f, 1.0f));
 	m_PointLight->SetLightIntensity(40.0f);
-	m_PointLight->SetRadius(30.0f);
 	m_PointLight->SetLightPostion(XMFLOAT3(20.0f, 1.0f, -6.0f));
 
 	shared_ptr<PointLight> m_PointLight1 = shared_ptr<PointLight>(new PointLight());
 	m_PointLight1->SetLightColor(XMFLOAT3(1.0f, 0.0f, 0.0f));
 	m_PointLight1->SetLightIntensity(40.0f);
-	m_PointLight1->SetRadius(30.0f);
 	m_PointLight1->SetLightPostion(XMFLOAT3(20.0f, 1.0f, 5.0f));
 
 	GLightManager->Add(m_PointLight);
@@ -128,7 +126,7 @@ bool GraphicsSystem::Init(int ScreenWidth, int ScreenHeight, HWND hwnd,HINSTANCE
 	GGameObjectManager->Add(mHeadObject);
 	GGameObjectManager->Add(mOpacitySphereObject);
 	GGameObjectManager->Add(mSponzaBottom);
-	GGameObjectManager->Add(mSponzaNoBottom);
+	//GGameObjectManager->Add(mSponzaNoBottom);
 	GGameObjectManager->Add(mTransSphereObject);
 
 	//创建输入类
@@ -226,7 +224,7 @@ bool GraphicsSystem::Frame()
 		}
 
 		//进行视角上下的旋转(跟刚开始的旋转角度在正负90度之间)
-		if (rotateY <= 90.0f&&rotateY >= -90.0f)
+		if (rotateY <= 90.0f && rotateY >= -90.0f)
 		{
 			rotateY += (float)mouseYOffset*deltaTime;
 			GCamera->Pitch((float)mouseYOffset*deltaTime*2.0f);
@@ -310,7 +308,6 @@ void GraphicsSystem::Render()
 	g_RenderMask->EndEvent();
 	#endif
 	
-
 	//绘制透明物体(普通的透明物体，SSR)
 	g_RenderMask->BeginEvent(L"RenderTransparency");
 	RenderTransparency();
@@ -492,9 +489,9 @@ void GraphicsSystem::RenderSSRPass()
 
 void GraphicsSystem::RenderOpacity()
 {
-	g_RenderMask->BeginEvent(L"RenderGeometryPass");
+	//g_RenderMask->BeginEvent(L"RenderGeometryPass");
 	RenderGeometryPass();
-	g_RenderMask->EndEvent();
+	//g_RenderMask->EndEvent();
 
 	g_RenderMask->BeginEvent(L"RenderShadowMapPass");
 	RenderShadowMapPass();
@@ -739,7 +736,7 @@ void GraphicsSystem::RenderShadowMapPass()
 	{
 		mCascadeShadowsManager->SetRenderTarget(nCascadeIndex);
 
-		for (int index = 0; index < GGameObjectManager->m_vecGameObject.size(); ++index)
+		for (int index = 0; index < (int)GGameObjectManager->m_vecGameObject.size(); ++index)
 		{
 			shared_ptr<GameObject> memGo = GGameObjectManager->m_vecGameObject[index];
 			if (memGo->m_pMesh && !memGo->m_pMesh->bTransparent)

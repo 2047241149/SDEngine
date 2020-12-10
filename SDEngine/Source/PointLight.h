@@ -21,7 +21,7 @@ public:
 	virtual void SetLightColor(XMFLOAT3 color) override;
 
 private:
-	void CalculateQuadratic();
+	void CalculateRadius();
 
 private:
 	float m_fRadius;

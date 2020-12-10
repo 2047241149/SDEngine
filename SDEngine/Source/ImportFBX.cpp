@@ -191,9 +191,9 @@ void ImportFBX::ReadVertexPos(FbxMesh* mesh, int ctrlPointIndex, XMFLOAT3* pos)
 	lGlobal = lEvaluator->GetNodeGlobalTransform(meshNode);
 	FbxDouble3 scaling = meshNode->LclScaling.Get();
 	FbxVector4 * ctrPoints = mesh->GetControlPoints();
-	pos->x = ctrPoints[ctrlPointIndex][0] * scaling[0];
-	pos->y = ctrPoints[ctrlPointIndex][2] * scaling[2];
-	pos->z = -ctrPoints[ctrlPointIndex][1] * scaling[1];
+	pos->x = (float)(ctrPoints[ctrlPointIndex][0] * scaling[0]);
+	pos->y = (float)(ctrPoints[ctrlPointIndex][2] * scaling[2]);
+	pos->z = (float)(-ctrPoints[ctrlPointIndex][1] * scaling[1]);
 
 
 }
@@ -215,17 +215,17 @@ void ImportFBX::ReadVertexColor(FbxMesh* mesh, int ctrlPointIndex, int vertexCou
 		{
 		case FbxGeometryElement::eDirect:
 		{
-			color->x = vertexColor->GetDirectArray().GetAt(ctrlPointIndex).mRed;
-			color->y = vertexColor->GetDirectArray().GetAt(ctrlPointIndex).mGreen;
-			color->z = vertexColor->GetDirectArray().GetAt(ctrlPointIndex).mBlue;
+			color->x = (float)vertexColor->GetDirectArray().GetAt(ctrlPointIndex).mRed;
+			color->y = (float)vertexColor->GetDirectArray().GetAt(ctrlPointIndex).mGreen;
+			color->z = (float)vertexColor->GetDirectArray().GetAt(ctrlPointIndex).mBlue;
 		}
 		break;
 		case FbxGeometryElement::eIndexToDirect:
 		{
 			int id = vertexColor->GetIndexArray().GetAt(ctrlPointIndex);
-			color->x = vertexColor->GetDirectArray().GetAt(id).mRed;
-			color->y = vertexColor->GetDirectArray().GetAt(id).mGreen;
-			color->z = vertexColor->GetDirectArray().GetAt(id).mBlue;
+			color->x = (float)vertexColor->GetDirectArray().GetAt(id).mRed;
+			color->y = (float)vertexColor->GetDirectArray().GetAt(id).mGreen;
+			color->z = (float)vertexColor->GetDirectArray().GetAt(id).mBlue;
 		}
 		break;
 
@@ -241,18 +241,18 @@ void ImportFBX::ReadVertexColor(FbxMesh* mesh, int ctrlPointIndex, int vertexCou
 		{
 		case FbxGeometryElement::eDirect:
 		{
-			color->x = vertexColor->GetDirectArray().GetAt(vertexCount).mRed;
-			color->y = vertexColor->GetDirectArray().GetAt(vertexCount).mGreen;
-			color->z = vertexColor->GetDirectArray().GetAt(vertexCount).mBlue;
+			color->x = (float)vertexColor->GetDirectArray().GetAt(vertexCount).mRed;
+			color->y = (float)vertexColor->GetDirectArray().GetAt(vertexCount).mGreen;
+			color->z = (float)vertexColor->GetDirectArray().GetAt(vertexCount).mBlue;
 		}
 		break;
 
 		case FbxGeometryElement::eIndexToDirect:
 		{
 			int id = vertexColor->GetIndexArray().GetAt(vertexCount);
-			color->x = vertexColor->GetDirectArray().GetAt(id).mRed;
-			color->y = vertexColor->GetDirectArray().GetAt(id).mGreen;
-			color->z = vertexColor->GetDirectArray().GetAt(id).mBlue;
+			color->x = (float)vertexColor->GetDirectArray().GetAt(id).mRed;
+			color->y = (float)vertexColor->GetDirectArray().GetAt(id).mGreen;
+			color->z = (float)vertexColor->GetDirectArray().GetAt(id).mBlue;
 		}
 		break;
 
@@ -283,17 +283,17 @@ void ImportFBX::ReadVertexNormal(FbxMesh* mesh, int ctrlPointIndex, int vertexCo
 		{
 		case FbxGeometryElement::eDirect:
 		{
-			normal->x = vertexNormal->GetDirectArray().GetAt(ctrlPointIndex).mData[0];
-			normal->y = vertexNormal->GetDirectArray().GetAt(ctrlPointIndex).mData[2];
-			normal->z = -vertexNormal->GetDirectArray().GetAt(ctrlPointIndex).mData[1];
+			normal->x = (float)vertexNormal->GetDirectArray().GetAt(ctrlPointIndex).mData[0];
+			normal->y = (float)vertexNormal->GetDirectArray().GetAt(ctrlPointIndex).mData[2];
+			normal->z = (float)-vertexNormal->GetDirectArray().GetAt(ctrlPointIndex).mData[1];
 		}
 		break;
 		case FbxGeometryElement::eIndexToDirect:
 		{
 			int id = vertexNormal->GetIndexArray().GetAt(ctrlPointIndex);
-			normal->x = vertexNormal->GetDirectArray().GetAt(id).mData[0];
-			normal->y = vertexNormal->GetDirectArray().GetAt(id).mData[2];
-			normal->z = -vertexNormal->GetDirectArray().GetAt(id).mData[1];
+			normal->x = (float)vertexNormal->GetDirectArray().GetAt(id).mData[0];
+			normal->y = (float)vertexNormal->GetDirectArray().GetAt(id).mData[2];
+			normal->z = (float)-vertexNormal->GetDirectArray().GetAt(id).mData[1];
 		}
 		break;
 
@@ -309,18 +309,18 @@ void ImportFBX::ReadVertexNormal(FbxMesh* mesh, int ctrlPointIndex, int vertexCo
 		{
 		case FbxGeometryElement::eDirect:
 		{
-			normal->x = vertexNormal->GetDirectArray().GetAt(vertexCount).mData[0];
-			normal->y = vertexNormal->GetDirectArray().GetAt(vertexCount).mData[2];
-			normal->z = -vertexNormal->GetDirectArray().GetAt(vertexCount).mData[1];
+			normal->x = (float)vertexNormal->GetDirectArray().GetAt(vertexCount).mData[0];
+			normal->y = (float)vertexNormal->GetDirectArray().GetAt(vertexCount).mData[2];
+			normal->z = (float)-vertexNormal->GetDirectArray().GetAt(vertexCount).mData[1];
 		}
 		break;
 
 		case FbxGeometryElement::eIndexToDirect:
 		{
 			int id = vertexNormal->GetIndexArray().GetAt(vertexCount);
-			normal->x = vertexNormal->GetDirectArray().GetAt(id).mData[0];
-			normal->y = vertexNormal->GetDirectArray().GetAt(id).mData[2];
-			normal->z = -vertexNormal->GetDirectArray().GetAt(id).mData[1];
+			normal->x = (float)vertexNormal->GetDirectArray().GetAt(id).mData[0];
+			normal->y = (float)vertexNormal->GetDirectArray().GetAt(id).mData[2];
+			normal->z = (float)-vertexNormal->GetDirectArray().GetAt(id).mData[1];
 		}
 		break;
 
@@ -351,17 +351,17 @@ void ImportFBX::ReadVertexTangent(FbxMesh* mesh, int ctrlPointIndex, int vertexC
 		{
 		case FbxGeometryElement::eDirect:
 		{
-			tangent->x = vertexTangent->GetDirectArray().GetAt(ctrlPointIndex).mData[0];
-			tangent->y = vertexTangent->GetDirectArray().GetAt(ctrlPointIndex).mData[2];
-			tangent->z = -vertexTangent->GetDirectArray().GetAt(ctrlPointIndex).mData[1];
+			tangent->x = (float)vertexTangent->GetDirectArray().GetAt(ctrlPointIndex).mData[0];
+			tangent->y = (float)vertexTangent->GetDirectArray().GetAt(ctrlPointIndex).mData[2];
+			tangent->z = (float)-vertexTangent->GetDirectArray().GetAt(ctrlPointIndex).mData[1];
 		}
 		break;
 		case FbxGeometryElement::eIndexToDirect:
 		{
 			int id = vertexTangent->GetIndexArray().GetAt(ctrlPointIndex);
-			tangent->x = vertexTangent->GetDirectArray().GetAt(id).mData[0];
-			tangent->y = vertexTangent->GetDirectArray().GetAt(id).mData[2];
-			tangent->z = -vertexTangent->GetDirectArray().GetAt(id).mData[1];
+			tangent->x = (float)vertexTangent->GetDirectArray().GetAt(id).mData[0];
+			tangent->y = (float)vertexTangent->GetDirectArray().GetAt(id).mData[2];
+			tangent->z = (float)(-vertexTangent->GetDirectArray().GetAt(id).mData[1]);
 		}
 		break;
 
@@ -377,18 +377,18 @@ void ImportFBX::ReadVertexTangent(FbxMesh* mesh, int ctrlPointIndex, int vertexC
 		{
 		case FbxGeometryElement::eDirect:
 		{
-			tangent->x = vertexTangent->GetDirectArray().GetAt(vertexCount).mData[0];
-			tangent->y = vertexTangent->GetDirectArray().GetAt(vertexCount).mData[2];
-			tangent->z = -vertexTangent->GetDirectArray().GetAt(vertexCount).mData[1];
+			tangent->x = (float)(vertexTangent->GetDirectArray().GetAt(vertexCount).mData[0]);
+			tangent->y = (float)(vertexTangent->GetDirectArray().GetAt(vertexCount).mData[2]);
+			tangent->z = (float)(-vertexTangent->GetDirectArray().GetAt(vertexCount).mData[1]);
 		}
 		break;
 
 		case FbxGeometryElement::eIndexToDirect:
 		{
 			int id = vertexTangent->GetIndexArray().GetAt(vertexCount);
-			tangent->x = vertexTangent->GetDirectArray().GetAt(id).mData[0];
-			tangent->y = vertexTangent->GetDirectArray().GetAt(id).mData[2];
-			tangent->z = -vertexTangent->GetDirectArray().GetAt(id).mData[1];
+			tangent->x = (float)(vertexTangent->GetDirectArray().GetAt(id).mData[0]);
+			tangent->y = (float)(vertexTangent->GetDirectArray().GetAt(id).mData[2]);
+			tangent->z = (float)(-vertexTangent->GetDirectArray().GetAt(id).mData[1]);
 		}
 		break;
 
@@ -420,16 +420,16 @@ void ImportFBX::ReadVertexUV(FbxMesh* mesh, int ctrlPointIndex, int uvIndex, XMF
 		{
 			//因为这些这些数据个Opengl坐标一样，而我们是需要在D3D11里渲染的数据，所以部分数据得改变
 			//v反转
-			uv->x = vertexUV->GetDirectArray().GetAt(ctrlPointIndex).mData[0];
-			uv->y = 1.0f - vertexUV->GetDirectArray().GetAt(ctrlPointIndex).mData[1];
+			uv->x = (float)(vertexUV->GetDirectArray().GetAt(ctrlPointIndex).mData[0]);
+			uv->y = (float)(1.0f - vertexUV->GetDirectArray().GetAt(ctrlPointIndex).mData[1]);
 
 		}
 		break;
 		case FbxGeometryElement::eIndexToDirect:
 		{
 			int id = vertexUV->GetIndexArray().GetAt(ctrlPointIndex);
-			uv->x = vertexUV->GetDirectArray().GetAt(id).mData[0];
-			uv->y = 1.0f - vertexUV->GetDirectArray().GetAt(id).mData[1];
+			uv->x = (float)(vertexUV->GetDirectArray().GetAt(id).mData[0]);
+			uv->y = (float)(1.0f - vertexUV->GetDirectArray().GetAt(id).mData[1]);
 		}
 		break;
 
@@ -446,8 +446,8 @@ void ImportFBX::ReadVertexUV(FbxMesh* mesh, int ctrlPointIndex, int uvIndex, XMF
 		case FbxGeometryElement::eDirect:
 		case FbxGeometryElement::eIndexToDirect:
 		{
-			uv->x = vertexUV->GetDirectArray().GetAt(uvIndex).mData[0];
-			uv->y = 1.0f - vertexUV->GetDirectArray().GetAt(uvIndex).mData[1];
+			uv->x = (float)vertexUV->GetDirectArray().GetAt(uvIndex).mData[0];
+			uv->y = (float)(1.0f - vertexUV->GetDirectArray().GetAt(uvIndex).mData[1]);
 		}
 		break;
 
@@ -639,11 +639,11 @@ void ImportFBX::ChangeModelData(ModelData* destModel, MemFBXModelData* srcMemFBX
 		}
 
 		//转换mesh的顶点数据
-		for (int triangleIndex = 0; triangleIndex < mTriangleData.size(); ++triangleIndex)
+		for (int triangleIndex = 0; triangleIndex < (int)mTriangleData.size(); ++triangleIndex)
 		{
 			int meshIndex = 0;
 
-			for (meshIndex = 0; meshIndex < destModel->mMeshList.size(); ++meshIndex)
+			for (meshIndex = 0; meshIndex < (int)destModel->mMeshList.size(); ++meshIndex)
 			{
 				if (destModel->mMeshList[meshIndex].materialId == mTriangleData[triangleIndex].MaterialId)
 				{
@@ -666,7 +666,7 @@ void ImportFBX::ChangeModelData(ModelData* destModel, MemFBXModelData* srcMemFBX
 	}
 	else
 	{
-		for (int triangleIndex = 0; triangleIndex < mTriangleData.size(); ++triangleIndex)
+		for (int triangleIndex = 0; triangleIndex < (int)mTriangleData.size(); ++triangleIndex)
 		{
 			for (int vertexIndex = 0; vertexIndex < 3; ++vertexIndex)
 			{
@@ -679,7 +679,7 @@ void ImportFBX::ChangeModelData(ModelData* destModel, MemFBXModelData* srcMemFBX
 	
 
 	//转换mesh的索引数据
-	for (int j = 0; j < destModel->mMeshList.size(); ++j)
+	for (int j = 0; j < (int)destModel->mMeshList.size(); ++j)
 	{
 		int vertexNum = destModel->mMeshList[j].mVertexData.size();
 		destModel->mMeshList[j].mIndexData.resize(vertexNum);

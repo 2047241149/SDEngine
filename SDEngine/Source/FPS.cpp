@@ -31,12 +31,18 @@ void FPS::Frame()
 
 	++mCount;  
 	//timeGetTime·µ»ØµÄ
-	if (timeGetTime() >= (mStartTime + 1000))
+	float currentTime = timeGetTime();
+	if (currentTime >= (mStartTime + 1000))
 	{
 		mFPS = mCount;
 		mCount = 0;
-		mStartTime = timeGetTime();
+		mStartTime = currentTime;
 	}
+
+	/*float currentTime = timeGetTime();
+	float frameTime = std::fmax(currentTime - m_fFistStartTime, 0.0) + 0.0001;
+	mFPS = 1000.0f / float(frameTime);
+	m_fFistStartTime = currentTime;*/
 }
 
 float FPS::GetDeltaTime()
