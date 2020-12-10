@@ -5,8 +5,8 @@
 #include"Macro.h"
 #include "DirectxCore.h"
 #include "LoadTexture/Resource.h"
-#include "DXUT.h"
-#include "SDKmisc.h"
+//#include "DXUT.h"
+//#include "SDKmisc.h"
 using namespace DirectX;
 
 class Texture

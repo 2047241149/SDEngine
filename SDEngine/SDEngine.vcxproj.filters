@@ -298,7 +298,6 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resource\Shader\DefferLightingShader.fx" />
     <None Include="Resource\Shader\DepthGetShader.fx" />
     <None Include="Resource\Shader\DiffuseNormalShader.fx" />
     <None Include="Resource\Shader\DiffuseNormalSpecularShader.fx" />
