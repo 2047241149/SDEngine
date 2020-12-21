@@ -1,5 +1,4 @@
 Texture2D DiffuseTex:register(t0);
-Texture2D LightBufferTex:register(t1);
 SamplerState clampLinearSample:register(s0);  
 
 
@@ -45,10 +44,8 @@ VertexOut VS(VertexIn ina)
 
 float4 PS(VertexOut outa) : SV_Target
 {	
-	float4 light = LightBufferTex.Sample(clampLinearSample, outa.Tex);
-	float4 diffuse = DiffuseTex.Sample(clampLinearSample, outa.Tex);
-	float4 color = float4(0.0, 0.0, 0.0, 1.0);
-	color = float4(diffuse.xyz * light.xyz, 1.0);
+	float4 color = DiffuseTex.Sample(clampLinearSample, outa.Tex);
+	color = float4(color.xyz, 1.0);
 	color.rgb = ACESToneMappingAndGammaCorrect(color.rgb, 1.0);
 	return color;
 }

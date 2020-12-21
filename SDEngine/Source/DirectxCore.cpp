@@ -426,9 +426,9 @@ bool DirectxCore::Init(int ScreenWidth, int ScreenHeight, bool vsync, HWND hwnd,
 	lightBlendStateDesc.RenderTarget[0].DestBlend = D3D11_BLEND_ONE;
 	lightBlendStateDesc.RenderTarget[0].BlendOp = D3D11_BLEND_OP_ADD;
 	lightBlendStateDesc.RenderTarget[0].SrcBlendAlpha = D3D11_BLEND_ONE;
-	lightBlendStateDesc.RenderTarget[0].DestBlendAlpha = D3D11_BLEND_ZERO;
+	lightBlendStateDesc.RenderTarget[0].DestBlendAlpha = D3D11_BLEND_ONE;
 	lightBlendStateDesc.RenderTarget[0].BlendOpAlpha = D3D11_BLEND_OP_ADD;
-	lightBlendStateDesc.RenderTarget[0].RenderTargetWriteMask = 0x0f;
+	lightBlendStateDesc.RenderTarget[0].RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
 	HR(md3dDevice->CreateBlendState(&lightBlendStateDesc, &m_pLightBlendState));
 
 	//创建alpha混合关闭的混合状态

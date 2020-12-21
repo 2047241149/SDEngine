@@ -3,6 +3,8 @@
 
 Mesh::Mesh(string strFbxFileName):
 	pureColor(XMFLOAT4(1.0f,1.0f,1.0f,1.0f)),
+	roughness(1.0f),
+	metal(1.0f),
 	bTransparent(false),
 	bReflect(false),
 	bCastShadow(true)
@@ -17,41 +19,9 @@ Mesh::Mesh(const Mesh& other)
 
 }
 
-
 Mesh::~Mesh()
 {
 
-}
-
-void Mesh::ShutDownSRV()
-{
-	map<string, ID3D11ShaderResourceView*>& mSRVMap = m_pFBXModel->mSRVMap;
-
-	for (auto iter = mSRVMap.begin(); iter != mSRVMap.end(); ++iter)
-	{
-		ReleaseCOM(iter->second);
-	}
-}
-
-
-
-bool Mesh::LoadTexture()
-{
-	vector<ModelData>& mModelList = m_pFBXModel->mModelList;
-	for (UINT index = 0; index < mModelList.size(); ++index)
-	{
-		ModelData* mModelData = &mModelList[index];
-		for (auto iter = mModelData->mMaterialMap.begin();
-			iter != mModelData->mMaterialMap.end(); ++iter)
-		{
-			LoadSRVResource(iter->second.diffuseMapFileName, mModelData);
-			LoadSRVResource(iter->second.bumpMapFileName, mModelData);
-			LoadSRVResource(iter->second.specularMapFileName, mModelData);
-			LoadSRVResource(iter->second.alphaMapFileName, mModelData);
-		}
-	}
-
-	return true;
 }
 
 bool Mesh::LoadFBXModel(string strFbxFileName)
@@ -60,7 +30,6 @@ bool Mesh::LoadFBXModel(string strFbxFileName)
 	{
 		m_pFBXModel = shared_ptr<FBXModelData>(new FBXModelData());
 		GImportFBX->ImportFbxFile(strFbxFileName, m_pFBXModel->mModelList);
-		LoadTexture();
 		GImportFBX->m_mapFBXModel[strFbxFileName] = m_pFBXModel;
 	}
 	else
@@ -75,33 +44,9 @@ bool Mesh::LoadFBXModel(string strFbxFileName)
 	return true;
 }
 
-void Mesh::LoadSRVResource(string strTexFileName, ModelData* model)
-{
-	if (strTexFileName == "")
-	{
-		return;
-	}
-
-	map<string, ID3D11ShaderResourceView*>& mSRVMap = m_pFBXModel->mSRVMap;
-	//确保所有相对路径相同的纹理不重复加载
-	if (mSRVMap.find(strTexFileName) == mSRVMap.end())
-	{
-		ID3D11ShaderResourceView* memSRV = nullptr;
-		Resource::CreateShaderResourceViewFromFile(g_pDevice, Str2Wstr(strTexFileName).c_str(), &memSRV);
-		if ((int)memSRV == 0xcccccccc)
-		{
-			memSRV = nullptr;
-		}
-		mSRVMap[strTexFileName] = memSRV;
-	}
-}
-
-
 void Mesh::ShutDown()
 {
-	ShutDownSRV();
 }
-
 
 void Mesh::InitBuffer()
 {
@@ -164,6 +109,73 @@ void Mesh::ShutDownBuffer()
 			MeshData& mMesh = mModelData->mMeshList[i];
 			ReleaseCOM(mMesh.mVertexBuffer);
 			ReleaseCOM(mMesh.mIndexBuffer);
+		}
+	}
+}
+
+void Mesh::SetAlbedoTexture(string fileName)
+{
+	SetTexture(fileName, AlbedoMap);
+}
+
+void Mesh::SetNormalTexture(string fileName)
+{
+	SetTexture(fileName, NormalMap);
+}
+
+void Mesh::SetSpecularTexture(string fileName)
+{
+	SetTexture(fileName, SpecularMap);
+}
+
+void Mesh::SetRoughnessTexture(string fileName)
+{
+	SetTexture(fileName, RoughnessMap);
+}
+
+void Mesh::SetMetalTexture(string fileName)
+{
+	SetTexture(fileName, MetalMap);
+}
+
+void Mesh::SetTexture(string fileName, TextureType textureType)
+{
+	if (nullptr == m_pFBXModel)
+		return;
+
+	vector<ModelData>& modelList = m_pFBXModel->mModelList;
+	for (UINT index = 0; index < modelList.size(); ++index)
+	{
+		ModelData* modelData = &modelList[index];
+
+		if (nullptr != modelData)
+		{
+			for (auto& it : modelData->mMaterialMap)
+			{
+				switch (textureType)
+				{
+
+				case AlbedoMap:
+					it.second.diffuseMapFileName = fileName;
+					break;
+				case NormalMap:
+					it.second.bumpMapFileName = fileName;
+					break;
+				case SpecularMap:
+					it.second.specularMapFileName = fileName;
+					break;
+				case RoughnessMap:
+					it.second.roughnessMapFileName = fileName;
+					break;
+				case MetalMap:
+					it.second.metalMapFileName = fileName;
+					break;
+				default:
+					break;
+				}
+
+				it.second.diffuseMapFileName = fileName;
+			}
 		}
 	}
 }

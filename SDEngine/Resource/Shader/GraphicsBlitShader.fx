@@ -21,7 +21,6 @@ VertexOut VS(VertexIn ina)
 	return outa;
 }
 
-
 float4 PS(VertexOut outa) : SV_Target
 {
 	return ScreenRT.Sample(ClampLinear, outa.Tex);

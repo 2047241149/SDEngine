@@ -12,6 +12,7 @@
 #include "SSRGBuffer.h"
 #include "DepthBufferRT.h"
 #include "SSAOManager.h"
+#include "TextureManager.h"
 
 
 GraphicsSystem::GraphicsSystem(int ScreenWidth, int ScreenHeight, HWND hwnd, HINSTANCE hinstance)
@@ -43,6 +44,8 @@ bool GraphicsSystem::Init(int ScreenWidth, int ScreenHeight, HWND hwnd,HINSTANCE
 	//Console的Debug窗口
 	InitDebugConsole();
 
+	GTextureManager->Init();
+
 	//创建相机
 	GCamera->SetProjParams(XM_PI / 3.0f, (float)ScreenWidth / (float)ScreenHeight, SCREEN_NEAR, SCREEN_FAR);
 	GCamera->SetUIOrthoParams((float)ScreenWidth, (float)ScreenHeight);
@@ -50,20 +53,19 @@ bool GraphicsSystem::Init(int ScreenWidth, int ScreenHeight, HWND hwnd,HINSTANCE
 	//给游戏添加灯光 
 	shared_ptr<DirectionLight> m_spDirLight = shared_ptr<DirectionLight>(new DirectionLight());
 	m_spDirLight->SetLightDiretion(XMFLOAT3(-0.5f, -1.0f, 0.0f));
-	m_spDirLight->SetAmbientLight(XMFLOAT3(0.1f, 0.1f, 0.1f));
-	m_spDirLight->SetLightColor(XMFLOAT3(0.3f, 0.3f, 0.3f));
+	m_spDirLight->SetLightColor(XMFLOAT3(1.0f, 1.0f, 1.0f));
 	m_spDirLight->SetLightPostion(XMFLOAT3(10.0f, 10.0f, 10.0f));
 	GLightManager->Add(m_spDirLight);
 
 	shared_ptr<PointLight> m_PointLight = shared_ptr<PointLight>(new PointLight());
 	m_PointLight->SetLightColor(XMFLOAT3(1.0f, 1.0f, 1.0f));
-	m_PointLight->SetLightIntensity(40.0f);
-	m_PointLight->SetLightPostion(XMFLOAT3(20.0f, 1.0f, -6.0f));
+	m_PointLight->SetLightIntensity(5.0f);
+	m_PointLight->SetLightPostion(XMFLOAT3(20.0f, 1.0f, -20.0f));
 
 	shared_ptr<PointLight> m_PointLight1 = shared_ptr<PointLight>(new PointLight());
 	m_PointLight1->SetLightColor(XMFLOAT3(1.0f, 0.0f, 0.0f));
-	m_PointLight1->SetLightIntensity(40.0f);
-	m_PointLight1->SetLightPostion(XMFLOAT3(20.0f, 1.0f, 5.0f));
+	m_PointLight1->SetLightIntensity(5.0f);
+	m_PointLight1->SetLightPostion(XMFLOAT3(20.0f, 1.0f, 20.0f));
 
 	GLightManager->Add(m_PointLight);
 	GLightManager->Add(m_PointLight1);
@@ -73,11 +75,6 @@ bool GraphicsSystem::Init(int ScreenWidth, int ScreenHeight, HWND hwnd,HINSTANCE
 	shared_ptr<Mesh> pHeadMesh = shared_ptr<Mesh>(new Mesh("Resource\\FBXModel\\head\\head.FBX"));
 	pHeadMesh->m_eMaterialType = MaterialType::DIFFUSE;
 	pHeadMesh->bCastShadow = true;
-
-	shared_ptr<Mesh> pOpacitySphereMesh = shared_ptr<Mesh>(new Mesh("Resource\\FBXModel\\sphere\\sphere.FBX"));
-	pOpacitySphereMesh->m_eMaterialType = MaterialType::PURE_COLOR;
-	pOpacitySphereMesh->pureColor = XMFLOAT4(1.0f, 0.0f, 0.0f, 1.0f);
-	pOpacitySphereMesh->bCastShadow = true;
 
 	shared_ptr<Mesh> pPointLightVolume = shared_ptr<Mesh>(new Mesh("Resource\\FBXModel\\sphere\\sphere.FBX"));
 	pPointLightVolume->m_eMaterialType = MaterialType::PURE_COLOR;
@@ -92,7 +89,7 @@ bool GraphicsSystem::Init(int ScreenWidth, int ScreenHeight, HWND hwnd,HINSTANCE
 	pSponzaBottom->m_eMaterialType = MaterialType::DIFFUSE;
 	pSponzaBottom->bReflect = true;
 	pSponzaBottom->bTransparent = false;
-	
+
 	shared_ptr<Mesh> pSponzaNoBottom = shared_ptr<Mesh>(new Mesh("Resource\\FBXModel\\sponza\\sponza_no_bottom.FBX"));
 	pSponzaNoBottom->m_eMaterialType = MaterialType::DIFFUSE;
 
@@ -103,10 +100,25 @@ bool GraphicsSystem::Init(int ScreenWidth, int ScreenHeight, HWND hwnd,HINSTANCE
 	mHeadObject->m_pTransform->localRotation = XMFLOAT3(0.0f, 90.0f, 0.0f);
 	mHeadObject->m_pTransform->localScale = XMFLOAT3(5.0f, 5.0f, 5.0f);
 
-	mOpacitySphereObject = shared_ptr<GameObject>(new GameObject());
-	mOpacitySphereObject->SetMesh(pOpacitySphereMesh);
-	mOpacitySphereObject->m_pTransform->localScale = XMFLOAT3(1.0f, 1.0f, 1.0f);
-	mOpacitySphereObject->m_pTransform->localPosition = XMFLOAT3(0.0f, 2.0f, 0.0f);
+
+	for (int x = 0; x < 11; ++x)
+	{
+		for (int y = 0; y < 11; ++y)
+		{
+			shared_ptr<Mesh> pOpacitySphereMesh = shared_ptr<Mesh>(new Mesh("Resource\\FBXModel\\sphere\\sphere.FBX"));
+			pOpacitySphereMesh->m_eMaterialType = MaterialType::DIFFUSE;
+			pOpacitySphereMesh->pureColor = XMFLOAT4(1.0f, 0.0f, 0.0f, 1.0f);
+			pOpacitySphereMesh->bCastShadow = false;
+			pOpacitySphereMesh->roughness = 0.1f * float(x);
+			pOpacitySphereMesh->metal = 0.1f *  float(y);
+			mOpacitySphereObject = shared_ptr<GameObject>(new GameObject());
+			mOpacitySphereObject->SetMesh(pOpacitySphereMesh);
+			mOpacitySphereObject->m_pTransform->localScale = XMFLOAT3(1.0f, 1.0f, 1.0f);
+			mOpacitySphereObject->m_pTransform->localPosition = XMFLOAT3(5.0f, float(y) * 2.5f + 10.0f, float(x) * 2.5f);
+			GGameObjectManager->Add(mOpacitySphereObject);
+		}
+	}
+
 
 	mSponzaBottom = shared_ptr<GameObject>(new GameObject());
 	mSponzaBottom->SetMesh(pSponzaBottom);
@@ -124,7 +136,6 @@ bool GraphicsSystem::Init(int ScreenWidth, int ScreenHeight, HWND hwnd,HINSTANCE
 	m_pPointVolume->SetMesh(pPointLightVolume);
 
 	GGameObjectManager->Add(mHeadObject);
-	GGameObjectManager->Add(mOpacitySphereObject);
 	GGameObjectManager->Add(mSponzaBottom);
 	//GGameObjectManager->Add(mSponzaNoBottom);
 	GGameObjectManager->Add(mTransSphereObject);
@@ -142,7 +153,7 @@ bool GraphicsSystem::Init(int ScreenWidth, int ScreenHeight, HWND hwnd,HINSTANCE
 
 	mGrayShadowMap = shared_ptr<RenderTexture>(new RenderTexture(ScreenWidth, ScreenHeight, TextureFormat::R32));
 
-	mLightBuffer = shared_ptr<RenderTexture>(new RenderTexture(ScreenWidth, ScreenHeight, TextureFormat::R32));
+	mLightBuffer = shared_ptr<RenderTexture>(new RenderTexture(ScreenWidth, ScreenHeight, TextureFormat::R32G32B32A32));
 	
 	mGeometryBuffer = shared_ptr<GeometryBuffer>(new 
 		GeometryBuffer(ScreenWidth,ScreenHeight,SCREEN_FAR,SCREEN_NEAR));
@@ -156,10 +167,7 @@ bool GraphicsSystem::Init(int ScreenWidth, int ScreenHeight, HWND hwnd,HINSTANCE
 	mSSRBuffer = shared_ptr<SSRGBuffer>(new 
 		SSRGBuffer(ScreenWidth, ScreenHeight, SCREEN_FAR, SCREEN_NEAR));
 
-	whiteTexture = shared_ptr<Texture>(new Texture(L"Resource/Texture/white.png"));
-
 	ssaoManager = shared_ptr<SSAOManager>(new SSAOManager(ScreenWidth, ScreenHeight));
-
 	skyBox = shared_ptr<SkyBox>(new SkyBox(L"Resource/Texture/sunsetcube.dds"));
 	
 	return true;
@@ -233,7 +241,6 @@ bool GraphicsSystem::Frame()
 		//进行视角左右的旋转
 		GCamera->RotateY((float)mouseXOffset*deltaTime*2.0f);
 	}
-
 
 	//1与2切换渲染模式
 	if (mInputClass->IsKeyDown(DIK_1))
@@ -359,6 +366,7 @@ void GraphicsSystem::RenderGeometryPass()
 	}
 }
 
+
 void GraphicsSystem::RenderLightingPass()
 {
 	RenderDirLightPass();
@@ -411,7 +419,7 @@ void GraphicsSystem::RenderDebugWindow()
 
 	//specular
 	GShaderManager->uiShader->SetTexture("ShaderTexture",
-		mGeometryBuffer->GetGBufferSRV(GBufferType::Specular));
+		mGeometryBuffer->GetGBufferSRV(GBufferType::SpecularRoughMetal));
 	GShaderManager->uiShader->Apply();
 	mDebugWindow->Render(370, 600);
 
@@ -605,16 +613,15 @@ void GraphicsSystem::CloseDebugConsole()
 
 void GraphicsSystem::RenderPointLightPass()
 {
-
 	ID3D11RenderTargetView* backRTV[1] = { nullptr };
-	ID3D11DepthStencilView* opacityDSV = mGeometryBuffer->GetDSV();
-	ID3D11RenderTargetView* pSceneRTV = mSrcRT->GetRenderTargetView();
+	ID3D11DepthStencilView* opacityDSV = mGeometryBuffer->GetDSV(); 
 	ID3D11RenderTargetView* pLightRTV = mLightBuffer->GetRenderTargetView();
 	
-	ID3D11ShaderResourceView* shaderResourceView[3];
+	ID3D11ShaderResourceView* shaderResourceView[4];
 	shaderResourceView[0] = mGeometryBuffer->GetGBufferSRV(GBufferType::Pos);
 	shaderResourceView[1] = mGeometryBuffer->GetGBufferSRV(GBufferType::Normal);
-	shaderResourceView[2] = mGeometryBuffer->GetGBufferSRV(GBufferType::Specular);
+	shaderResourceView[2] = mGeometryBuffer->GetGBufferSRV(GBufferType::SpecularRoughMetal);
+	shaderResourceView[3] = mGeometryBuffer->GetGBufferSRV(GBufferType::Diffuse);
 
 	for (int index = 0; index < (int)GLightManager->m_vecPointLight.size(); ++index)
 	{
@@ -637,7 +644,8 @@ void GraphicsSystem::RenderPointLightPass()
 		XMFLOAT4 lightColor = XMFLOAT4(lightCol.x, lightCol.y, lightCol.z, pPointLight->GetLightIntensity());
 		GShaderManager->defferedPointLightShader->SetTexture("WorldPosTex", shaderResourceView[0]);
 		GShaderManager->defferedPointLightShader->SetTexture("WorldNormalTex", shaderResourceView[1]);
-		GShaderManager->defferedPointLightShader->SetTexture("SpecularTex", shaderResourceView[2]);
+		GShaderManager->defferedPointLightShader->SetTexture("SpecularRoughMetalTex", shaderResourceView[2]);
+		GShaderManager->defferedPointLightShader->SetTexture("AlbedoTex", shaderResourceView[3]);
 		GShaderManager->defferedPointLightShader->SetMatrix("World", pPointLight->GetWorldMatrix());
 		GShaderManager->defferedPointLightShader->SetMatrix("View", GCamera->GetViewMatrix());
 		GShaderManager->defferedPointLightShader->SetMatrix("Proj", GCamera->GetProjectionMatrix());
@@ -659,13 +667,14 @@ void GraphicsSystem::RenderPointLightPass()
 
 void GraphicsSystem::RenderDirLightPass()
 {
-
 	mLightBuffer->SetRenderTarget();
-	ID3D11ShaderResourceView* shaderResourceView[4];
+	ID3D11ShaderResourceView* shaderResourceView[6];
 	shaderResourceView[0] = mGeometryBuffer->GetGBufferSRV(GBufferType::Pos);
 	shaderResourceView[1] = mGeometryBuffer->GetGBufferSRV(GBufferType::Normal);
-	shaderResourceView[2] = mGeometryBuffer->GetGBufferSRV(GBufferType::Specular);
+	shaderResourceView[2] = mGeometryBuffer->GetGBufferSRV(GBufferType::SpecularRoughMetal);
 	shaderResourceView[3] = mGrayShadowMap->GetSRV();
+	shaderResourceView[4] = ssaoManager->GetSsaoSRV();
+	shaderResourceView[5] = mGeometryBuffer->GetGBufferSRV(GBufferType::Diffuse);
 
 	GDirectxCore->TurnOffZBuffer();
 	GDirectxCore->TurnOnLightBlend();
@@ -677,13 +686,15 @@ void GraphicsSystem::RenderDirLightPass()
 		XMFLOAT4 lightColor = XMFLOAT4(lightCo.x, lightCo.y, lightCo.z, pDirLight->GetLightIntensity());
 		GShaderManager->defferedDirLightShader->SetTexture("WorldPosTex", shaderResourceView[0]);
 		GShaderManager->defferedDirLightShader->SetTexture("WorldNormalTex", shaderResourceView[1]);
-		GShaderManager->defferedDirLightShader->SetTexture("SpecularTex", shaderResourceView[2]);
+		GShaderManager->defferedDirLightShader->SetTexture("SpecularRoughMetalTex", shaderResourceView[2]);
 		GShaderManager->defferedDirLightShader->SetTexture("DirLightShadowMap", shaderResourceView[3]);
-		GShaderManager->defferedDirLightShader->SetFloat3("cameraPos", pDirLight->GetPosition());
+		GShaderManager->defferedDirLightShader->SetTexture("SSAORT", shaderResourceView[4]);
+		GShaderManager->defferedDirLightShader->SetTexture("AlbedoTex", shaderResourceView[5]);
+		GShaderManager->defferedDirLightShader->SetFloat3("cameraPos", GCamera->GetPosition());
 		GShaderManager->defferedDirLightShader->SetFloat4("lightColor", lightColor);
 		GShaderManager->defferedDirLightShader->SetFloat3("lightDir", pDirLight->GetLightDirection());
-		GShaderManager->defferedDirLightShader->SetFloat3("ambientLight", pDirLight->GetAmbientLight());
 		GShaderManager->defferedDirLightShader->SetTextureSampler("clampLinearSample", GTextureSamplerBilinearClamp);
+		
 		ID3D11ShaderResourceView* memSSAORT = nullptr;
 		if (bSSAO)
 		{
@@ -691,7 +702,7 @@ void GraphicsSystem::RenderDirLightPass()
 		}
 		else
 		{
-			memSSAORT = whiteTexture->GetTexture();
+			memSSAORT = GWhiteTexture;
 		}
 		GShaderManager->defferedDirLightShader->SetTexture("SSAORT", memSSAORT);
 		GShaderManager->defferedDirLightShader->Apply();
@@ -706,15 +717,10 @@ void GraphicsSystem::RenderFinalShadingPass()
 {
 	ID3D11RenderTargetView* pSceneRTV = mSrcRT->GetRenderTargetView();
 	ID3D11DepthStencilView* opacityDSV = mGeometryBuffer->GetDSV();
-
 	GDirectxCore->TurnOffZBuffer();
 	GDirectxCore->SetViewPort();
 	g_pDeviceContext->OMSetRenderTargets(1, &pSceneRTV, opacityDSV);
-	ID3D11ShaderResourceView* pShaderViewArray[2];
-	pShaderViewArray[0] = mGeometryBuffer->GetGBufferSRV(GBufferType::Diffuse);
-	pShaderViewArray[1] = mLightBuffer->GetSRV();
-	GShaderManager->defferedFinalShader->SetTexture("DiffuseTex", mGeometryBuffer->GetGBufferSRV(GBufferType::Diffuse));
-	GShaderManager->defferedFinalShader->SetTexture("LightBufferTex", mLightBuffer->GetSRV());
+	GShaderManager->defferedFinalShader->SetTexture("DiffuseTex", mLightBuffer->GetSRV());
 	GShaderManager->defferedFinalShader->SetTextureSampler("clampLinearSample", GTextureSamplerBilinearClamp);
 	GShaderManager->defferedFinalShader->Apply();
 	mQuad->Render();

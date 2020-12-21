@@ -4,8 +4,7 @@
 #include <math.h>
 
 DirectionLight::DirectionLight() :
-	Light(),
-	m_AmbientLight(XMFLOAT3(0.0f, 0.0f, 0.0f))
+	Light()
 {
 
 }
@@ -17,19 +16,7 @@ DirectionLight::DirectionLight(const DirectionLight&other):
 }
 
 DirectionLight::~DirectionLight()
-
 {
-
-}
-
-void DirectionLight::SetAmbientLight(XMFLOAT3  ambientLight)
-{
-	m_AmbientLight = ambientLight;
-}
-
-XMFLOAT3 DirectionLight::GetAmbientLight()
-{
-	return m_AmbientLight;
 }
 
 void DirectionLight::SetLightDiretion(XMFLOAT3 lightDir)
@@ -57,4 +44,3 @@ XMMATRIX DirectionLight::GetViewMatrix()
 
 	return lightViewMatrix;
 }
-

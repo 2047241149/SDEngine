@@ -57,9 +57,9 @@ bool Shader::InitShader(WCHAR* VSFileName, WCHAR* PSFileName)
 #if _DEBUG
 	flag |= D3DCOMPILE_DEBUG | D3DCOMPILE_SKIP_OPTIMIZATION;
 #endif
-
+	
 	//编译VertexShader代码,并创建VertexShader
-	result = D3DCompileFromFile(VSFileName, nullptr, nullptr, "VS", "vs_5_0", flag, 0, &pVertexShaderBlob, &pErrorMessage);
+	result = D3DCompileFromFile(VSFileName, nullptr, D3D_COMPILE_STANDARD_FILE_INCLUDE, "VS", "vs_5_0", flag, 0, &pVertexShaderBlob, &pErrorMessage);
 	if (FAILED(result))
 	{
 		//存在错误信息
@@ -77,9 +77,8 @@ bool Shader::InitShader(WCHAR* VSFileName, WCHAR* PSFileName)
 	HR(g_pDevice->CreateVertexShader(pVertexShaderBlob->GetBufferPointer(),
 		pVertexShaderBlob->GetBufferSize(), nullptr, &vertexShader));
 
-
 	//编译PixelShader,并创建PixelShader
-	result = D3DCompileFromFile(PSFileName, nullptr, nullptr, "PS", "ps_5_0", flag, 0,
+	result = D3DCompileFromFile(PSFileName, nullptr, D3D_COMPILE_STANDARD_FILE_INCLUDE, "PS", "ps_5_0", flag, 0,
 		&pPixelShaderBlob, &pErrorMessage);
 
 	if (FAILED(result))

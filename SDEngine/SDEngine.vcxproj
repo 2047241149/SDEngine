@@ -152,6 +152,7 @@
     <ClCompile Include="Source\RWRenderTexture.cpp" />
     <ClCompile Include="Source\SkyBox.cpp" />
     <ClCompile Include="Source\SSAOManager.cpp" />
+    <ClCompile Include="Source\TextureManager.cpp" />
     <ClCompile Include="Source\TextureSamplerManager.cpp" />
     <ClCompile Include="Source\GeometryBuffer.cpp" />
     <ClCompile Include="Source\FPS.cpp" />
@@ -201,6 +202,7 @@
     <ClInclude Include="Source\RWRenderTexture.h" />
     <ClInclude Include="Source\SkyBox.h" />
     <ClInclude Include="Source\SSAOManager.h" />
+    <ClInclude Include="Source\TextureManager.h" />
     <ClInclude Include="Source\TextureSamplerManager.h" />
     <ClInclude Include="Source\UtilityEnum.h" />
     <ClInclude Include="Source\GeometryBuffer.h" />
@@ -235,9 +237,6 @@
       <FileType>Document</FileType>
     </None>
     <None Include="Resource\Shader\DiffuseSpecularShader.fx">
-      <FileType>Document</FileType>
-    </None>
-    <None Include="Resource\Shader\LightFunction.fx">
       <FileType>Document</FileType>
     </None>
     <None Include="Resource\Shader\PureColorShader.fx">
@@ -293,7 +292,7 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resource\Shader\DefferedDirLightShader.hlsl">
+    <None Include="Resource\Shader\DefferedDirLightShader.fx">
       <FileType>Document</FileType>
     </None>
     <None Include="Resource\Shader\DefferedPointLightShader.fx">
@@ -335,6 +334,11 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resource\Shader\SkyBoxShader.hlsl">
+      <FileType>Document</FileType>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resource\Shader\BRDF.fx">
       <FileType>Document</FileType>
     </None>
   </ItemGroup>

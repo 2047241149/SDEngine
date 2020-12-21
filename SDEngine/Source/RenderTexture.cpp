@@ -66,14 +66,11 @@ bool RenderTexture::Init(int nTextureWidth, int nTexureHeight, TextureFormat eTe
 	textureDesc.MiscFlags = 0;                    
 	HR(g_pDevice->CreateTexture2D(&textureDesc, NULL, &m_pBackTexture2D));
 	
-	
-
 	//第二，填充渲染目标视图形容体,并进行创建目标渲染视图
 	renderTargetViewDesc.ViewDimension = D3D11_RTV_DIMENSION_TEXTURE2D;
 	renderTargetViewDesc.Texture2D.MipSlice = 0;
 	HR(g_pDevice->CreateRenderTargetView(m_pBackTexture2D, &renderTargetViewDesc, &m_pRTV));
 	
-
 	//第三,创建着色器资源视图
 	shaderResourceViewDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
 	shaderResourceViewDesc.Texture2D.MostDetailedMip = 0;
@@ -82,7 +79,6 @@ bool RenderTexture::Init(int nTextureWidth, int nTexureHeight, TextureFormat eTe
 	HR(g_pDevice->CreateShaderResourceView(m_pBackTexture2D, &shaderResourceViewDesc, &m_pSRV));
 	
 
-	
 	//第四,创建深度缓存(模板缓存)
 	depthStencilDesc.Width = nTextureWidth;
 	depthStencilDesc.Height = nTexureHeight;
@@ -98,7 +94,6 @@ bool RenderTexture::Init(int nTextureWidth, int nTexureHeight, TextureFormat eTe
 		0,
 		&m_pDepthTexture2D));
 
-
 	//第五,创建深度缓存(模板缓存)视图
 	ZeroMemory(&depthStencilViewDesc, sizeof(depthStencilViewDesc));
 	depthStencilViewDesc.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2D;
@@ -109,7 +104,6 @@ bool RenderTexture::Init(int nTextureWidth, int nTexureHeight, TextureFormat eTe
 		&depthStencilViewDesc,
 		&m_pDSV));//指向深度缓存/漏字板视图的指针
 
-
 	//第六,设置渲染的视口
 	m_ViewPort.Width = static_cast<float>(nTextureWidth);
 	m_ViewPort.Height = static_cast<float>(nTexureHeight);
@@ -117,9 +111,7 @@ bool RenderTexture::Init(int nTextureWidth, int nTexureHeight, TextureFormat eTe
 	m_ViewPort.MaxDepth = 1.0f;
 	m_ViewPort.TopLeftX = 0.0f;
 	m_ViewPort.TopLeftY = 0.0f;
-
 	return true;
-
 }
 
 
