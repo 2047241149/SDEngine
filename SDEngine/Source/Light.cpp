@@ -31,8 +31,8 @@ void Light::SetLightPostion(XMFLOAT3 pos)
 
 XMFLOAT3 Light::GetLightColor()
 {
-	return XMFLOAT3(m_LightColor.x,
-		m_LightColor.y, m_LightColor.z);
+	return XMFLOAT3(m_LightColor.x * m_fLightIntensity,
+		m_LightColor.y * m_fLightIntensity, m_LightColor.z * m_fLightIntensity);
 }
 
 

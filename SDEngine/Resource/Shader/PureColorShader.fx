@@ -11,6 +11,8 @@ cbuffer CBMatrix:register(b0)
 cbuffer CBEveryFrame:register(b1)
 {
 	float4 surfaceColor;
+	float roughness;
+	float metal;
 }
 
 struct VertexIn
@@ -36,7 +38,7 @@ struct PixelOut
 	float4 diffuse:SV_Target1;
 	float4 worldPos:SV_Target2;
 	float4 worldNormal:SV_Target3;
-	float4 specular:SV_Target4;
+	float4 specularRoughMetal:SV_Target4;
 };
 
 
@@ -68,7 +70,7 @@ PixelOut PS(VertexOut outa) : SV_Target
 	pixelOut.worldNormal = float4(normalize(outa.W_Normal), 1.0);
 
 	//specular
-	pixelOut.specular = float4(1.0, 1.0, 1.0, 1.0);
+	pixelOut.specularRoughMetal = float4(1.0, roughness, metal, 1.0);
 
 	return pixelOut;
 }

@@ -2,8 +2,6 @@
 
 Texture2D WorldPosTex:register(t0);
 Texture2D CascadeLightDepthMap:register(t5);
-
-
 SamplerState wrapLinearSample:register(s0);
 SamplerState clampLinearSample:register(s1);
 SamplerState clampPointSample:register(s2);
@@ -53,10 +51,6 @@ VertexOut VS(VertexIn ina)
 	outa.Tex= ina.Tex;
 	return outa;
 }
-
-
-
-
 
 float4 PS(VertexOut outa) : SV_Target
 {

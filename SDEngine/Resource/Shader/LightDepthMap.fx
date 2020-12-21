@@ -14,13 +14,11 @@ struct VertexIn
 	float2 Tex:TEXCOORD;  
 };
 
-
 struct VertexOut
 {
 	float4 Pos:SV_POSITION;
 	float3 W_Normal:NORMAL; 
 };
-
 
 VertexOut VS(VertexIn ina)
 {
@@ -30,7 +28,6 @@ VertexOut VS(VertexIn ina)
 	outa.Pos = mul(outa.Pos, Proj);
 	return outa;
 }
-
 
 float4 PS(VertexOut outa) : SV_Target
 {

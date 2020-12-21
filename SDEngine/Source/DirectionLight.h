@@ -17,9 +17,6 @@ public:
 public:
 	void SetLightDiretion(XMFLOAT3 lightDir);
 	XMFLOAT3 GetLightDirection();
-	
-	void SetAmbientLight(XMFLOAT3  ambientLight);
-	XMFLOAT3 GetAmbientLight();
 	XMMATRIX GetViewMatrix();
 private:
 	XMFLOAT3 m_DirLightDiretion;

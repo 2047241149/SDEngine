@@ -17,6 +17,15 @@ enum MaterialType
 	DEPTH_BUFFER
 };
 
+enum TextureType
+{
+	AlbedoMap,
+	NormalMap,
+	SpecularMap,
+	RoughnessMap,
+	MetalMap,
+};
+
 class Mesh
 {
 public:
@@ -25,18 +34,18 @@ public:
 	~Mesh();
 
 private:
-
-	void ShutDownSRV();
 	void ShutDownBuffer();
-
 	void ShutDown();
-	
-	bool LoadTexture();
-
 	bool LoadFBXModel(string strFbxFileName);
-	void LoadSRVResource(string strTexFileName, ModelData* model);
-
 	void InitBuffer();
+
+public:
+	void SetTexture(string fileName, TextureType textureType);
+	void SetAlbedoTexture(string fileName);
+	void SetNormalTexture(string fileName);
+	void SetSpecularTexture(string fileName);
+	void SetRoughnessTexture(string fileName);
+	void SetMetalTexture(string fileName);
 
 public:
 	shared_ptr<FBXModelData> m_pFBXModel;
@@ -49,6 +58,7 @@ public:
 
 	//当处于纯色渲染模式下，会使用的属性
 	XMFLOAT4 pureColor;  
-
+	float roughness;
+	float metal;
 };
 #endif // !_MESH_H

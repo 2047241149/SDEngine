@@ -1,5 +1,8 @@
-Texture2D DiffuseTexture:register(t0); 
+Texture2D AldeboTexture:register(t0); 
 Texture2D NormalTexture:register(t1);
+Texture2D SpecularTexture:register(t2);
+Texture2D RoughnessTexture:register(t3);
+Texture2D MetalTexture:register(t4);
 SamplerState SampleWrapLinear:register(s0);
 
 cbuffer CBMatrix:register(b0)
@@ -32,10 +35,10 @@ struct VertexOut
 
 struct PixelOut
 {
-	float4 diffuse:SV_Target1;
+	float4 albedo:SV_Target1;
 	float4 worldPos:SV_Target2;
 	float4 worldNormal:SV_Target3;
-	float4 specular:SV_Target4;
+	float4 specularRoughMetal:SV_Target4;
 };
 
 
@@ -59,11 +62,10 @@ PixelOut PS(VertexOut outa) : SV_Target
 {
 
 	PixelOut pixelOut;
-	float4 diffuse; //采集的纹理颜色
 	float3 normal;
 
 	//diffuse
-	pixelOut.diffuse = DiffuseTexture.Sample(SampleWrapLinear, outa.Tex);
+	pixelOut.albedo = AldeboTexture.Sample(SampleWrapLinear, outa.Tex);
 
 	//worldPos
 	pixelOut.worldPos = float4(outa.worldPos, 1.0f);
@@ -75,17 +77,17 @@ PixelOut PS(VertexOut outa) : SV_Target
 	float3 N = normalize(outa.W_Normal);
 	float3 T = normalize(outa.W_Tangent);
 	float3 B = normalize(cross(N, T));
-	//基底映射TBN
 	float3 worldNormal;
 	worldNormal.x = normal.x * T.x + normal.y * B.x + normal.z * N.x;
 	worldNormal.y = normal.x * T.y + normal.y * B.y + normal.z * N.y;
 	worldNormal.z = normal.x * T.z + normal.y * B.z + normal.z * N.z;
 	worldNormal = normalize(worldNormal);
-
 	pixelOut.worldNormal = float4(worldNormal, 1.0f);
 
-	//specular
-	pixelOut.specular = float4(0.0f, 0.0f, 0.0f, 1.0f);
-
+	//specular-roughness-metal
+	float specular = SpecularTexture.Sample(SampleWrapLinear, outa.Tex).x;
+	float rough = RoughnessTexture.Sample(SampleWrapLinear, outa.Tex).x;
+	float metal = MetalTexture.Sample(SampleWrapLinear, outa.Tex).x;
+	pixelOut.specularRoughMetal = float4(specular, rough, metal, 1.0);
 	return pixelOut;
 }

@@ -147,6 +147,9 @@
     <ClCompile Include="Source\SkyBox.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="Source\TextureManager.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Camera.h">
@@ -296,6 +299,9 @@
     <ClInclude Include="Source\SkyBox.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="Source\TextureManager.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="Resource\Shader\DepthGetShader.fx" />
@@ -307,7 +313,6 @@
     <None Include="Resource\Shader\ForwardPureColorShader.fx" />
     <None Include="Resource\Shader\GaussianBlurShaderCS.fx" />
     <None Include="Resource\Shader\GraphicsBlitShader.fx" />
-    <None Include="Resource\Shader\LightFunction.fx" />
     <None Include="Resource\Shader\PureColorShader.fx" />
     <None Include="Resource\Shader\ScreenSpaceReflectShader.fx" />
     <None Include="Resource\Shader\SSRGBuffer.fx" />
@@ -319,11 +324,12 @@
     <None Include="Resource\Shader\FxaaShader.fx" />
     <None Include="Resource\Shader\LightDepthMap.fx" />
     <None Include="Resource\Shader\DirShadowMapShader.fx" />
-    <None Include="Resource\Shader\DefferedDirLightShader.hlsl" />
     <None Include="Resource\Shader\ForwardPureShader.fx" />
     <None Include="Resource\Shader\SSAOShader.hlsl" />
     <None Include="Resource\Shader\SSAOBlurShader.hlsl" />
     <None Include="Resource\Shader\SkyBoxShader.hlsl" />
     <None Include="Resource\Shader\DepthDisplayShader.fx" />
+    <None Include="Resource\Shader\DefferedDirLightShader.fx" />
+    <None Include="Resource\Shader\BRDF.fx" />
   </ItemGroup>
 </Project>

@@ -34,6 +34,8 @@ struct MaterialTexFileName
 	string specularMapFileName;
 	string alphaMapFileName;
 	string bumpMapFileName;
+	string roughnessMapFileName;
+	string metalMapFileName;
 };
 
 
@@ -67,7 +69,6 @@ struct ModelData
 struct FBXModelData
 {
 	vector<ModelData> mModelList;
-	map<string, ID3D11ShaderResourceView*> mSRVMap;
 };
 
 

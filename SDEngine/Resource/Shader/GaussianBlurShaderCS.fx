@@ -97,8 +97,3 @@ void CS_VerticalBlur(int3 dispatchThreadID : SV_DispatchThreadID, int3 groupThre
 	destTexture[dispatchThreadID.xy] = blurColor;
 
 }
-
-
-
-
-

@@ -34,8 +34,8 @@ bool ShaderManager::Init()
 
 	//创建以及初始化mPhongShader
 	defferedDirLightShader = shared_ptr<Shader>(new
-		Shader(L"Resource/Shader/DefferedDirLightShader.hlsl",
-			L"Resource/Shader/DefferedDirLightShader.hlsl"));
+		Shader(L"Resource/Shader/DefferedDirLightShader.fx",
+			L"Resource/Shader/DefferedDirLightShader.fx"));
 
 	defferedPointLightShader = shared_ptr<Shader>(new
 		Shader(L"Resource/Shader/DefferedPointLightShader.fx", L"Resource/Shader/DefferedPointLightShader.fx"));
@@ -78,7 +78,6 @@ bool ShaderManager::Init()
 	lightDepthShader = shared_ptr<Shader>(new
 		Shader(L"Resource/Shader/LightDepthMap.fx", L"Resource/Shader/LightDepthMap.fx"));
 
-	
 	shadowMapShader = shared_ptr<Shader>(new
 		Shader(L"Resource/Shader/DirShadowMapShader.fx", L"Resource/Shader/DirShadowMapShader.fx"));
 	

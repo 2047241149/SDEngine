@@ -244,11 +244,11 @@ void GeometryBuffer::ClearGBuffer(XMFLOAT3 backColor)
 	color[2] = 0.0f;
 	g_pDeviceContext->ClearRenderTargetView(mRenderTargetViewArray[GBufferType::Pos], color);
 
-	//Specular
-	color[0] = 0.0f;
-	color[1] = 0.0f;
-	color[2] = 0.0f;
-	g_pDeviceContext->ClearRenderTargetView(mRenderTargetViewArray[GBufferType::Specular], color);
+	//Specular-Rough-Metal
+	color[0] = 1.0f;
+	color[1] = 1.0f;
+	color[2] = 1.0f;
+	g_pDeviceContext->ClearRenderTargetView(mRenderTargetViewArray[GBufferType::SpecularRoughMetal], color);
 
 }
 

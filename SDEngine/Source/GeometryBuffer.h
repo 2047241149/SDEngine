@@ -11,7 +11,7 @@ enum GBufferType
 	Diffuse,
 	Pos,
 	Normal,
-	Specular,
+	SpecularRoughMetal,
 	Depth,
 };
 
@@ -21,7 +21,7 @@ const int BUFFER_COUNT = 4;
 //1- diffuse
 //2- pos
 //3- normal
-//4- specular
+//4- specular-rough-metal
 //另外加一个depthBuffer
 class GeometryBuffer
 {
