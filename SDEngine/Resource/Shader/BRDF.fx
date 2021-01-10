@@ -4,9 +4,6 @@ f(cook_torrance) = D* F * G /(4 * (wo.n) * (wi.n))
 https://learnopengl.com/PBR/Theory
 */
 
-
-
-
 //NormalDistribution:Trowbridge-Reitz GGX
 float DistributionGGX(float3 n, float3 h, float roughness)
 {

@@ -1,11 +1,11 @@
 #include "SkyBox.h"
-#include "Texture.h"
-#include "GameObject.h"
-#include "Mesh.h"
-#include "ShaderManager.h"
-#include "TextureSamplerManager.h"
-#include "GeometryBuffer.h"
-#include "Camera.h"
+#include "Texture/Texture.h"
+#include "GameObject/GameObject.h"
+#include "GameObject/Mesh.h"
+#include "Shader/ShaderManager.h"
+#include "Texture/TextureSamplerManager.h"
+#include "Shader/GeometryBuffer.h"
+#include "GameObject/Camera.h"
 
 const float SKY_BOX_SPHERE_SCALE = 10.0f;
 

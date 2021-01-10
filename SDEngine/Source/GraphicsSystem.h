@@ -16,13 +16,13 @@ class Texture;
 class GameObject;
 
 
-#include "DirectxCore.h"
-#include"Macro.h"
-#include"Light.h"
+#include "Common/DirectxCore.h"
+#include "Common/Macro.h"
+#include"Light/Light.h"
 #include"FPS.h"
 #include<memory>
-#include "GraphicsConfig.h"
-#include "Mesh.h"
+#include "Common/GraphicsConfig.h"
+#include "GameObject/Mesh.h"
 
 class GraphicsSystem
 {
