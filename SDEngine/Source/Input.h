@@ -2,7 +2,7 @@
 #ifndef _INPUT_CLASS_H
 #define _INPUT_CLASS_H
 
-#include"Macro.h"
+#include "Common/Macro.h"
 //定义使用的D3DInput的版本
 #define DIRECTINPUT_VERSION 0x0800
 #include<dinput.h>
