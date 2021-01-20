@@ -1,3 +1,5 @@
+#include "ToneMap.fx"
+
 TextureCube CubeMap:register(t0);
 SamplerState ClampLinear:register(s0);
 
@@ -38,5 +40,13 @@ VertexOut VS(VertexIn ina)
 
 float4 PS(VertexOut outa) : SV_Target
 {
-	return CubeMap.Sample(ClampLinear, 	outa.SkyPos);
+	float4 color = CubeMap.Sample(ClampLinear, outa.SkyPos);
+	color = float4(color.xyz, 1.0);
+	/*if (color.x > 1.0)
+	{
+		color = float4(0.0, 0.0, 1.0, 1.0);
+	}*/
+
+	color.rgb = ACESToneMappingAndGammaCorrect(color.rgb, 1.0);
+	return color;
 }

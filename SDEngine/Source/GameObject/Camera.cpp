@@ -45,8 +45,6 @@ XMVECTOR Camera::GetPositionXM()const
 	return XMLoadFloat3(&mPosition);
 }
 
-
-
 //获取相机的基础向量(Up,Look,Right)
 XMFLOAT3 Camera::GetUp()const
 {
@@ -56,7 +54,6 @@ XMVECTOR Camera::GetUpXM()const
 {
 	return XMLoadFloat3(&mUp);
 }
-
 
 XMFLOAT3 Camera::GetLook()const
 {
@@ -89,7 +86,6 @@ XMMATRIX Camera::GetViewMatrix()const
 //通过相机在世界空间的位置，目标点，以及上向量来定义相机变换矩阵
 void Camera::LookAt(FXMVECTOR pos, FXMVECTOR target, FXMVECTOR worldUp)
 {
-	
 	XMVECTOR Look = XMVectorSubtract(target, pos);
 	XMVECTOR Up = worldUp;
 	XMVECTOR Right = XMVector3Cross(Up, Look);
@@ -105,7 +101,6 @@ void Camera::LookAt(FXMVECTOR pos, FXMVECTOR target, FXMVECTOR worldUp)
 	XMStoreFloat3(&mLook, Look);
 	XMStoreFloat3(&mUp, Up);
 	XMStoreFloat3(&mRight, Right);
-
 }
 
 
@@ -261,5 +256,6 @@ shared_ptr<Camera> Camera::Get()
 	return m_pCamera;
 
 }
+
 
 shared_ptr<Camera> Camera::m_pCamera = nullptr;

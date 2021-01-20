@@ -18,10 +18,14 @@ SkyBox::SkyBox(const SkyBox& other)
 {
 }
 
+SkyBox::SkyBox(ID3D11ShaderResourceView* inSrv):
+	cubeSrv(inSrv)
+{
+
+}
 
 SkyBox::~SkyBox()
 {
-
 }
 
 bool SkyBox::Init(WCHAR* cubeMapFileName)
@@ -55,10 +59,16 @@ void SkyBox::Render(GeometryBuffer* geometryBuffer)
 	GShaderManager->skyBoxShader->SetMatrix("World", scaleMatrix * worldMatrix);
 	GShaderManager->skyBoxShader->SetMatrix("View", GCamera->GetViewMatrix());
 	GShaderManager->skyBoxShader->SetMatrix("Proj", GCamera->GetProjectionMatrix());
-	GShaderManager->skyBoxShader->SetTexture("CubeMap", skyBoxTexture->GetTexture());
+	ID3D11ShaderResourceView* srv = (nullptr != cubeSrv ? cubeSrv : skyBoxTexture->GetTexture());
+	GShaderManager->skyBoxShader->SetTexture("CubeMap", srv);
 	GShaderManager->skyBoxShader->SetTextureSampler("ClampLinear", GTextureSamplerBilinearClamp);
 	GShaderManager->skyBoxShader->Apply();
 	skyBoxGameObject->RenderMesh();
 	GDirectxCore->RecoverDefaultDSS();
 	GDirectxCore->RecoverDefualtRS();
+}
+
+void SkyBox::SetTexture(ID3D11ShaderResourceView* inSrv)
+{
+	cubeSrv = inSrv;
 }

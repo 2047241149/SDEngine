@@ -33,6 +33,7 @@ public:
 	shared_ptr<Shader> ssaoShader;
 	shared_ptr<Shader> ssaoBlurShader;
 	shared_ptr<Shader> skyBoxShader;
+	shared_ptr<Shader> equirectangularMapShader;
 
 private:
 	static shared_ptr<ShaderManager> single;

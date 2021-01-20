@@ -120,6 +120,7 @@ bool DirectxCore::Init(int ScreenWidth, int ScreenHeight, bool vsync, HWND hwnd,
 	sd.BufferDesc.Width = ScreenWidth;
 	sd.BufferDesc.Height = ScreenHeight;
 	sd.BufferDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
+
 	if (mVsyncEnable) //限不限帧
 	{
 		sd.BufferDesc.RefreshRate.Numerator =numerator;
@@ -149,17 +150,46 @@ bool DirectxCore::Init(int ScreenWidth, int ScreenHeight, bool vsync, HWND hwnd,
 	sd.OutputWindow = hwnd; //交换链所属的窗口
 	sd.SwapEffect = DXGI_SWAP_EFFECT_DISCARD;
 	sd.Flags = 0;
+
+	#if defined(_DEBUG)
+	// If the project is in a debug build, enable the debug layer.
+		sd.Flags = D3D11_CREATE_DEVICE_DEBUG;
+	#endif
+	
 	sd.BufferDesc.ScanlineOrdering = DXGI_MODE_SCANLINE_ORDER_UNSPECIFIED;
 	sd.BufferDesc.Scaling = DXGI_MODE_SCALING_UNSPECIFIED;
-
 
 	//---------------------------------------------------------------
 	//创建交换链和D3D设备和D3D设备上下文
 	//---------------------------------------------------------------
 	D3D_FEATURE_LEVEL featureLevel;
-	featureLevel = D3D_FEATURE_LEVEL_11_0;
+	featureLevel = D3D_FEATURE_LEVEL_11_1;
 	HR(D3D11CreateDeviceAndSwapChain(NULL, D3D_DRIVER_TYPE_HARDWARE, NULL, 0, &featureLevel, 1,
 		D3D11_SDK_VERSION, &sd, &md3dSwapChain, &md3dDevice, NULL, &md3dImmediateContext));
+
+	#if defined(DEBUG) | defined(_DEBUG)
+		ID3D11Debug *pD3DDebug = NULL;
+		if (SUCCEEDED(md3dDevice->QueryInterface(__uuidof(ID3D11Debug), reinterpret_cast<VOID**>(&pD3DDebug))))
+		{
+			ID3D11InfoQueue *d3dInfoQueue = nullptr;
+			pD3DDebug->ReportLiveDeviceObjects(D3D11_RLDO_DETAIL);
+
+			if (SUCCEEDED(pD3DDebug->QueryInterface(__uuidof(ID3D11InfoQueue), (void**)&d3dInfoQueue)))
+			{
+				d3dInfoQueue->SetBreakOnSeverity(D3D11_MESSAGE_SEVERITY_CORRUPTION, true);
+				d3dInfoQueue->SetBreakOnSeverity(D3D11_MESSAGE_SEVERITY_ERROR, true);
+				d3dInfoQueue->SetBreakOnSeverity(D3D11_MESSAGE_SEVERITY_INFO, true);
+				d3dInfoQueue->SetBreakOnSeverity(D3D11_MESSAGE_SEVERITY_MESSAGE, true);
+				d3dInfoQueue->SetBreakOnCategory(D3D11_MESSAGE_CATEGORY_MISCELLANEOUS, true);
+				d3dInfoQueue->SetBreakOnCategory(D3D11_MESSAGE_CATEGORY_INITIALIZATION, true);
+				d3dInfoQueue->SetBreakOnCategory(D3D11_MESSAGE_CATEGORY_CLEANUP, true);
+				d3dInfoQueue->SetBreakOnCategory(D3D11_MESSAGE_CATEGORY_COMPILATION, true);
+				d3dInfoQueue->SetBreakOnCategory(D3D11_MESSAGE_CATEGORY_STATE_CREATION, true);
+				d3dInfoQueue->SetBreakOnCategory(D3D11_MESSAGE_CATEGORY_STATE_SETTING, true);
+				d3dInfoQueue->SetBreakOnCategory(D3D11_MESSAGE_CATEGORY_RESOURCE_MANIPULATION, true);
+			}
+		}
+	#endif
 
 	//--------------------------------------------------------------
 	//第四,创建背后缓存视图
@@ -213,7 +243,6 @@ bool DirectxCore::Init(int ScreenWidth, int ScreenHeight, bool vsync, HWND hwnd,
 	DSDESC.BackFace.StencilFunc = D3D11_COMPARISON_ALWAYS;
 	HR(md3dDevice->CreateDepthStencilState(&DSDESC, &md3dDepthStencilState));
 	md3dImmediateContext->OMSetDepthStencilState(md3dDepthStencilState, 0);
-
 
 	//--------------------------------------------------------------
 	//创建深度缓存(模板缓存)视图

@@ -18,6 +18,5 @@ static bool bSSAO = true;
 //#define POST_EFFECT
 //#define SSR
 #define DEBUG_GBUFFER 1
-
 #endif // !_GRAPHICS_CONFIG_H
 
