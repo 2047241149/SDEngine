@@ -54,7 +54,6 @@ bool RenderTexture::Init(int nTextureWidth, int nTexureHeight, TextureFormat eTe
 	depthStencilViewDesc.Format = depthStencilDesc.Format;
 
 	//第一,填充2D纹理形容结构体,并创建2D渲染目标纹理
-
 	textureDesc.Width = nTextureWidth;
 	textureDesc.Height = nTexureHeight;
 	textureDesc.MipLevels = 1;

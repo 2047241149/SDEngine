@@ -14,7 +14,9 @@ class GeometryBuffer;
 class DepthBufferRT;
 class Texture;
 class GameObject;
-
+class CubeCamera;
+class RenderCubeMap;
+class IrradianceCubeMap;
 
 #include "Common/DirectxCore.h"
 #include "Common/Macro.h"
@@ -49,7 +51,6 @@ private:
 
 	//Ìì¿ÕºÐ×Ó
 	shared_ptr<SkyBox> skyBox;
-
 	shared_ptr<RenderTexture> mSSRRT;
 	shared_ptr<RenderTexture> mSrcRT;
 	shared_ptr<RenderTexture> mLightBuffer;
@@ -62,20 +63,17 @@ private:
 
 	//SSRGBuffer
 	shared_ptr<SSRGBuffer> mSSRBuffer;
-	
 	MaterialType materialType = MaterialType::DIFFUSE;
 	MaterialType preMaterialType = MaterialType::DIFFUSE;
-
 	shared_ptr<DebugWindow> mDebugWindow;
-
+	shared_ptr<DebugWindow> mDebugWindow1;
 	shared_ptr<DepthBufferRT>  mBackDepthBufferRT;
-
 	int m_nScreenWidth, m_nScreenHeight;
 
+	shared_ptr<IrradianceCubeMap> radianceCubeMap;
 
 private:
 	bool Init(int ScreenWidth, int ScreenHeight, HWND hwnd, HINSTANCE hinstance);
-
 
 private:
 	void RenderOpacity();
@@ -97,6 +95,11 @@ private:
 	void RenderSSR();
 	void InitDebugConsole();
 	void CloseDebugConsole();
+
+
+private:
+	void PreRender();
+	void PreRenderDiffuseIrradiance();
 
 public:
 	GraphicsSystem(int ScreenWidth, int ScreenHeight, HWND hwnd, HINSTANCE hinstance);

@@ -13,6 +13,8 @@
 #include "Shader/DepthBufferRT.h"
 #include "Shader/SSAOManager.h"
 #include "Texture/TextureManager.h"
+#include "IrradianceCubeMap.h"
+
 
 GraphicsSystem::GraphicsSystem(int ScreenWidth, int ScreenHeight, HWND hwnd, HINSTANCE hinstance)
 {
@@ -52,15 +54,15 @@ bool GraphicsSystem::Init(int ScreenWidth, int ScreenHeight, HWND hwnd,HINSTANCE
 	//给游戏添加灯光 
 	shared_ptr<DirectionLight> m_spDirLight = shared_ptr<DirectionLight>(new DirectionLight());
 	m_spDirLight->SetLightDiretion(XMFLOAT3(-0.5f, -1.0f, 0.0f));
-	m_spDirLight->SetLightColor(XMFLOAT3(1.0f, 1.0f, 1.0f));
+	m_spDirLight->SetLightColor(XMFLOAT3(1.5f, 1.5f, 1.5f));
 	m_spDirLight->SetLightPostion(XMFLOAT3(10.0f, 10.0f, 10.0f));
 	GLightManager->Add(m_spDirLight);
 
 	shared_ptr<PointLight> m_PointLight = shared_ptr<PointLight>(new PointLight());
 	m_PointLight->SetLightColor(XMFLOAT3(1.0f, 1.0f, 1.0f));
-	m_PointLight->SetLightIntensity(5.0f);
+	m_PointLight->SetLightIntensity(5.0f);		
 	m_PointLight->SetLightPostion(XMFLOAT3(20.0f, 1.0f, -20.0f));
-
+		
 	shared_ptr<PointLight> m_PointLight1 = shared_ptr<PointLight>(new PointLight());
 	m_PointLight1->SetLightColor(XMFLOAT3(1.0f, 0.0f, 0.0f));
 	m_PointLight1->SetLightIntensity(5.0f);
@@ -167,8 +169,10 @@ bool GraphicsSystem::Init(int ScreenWidth, int ScreenHeight, HWND hwnd,HINSTANCE
 		SSRGBuffer(ScreenWidth, ScreenHeight, SCREEN_FAR, SCREEN_NEAR));
 
 	ssaoManager = shared_ptr<SSAOManager>(new SSAOManager(ScreenWidth, ScreenHeight));
-	skyBox = shared_ptr<SkyBox>(new SkyBox(L"Resource/Texture/sunsetcube.dds"));
-	
+	skyBox = shared_ptr<SkyBox>(new SkyBox(L"Resource/Texture/uffizi_cross.dds"));
+	radianceCubeMap = shared_ptr<IrradianceCubeMap>(new IrradianceCubeMap("Resource/Texture/newport_loft.hdr"));
+
+	PreRender();
 	return true;
 }
 
@@ -422,7 +426,6 @@ void GraphicsSystem::RenderDebugWindow()
 	GShaderManager->uiShader->Apply();
 	mDebugWindow->Render(370, 600);
 
-
 	//ShadowMap
 	GShaderManager->uiShader->SetTexture("ShaderTexture",
 		mGrayShadowMap->GetSRV());
@@ -444,6 +447,8 @@ void GraphicsSystem::RenderDebugWindow()
 	GShaderManager->depthDisplayShader->SetFloat("nearPlane", GCamera->mNearPlane);
 	GShaderManager->depthDisplayShader->Apply();
 	mDebugWindow->Render(490, 600);
+
+
 
 	#if SSR
 	GShaderManager->SetDepthShader
@@ -786,4 +791,15 @@ void GraphicsSystem::RenderSSAOPass()
 void GraphicsSystem::RenderSkyBoxPass()
 {
 	skyBox->Render(mGeometryBuffer.get());
+}
+
+void GraphicsSystem::PreRender()
+{
+	//TODO:equirectangularMap TO CubeMap算法还存在问题
+	//PreRenderDiffuseIrradiance();
+}
+
+void GraphicsSystem::PreRenderDiffuseIrradiance()
+{
+	radianceCubeMap->Render();
 }

@@ -1,6 +1,7 @@
+#include "ToneMap.fx"
+
 Texture2D ShaderTexture:register(t0);
 SamplerState LinearClamp:register(s0);  
-
 
 
 cbuffer CBMatrix:register(b0)
@@ -15,7 +16,6 @@ struct VertexIn
 	float2 Tex:TEXCOORD;  
 
 };
-
 
 struct VertexOut
 {
@@ -37,5 +37,8 @@ VertexOut VS(VertexIn ina)
 
 float4 PS(VertexOut outa) : SV_Target
 {
-	return ShaderTexture.Sample(LinearClamp, outa.Tex);
+	float4 color = ShaderTexture.Sample(LinearClamp, outa.Tex);
+	color = float4(color.xyz, 1.0);
+	color.rgb = ACESToneMappingAndGammaCorrect(color.rgb, 1.0);
+	return color;
 }

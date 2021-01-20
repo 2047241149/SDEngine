@@ -90,6 +90,9 @@ bool ShaderManager::Init()
 	skyBoxShader = shared_ptr<Shader>(new
 		Shader(L"Resource/Shader/SkyBoxShader.hlsl", L"Resource/Shader/SkyBoxShader.hlsl"));
 
+	equirectangularMapShader = shared_ptr<Shader>(new
+		Shader(L"Resource/Shader/equirectangularMapShader.fx", L"Resource/Shader/equirectangularMapShader.fx"));
+
 	return true;
 }
 

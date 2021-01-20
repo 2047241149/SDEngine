@@ -125,9 +125,12 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Source\GameObject\CubeCamera.cpp" />
+    <ClCompile Include="Source\IrradianceCubeMap.cpp" />
     <ClCompile Include="Source\Shader\CascadeShadowMap.cpp" />
     <ClCompile Include="Source\Shader\CascadeShadowMapManager.cpp" />
     <ClCompile Include="Source\Common\MathTool.cpp" />
+    <ClCompile Include="Source\Texture\HdrTexture.cpp" />
     <ClCompile Include="Source\Texture\NoiseTexture.cpp" />
     <ClCompile Include="Source\Shader\Shader.cpp" />
     <ClCompile Include="Source\Common\DirectxFrame.cpp" />
@@ -139,6 +142,7 @@
     <ClCompile Include="Source\Light\LightManager.cpp" />
     <ClCompile Include="Source\GameObject\Mesh.cpp" />
     <ClCompile Include="Source\Light\PointLight.cpp" />
+    <ClCompile Include="Source\Texture\RenderCubeMap.cpp" />
     <ClCompile Include="Source\Texture\RenderTexture.cpp" />
     <ClCompile Include="Source\Common\CommonFunction.cpp" />
     <ClCompile Include="Source\Common\DirectxCore.cpp" />
@@ -153,6 +157,7 @@
     <ClCompile Include="Source\Texture\RWRenderTexture.cpp" />
     <ClCompile Include="Source\SkyBox.cpp" />
     <ClCompile Include="Source\Shader\SSAOManager.cpp" />
+    <ClCompile Include="Source\Texture\stb_image.cpp" />
     <ClCompile Include="Source\Texture\TextureManager.cpp" />
     <ClCompile Include="Source\Texture\TextureSamplerManager.cpp" />
     <ClCompile Include="Source\Shader\GeometryBuffer.cpp" />
@@ -172,10 +177,13 @@
     <ClCompile Include="Source\源.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Source\GameObject\CubeCamera.h" />
+    <ClInclude Include="Source\IrradianceCubeMap.h" />
     <ClInclude Include="Source\Shader\CascadeShadowMap.h" />
     <ClInclude Include="Source\Shader\CascadeShadowMapManager.h" />
     <ClInclude Include="Source\Common\MathTool.h" />
     <ClInclude Include="Source\Common\GraphicsConfig.h" />
+    <ClInclude Include="Source\Texture\HdrTexture.h" />
     <ClInclude Include="Source\Texture\NoiseTexture.h" />
     <ClInclude Include="Source\Shader\Shader.h" />
     <ClInclude Include="Source\Common\DirectxFrame.h" />
@@ -188,6 +196,7 @@
     <ClInclude Include="Source\Light\LightManager.h" />
     <ClInclude Include="Source\GameObject\Mesh.h" />
     <ClInclude Include="Source\Light\PointLight.h" />
+    <ClInclude Include="Source\Texture\RenderCubeMap.h" />
     <ClInclude Include="Source\Texture\RenderTexture.h" />
     <ClInclude Include="Source\Common\CommomVertexFormat.h" />
     <ClInclude Include="Source\Common\CommonFunction.h" />
@@ -203,6 +212,7 @@
     <ClInclude Include="Source\Texture\RWRenderTexture.h" />
     <ClInclude Include="Source\SkyBox.h" />
     <ClInclude Include="Source\Shader\SSAOManager.h" />
+    <ClInclude Include="Source\Texture\stb_image.h" />
     <ClInclude Include="Source\Texture\TextureManager.h" />
     <ClInclude Include="Source\Texture\TextureSamplerManager.h" />
     <ClInclude Include="Source\Common\UtilityEnum.h" />
@@ -339,6 +349,16 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resource\Shader\BRDF.fx">
+      <FileType>Document</FileType>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resource\Shader\equirectangularMapShader.fx">
+      <FileType>Document</FileType>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resource\Shader\ToneMap.fx">
       <FileType>Document</FileType>
     </None>
   </ItemGroup>
