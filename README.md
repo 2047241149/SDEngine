@@ -18,6 +18,9 @@
 ![image](https://github.com/2047241149/SDEngine/blob/master/SDEngine/DefferedShading_PointLight.png)
 
 
+               					BRDF + HDR Cubemap irradiance    
+![image](https://github.com/2047241149/SDEngine/blob/master/SDEngine/DefferedShading_Irradiance.png)
+
 
 						渲染管线图
 ![image](https://github.com/2047241149/SDEngine/blob/master/document/GraphicsRenderPipeline.png)
