@@ -66,7 +66,6 @@ private:
 	MaterialType materialType = MaterialType::DIFFUSE;
 	MaterialType preMaterialType = MaterialType::DIFFUSE;
 	shared_ptr<DebugWindow> mDebugWindow;
-	shared_ptr<DebugWindow> mDebugWindow1;
 	shared_ptr<DepthBufferRT>  mBackDepthBufferRT;
 	int m_nScreenWidth, m_nScreenHeight;
 

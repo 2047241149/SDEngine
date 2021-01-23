@@ -30,7 +30,6 @@ RenderCubeMap::~RenderCubeMap()
 
 bool RenderCubeMap::Init(int nTextureWidth, int nTexureHeight)
 {
-	std::cout << "RenderCubeMap111111111111111111111111" << std::endl;
 	//第一,填充2D纹理形容结构体,并创建2D渲染目标纹理
 	D3D11_TEXTURE2D_DESC cubeMapTextureDesc;
 	ZeroMemory(&cubeMapTextureDesc, sizeof(cubeMapTextureDesc));

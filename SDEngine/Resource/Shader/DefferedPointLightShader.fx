@@ -56,7 +56,6 @@ float4 PS(VertexOut outa) : SV_Target
 {
 	float2 uv = (outa.HCPos.xy / outa.HCPos.w) * float2(0.5, -0.5) + float2(0.5, 0.5);
 	float4 color = float4(0.0, 0.0, 0.0, 1.0);
-	float PI = 3.1415926;
 
 	//G-Buffer-Pos(¿À∑—1 float)
 	float3 worldPos = WorldPosTex.Sample(clampLinearSample, uv).xyz;

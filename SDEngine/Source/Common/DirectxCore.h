@@ -85,6 +85,11 @@ public:
 
 	void TurnOnRenderLightVolumeDSS();
 
+	void GenerateMips(ID3D11ShaderResourceView* srv)
+	{
+		md3dImmediateContext->GenerateMips(srv);
+	}
+
 private:
 	bool mVsyncEnable;  //ÊÇ·ñÏŞÖ¡äÖÈ¾
 	int mVideoCardMemory; //ÏÔ¿¨ÄÚ´æ

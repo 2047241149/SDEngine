@@ -6,7 +6,6 @@
 class Texture;
 class GameObject;
 class GeometryBuffer;
-class HdrTexture;
 class CubeCamera;
 class RenderCubeMap;
 
@@ -14,21 +13,21 @@ class RenderCubeMap;
 class IrradianceCubeMap
 {
 public:
-	IrradianceCubeMap(char* hdrEquirectangularMapFile);
+	IrradianceCubeMap(WCHAR* hdrCubeMapFile, int textureWidth = 64, int textureHeight = 64);
 	IrradianceCubeMap(const IrradianceCubeMap& other);
 	~IrradianceCubeMap();
 
 public:
 	void Render();
-	ID3D11ShaderResourceView* GetSrv();
-	ID3D11ShaderResourceView* GetTexture2DSrv();
+	ID3D11ShaderResourceView* GetIrradianceSrv();
+	ID3D11ShaderResourceView* GetCubeMapSrv();
 
 private:
-	bool Init(char* cubeMapFileName);
+	bool Init(WCHAR* cubeMapFileName, int textureWidth = 64, int textureHeight = 64);
 	void ShutDown();
 
 private:
-	shared_ptr<HdrTexture> hdrTetxure;
+	shared_ptr<Texture> hdrCubeMap;
 	shared_ptr<GameObject> cubeGameObject;
 	shared_ptr<RenderCubeMap> renderCubeMap;
 	shared_ptr<CubeCamera> cubeCamera;

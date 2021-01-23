@@ -49,7 +49,7 @@ void CubeCamera::BuildCamera(XMFLOAT3 cameraPos)
 
 	for (int index = 0; index < 6; index++)
 	{
-		XMVECTOR target = XMLoadFloat3(&targets[index]);
+		/*XMVECTOR target = XMLoadFloat3(&targets[index]);
 		XMVECTOR Look = XMVectorSubtract(target, pos);
 		XMVECTOR Up = XMLoadFloat3(&ups[index]);
 		XMVECTOR Right = XMVector3Cross(Up, Look);
@@ -70,12 +70,15 @@ void CubeCamera::BuildCamera(XMFLOAT3 cameraPos)
 
 		float x = -XMVectorGetX(XMVector3Dot(pos, R));
 		float y = -XMVectorGetX(XMVector3Dot(pos, U));
-		float z = -XMVectorGetX(XMVector3Dot(pos, L));
+		float z = -XMVectorGetX(XMVector3Dot(pos, L));*/
+		XMVECTOR targetVec = XMLoadFloat3(&targets[index]);
+		XMVECTOR upVec = XMLoadFloat3(&ups[index]);
 
-		XMMATRIX& viewMatrix = ViewMatrixs[index];
+		ViewMatrixs[index] = XMMatrixLookAtLH(pos, targetVec, upVec);
+		/*XMMATRIX& viewMatrix = ViewMatrixs[index];
 		viewMatrix.r[0] = XMVectorSet(memRight.x, memUp.x, memLook .x, 0);
 		viewMatrix.r[1] = XMVectorSet(memRight.y, memUp.y, memLook.y, 0);
 		viewMatrix.r[2] = XMVectorSet(memRight.z, memUp.z, memLook.z, 0);
-		viewMatrix.r[3] = XMVectorSet(x, y, z, 1.0f);
+		viewMatrix.r[3] = XMVectorSet(x, y, z, 1.0f);*/
 	}
 }

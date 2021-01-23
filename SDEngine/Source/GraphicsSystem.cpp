@@ -54,7 +54,7 @@ bool GraphicsSystem::Init(int ScreenWidth, int ScreenHeight, HWND hwnd,HINSTANCE
 	//给游戏添加灯光 
 	shared_ptr<DirectionLight> m_spDirLight = shared_ptr<DirectionLight>(new DirectionLight());
 	m_spDirLight->SetLightDiretion(XMFLOAT3(-0.5f, -1.0f, 0.0f));
-	m_spDirLight->SetLightColor(XMFLOAT3(1.5f, 1.5f, 1.5f));
+	m_spDirLight->SetLightColor(XMFLOAT3(1.0f, 1.0f, 1.0f));
 	m_spDirLight->SetLightPostion(XMFLOAT3(10.0f, 10.0f, 10.0f));
 	GLightManager->Add(m_spDirLight);
 
@@ -100,7 +100,6 @@ bool GraphicsSystem::Init(int ScreenWidth, int ScreenHeight, HWND hwnd,HINSTANCE
 	mHeadObject->m_pTransform->localPosition = XMFLOAT3(0.0f, 5.0f, 0.0f);
 	mHeadObject->m_pTransform->localRotation = XMFLOAT3(0.0f, 90.0f, 0.0f);
 	mHeadObject->m_pTransform->localScale = XMFLOAT3(5.0f, 5.0f, 5.0f);
-
 
 	for (int x = 0; x < 11; ++x)
 	{
@@ -169,9 +168,8 @@ bool GraphicsSystem::Init(int ScreenWidth, int ScreenHeight, HWND hwnd,HINSTANCE
 		SSRGBuffer(ScreenWidth, ScreenHeight, SCREEN_FAR, SCREEN_NEAR));
 
 	ssaoManager = shared_ptr<SSAOManager>(new SSAOManager(ScreenWidth, ScreenHeight));
-	skyBox = shared_ptr<SkyBox>(new SkyBox(L"Resource/Texture/uffizi_cross.dds"));
-	radianceCubeMap = shared_ptr<IrradianceCubeMap>(new IrradianceCubeMap("Resource/Texture/newport_loft.hdr"));
-
+	skyBox = shared_ptr<SkyBox>(new SkyBox(L"Resource/Texture/room_hdr_cube.dds"));
+	radianceCubeMap = shared_ptr<IrradianceCubeMap>(new IrradianceCubeMap(L"Resource/Texture/room_hdr_cube.dds"));
 	PreRender();
 	return true;
 }
@@ -280,6 +278,15 @@ bool GraphicsSystem::Frame()
 		bSSAO = true;
 	}
 
+	if (mInputClass->IsKeyDown(DIK_8))
+	{
+		skyBox->SetTexture(radianceCubeMap->GetIrradianceSrv());
+	}
+	else
+	{
+		skyBox->SetTexture(nullptr);
+	}
+
 	GCamera->UpdateViewMatrix();
 	//如果按下ESC，则破坏窗口
 	if (mInputClass->IsEscapePressed())
@@ -373,7 +380,7 @@ void GraphicsSystem::RenderGeometryPass()
 void GraphicsSystem::RenderLightingPass()
 {
 	RenderDirLightPass();
-	RenderPointLightPass();
+	//RenderPointLightPass();
 	RenderFinalShadingPass();
 }
 
@@ -683,6 +690,7 @@ void GraphicsSystem::RenderDirLightPass()
 	GDirectxCore->TurnOffZBuffer();
 	GDirectxCore->TurnOnLightBlend();
 
+	//TODO: 只存在一次IradianceMap渲染?
 	for (int index = 0; index < (int)GLightManager->m_vecDirLight.size(); ++index)
 	{
 		shared_ptr<DirectionLight> pDirLight = GLightManager->m_vecDirLight[index];
@@ -694,6 +702,7 @@ void GraphicsSystem::RenderDirLightPass()
 		GShaderManager->defferedDirLightShader->SetTexture("DirLightShadowMap", shaderResourceView[3]);
 		GShaderManager->defferedDirLightShader->SetTexture("SSAORT", shaderResourceView[4]);
 		GShaderManager->defferedDirLightShader->SetTexture("AlbedoTex", shaderResourceView[5]);
+		GShaderManager->defferedDirLightShader->SetTexture("IrradianceTex", radianceCubeMap->GetIrradianceSrv());
 		GShaderManager->defferedDirLightShader->SetFloat3("cameraPos", GCamera->GetPosition());
 		GShaderManager->defferedDirLightShader->SetFloat4("lightColor", lightColor);
 		GShaderManager->defferedDirLightShader->SetFloat3("lightDir", pDirLight->GetLightDirection());
@@ -795,8 +804,7 @@ void GraphicsSystem::RenderSkyBoxPass()
 
 void GraphicsSystem::PreRender()
 {
-	//TODO:equirectangularMap TO CubeMap算法还存在问题
-	//PreRenderDiffuseIrradiance();
+	PreRenderDiffuseIrradiance();
 }
 
 void GraphicsSystem::PreRenderDiffuseIrradiance()
