@@ -363,5 +363,6 @@
     <None Include="Resource\Shader\BRDF.fx" />
     <None Include="Resource\Shader\equirectangularMapShader.fx" />
     <None Include="Resource\Shader\ToneMap.fx" />
+    <None Include="Resource\Shader\CubeMalpToIradiance.fx" />
   </ItemGroup>
 </Project>

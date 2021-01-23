@@ -21,7 +21,7 @@ public:
 	void BuildCamera(XMFLOAT3 cameraPos);
 	XMMATRIX GetProjMatrix();
 	XMMATRIX GetViewMatrix(int index);
-	CubeCamera(float fovY = XM_PIDIV4, float aspect = 1.0f, float nearPlane = 0.1f, float farPlane = 20.0f);
+	CubeCamera(float fovY = XM_PIDIV2, float aspect = 1.0f, float nearPlane = 0.1f, float farPlane = 50.0f);
 };
 
 #endif 

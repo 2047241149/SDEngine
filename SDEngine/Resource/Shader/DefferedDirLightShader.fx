@@ -1,11 +1,13 @@
 #include "BRDF.fx"
 
+//TODO: 多PointLight，多DirLight. IrradianceMap共同作为一个Shader文件解决
 Texture2D WorldPosTex:register(t0);
 Texture2D WorldNormalTex:register(t1);
 Texture2D SpecularRoughMetalTex:register(t2);
 Texture2D DirLightShadowMap:register(t3);
 Texture2D SSAORT:register(t4);
 Texture2D AlbedoTex:register(t5);
+TextureCube IrradianceTex:register(t6);
 
 SamplerState clampLinearSample:register(s0);  
 
@@ -44,7 +46,6 @@ VertexOut VS(VertexIn ina)
 float4 PS(VertexOut outa) : SV_Target
 {
 	float4 color = float4(0.0, 0.0, 0.0, 1.0);
-	float PI = 3.1415926;
 
 	//GBuffer
 	float3 worldPos = WorldPosTex.Sample(clampLinearSample, outa.Tex).xyz;
@@ -78,9 +79,13 @@ float4 PS(VertexOut outa) : SV_Target
 	float nDotv = max(dot(worldNormal, V), 0.0);
 	float denominator = 4.0 * nDotv * nDotl;
 	float3 specularFactor = dfg / max(denominator, 0.001);
+	float3 irradiance = IrradianceTex.Sample(clampLinearSample, worldNormal).xyz;
 
 	//利用DirLightShadowMap
 	float3 shadowFactor = DirLightShadowMap.Sample(clampLinearSample, outa.Tex).rgb;
-	color.xyz = (kd * albedo * ao / PI + specularFactor * specular) * radiance * nDotl * shadowFactor;
+	float3 dirLightColor = (kd * albedo / PI + specularFactor * specular) * radiance * nDotl * shadowFactor;
+	float3 irradianceColor = irradiance * albedo * kd * ao;
+	color.xyz = dirLightColor + irradianceColor;
+	color.w = 1.0;
 	return color;
 }

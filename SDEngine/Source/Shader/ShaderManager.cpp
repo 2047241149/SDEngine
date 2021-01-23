@@ -93,6 +93,9 @@ bool ShaderManager::Init()
 	equirectangularMapShader = shared_ptr<Shader>(new
 		Shader(L"Resource/Shader/equirectangularMapShader.fx", L"Resource/Shader/equirectangularMapShader.fx"));
 
+	cubeMapToIrradianceShader = shared_ptr<Shader>(new Shader(L"Resource/Shader/CubeMalpToIradiance.fx",
+		L"Resource/Shader/CubeMalpToIradiance.fx"));
+
 	return true;
 }
 
