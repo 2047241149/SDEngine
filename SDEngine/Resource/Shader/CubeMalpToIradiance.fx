@@ -37,7 +37,6 @@ VertexOut VS(VertexIn ina)
 	outa.Pos = float4(ina.Pos, 1.0f);
 	outa.Pos = mul(outa.Pos, View);
 	outa.Pos = mul(outa.Pos, Proj);
-	//outa.Pos.z = outa.Pos.w;
 	return outa;
 }
 

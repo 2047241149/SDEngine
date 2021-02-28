@@ -127,6 +127,7 @@
   <ItemGroup>
     <ClCompile Include="Source\GameObject\CubeCamera.cpp" />
     <ClCompile Include="Source\IrradianceCubeMap.cpp" />
+    <ClCompile Include="Source\PrefilterCubeMap.cpp" />
     <ClCompile Include="Source\Shader\CascadeShadowMap.cpp" />
     <ClCompile Include="Source\Shader\CascadeShadowMapManager.cpp" />
     <ClCompile Include="Source\Common\MathTool.cpp" />
@@ -179,6 +180,7 @@
   <ItemGroup>
     <ClInclude Include="Source\GameObject\CubeCamera.h" />
     <ClInclude Include="Source\IrradianceCubeMap.h" />
+    <ClInclude Include="Source\PrefilterCubeMap.h" />
     <ClInclude Include="Source\Shader\CascadeShadowMap.h" />
     <ClInclude Include="Source\Shader\CascadeShadowMapManager.h" />
     <ClInclude Include="Source\Common\MathTool.h" />
@@ -364,6 +366,26 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resource\Shader\CubeMalpToIradiance.fx">
+      <FileType>Document</FileType>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resource\Shader\PreFilterHdrCubeMap.fx">
+      <FileType>Document</FileType>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resource\Shader\ConvolutedBRDFShader.fx">
+      <FileType>Document</FileType>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resource\Shader\ImportanceSampleGGX.fx">
+      <FileType>Document</FileType>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resource\Shader\Common.fx">
       <FileType>Document</FileType>
     </None>
   </ItemGroup>

@@ -548,7 +548,7 @@ void DirectxCore::SetBackBufferRender()
 }
 
 
-void DirectxCore::SetViewPort()
+void DirectxCore::SetDefualtViewPort()
 {
 	md3dImmediateContext->RSSetViewports(1, &mViewport);
 }

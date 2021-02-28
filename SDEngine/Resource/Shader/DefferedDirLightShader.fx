@@ -8,8 +8,11 @@ Texture2D DirLightShadowMap:register(t3);
 Texture2D SSAORT:register(t4);
 Texture2D AlbedoTex:register(t5);
 TextureCube IrradianceTex:register(t6);
+TextureCube PrefliterCubeMap:register(t7);
+Texture2D BrdfLut:register(t8);
 
 SamplerState clampLinearSample:register(s0);  
+SamplerState TrilinearFliterClamp:register(s1);
 
 cbuffer CBMatrix:register(b0)
 {
@@ -63,6 +66,7 @@ float4 PS(VertexOut outa) : SV_Target
 	float3 V = normalize(cameraPos - worldPos);
 	float3 H = normalize(L + V);
 	float3 radiance = lightColor.xyz;
+	float3 R = reflect(-V, worldNormal);
 
 	//f(cook_torrance) = D* F * G /(4 * (wo.n) * (wi.n))
 	float D = DistributionGGX(worldNormal, H, roughness);
@@ -82,10 +86,15 @@ float4 PS(VertexOut outa) : SV_Target
 	float3 irradiance = IrradianceTex.Sample(clampLinearSample, worldNormal).xyz;
 
 	//¿˚”√DirLightShadowMap
+	const float MAX_REF_LOD = 4.0;
+	float3 prefliterColor = PrefliterCubeMap.SampleLevel(TrilinearFliterClamp, R, MAX_REF_LOD * roughness).rgb;
+	float2 brdf = BrdfLut.Sample(clampLinearSample, float2(nDotv, roughness)).xy;
+	float3 iblSpecular = prefliterColor * (ks * brdf.x + brdf.y);
+	float3 iblDiffuse = irradiance * albedo * kd;
 	float3 shadowFactor = DirLightShadowMap.Sample(clampLinearSample, outa.Tex).rgb;
 	float3 dirLightColor = (kd * albedo / PI + specularFactor * specular) * radiance * nDotl * shadowFactor;
-	float3 irradianceColor = irradiance * albedo * kd * ao;
-	color.xyz = dirLightColor + irradianceColor;
+	float3 iblColor = (iblDiffuse + iblSpecular) * ao;
+	color.xyz = dirLightColor + iblColor;
 	color.w = 1.0;
 	return color;
 }

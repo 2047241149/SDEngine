@@ -14,6 +14,7 @@
 #include "Shader/SSAOManager.h"
 #include "Texture/TextureManager.h"
 #include "IrradianceCubeMap.h"
+#include "PrefilterCubeMap.h"
 
 
 GraphicsSystem::GraphicsSystem(int ScreenWidth, int ScreenHeight, HWND hwnd, HINSTANCE hinstance)
@@ -33,9 +34,7 @@ GraphicsSystem::GraphicsSystem(const GraphicsSystem&other)
 
 bool GraphicsSystem::Init(int ScreenWidth, int ScreenHeight, HWND hwnd,HINSTANCE hinstance)
 {
-
 	mhwnd = hwnd;
-
 	m_nScreenWidth = ScreenWidth;
 	m_nScreenHeight = ScreenHeight;
 
@@ -119,7 +118,6 @@ bool GraphicsSystem::Init(int ScreenWidth, int ScreenHeight, HWND hwnd,HINSTANCE
 		}
 	}
 
-
 	mSponzaBottom = shared_ptr<GameObject>(new GameObject());
 	mSponzaBottom->SetMesh(pSponzaBottom);
 	mSponzaBottom->m_pTransform->localPosition = XMFLOAT3(0.0f, 0.0f, 0.0f);
@@ -149,6 +147,9 @@ bool GraphicsSystem::Init(int ScreenWidth, int ScreenHeight, HWND hwnd,HINSTANCE
 	mSSRRT = shared_ptr<RenderTexture>(
 		new RenderTexture(ScreenWidth, ScreenHeight));
 
+	mConvolutedBrdfRT = shared_ptr<RenderTexture>(
+		new RenderTexture(512, 512));
+
 	mCascadeShadowsManager = shared_ptr<CascadedShadowsManager>(new CascadedShadowsManager(SHADOW_MAP_SIZE));
 
 	mGrayShadowMap = shared_ptr<RenderTexture>(new RenderTexture(ScreenWidth, ScreenHeight, TextureFormat::R32));
@@ -168,8 +169,11 @@ bool GraphicsSystem::Init(int ScreenWidth, int ScreenHeight, HWND hwnd,HINSTANCE
 		SSRGBuffer(ScreenWidth, ScreenHeight, SCREEN_FAR, SCREEN_NEAR));
 
 	ssaoManager = shared_ptr<SSAOManager>(new SSAOManager(ScreenWidth, ScreenHeight));
-	skyBox = shared_ptr<SkyBox>(new SkyBox(L"Resource/Texture/room_hdr_cube.dds"));
-	radianceCubeMap = shared_ptr<IrradianceCubeMap>(new IrradianceCubeMap(L"Resource/Texture/room_hdr_cube.dds"));
+	WCHAR* cubeMapResPath = L"Resource/Texture/uffizi_cross.dds";
+	skyBox = shared_ptr<SkyBox>(new SkyBox(cubeMapResPath));
+	radianceCubeMap = shared_ptr<IrradianceCubeMap>(new IrradianceCubeMap(cubeMapResPath));
+	
+	prefliterCubeMap = shared_ptr<PrefliterCubeMap>(new PrefliterCubeMap(cubeMapResPath, 512, 512));
 	PreRender();
 	return true;
 }
@@ -280,7 +284,7 @@ bool GraphicsSystem::Frame()
 
 	if (mInputClass->IsKeyDown(DIK_8))
 	{
-		skyBox->SetTexture(radianceCubeMap->GetIrradianceSrv());
+		skyBox->SetTexture(prefliterCubeMap->GetPrefilterCubeMapSrv());
 	}
 	else
 	{
@@ -389,7 +393,7 @@ void GraphicsSystem::RenderPostEffectPass()
 {
 	g_RenderMask->BeginEvent(L"FXAA");
 	GDirectxCore->SetBackBufferRender();
-	GDirectxCore->SetViewPort();
+	GDirectxCore->SetDefualtViewPort();
 	GDirectxCore->TurnOffZBuffer();
 	GShaderManager->fxaaShader->SetTexture("inputTexture", mSrcRT->GetSRV());
 	GShaderManager->fxaaShader->SetFloat2("rcpFrame", XMFLOAT2(1.0f / (float)m_nScreenWidth, 1.0f / (float)m_nScreenHeight));
@@ -403,7 +407,7 @@ void GraphicsSystem::RenderPostEffectPass()
 void GraphicsSystem::RenderDebugWindow()
 {
 	GDirectxCore->SetBackBufferRender();
-	GDirectxCore->SetViewPort();
+	GDirectxCore->SetDefualtViewPort();
 	GDirectxCore->TurnOffZBuffer();
 
 	GShaderManager->uiShader->SetMatrix("UIView", GCamera->GetUIViewMatrix());
@@ -455,7 +459,11 @@ void GraphicsSystem::RenderDebugWindow()
 	GShaderManager->depthDisplayShader->Apply();
 	mDebugWindow->Render(490, 600);
 
-
+	//PreCompiteBRDF
+	GShaderManager->uiShader->SetTexture("ShaderTexture",
+		mConvolutedBrdfRT->GetSRV());
+	GShaderManager->uiShader->Apply();
+	mDebugWindow->Render(850, 600);
 
 	#if SSR
 	GShaderManager->SetDepthShader
@@ -480,7 +488,7 @@ void GraphicsSystem::RenderSSRPass()
 	ID3D11RenderTargetView* backRTV =GDirectxCore->GetRTV();
 	//¿¿Ä£°å¾´æÖµíÅÐ”à
 	g_pDeviceContext->OMSetRenderTargets(1, &backRTV, nullptr);
-	GDirectxCore->SetViewPort();
+	GDirectxCore->SetDefualtViewPort();
 	GDirectxCore->TurnOnAlphaBlend();
 	GDirectxCore->TurnOffZBuffer();
 	XMMATRIX worldMatrix = mSponzaBottom->GetWorldMatrix();
@@ -508,9 +516,9 @@ void GraphicsSystem::RenderSSRPass()
 
 void GraphicsSystem::RenderOpacity()
 {
-	//g_RenderMask->BeginEvent(L"RenderGeometryPass");
+	g_RenderMask->BeginEvent(L"RenderGeometryPass");
 	RenderGeometryPass();
-	//g_RenderMask->EndEvent();
+	g_RenderMask->EndEvent();
 
 	g_RenderMask->BeginEvent(L"RenderShadowMapPass");
 	RenderShadowMapPass();
@@ -540,7 +548,7 @@ void GraphicsSystem::RenderGeneralTransparency()
 	ID3D11RenderTargetView* backRTV = GDirectxCore->GetRTV();
 	ID3D11DepthStencilView* opacityDSV = mGeometryBuffer->GetDSV();
 	g_pDeviceContext->OMSetRenderTargets(1, &backRTV, opacityDSV);
-	GDirectxCore->SetViewPort();
+	GDirectxCore->SetDefualtViewPort();
 	GDirectxCore->TurnOnDisbleZWriteDSS();
 	GDirectxCore->TurnOnAlphaBlend();
 
@@ -598,7 +606,6 @@ void GraphicsSystem::RenderSSRBufferPass()
 	mQuad->Render();
 	GDirectxCore->RecoverDefaultDSS();
 	GDirectxCore->SetBackBufferRender();
-
 }
 
 void  GraphicsSystem::RenderSSR()
@@ -703,10 +710,13 @@ void GraphicsSystem::RenderDirLightPass()
 		GShaderManager->defferedDirLightShader->SetTexture("SSAORT", shaderResourceView[4]);
 		GShaderManager->defferedDirLightShader->SetTexture("AlbedoTex", shaderResourceView[5]);
 		GShaderManager->defferedDirLightShader->SetTexture("IrradianceTex", radianceCubeMap->GetIrradianceSrv());
+		GShaderManager->defferedDirLightShader->SetTexture("PrefliterCubeMap", prefliterCubeMap->GetPrefilterCubeMapSrv());
+		GShaderManager->defferedDirLightShader->SetTexture("BrdfLut", mConvolutedBrdfRT->GetSRV());
 		GShaderManager->defferedDirLightShader->SetFloat3("cameraPos", GCamera->GetPosition());
 		GShaderManager->defferedDirLightShader->SetFloat4("lightColor", lightColor);
 		GShaderManager->defferedDirLightShader->SetFloat3("lightDir", pDirLight->GetLightDirection());
 		GShaderManager->defferedDirLightShader->SetTextureSampler("clampLinearSample", GTextureSamplerBilinearClamp);
+		GShaderManager->defferedDirLightShader->SetTextureSampler("TrilinearFliterClamp", GTrilinearFliterClamp);
 		
 		ID3D11ShaderResourceView* memSSAORT = nullptr;
 		if (bSSAO)
@@ -731,7 +741,7 @@ void GraphicsSystem::RenderFinalShadingPass()
 	ID3D11RenderTargetView* pSceneRTV = mSrcRT->GetRenderTargetView();
 	ID3D11DepthStencilView* opacityDSV = mGeometryBuffer->GetDSV();
 	GDirectxCore->TurnOffZBuffer();
-	GDirectxCore->SetViewPort();
+	GDirectxCore->SetDefualtViewPort();
 	g_pDeviceContext->OMSetRenderTargets(1, &pSceneRTV, opacityDSV);
 	GShaderManager->defferedFinalShader->SetTexture("DiffuseTex", mLightBuffer->GetSRV());
 	GShaderManager->defferedFinalShader->SetTextureSampler("clampLinearSample", GTextureSamplerBilinearClamp);
@@ -805,9 +815,26 @@ void GraphicsSystem::RenderSkyBoxPass()
 void GraphicsSystem::PreRender()
 {
 	PreRenderDiffuseIrradiance();
+	PreRenderFiliterCubeMap();
+	PreRenderConvolutedBRDF();
 }
 
 void GraphicsSystem::PreRenderDiffuseIrradiance()
 {
 	radianceCubeMap->Render();
+}
+
+void GraphicsSystem::PreRenderConvolutedBRDF()
+{
+	mConvolutedBrdfRT->SetRenderTarget();
+	GDirectxCore->TurnOffZBuffer();
+	GShaderManager->convolutedBRDFShader->Apply();
+	mQuad->Render();
+	GDirectxCore->RecoverDefaultDSS();
+	GDirectxCore->RecoverDefualtRS();
+}
+
+void GraphicsSystem::PreRenderFiliterCubeMap()
+{
+	prefliterCubeMap->Render();
 }

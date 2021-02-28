@@ -46,7 +46,7 @@ public:
 
 	//Set函数
 	void SetBackBufferRender();  //设置背后缓存作为渲染目标
-	void SetViewPort(); //重置该视口
+	void SetDefualtViewPort(); //重置该视口
 
 	//打开和关闭alpha混合函数
 	void TurnOnAlphaBlend();

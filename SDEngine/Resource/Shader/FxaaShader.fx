@@ -620,7 +620,6 @@ VertexOut VS(VertexIn ina)
 }
 
 
-
 float4 PS(VertexOut outa) : SV_Target
 {
 	FxaaTex tex = { anisotropicSampler, inputTexture };
