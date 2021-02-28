@@ -17,6 +17,7 @@ class GameObject;
 class CubeCamera;
 class RenderCubeMap;
 class IrradianceCubeMap;
+class PrefliterCubeMap;
 
 #include "Common/DirectxCore.h"
 #include "Common/Macro.h"
@@ -61,6 +62,9 @@ private:
 	//GeometryBuffer
 	shared_ptr<GeometryBuffer> mGeometryBuffer;
 
+	//BRDF
+	shared_ptr<RenderTexture> mConvolutedBrdfRT;
+
 	//SSRGBuffer
 	shared_ptr<SSRGBuffer> mSSRBuffer;
 	MaterialType materialType = MaterialType::DIFFUSE;
@@ -70,7 +74,7 @@ private:
 	int m_nScreenWidth, m_nScreenHeight;
 
 	shared_ptr<IrradianceCubeMap> radianceCubeMap;
-
+	shared_ptr<PrefliterCubeMap> prefliterCubeMap;
 private:
 	bool Init(int ScreenWidth, int ScreenHeight, HWND hwnd, HINSTANCE hinstance);
 
@@ -99,6 +103,8 @@ private:
 private:
 	void PreRender();
 	void PreRenderDiffuseIrradiance();
+	void PreRenderFiliterCubeMap();
+	void PreRenderConvolutedBRDF();
 
 public:
 	GraphicsSystem(int ScreenWidth, int ScreenHeight, HWND hwnd, HINSTANCE hinstance);

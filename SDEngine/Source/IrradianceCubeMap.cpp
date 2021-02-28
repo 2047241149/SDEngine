@@ -58,7 +58,9 @@ void IrradianceCubeMap::Render()
 		cubeGameObject->RenderMesh();
 	}
 
+	//已经渲染了MipMap链上的Top等级,调用GenerateMips自动生成余下的Mip等级
 	GDirectxCore->GenerateMips(renderCubeMap->GetSRV());
+
 	GDirectxCore->RecoverDefaultDSS();
 	GDirectxCore->RecoverDefualtRS();
 }

@@ -96,6 +96,11 @@ bool ShaderManager::Init()
 	cubeMapToIrradianceShader = shared_ptr<Shader>(new Shader(L"Resource/Shader/CubeMalpToIradiance.fx",
 		L"Resource/Shader/CubeMalpToIradiance.fx"));
 
+	prefilterCubeMapShader = shared_ptr<Shader>(new Shader(L"Resource/Shader/PreFilterHdrCubeMap.fx",
+		L"Resource/Shader/PreFilterHdrCubeMap.fx"));
+
+	convolutedBRDFShader = shared_ptr<Shader>(new Shader(L"Resource/Shader/ConvolutedBRDFShader.fx",
+		L"Resource/Shader/ConvolutedBRDFShader.fx"));
 	return true;
 }
 

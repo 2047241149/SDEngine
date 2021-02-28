@@ -1,10 +1,12 @@
+
+#include "Common.fx"
 /*
 the pbr effect is cook torrance
 f(cook_torrance) = D* F * G /(4 * (wo.n) * (wi.n))
 https://learnopengl.com/PBR/Theory
 */
 
-static const float PI = 3.1415926;
+
 
 //NormalDistribution:Trowbridge-Reitz GGX
 float DistributionGGX(float3 n, float3 h, float roughness)

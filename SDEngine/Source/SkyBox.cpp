@@ -51,7 +51,7 @@ void SkyBox::Render(GeometryBuffer* geometryBuffer)
 	ID3D11RenderTargetView* backRTV = GDirectxCore->GetRTV();
 	ID3D11DepthStencilView* opacityDSV = geometryBuffer->GetDSV();
 	g_pDeviceContext->OMSetRenderTargets(1, &backRTV, opacityDSV);
-	GDirectxCore->SetViewPort();
+	GDirectxCore->SetDefualtViewPort();
 	GDirectxCore->TurnOnRenderSkyBoxDSS();
 	GDirectxCore->TurnOnCullFront();
 	XMMATRIX worldMatrix = XMMatrixTranslation(GCamera->mPosition.x, GCamera->mPosition.y, GCamera->mPosition.z);

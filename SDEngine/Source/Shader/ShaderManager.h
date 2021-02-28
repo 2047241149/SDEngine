@@ -35,6 +35,8 @@ public:
 	shared_ptr<Shader> skyBoxShader;
 	shared_ptr<Shader> equirectangularMapShader;
 	shared_ptr<Shader> cubeMapToIrradianceShader;
+	shared_ptr<Shader> prefilterCubeMapShader;
+	shared_ptr<Shader> convolutedBRDFShader;
 
 private:
 	static shared_ptr<ShaderManager> single;

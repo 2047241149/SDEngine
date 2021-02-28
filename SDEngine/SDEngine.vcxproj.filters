@@ -165,6 +165,9 @@
     <ClCompile Include="Source\IrradianceCubeMap.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="Source\PrefilterCubeMap.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\FPS.h">
@@ -332,6 +335,9 @@
     <ClInclude Include="Source\IrradianceCubeMap.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="Source\PrefilterCubeMap.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="Resource\Shader\DepthGetShader.fx" />
@@ -364,5 +370,9 @@
     <None Include="Resource\Shader\equirectangularMapShader.fx" />
     <None Include="Resource\Shader\ToneMap.fx" />
     <None Include="Resource\Shader\CubeMalpToIradiance.fx" />
+    <None Include="Resource\Shader\PreFilterHdrCubeMap.fx" />
+    <None Include="Resource\Shader\ConvolutedBRDFShader.fx" />
+    <None Include="Resource\Shader\ImportanceSampleGGX.fx" />
+    <None Include="Resource\Shader\Common.fx" />
   </ItemGroup>
 </Project>
