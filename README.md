@@ -18,8 +18,9 @@
 ![image](https://github.com/2047241149/SDEngine/blob/master/SDEngine/DefferedShading_PointLight.png)
 
 
-               					BRDF + HDR Cubemap irradiance    
-![image](https://github.com/2047241149/SDEngine/blob/master/SDEngine/DefferedShading_Irradiance.png)
+               					PBR效果
+![image](https://github.com/2047241149/SDEngine/blob/master/SDEngine/DefferedShading_Pbr1.png)
+![image](https://github.com/2047241149/SDEngine/blob/master/SDEngine/DefferedShading_Pbr2.png)
 
 
 						渲染管线图
