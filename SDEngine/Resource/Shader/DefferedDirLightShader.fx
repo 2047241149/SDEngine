@@ -90,7 +90,7 @@ float4 PS(VertexOut outa) : SV_Target
 	float3 prefliterColor = PrefliterCubeMap.SampleLevel(TrilinearFliterClamp, R, MAX_REF_LOD * roughness).rgb;
 	float2 brdf = BrdfLut.Sample(clampLinearSample, float2(nDotv, roughness)).xy;
 	float3 iblSpecular = prefliterColor * (ks * brdf.x + brdf.y);
-	float3 iblDiffuse = irradiance * albedo * kd;
+	float3 iblDiffuse = irradiance * albedo * kd / PI;
 	float3 shadowFactor = DirLightShadowMap.Sample(clampLinearSample, outa.Tex).rgb;
 	float3 dirLightColor = (kd * albedo / PI + specularFactor * specular) * radiance * nDotl * shadowFactor;
 	float3 iblColor = (iblDiffuse + iblSpecular) * ao;

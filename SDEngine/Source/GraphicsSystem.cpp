@@ -284,7 +284,7 @@ bool GraphicsSystem::Frame()
 
 	if (mInputClass->IsKeyDown(DIK_8))
 	{
-		skyBox->SetTexture(prefliterCubeMap->GetPrefilterCubeMapSrv());
+		skyBox->SetTexture(radianceCubeMap->GetIrradianceSrv());
 	}
 	else
 	{
