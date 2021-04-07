@@ -28,7 +28,7 @@ void GameObject::Shutdown()
 {
 }
 
-void GameObject::Render()
+void GameObject::Render(RenderMode renderMode)
 {
 	MaterialType eMaterialType = m_pMesh->m_eMaterialType;
 	XMMATRIX worldMatrix = this->GetWorldMatrix();
@@ -57,8 +57,15 @@ void GameObject::Render()
 			roughnessSRV = (roughnessSRV == nullptr ? GWhiteTexture : roughnessSRV);
 			metalSRV = (metalSRV == nullptr ? GWhiteTexture : metalSRV);
 
+			if (renderMode == RenderMode::Simple)
+			{
+				GShaderManager->depthShader->SetMatrix("World", worldMatrix);
+				GShaderManager->depthShader->SetMatrix("View", GCamera->GetViewMatrix());
+				GShaderManager->depthShader->SetMatrix("Proj", GCamera->GetProjectionMatrix());
+				GShaderManager->depthShader->Apply();
+			}
 			//纯颜色绘制模式 TODO:代码重复,需要重构
-			if (eMaterialType == MaterialType::PURE_COLOR)
+			else if (eMaterialType == MaterialType::PURE_COLOR)
 			{
 				GShaderManager->pureColorShader->SetMatrix("World", worldMatrix);
 				GShaderManager->pureColorShader->SetMatrix("View", GCamera->GetViewMatrix());
@@ -132,7 +139,6 @@ void GameObject::Render()
 			{
 				if (albedoSRV && specSRV&&material.specularMapFileName != "")
 				{
-				
 					GShaderManager->diffuseSpecShader->SetMatrix("World", worldMatrix);
 					GShaderManager->diffuseSpecShader->SetMatrix("View", GCamera->GetViewMatrix());
 					GShaderManager->diffuseSpecShader->SetMatrix("Proj", GCamera->GetProjectionMatrix());
@@ -225,7 +231,6 @@ void GameObject::Render()
 
 void GameObject::RenderMesh()
 {
-
 	//三角形片元
 	g_pDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 

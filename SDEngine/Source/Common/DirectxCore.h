@@ -74,6 +74,8 @@ public:
 	//恢复默认的
 	void RecoverDefaultDSS();
 
+	void TurnOnPreDepthDSS();
+
 	//关掉ZBuffer写
 	void TurnOnDisbleZWriteDSS();
 
@@ -108,6 +110,7 @@ private:
 	ID3D11Texture2D* md3dDepthStencilBuffer; //D3D11的“DepthStencil缓存”
 	ID3D11DepthStencilState* md3dDepthStencilState; //深度(模板)缓存状态
 	ID3D11DepthStencilState* md3dDisableDepthStencilState; //深度测试失效的缓存状态
+	ID3D11DepthStencilState* mEqualDepthStencilState; //深度(模板)缓存状态
 	ID3D11DepthStencilState* md3dDisableZWriteDSS; //深度写无效的缓存状态
 	ID3D11DepthStencilState* md3dDSSMaskReflect;  //标记反射面
 	ID3D11DepthStencilState* md3dDSSEnableReflect; //进行反射面

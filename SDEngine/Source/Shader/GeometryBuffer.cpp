@@ -197,7 +197,6 @@ void GeometryBuffer::ShutDown()
 //让此时所有图形渲染到这个目前渲染的位置
 void GeometryBuffer::SetRenderTarget(XMFLOAT3 backColor)
 {
-
 	//绑定渲染目标视图和深度模板视图到输出渲染管线，此时渲染输出到两张纹理中
 	g_pDeviceContext->OMSetRenderTargets(BUFFER_COUNT, mRenderTargetViewArray, mDepthStencilView);
 
@@ -206,9 +205,15 @@ void GeometryBuffer::SetRenderTarget(XMFLOAT3 backColor)
 
 	ClearGBuffer(backColor);
 
-	ClearDepthBuffer();
 }
 
+void GeometryBuffer::SetDepthTarget()
+{
+	ID3D11RenderTargetView* nullRT[1] = { nullptr };
+	g_pDeviceContext->OMSetRenderTargets(1, nullRT, mDepthStencilView);
+	g_pDeviceContext->RSSetViewports(1, &md3dViewport);
+	ClearDepthBuffer();
+}
 
 void GeometryBuffer::ClearDepthBuffer()
 {

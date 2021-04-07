@@ -42,7 +42,6 @@ private:
 	ID3D11Texture2D* mRandomTexture;
 	ID3D11ShaderResourceView* mRandomSRV;
 
-
 public:
 	GeometryBuffer(int TextureWidth, int TexureHeight, float ScreenDepth, float ScreenNear);
 	GeometryBuffer(const GeometryBuffer&other);
@@ -51,6 +50,7 @@ public:
 	void ShutDown();
 
 	void SetRenderTarget(XMFLOAT3 backColor);
+	void SetDepthTarget();
 	void ClearDepthBuffer();
 	void ClearGBuffer(XMFLOAT3 backColor);
 	void ClearRenderTarget(XMFLOAT3 backColor);

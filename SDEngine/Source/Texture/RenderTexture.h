@@ -26,17 +26,17 @@ public:
 	RenderTexture(const RenderTexture&other);
 	~RenderTexture();
 
-
 public:
 	bool Init(int nTextureWidth, int nTexureHeight, TextureFormat eTextureFormat = TextureFormat::R32G32B32A32);
 	void ShutDown();
 
 	void SetRenderTarget(float fRed = 0.0f, float fGreen = 0.0f, float fBlue = 0.0f, float fAlpha = 1.0f);
+	void SetDepthTarget();
 	void ClearDepthBuffer();
 	void ClearRenderTarget(float fRed, float fGreen,float fBlue, float fAlpha);
 
 	ID3D11ShaderResourceView* GetSRV();
+	ID3D11DepthStencilView* GetDSV();
 	ID3D11RenderTargetView* GetRenderTargetView();
-
 };
 #endif 

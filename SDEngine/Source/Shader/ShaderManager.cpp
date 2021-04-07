@@ -75,7 +75,7 @@ bool ShaderManager::Init()
 	fxaaShader = shared_ptr<Shader>(new
 		Shader(L"Resource/Shader/FxaaShader.fx", L"Resource/Shader/FxaaShader.fx"));
 
-	lightDepthShader = shared_ptr<Shader>(new
+	depthShader = shared_ptr<Shader>(new
 		Shader(L"Resource/Shader/LightDepthMap.fx", L"Resource/Shader/LightDepthMap.fx"));
 
 	shadowMapShader = shared_ptr<Shader>(new

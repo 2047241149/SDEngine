@@ -231,6 +231,7 @@ bool DirectxCore::Init(int ScreenWidth, int ScreenHeight, bool vsync, HWND hwnd,
 	DSDESC.StencilEnable = true;
 	DSDESC.StencilReadMask = 0xff;
 	DSDESC.StencilWriteMask = 0xff;
+
 	//前面设定
 	DSDESC.FrontFace.StencilFailOp = D3D11_STENCIL_OP_KEEP;
 	DSDESC.FrontFace.StencilDepthFailOp = D3D11_STENCIL_OP_KEEP;
@@ -252,12 +253,10 @@ bool DirectxCore::Init(int ScreenWidth, int ScreenHeight, bool vsync, HWND hwnd,
 		0,
 		&md3dDepthStencilView));//指向深度缓存/漏字板视图的指针
 
-
 	//-------------------------------------------------------------
 	//把那些视图绑定到输出合并阶段
 	//-------------------------------------------------------------
 	md3dImmediateContext->OMSetRenderTargets(1, &md3dRenderTargetView, md3dDepthStencilView);
-
 
 	//正常的光栅化状态
 	HR(DirectXFrame::CreateRasterizerState(md3dDevice, &md3dRasterizerState));
@@ -329,6 +328,24 @@ bool DirectxCore::Init(int ScreenWidth, int ScreenHeight, bool vsync, HWND hwnd,
 	DisableDepthWriteDESC.BackFace.StencilFunc = D3D11_COMPARISON_ALWAYS;
 	HR(md3dDevice->CreateDepthStencilState(&DisableDepthWriteDESC, &md3dDisableZWriteDSS));
 
+	//创建等于Depth, 并且ZWrite无效的DSS
+	D3D11_DEPTH_STENCIL_DESC equalDepthNoWriteDESC;
+	ZeroMemory(&equalDepthNoWriteDESC, sizeof(equalDepthNoWriteDESC));
+	equalDepthNoWriteDESC.DepthEnable = true;
+	equalDepthNoWriteDESC.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ZERO;
+	equalDepthNoWriteDESC.DepthFunc = D3D11_COMPARISON_EQUAL;
+	equalDepthNoWriteDESC.StencilEnable = true;
+	equalDepthNoWriteDESC.StencilReadMask = 0xff;
+	equalDepthNoWriteDESC.StencilWriteMask = 0xff;
+	equalDepthNoWriteDESC.FrontFace.StencilFailOp = D3D11_STENCIL_OP_KEEP;
+	equalDepthNoWriteDESC.FrontFace.StencilDepthFailOp = D3D11_STENCIL_OP_KEEP;
+	equalDepthNoWriteDESC.FrontFace.StencilPassOp = D3D11_STENCIL_OP_REPLACE;
+	equalDepthNoWriteDESC.FrontFace.StencilFunc = D3D11_COMPARISON_ALWAYS;
+	equalDepthNoWriteDESC.BackFace.StencilFailOp = D3D11_STENCIL_OP_KEEP;
+	equalDepthNoWriteDESC.BackFace.StencilDepthFailOp = D3D11_STENCIL_OP_KEEP;
+	equalDepthNoWriteDESC.BackFace.StencilPassOp = D3D11_STENCIL_OP_KEEP;
+	equalDepthNoWriteDESC.BackFace.StencilFunc = D3D11_COMPARISON_ALWAYS;
+	HR(md3dDevice->CreateDepthStencilState(&equalDepthNoWriteDESC, &mEqualDepthStencilState));
 
 	//创建一个标记反射面的DepthStencilState状态
 	D3D11_DEPTH_STENCIL_DESC MaskReflectDESC;
@@ -569,6 +586,7 @@ void DirectxCore::ShutDown()
 	ReleaseCOM(md3dDepthStencilView);
 	ReleaseCOM(md3dDepthStencilBuffer);
 	ReleaseCOM(md3dDepthStencilState);
+	ReleaseCOM(mEqualDepthStencilState);
 	ReleaseCOM(md3dDisableDepthStencilState);
 	ReleaseCOM(md3dEnableBlendState);
 	ReleaseCOM(md3dDisableBlendState);
@@ -618,6 +636,10 @@ void DirectxCore::TurnOnDisbleZWriteDSS()
 	md3dImmediateContext->OMSetDepthStencilState(md3dDisableZWriteDSS, 0);
 }
 
+void DirectxCore::TurnOnPreDepthDSS()
+{
+	md3dImmediateContext->OMSetDepthStencilState(mEqualDepthStencilState, 0);
+}
 void DirectxCore::TurnOnLightBlend()
 {
 	float blendFactor[4];

@@ -79,6 +79,7 @@ private:
 	bool Init(int ScreenWidth, int ScreenHeight, HWND hwnd, HINSTANCE hinstance);
 
 private:
+	void RenderPreZPass();
 	void RenderOpacity();
 	void RenderTransparency();
 	void RenderGeneralTransparency();

@@ -12,6 +12,12 @@
 #include "../Shader/ShaderManager.h"
 #include "Camera.h"
 #include "Mesh.h"
+
+enum RenderMode
+{
+	Material,
+	Simple,
+};
 using namespace std;
 using namespace DirectX;
 
@@ -31,7 +37,7 @@ public:
 	bool Init();
 	void Shutdown();
 
-	void Render();
+	void Render(RenderMode renderMode = RenderMode::Material);
 
 	void RenderMesh();
 	XMMATRIX GetWorldMatrix();

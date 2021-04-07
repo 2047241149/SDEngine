@@ -28,7 +28,7 @@ public:
 	shared_ptr<Shader> waveShader;
 	shared_ptr<Shader> defferedFinalShader;
 	shared_ptr<Shader> fxaaShader;
-	shared_ptr<Shader> lightDepthShader;
+	shared_ptr<Shader> depthShader;
 	shared_ptr<Shader> shadowMapShader;
 	shared_ptr<Shader> ssaoShader;
 	shared_ptr<Shader> ssaoBlurShader;

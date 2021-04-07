@@ -311,11 +311,14 @@ void GraphicsSystem::Render()
 	//**************************************************************************
 	//绘制整个场景
 	//*************************************************************************
-
 	g_RenderMask->BeginEvent(L"BeginScene");
 	GDirectxCore->BeginScene(0.3f, 0.0f, 1.0f, 1.0f);
 	g_RenderMask->EndEvent();
 
+	//Pre Render Pass
+	g_RenderMask->BeginEvent(L"RenderPreZPass");
+	RenderPreZPass();
+	g_RenderMask->EndEvent();
 
 	//绘制不透明物体
 	g_RenderMask->BeginEvent(L"RenderOpacity");
@@ -357,8 +360,8 @@ void GraphicsSystem::Render()
 void GraphicsSystem::RenderGeometryPass()
 {
 	mGeometryBuffer->SetRenderTarget(XMFLOAT3(0.0f, 0.0f, 0.5f));
-
 	vector<shared_ptr<GameObject>> vecGameObject = GGameObjectManager->m_vecGameObject;
+	GDirectxCore->TurnOnPreDepthDSS();
 
 	for (int index = 0; index < (int)vecGameObject.size(); index++)
 	{
@@ -378,6 +381,8 @@ void GraphicsSystem::RenderGeometryPass()
 		
 		}
 	}
+
+	GDirectxCore->RecoverDefaultDSS();
 }
 
 
@@ -585,7 +590,7 @@ void GraphicsSystem::RenderSceneBackDepthBuffer()
 		shared_ptr<GameObject> pGameObject = vecGameObject[index];
 		if (!pGameObject->m_pMesh->bTransparent)
 		{
-			pGameObject->Render();
+			pGameObject->Render(RenderMode::Simple);
 		}
 	}
 
@@ -772,10 +777,10 @@ void GraphicsSystem::RenderShadowMapPass()
 			{
 				if (memGo->m_pMesh->bCastShadow)
 				{
-					GShaderManager->lightDepthShader->SetMatrix("World", memGo->GetWorldMatrix());
-					GShaderManager->lightDepthShader->SetMatrix("View", lightViewMatrix);
-					GShaderManager->lightDepthShader->SetMatrix("Proj", mCascadeShadowsManager->mArrayLightOrthoMatrix[nCascadeIndex]);
-					GShaderManager->lightDepthShader->Apply();
+					GShaderManager->depthShader->SetMatrix("World", memGo->GetWorldMatrix());
+					GShaderManager->depthShader->SetMatrix("View", lightViewMatrix);
+					GShaderManager->depthShader->SetMatrix("Proj", mCascadeShadowsManager->mArrayLightOrthoMatrix[nCascadeIndex]);
+					GShaderManager->depthShader->Apply();
 					memGo->RenderMesh();
 				}
 			}
@@ -837,4 +842,22 @@ void GraphicsSystem::PreRenderConvolutedBRDF()
 void GraphicsSystem::PreRenderFiliterCubeMap()
 {
 	prefliterCubeMap->Render();
+}
+
+void GraphicsSystem::RenderPreZPass()
+{
+	mGeometryBuffer->SetDepthTarget();
+	vector<shared_ptr<GameObject>> vecGameObject = GGameObjectManager->m_vecGameObject;
+
+	for (int index = 0; index < (int)vecGameObject.size(); index++)
+	{
+		shared_ptr<GameObject> pGameObject = vecGameObject[index];
+		if (!pGameObject->m_pMesh->bTransparent)
+		{
+			pGameObject->Render(RenderMode::Simple);
+		}
+	}
+
+	//恢复默认的RS
+	GDirectxCore->RecoverDefualtRS();
 }
