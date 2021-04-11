@@ -237,8 +237,6 @@ void CalculateTangent(uint3 DTid)
 [numthreads(GroundThreadSize, GroundThreadSize, 1)]
 void WaveNormalTangent_CS(uint3 DTid : SV_DispatchThreadID)
 {
-
 	CalculateNormal(DTid);
-
 	CalculateTangent(DTid);
 }

@@ -11,32 +11,32 @@ class ShaderManager
 {
 
 public:
-	shared_ptr<Shader> diffuseShader;
-	shared_ptr<Shader> diffuseNormalSpecShader;
-	shared_ptr<Shader> diffuseNormalShader;
-	shared_ptr<Shader> diffuseSpecShader;
-	shared_ptr<Shader> uiShader;
-	shared_ptr<Shader> defferedDirLightShader;
-	shared_ptr<Shader> defferedPointLightShader;
-	shared_ptr<Shader> depthDisplayShader;
-	shared_ptr<Shader> pureColorShader;
-	shared_ptr<Shader> graphicsBlitShader;
-	shared_ptr<Shader> forwardPureColorShader;
-	shared_ptr<Shader> depthGetShader;
-	shared_ptr<Shader> ssrShader;
-	shared_ptr<Shader> ssrGBufferShader;
-	shared_ptr<Shader> waveShader;
-	shared_ptr<Shader> defferedFinalShader;
-	shared_ptr<Shader> fxaaShader;
-	shared_ptr<Shader> depthShader;
-	shared_ptr<Shader> shadowMapShader;
-	shared_ptr<Shader> ssaoShader;
-	shared_ptr<Shader> ssaoBlurShader;
-	shared_ptr<Shader> skyBoxShader;
-	shared_ptr<Shader> equirectangularMapShader;
-	shared_ptr<Shader> cubeMapToIrradianceShader;
-	shared_ptr<Shader> prefilterCubeMapShader;
-	shared_ptr<Shader> convolutedBRDFShader;
+	shared_ptr<VertexPixelShader> diffuseShader;
+	shared_ptr<VertexPixelShader> diffuseNormalSpecShader;
+	shared_ptr<VertexPixelShader> diffuseNormalShader;
+	shared_ptr<VertexPixelShader> diffuseSpecShader;
+	shared_ptr<VertexPixelShader> uiShader;
+	shared_ptr<VertexPixelShader> defferedDirLightShader;
+	shared_ptr<VertexPixelShader> defferedPointLightShader;
+	shared_ptr<VertexPixelShader> depthDisplayShader;
+	shared_ptr<VertexPixelShader> pureColorShader;
+	shared_ptr<VertexPixelShader> graphicsBlitShader;
+	shared_ptr<VertexPixelShader> forwardPureColorShader;
+	shared_ptr<VertexPixelShader> depthGetShader;
+	shared_ptr<VertexPixelShader> ssrShader;
+	shared_ptr<VertexPixelShader> ssrGBufferShader;
+	shared_ptr<VertexPixelShader> waveShader;
+	shared_ptr<VertexPixelShader> defferedFinalShader;
+	shared_ptr<VertexPixelShader> fxaaShader;
+	shared_ptr<VertexPixelShader> depthShader;
+	shared_ptr<VertexPixelShader> shadowMapShader;
+	shared_ptr<VertexPixelShader> ssaoShader;
+	shared_ptr<VertexPixelShader> ssaoBlurShader;
+	shared_ptr<VertexPixelShader> skyBoxShader;
+	shared_ptr<VertexPixelShader> equirectangularMapShader;
+	shared_ptr<VertexPixelShader> cubeMapToIrradianceShader;
+	shared_ptr<VertexPixelShader> prefilterCubeMapShader;
+	shared_ptr<VertexPixelShader> convolutedBRDFShader;
 
 private:
 	static shared_ptr<ShaderManager> single;

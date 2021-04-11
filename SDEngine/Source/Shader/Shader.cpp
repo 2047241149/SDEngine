@@ -8,136 +8,24 @@ const int SHADER_THREE_FLOAT_SIZE = SHADER_FLOAT_SIZE * 3;
 const int SHADER_FOUR_FLOAT_SIZE = SHADER_FLOAT_SIZE * 4;
 const int SHADER_MATRIX_SIZE = SHADER_FLOAT_SIZE * 16;
 
-Shader::Shader(WCHAR* vsFilenPath, WCHAR* psFilenPath) :
-	vertexShader(nullptr),
-	pixelShader(nullptr),
-	inputLayout(nullptr)
-{
-	Init(vsFilenPath, psFilenPath);
-}
 
+Shader::Shader()
+{
+
+}
 
 Shader::Shader(const Shader& other)
 {
 }
-
 
 Shader::~Shader()
 {
 	ShutDown();
 }
 
-
-bool Shader::Init(WCHAR* vsFilenPath, WCHAR* psFilenPath)
-{
-
-	bool result;
-	result = InitShader(vsFilenPath, psFilenPath);
-	if (!result)
-		return false;
-
-	return true;
-}
-
-
-
-bool Shader::InitShader(WCHAR* VSFileName, WCHAR* PSFileName)
-{
-	HRESULT result;
-	ID3D10Blob* pErrorMessage;
-	ID3D10Blob* pVertexShaderBlob;
-	ID3D10Blob* pPixelShaderBlob;
-
-	//初始化参数
-	pErrorMessage = nullptr;
-	pVertexShaderBlob = nullptr;
-	pPixelShaderBlob = nullptr;
-	DWORD flag = D3DCOMPILE_ENABLE_STRICTNESS;
-
-#if _DEBUG
-	flag |= D3DCOMPILE_DEBUG | D3DCOMPILE_SKIP_OPTIMIZATION;
-#endif
-	
-	//编译VertexShader代码,并创建VertexShader
-	result = D3DCompileFromFile(VSFileName, nullptr, D3D_COMPILE_STANDARD_FILE_INCLUDE, "VS", "vs_5_0", flag, 0, &pVertexShaderBlob, &pErrorMessage);
-	if (FAILED(result))
-	{
-		//存在错误信息
-		if (pErrorMessage)
-		{
-			Log::LogShaderCompileInfo(pErrorMessage, VSFileName);
-		}
-		//不存在错误信息,也就是没有找到Shader文件
-		else
-		{
-			MessageBox(nullptr, L"can not find VS file", L"error", MB_OK);
-		}
-	}
-
-	HR(g_pDevice->CreateVertexShader(pVertexShaderBlob->GetBufferPointer(),
-		pVertexShaderBlob->GetBufferSize(), nullptr, &vertexShader));
-
-	//编译PixelShader,并创建PixelShader
-	result = D3DCompileFromFile(PSFileName, nullptr, D3D_COMPILE_STANDARD_FILE_INCLUDE, "PS", "ps_5_0", flag, 0,
-		&pPixelShaderBlob, &pErrorMessage);
-
-	if (FAILED(result))
-	{
-		//存在错误信息
-		if (pErrorMessage)
-		{
-			Log::LogShaderCompileInfo(pErrorMessage, PSFileName);
-		}
-		//不存在错误信息,也就是没有找到Shader文件
-		else
-		{
-			MessageBox(NULL, L"can not find PS file", L"error", MB_OK);
-		}
-	}
-
-	HR(g_pDevice->CreatePixelShader(pPixelShaderBlob->GetBufferPointer(), pPixelShaderBlob->GetBufferSize(), nullptr, &pixelShader));
-
-	ID3D11ShaderReflection* vsShaderReflection = nullptr;
-	HR(D3DReflect(pVertexShaderBlob->GetBufferPointer(), pVertexShaderBlob->GetBufferSize(), IID_ID3D11ShaderReflection, (void**)&vsShaderReflection));
-	ID3D11ShaderReflection* psShaderReflection = nullptr;
-	HR(D3DReflect(pPixelShaderBlob->GetBufferPointer(), pPixelShaderBlob->GetBufferSize(), IID_ID3D11ShaderReflection, (void**)&psShaderReflection));
-
-	if (nullptr == vsShaderReflection || nullptr == psShaderReflection)
-		return false;
-
-	ReflectInputLayout(vsShaderReflection, pVertexShaderBlob);
-	ReflectShaderConstantBuffer(vsShaderReflection);
-	ReflectShaderConstantBuffer(psShaderReflection);
-	ReflectShaderTexture(vsShaderReflection);
-	ReflectShaderTexture(psShaderReflection);
-	ReflectShaderSampler(psShaderReflection);
-	CreateConstantBuffer();
-
-	//释放Blob
-	ReleaseCOM(pVertexShaderBlob);
-	ReleaseCOM(pPixelShaderBlob);
-
-	return true;
-}
-
-
-
 void Shader::ShutDown()
 {
-	ReleaseCOM(inputLayout);
-	ReleaseCOM(pixelShader);
-	ReleaseCOM(vertexShader);
-}
 
-
-void Shader::SetShaderParam()
-{
-	//设置顶点输入布局
-	g_pDeviceContext->IASetInputLayout(inputLayout);
-
-	//设置VertexShader和PixelShader
-	g_pDeviceContext->VSSetShader(vertexShader, nullptr, 0);
-	g_pDeviceContext->PSSetShader(pixelShader, nullptr, 0);
 }
 
 bool Shader::ReflectShaderConstantBuffer(ID3D11ShaderReflection* reflection)
@@ -225,8 +113,6 @@ bool Shader::ReflectShaderConstantBuffer(ID3D11ShaderReflection* reflection)
 					ZeroMemory(shaderVarible->variableCurrent, shaderVarible->size);
 					ZeroMemory(shaderVarible->variablePre, shaderVarible->size);
 					mapShaderVariable[shaderVarDesc.Name] = shaderVarible;
-
-
 				}
 			}
 		}
@@ -333,12 +219,6 @@ bool Shader::SetFloat4(const string& variableName, XMFLOAT4 value)
 }
 
 
-void Shader::Apply()
-{
-	UpdateConstantBuffer();
-	SetShaderParam();
-}
-
 bool Shader::UpdateConstantBuffer()
 {
 	for (auto cbIterator = mapShaderContantBuffer.begin(); cbIterator != mapShaderContantBuffer.end(); ++cbIterator)
@@ -373,111 +253,6 @@ bool Shader::UpdateConstantBuffer()
 		g_pDeviceContext->VSSetConstantBuffers(shaderConstantBuffer->registerIndex, 1, &(shaderConstantBuffer->constantBuffer));
 		g_pDeviceContext->PSSetConstantBuffers(shaderConstantBuffer->registerIndex, 1, &(shaderConstantBuffer->constantBuffer));
 	}
-
-	return true;
-}
-
-
-bool Shader::ReflectInputLayout(ID3D11ShaderReflection* vertexShaderReflection, ID3D10Blob* vertexShaderBlob)
-{
-	vector<D3D11_INPUT_ELEMENT_DESC> vecInputElementDesc;
-	D3D11_SHADER_DESC vertexShaderDesc;
-	HR(vertexShaderReflection->GetDesc(&vertexShaderDesc));
-	
-	unsigned int alignedByteOffset = 0;
-	
-	for (int inputParamIndex = 0; inputParamIndex < (int)vertexShaderDesc.InputParameters; ++inputParamIndex)
-	{
-		D3D11_SIGNATURE_PARAMETER_DESC signatureParamDesc;
-		vertexShaderReflection->GetInputParameterDesc(inputParamIndex, &signatureParamDesc);
-
-		D3D11_INPUT_ELEMENT_DESC inputElementDesc;
-		inputElementDesc.SemanticName = signatureParamDesc.SemanticName;
-		inputElementDesc.SemanticIndex = signatureParamDesc.SemanticIndex;
-		inputElementDesc.InputSlot = 0;
-		inputElementDesc.AlignedByteOffset = alignedByteOffset;
-		inputElementDesc.InputSlotClass = D3D11_INPUT_PER_VERTEX_DATA;
-		inputElementDesc.InstanceDataStepRate = 0;
-
-		if (1 == signatureParamDesc.Mask)
-		{
-			if (D3D_REGISTER_COMPONENT_UINT32 == signatureParamDesc.ComponentType)
-			{
-				inputElementDesc.Format = DXGI_FORMAT_R32_UINT;
-			}
-			else if (D3D_REGISTER_COMPONENT_SINT32 == signatureParamDesc.ComponentType)
-			{
-				inputElementDesc.Format = DXGI_FORMAT_R32_SINT;
-			}
-			else if (D3D_REGISTER_COMPONENT_FLOAT32 == signatureParamDesc.ComponentType)
-			{
-				inputElementDesc.Format = DXGI_FORMAT_R32_FLOAT;
-			}
-
-			alignedByteOffset += 4;
-		}
-		else if (signatureParamDesc.Mask <= 3)
-		{
-			if (D3D_REGISTER_COMPONENT_UINT32 == signatureParamDesc.ComponentType)
-			{
-				inputElementDesc.Format = DXGI_FORMAT_R32G32_UINT;
-			}
-			else if (D3D_REGISTER_COMPONENT_SINT32 == signatureParamDesc.ComponentType)
-			{
-				inputElementDesc.Format = DXGI_FORMAT_R32G32_SINT;
-
-			}
-			else if (D3D_REGISTER_COMPONENT_FLOAT32 == signatureParamDesc.ComponentType)
-			{
-				inputElementDesc.Format = DXGI_FORMAT_R32G32_FLOAT;
-			}
-
-			alignedByteOffset += 8;
-		}
-		else if (signatureParamDesc.Mask <= 7)
-		{
-			if (D3D_REGISTER_COMPONENT_UINT32 == signatureParamDesc.ComponentType)
-			{
-				inputElementDesc.Format = DXGI_FORMAT_R32G32B32_UINT;
-			}
-			else if (D3D_REGISTER_COMPONENT_SINT32 == signatureParamDesc.ComponentType)
-			{
-				inputElementDesc.Format = DXGI_FORMAT_R32G32B32_SINT;
-			}
-			else if (D3D_REGISTER_COMPONENT_FLOAT32 == signatureParamDesc.ComponentType)
-			{
-				inputElementDesc.Format = DXGI_FORMAT_R32G32B32_FLOAT;
-			}
-
-			alignedByteOffset += 12;
-		}
-		else if(signatureParamDesc.Mask <=15 )
-		{
-			if (D3D_REGISTER_COMPONENT_UINT32 == signatureParamDesc.ComponentType)
-			{
-				inputElementDesc.Format = DXGI_FORMAT_R32G32B32A32_UINT;
-			}
-			else if (D3D_REGISTER_COMPONENT_SINT32 == signatureParamDesc.ComponentType)
-			{
-				inputElementDesc.Format = DXGI_FORMAT_R32G32B32A32_SINT;
-			}
-			else if (D3D_REGISTER_COMPONENT_FLOAT32 == signatureParamDesc.ComponentType)
-			{
-				inputElementDesc.Format = DXGI_FORMAT_R32G32B32A32_FLOAT;
-			}
-
-			alignedByteOffset += 16;
-		}
-
-		vecInputElementDesc.push_back(inputElementDesc);
-	}
-
-	if (0 == vecInputElementDesc.size())
-		return false;
-
-
-	HR(g_pDevice->CreateInputLayout(&vecInputElementDesc[0], vecInputElementDesc.size(), vertexShaderBlob->GetBufferPointer(),
-		vertexShaderBlob->GetBufferSize(), &inputLayout));
 
 	return true;
 }
@@ -579,6 +354,238 @@ bool Shader::SetFloat3ArrayElement(const string& variableName, XMFLOAT3 value, i
 		shared_ptr<ShaderVariable> shaderVariable = mapShaderVariable[variableName];
 		memcpy((unsigned char*)shaderVariable->variableCurrent + index * sizeof(XMFLOAT4), (void*)&value, sizeof(XMFLOAT3));
 	}
+
+	return true;
+}
+
+
+
+//----------------------------------------------------------------
+//-------------------------VertexPixelShader----------------------
+//----------------------------------------------------------------
+VertexPixelShader::VertexPixelShader(WCHAR* vsFilenPath, WCHAR* psFilenPath):
+	Shader(),
+	vertexShader(nullptr),
+	pixelShader(nullptr),
+	inputLayout(nullptr)
+{
+	Init(vsFilenPath, psFilenPath);
+}
+
+VertexPixelShader::VertexPixelShader(const VertexPixelShader& other)
+{
+}
+
+VertexPixelShader::~VertexPixelShader()
+{
+	ShutDown();
+}
+
+bool VertexPixelShader::Init(WCHAR* vsFilenPath, WCHAR* psFilenPath)
+{
+
+	bool result;
+	result = InitShader(vsFilenPath, psFilenPath);
+	if (!result)
+		return false;
+
+	return true;
+}
+
+bool VertexPixelShader::InitShader(WCHAR* VSFileName, WCHAR* PSFileName)
+{
+	HRESULT result;
+	ID3D10Blob* pErrorMessage;
+	ID3D10Blob* pVertexShaderBlob;
+	ID3D10Blob* pPixelShaderBlob;
+
+	//初始化参数
+	pErrorMessage = nullptr;
+	pVertexShaderBlob = nullptr;
+	pPixelShaderBlob = nullptr;
+	DWORD flag = D3DCOMPILE_ENABLE_STRICTNESS;
+
+#if _DEBUG
+	flag |= D3DCOMPILE_DEBUG | D3DCOMPILE_SKIP_OPTIMIZATION;
+#endif
+
+	//编译VertexShader代码,并创建VertexShader
+	result = D3DCompileFromFile(VSFileName, nullptr, D3D_COMPILE_STANDARD_FILE_INCLUDE, "VS", "vs_5_0", flag, 0, &pVertexShaderBlob, &pErrorMessage);
+	if (FAILED(result))
+	{
+		//存在错误信息
+		if (pErrorMessage)
+		{
+			Log::LogShaderCompileInfo(pErrorMessage, VSFileName);
+		}
+		//不存在错误信息,也就是没有找到Shader文件
+		else
+		{
+			MessageBox(nullptr, L"can not find VS file", L"error", MB_OK);
+		}
+	}
+
+	HR(g_pDevice->CreateVertexShader(pVertexShaderBlob->GetBufferPointer(),
+		pVertexShaderBlob->GetBufferSize(), nullptr, &vertexShader));
+
+	//编译PixelShader,并创建PixelShader
+	result = D3DCompileFromFile(PSFileName, nullptr, D3D_COMPILE_STANDARD_FILE_INCLUDE, "PS", "ps_5_0", flag, 0,
+		&pPixelShaderBlob, &pErrorMessage);
+
+	if (FAILED(result))
+	{
+		//存在错误信息
+		if (pErrorMessage)
+		{
+			Log::LogShaderCompileInfo(pErrorMessage, PSFileName);
+		}
+		//不存在错误信息,也就是没有找到Shader文件
+		else
+		{
+			MessageBox(NULL, L"can not find PS file", L"error", MB_OK);
+		}
+	}
+
+	HR(g_pDevice->CreatePixelShader(pPixelShaderBlob->GetBufferPointer(), pPixelShaderBlob->GetBufferSize(), nullptr, &pixelShader));
+
+	ID3D11ShaderReflection* vsShaderReflection = nullptr;
+	HR(D3DReflect(pVertexShaderBlob->GetBufferPointer(), pVertexShaderBlob->GetBufferSize(), IID_ID3D11ShaderReflection, (void**)&vsShaderReflection));
+	ID3D11ShaderReflection* psShaderReflection = nullptr;
+	HR(D3DReflect(pPixelShaderBlob->GetBufferPointer(), pPixelShaderBlob->GetBufferSize(), IID_ID3D11ShaderReflection, (void**)&psShaderReflection));
+
+	if (nullptr == vsShaderReflection || nullptr == psShaderReflection)
+		return false;
+
+	ReflectInputLayout(vsShaderReflection, pVertexShaderBlob);
+	ReflectShaderConstantBuffer(vsShaderReflection);
+	ReflectShaderConstantBuffer(psShaderReflection);
+	ReflectShaderTexture(vsShaderReflection);
+	ReflectShaderTexture(psShaderReflection);
+	ReflectShaderSampler(psShaderReflection);
+	CreateConstantBuffer();
+
+	//释放Blob
+	ReleaseCOM(pVertexShaderBlob);
+	ReleaseCOM(pPixelShaderBlob);
+	return true;
+}
+
+void VertexPixelShader::Apply()
+{
+	UpdateConstantBuffer();
+	SetShaderParam();
+}
+
+void VertexPixelShader::SetShaderParam()
+{
+	//设置顶点输入布局
+	g_pDeviceContext->IASetInputLayout(inputLayout);
+
+	//设置VertexShader和PixelShader
+	g_pDeviceContext->VSSetShader(vertexShader, nullptr, 0);
+	g_pDeviceContext->PSSetShader(pixelShader, nullptr, 0);
+}
+
+bool VertexPixelShader::ReflectInputLayout(ID3D11ShaderReflection* vertexShaderReflection, ID3D10Blob* vertexShaderBlob)
+{
+	vector<D3D11_INPUT_ELEMENT_DESC> vecInputElementDesc;
+	D3D11_SHADER_DESC vertexShaderDesc;
+	HR(vertexShaderReflection->GetDesc(&vertexShaderDesc));
+
+	unsigned int alignedByteOffset = 0;
+
+	for (int inputParamIndex = 0; inputParamIndex < (int)vertexShaderDesc.InputParameters; ++inputParamIndex)
+	{
+		D3D11_SIGNATURE_PARAMETER_DESC signatureParamDesc;
+		vertexShaderReflection->GetInputParameterDesc(inputParamIndex, &signatureParamDesc);
+
+		D3D11_INPUT_ELEMENT_DESC inputElementDesc;
+		inputElementDesc.SemanticName = signatureParamDesc.SemanticName;
+		inputElementDesc.SemanticIndex = signatureParamDesc.SemanticIndex;
+		inputElementDesc.InputSlot = 0;
+		inputElementDesc.AlignedByteOffset = alignedByteOffset;
+		inputElementDesc.InputSlotClass = D3D11_INPUT_PER_VERTEX_DATA;
+		inputElementDesc.InstanceDataStepRate = 0;
+
+		if (1 == signatureParamDesc.Mask)
+		{
+			if (D3D_REGISTER_COMPONENT_UINT32 == signatureParamDesc.ComponentType)
+			{
+				inputElementDesc.Format = DXGI_FORMAT_R32_UINT;
+			}
+			else if (D3D_REGISTER_COMPONENT_SINT32 == signatureParamDesc.ComponentType)
+			{
+				inputElementDesc.Format = DXGI_FORMAT_R32_SINT;
+			}
+			else if (D3D_REGISTER_COMPONENT_FLOAT32 == signatureParamDesc.ComponentType)
+			{
+				inputElementDesc.Format = DXGI_FORMAT_R32_FLOAT;
+			}
+
+			alignedByteOffset += 4;
+		}
+		else if (signatureParamDesc.Mask <= 3)
+		{
+			if (D3D_REGISTER_COMPONENT_UINT32 == signatureParamDesc.ComponentType)
+			{
+				inputElementDesc.Format = DXGI_FORMAT_R32G32_UINT;
+			}
+			else if (D3D_REGISTER_COMPONENT_SINT32 == signatureParamDesc.ComponentType)
+			{
+				inputElementDesc.Format = DXGI_FORMAT_R32G32_SINT;
+
+			}
+			else if (D3D_REGISTER_COMPONENT_FLOAT32 == signatureParamDesc.ComponentType)
+			{
+				inputElementDesc.Format = DXGI_FORMAT_R32G32_FLOAT;
+			}
+
+			alignedByteOffset += 8;
+		}
+		else if (signatureParamDesc.Mask <= 7)
+		{
+			if (D3D_REGISTER_COMPONENT_UINT32 == signatureParamDesc.ComponentType)
+			{
+				inputElementDesc.Format = DXGI_FORMAT_R32G32B32_UINT;
+			}
+			else if (D3D_REGISTER_COMPONENT_SINT32 == signatureParamDesc.ComponentType)
+			{
+				inputElementDesc.Format = DXGI_FORMAT_R32G32B32_SINT;
+			}
+			else if (D3D_REGISTER_COMPONENT_FLOAT32 == signatureParamDesc.ComponentType)
+			{
+				inputElementDesc.Format = DXGI_FORMAT_R32G32B32_FLOAT;
+			}
+
+			alignedByteOffset += 12;
+		}
+		else if (signatureParamDesc.Mask <= 15)
+		{
+			if (D3D_REGISTER_COMPONENT_UINT32 == signatureParamDesc.ComponentType)
+			{
+				inputElementDesc.Format = DXGI_FORMAT_R32G32B32A32_UINT;
+			}
+			else if (D3D_REGISTER_COMPONENT_SINT32 == signatureParamDesc.ComponentType)
+			{
+				inputElementDesc.Format = DXGI_FORMAT_R32G32B32A32_SINT;
+			}
+			else if (D3D_REGISTER_COMPONENT_FLOAT32 == signatureParamDesc.ComponentType)
+			{
+				inputElementDesc.Format = DXGI_FORMAT_R32G32B32A32_FLOAT;
+			}
+
+			alignedByteOffset += 16;
+		}
+
+		vecInputElementDesc.push_back(inputElementDesc);
+	}
+
+	if (0 == vecInputElementDesc.size())
+		return false;
+
+
+	HR(g_pDevice->CreateInputLayout(&vecInputElementDesc[0], vecInputElementDesc.size(), vertexShaderBlob->GetBufferPointer(),
+		vertexShaderBlob->GetBufferSize(), &inputLayout));
 
 	return true;
 }

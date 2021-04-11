@@ -35,7 +35,6 @@ struct ShaderTexture
 	int bindPoint;
 };
 
-
 struct ShaderSampler
 {
 	string name;
@@ -57,23 +56,16 @@ class Shader
 {
 
 public:
-	Shader(WCHAR* vsFilenPath, WCHAR* psFilenPath);
+	Shader();
 	Shader(const Shader& other);
 	virtual ~Shader();
-
-public:
-	virtual bool  Init(WCHAR* vsFilenPath, WCHAR* psFilenPath);
-
-	//初始化Shader,用于创建InputLayout,VertexShader,PixelShader
-	virtual bool  InitShader(WCHAR* vsFilenPath, WCHAR* psFilenPath);
 
 protected:
 	//释放Shader
 	virtual void ShutDown();
-	virtual void SetShaderParam();
 
 public:
-	void Apply();
+	virtual void Apply() = 0;
 	bool SetMatrix(const string& variableName, const CXMMATRIX& matrix);
 	bool SetMatrixArrayElement(const string& variableName, const CXMMATRIX& matrix, int index);
 	bool SetFloat(const string& variableName, float value);
@@ -84,20 +76,39 @@ public:
 	bool SetTexture(const string& variableName, ID3D11ShaderResourceView* texture);
 	bool SetTextureSampler(const string& variableName, ID3D11SamplerState* sampler);
 
-private:
+protected:
 	bool ReflectShaderConstantBuffer(ID3D11ShaderReflection* reflection);
 	bool ReflectShaderTexture(ID3D11ShaderReflection* shaderReflection);
 	bool ReflectShaderSampler(ID3D11ShaderReflection* shaderReflection);
-	bool ReflectInputLayout(ID3D11ShaderReflection* vertexShaderReflection, ID3D10Blob* vertexShaderBlob);
 	bool CreateConstantBuffer();
 	bool UpdateConstantBuffer();
+
+protected:
+	map<string, shared_ptr<ShaderConstantBuffer>> mapShaderContantBuffer;
+	map<string, shared_ptr<ShaderVariable>> mapShaderVariable;
+	map<string, shared_ptr<ShaderTexture>> mapShaderTexture;
+	map<string, shared_ptr<ShaderSampler>> mapShaderSampler;
+};
+
+class VertexPixelShader : public Shader
+{
+
+public:
+	VertexPixelShader(WCHAR* vsFilenPath, WCHAR* psFilenPath);
+	VertexPixelShader(const VertexPixelShader& other);
+	~VertexPixelShader();
+
+public:
+	virtual void Apply() override;
+
+private:
+	bool Init(WCHAR* vsFilenPath, WCHAR* psFilenPath);
+	bool InitShader(WCHAR* vsFilenPath, WCHAR* psFilenPath);
+	void SetShaderParam();
+	bool ReflectInputLayout(ID3D11ShaderReflection* vertexShaderReflection, ID3D10Blob* vertexShaderBlob);
 
 private:
 	ID3D11VertexShader* vertexShader;
 	ID3D11PixelShader* pixelShader;
 	ID3D11InputLayout* inputLayout;
-	map<string, shared_ptr<ShaderConstantBuffer>> mapShaderContantBuffer;
-	map<string, shared_ptr<ShaderVariable>> mapShaderVariable;
-	map<string, shared_ptr<ShaderTexture>> mapShaderTexture;
-	map<string, shared_ptr<ShaderSampler>> mapShaderSampler;
 };
