@@ -53,7 +53,7 @@ void PointLight::CalculateRadius()
 	float fMaxLightIntensity =
 		FMath::Max(FMath::Max(m_LightColor.x, m_LightColor.y), m_LightColor.z) * m_fLightIntensity;
 
-	float innerNum = m_lightAttenuation.y * m_lightAttenuation.y - 4 * m_lightAttenuation.z * (m_lightAttenuation.x - fMaxLightIntensity * (256.0 / 1.0));
+	float innerNum = m_lightAttenuation.y * m_lightAttenuation.y - 4 * m_lightAttenuation.z * (m_lightAttenuation.x - fMaxLightIntensity * (32.0));
 	m_fRadius = (-m_lightAttenuation.y + std::sqrt(innerNum)) / (2.0 * m_lightAttenuation.z);
 }
 

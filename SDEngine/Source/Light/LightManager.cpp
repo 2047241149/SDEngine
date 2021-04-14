@@ -42,6 +42,20 @@ shared_ptr<DirectionLight> LightManager::GetMainLight()
 	}
 }
 
+void LightManager::GetPointLights(vector<PointLightParams>& lightArray)
+{
+	lightArray.empty();
+
+	for (auto& it : m_vecPointLight)
+	{
+		PointLightParams light;
+		light.lightColor = it->GetLightColor();
+		light.lightPos = it->GetPosition();
+		light.radius = it->GetRadius();
+		lightArray.push_back(light);
+	}
+}
+
 shared_ptr<LightManager> LightManager::Get()
 {
 	if (nullptr == m_pLightManager)

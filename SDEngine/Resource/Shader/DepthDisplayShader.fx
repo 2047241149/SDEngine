@@ -15,7 +15,6 @@ struct VertexIn
 {
 	float3 Pos:POSITION;
 	float2 Tex:TEXCOORD;  //多重纹理可以用其它数字
-
 };
 
 struct VertexOut
@@ -37,7 +36,7 @@ VertexOut VS(VertexIn ina)
 	outa.Pos = mul(float4(ina.Pos, 1.0f), UIView);
 	outa.Pos = mul(outa.Pos, UIOrtho);
 
-	outa.Tex= ina.Tex;
+	outa.Tex = ina.Tex;
 	return outa;
 }
 

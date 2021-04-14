@@ -18,6 +18,7 @@ class CubeCamera;
 class RenderCubeMap;
 class IrradianceCubeMap;
 class PrefliterCubeMap;
+class RWRenderTexture;
 
 #include "Common/DirectxCore.h"
 #include "Common/Macro.h"
@@ -41,6 +42,8 @@ private:
 
 	//公用纹理资源
 	shared_ptr<Texture> whiteTexture;
+
+	shared_ptr<RWRenderTexture> mTiledLightRT;
 
 	//网格数据类
 	shared_ptr<GameObject> mOpacitySphereObject;
@@ -97,9 +100,11 @@ private:
 	void RenderDirLightPass();
 	void RenderShadowMapPass();
 	void RenderSSR();
+	void RenderTiledLightPass();
+
+private:
 	void InitDebugConsole();
 	void CloseDebugConsole();
-
 
 private:
 	void PreRender();
@@ -115,6 +120,5 @@ public:
 public:
 	void Render();
 	bool Frame(); 
-
 };
 #endif // !_GRAPHICS_CLASS_H

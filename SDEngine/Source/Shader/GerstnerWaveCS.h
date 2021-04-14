@@ -3,7 +3,7 @@
 #define _GERSTNER_WAVE_CS_H
 
 
-#include "../CoreMini.h"
+#include "../Common/CoreMini.h"
 
 struct CBGerstnerWaveUpdate
 {

@@ -97,6 +97,6 @@ float4 PS(VertexOut outa) : SV_Target
 	float3 specularFactor = dfg / max(denominator, 0.001);
 
 	//specularÌùÍ¼Ïàµ±ÓÚspecularÕÚÕÖ
-	color.xyz = (kd * albedo / PI + specularFactor * specular) * radiance * nDotl;
+	color.xyz = (kd * albedo / PI + specularFactor * specular) * radiance * nDotl * 2.0;
 	return color;
 }

@@ -44,7 +44,6 @@ void RWRenderTexture::Init(int nTextureWidth, int nTextureHeight)
 	textureDesc.MiscFlags = 0;
 	g_pDevice->CreateTexture2D(&textureDesc, NULL, &m_pColorTexture);
 
-
 	//´´½¨ShaderRerouceView
 	D3D11_SHADER_RESOURCE_VIEW_DESC shaderResourceViewDesc;
 	shaderResourceViewDesc.Format = textureDesc.Format;

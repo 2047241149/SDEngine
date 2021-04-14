@@ -4,6 +4,12 @@
 #include "Light.h"
 #include "../Common/MathTool.h"
 
+struct PointLightParams
+{
+	XMFLOAT3 lightPos;
+	XMFLOAT3 lightColor;
+	float radius;
+};
 
 class PointLight : public Light
 {

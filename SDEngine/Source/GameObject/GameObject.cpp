@@ -85,7 +85,7 @@ void GameObject::Render(RenderMode renderMode)
 					GShaderManager->pureColorShader->SetMatrix("View", GCamera->GetViewMatrix());
 					GShaderManager->pureColorShader->SetMatrix("Proj", GCamera->GetProjectionMatrix());
 					GShaderManager->pureColorShader->SetMatrix("WorldInvTranspose", FMath::GetInvenseTranspose(worldMatrix));
-					GShaderManager->pureColorShader->SetFloat4("surfaceColor", errorShaderColor);
+					GShaderManager->pureColorShader->SetFloat4("surfaceColor", m_pMesh->pureColor);
 					GShaderManager->pureColorShader->SetFloat("roughness", m_pMesh->roughness);
 					GShaderManager->pureColorShader->SetFloat("metal", m_pMesh->metal);
 					GShaderManager->pureColorShader->Apply();

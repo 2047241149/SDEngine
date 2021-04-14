@@ -37,6 +37,7 @@ public:
 	shared_ptr<VertexPixelShader> cubeMapToIrradianceShader;
 	shared_ptr<VertexPixelShader> prefilterCubeMapShader;
 	shared_ptr<VertexPixelShader> convolutedBRDFShader;
+	shared_ptr<ComputeShader> tiledLightShader;
 
 private:
 	static shared_ptr<ShaderManager> single;

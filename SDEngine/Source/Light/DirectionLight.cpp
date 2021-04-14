@@ -1,6 +1,6 @@
 
 #include "DirectionLight.h"
-#include "Camera.h"
+#include "../GameObject/Camera.h"
 #include <math.h>
 
 DirectionLight::DirectionLight() :

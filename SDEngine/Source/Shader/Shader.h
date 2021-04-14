@@ -48,10 +48,23 @@ struct ShaderConstantBuffer
 	string name;
 	ID3D11Buffer* constantBuffer;
 	vector<string> vecShaderVariableName;
+	void* data;
 	bool bNeedUpdated;
 };
 
+struct ShaderStructBuffer
+{
+	int size;
+	int registerIndex;
+	string name;
+	ID3D11Buffer* buffer;
+	void* data;
+	bool bNeedUpdated;
+	int structNum;
+	ID3D11ShaderResourceView* srv;
+};
 
+//TODO:部分代码重复,待重构
 class Shader
 {
 
@@ -73,15 +86,16 @@ public:
 	bool SetFloat3(const string& variableName, XMFLOAT3 value);
 	bool SetFloat3ArrayElement(const string& variableName, XMFLOAT3 value, int index);
 	bool SetFloat4(const string& variableName, XMFLOAT4 value);
-	bool SetTexture(const string& variableName, ID3D11ShaderResourceView* texture);
-	bool SetTextureSampler(const string& variableName, ID3D11SamplerState* sampler);
+	virtual bool SetTexture(const string& variableName, ID3D11ShaderResourceView* texture) = 0;
+	virtual bool SetTextureSampler(const string& variableName, ID3D11SamplerState* sampler) = 0;
 
 protected:
 	bool ReflectShaderConstantBuffer(ID3D11ShaderReflection* reflection);
 	bool ReflectShaderTexture(ID3D11ShaderReflection* shaderReflection);
 	bool ReflectShaderSampler(ID3D11ShaderReflection* shaderReflection);
 	bool CreateConstantBuffer();
-	bool UpdateConstantBuffer();
+	virtual bool UpdateConstantBuffer() = 0;
+	virtual void SetShaderParam() = 0;
 
 protected:
 	map<string, shared_ptr<ShaderConstantBuffer>> mapShaderContantBuffer;
@@ -100,15 +114,49 @@ public:
 
 public:
 	virtual void Apply() override;
+	virtual bool SetTexture(const string& variableName, ID3D11ShaderResourceView* texture) override;
+	virtual bool SetTextureSampler(const string& variableName, ID3D11SamplerState* sampler) override;
 
 private:
 	bool Init(WCHAR* vsFilenPath, WCHAR* psFilenPath);
 	bool InitShader(WCHAR* vsFilenPath, WCHAR* psFilenPath);
-	void SetShaderParam();
+	virtual void SetShaderParam() override;
 	bool ReflectInputLayout(ID3D11ShaderReflection* vertexShaderReflection, ID3D10Blob* vertexShaderBlob);
+	virtual bool UpdateConstantBuffer() override;
 
 private:
 	ID3D11VertexShader* vertexShader;
 	ID3D11PixelShader* pixelShader;
 	ID3D11InputLayout* inputLayout;
+};
+
+class ComputeShader : public Shader
+{
+public:
+	ComputeShader(WCHAR* csFilenPath);
+	ComputeShader(const ComputeShader& other);
+	~ComputeShader();
+
+public:
+	virtual void Apply() override;
+	virtual bool SetTexture(const string& variableName, ID3D11ShaderResourceView* texture) override;
+	bool SetRWTexture(const string& variableName, ID3D11UnorderedAccessView* texture);
+	virtual bool SetTextureSampler(const string& variableName, ID3D11SamplerState* sampler) override;
+	void SetStructBuffer(const string& bufferName, void* data, int num);
+	void Dispatch(UINT ThreadGroupCountX, UINT ThreadGroupCountY, UINT ThreadGroupCountZ);
+
+private:
+	bool ReflectShaderStructBuffer(ID3D11ShaderReflection* reflection);
+	bool ReflectShaderUAVTexture(ID3D11ShaderReflection* reflection);
+	virtual bool UpdateConstantBuffer() override;
+	bool UpdateSutrctBuffer();
+	void SetShaderParam();
+	bool InitShader(WCHAR* csFilenPath);
+
+private:
+	ID3D11ComputeShader* computeShader;
+
+private:
+	map<string, shared_ptr<ShaderTexture>> mapRWShaderTexture;
+	map<string, shared_ptr<ShaderStructBuffer>> mapShaderStructBuffer;
 };

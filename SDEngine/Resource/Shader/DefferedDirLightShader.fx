@@ -75,8 +75,8 @@ float4 PS(VertexOut outa) : SV_Target
 	float cosTheta = max(dot(V, H), 0.0);
 	float3 F = FresnelSchlick(cosTheta, fo);
 	float3 ks = F;
-	float3 kd = float3(1.0, 1.0, 1.0) - ks;
-	kd *= 1.0 - metal;
+	float3 kd = 1.0 - ks;
+	kd = kd * (1.0 - metal);
 
 	float3 dfg = D * G * F;
 	float nDotl = max(dot(worldNormal, L), 0.0);

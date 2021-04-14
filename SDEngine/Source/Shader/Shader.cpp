@@ -1,4 +1,4 @@
-#include "Shader.h"
+ï»¿#include "Shader.h"
 
 
 const int CONSTANT_BUFFER_SIZE = 16;
@@ -42,6 +42,9 @@ bool Shader::ReflectShaderConstantBuffer(ID3D11ShaderReflection* reflection)
 		D3D11_SHADER_BUFFER_DESC shaderBufferDesc;
 		buffer->GetDesc(&shaderBufferDesc);
 
+		if(shaderBufferDesc.Type == D3D_CBUFFER_TYPE::D3D11_CT_RESOURCE_BIND_INFO)
+			continue;
+
 		for (int brIndex = 0; brIndex < (int)shaderDesc.BoundResources; ++brIndex)
 		{
 			D3D11_SHADER_INPUT_BIND_DESC shaderIbDesc;
@@ -71,12 +74,11 @@ bool Shader::ReflectShaderConstantBuffer(ID3D11ShaderReflection* reflection)
 					shared_ptr<ShaderVariable> shaderVarible = shared_ptr<ShaderVariable>
 						(new ShaderVariable({ (int)shaderVarDesc.StartOffset,
 						(int)shaderVarDesc.Size, shaderVarDesc.Name, shaderBufferDesc.Name }));
+					
 					shaderCb->vecShaderVariableName.push_back(shaderVarDesc.Name);
 					shaderCb->bNeedUpdated = true;
-
 					ShaderVariableType variableType =  ShaderVariableType::SHADER_MATRIX;
 					
-
 					if (0 == shaderVarDesc.Size % SHADER_MATRIX_SIZE)
 					{
 						variableType = ShaderVariableType::SHADER_MATRIX;
@@ -105,8 +107,7 @@ bool Shader::ReflectShaderConstantBuffer(ID3D11ShaderReflection* reflection)
 							break;
 						}
 					}
-					
-					
+						
 					shaderVarible->variableType = variableType;
 					shaderVarible->variablePre = malloc(shaderVarible->size);
 					shaderVarible->variableCurrent = malloc(shaderVarible->size);
@@ -218,74 +219,6 @@ bool Shader::SetFloat4(const string& variableName, XMFLOAT4 value)
 	return true;
 }
 
-
-bool Shader::UpdateConstantBuffer()
-{
-	for (auto cbIterator = mapShaderContantBuffer.begin(); cbIterator != mapShaderContantBuffer.end(); ++cbIterator)
-	{
-		shared_ptr<ShaderConstantBuffer> shaderConstantBuffer = cbIterator->second;
-		if (nullptr == shaderConstantBuffer)
-			continue;
-
-		if (!shaderConstantBuffer->bNeedUpdated)
-		{
-			g_pDeviceContext->VSSetConstantBuffers(shaderConstantBuffer->registerIndex, 1, &(shaderConstantBuffer->constantBuffer));
-			g_pDeviceContext->PSSetConstantBuffers(shaderConstantBuffer->registerIndex, 1, &(shaderConstantBuffer->constantBuffer));
-		}
-
-		D3D11_MAPPED_SUBRESOURCE mappedSubresource;
-		HR(g_pDeviceContext->Map(shaderConstantBuffer->constantBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedSubresource));
-
-		for (auto shaderVarIterator = shaderConstantBuffer->vecShaderVariableName.begin();
-			shaderVarIterator != shaderConstantBuffer->vecShaderVariableName.end(); ++shaderVarIterator)
-		{
-			if (mapShaderVariable.end() != mapShaderVariable.find(*shaderVarIterator))
-			{
-				shared_ptr<ShaderVariable> shaderVariable = mapShaderVariable[*shaderVarIterator];
-				if (nullptr != shaderVariable)
-				{
-					memcpy((unsigned char*)mappedSubresource.pData + shaderVariable->startOffset,
-						shaderVariable->variableCurrent, shaderVariable->size);
-				}
-			}
-		}
-		g_pDeviceContext->Unmap(shaderConstantBuffer->constantBuffer, 0);
-		g_pDeviceContext->VSSetConstantBuffers(shaderConstantBuffer->registerIndex, 1, &(shaderConstantBuffer->constantBuffer));
-		g_pDeviceContext->PSSetConstantBuffers(shaderConstantBuffer->registerIndex, 1, &(shaderConstantBuffer->constantBuffer));
-	}
-
-	return true;
-}
-
-bool Shader::SetTexture(const string& variableName, ID3D11ShaderResourceView* texture)
-{
-	if (mapShaderTexture.end() != mapShaderTexture.find(variableName) && nullptr != texture)
-	{
-		shared_ptr<ShaderTexture> shaderTexture = mapShaderTexture[variableName];
-		g_pDeviceContext->PSSetShaderResources(shaderTexture->bindPoint, 1, &texture);
-	}
-	else
-	{
-		return false;
-	}
-	return true;
-}
-
-bool Shader::SetTextureSampler(const string& variableName, ID3D11SamplerState* sampler)
-{
-
-	if (mapShaderSampler.end() != mapShaderSampler.find(variableName) && nullptr != sampler)
-	{
-		shared_ptr<ShaderSampler> shaderSampler = mapShaderSampler[variableName];
-		g_pDeviceContext->PSSetSamplers(shaderSampler->bindPoint, 1, &sampler);
-	}
-	else
-	{
-		return false;
-	}
-	return true;
-}
-
 bool Shader::ReflectShaderTexture(ID3D11ShaderReflection* shaderReflection)
 {
 	D3D11_SHADER_DESC shaderDesc;
@@ -339,7 +272,7 @@ bool Shader::SetMatrixArrayElement(const string& variableName, const CXMMATRIX& 
 		{
 			XMMATRIX memMatrix = XMMatrixTranspose(matrix);
 
-			//ÔÝÊ±²»Ö§³Ö¼ÇÒäÖ®Ç°µÄÖµ,µÈÒÔºóÊµÏÖÁË3DÊýÑ§¿âÖ§³Ö¡°==¡±ÔÚ¸ã
+			//æš‚æ—¶ä¸æ”¯æŒè®°å¿†ä¹‹å‰çš„å€¼,ç­‰ä»¥åŽå®žçŽ°äº†3Dæ•°å­¦åº“æ”¯æŒâ€œ==â€åœ¨æž
 			memcpy((unsigned char*)shaderVariable->variableCurrent + index * sizeof(CXMMATRIX), (void*)&memMatrix, sizeof(CXMMATRIX));
 		}
 	}
@@ -357,8 +290,6 @@ bool Shader::SetFloat3ArrayElement(const string& variableName, XMFLOAT3 value, i
 
 	return true;
 }
-
-
 
 //----------------------------------------------------------------
 //-------------------------VertexPixelShader----------------------
@@ -381,6 +312,7 @@ VertexPixelShader::~VertexPixelShader()
 	ShutDown();
 }
 
+
 bool VertexPixelShader::Init(WCHAR* vsFilenPath, WCHAR* psFilenPath)
 {
 
@@ -399,7 +331,7 @@ bool VertexPixelShader::InitShader(WCHAR* VSFileName, WCHAR* PSFileName)
 	ID3D10Blob* pVertexShaderBlob;
 	ID3D10Blob* pPixelShaderBlob;
 
-	//³õÊ¼»¯²ÎÊý
+	//åˆå§‹åŒ–å‚æ•°
 	pErrorMessage = nullptr;
 	pVertexShaderBlob = nullptr;
 	pPixelShaderBlob = nullptr;
@@ -409,16 +341,16 @@ bool VertexPixelShader::InitShader(WCHAR* VSFileName, WCHAR* PSFileName)
 	flag |= D3DCOMPILE_DEBUG | D3DCOMPILE_SKIP_OPTIMIZATION;
 #endif
 
-	//±àÒëVertexShader´úÂë,²¢´´½¨VertexShader
+	//ç¼–è¯‘VertexShaderä»£ç ,å¹¶åˆ›å»ºVertexShader
 	result = D3DCompileFromFile(VSFileName, nullptr, D3D_COMPILE_STANDARD_FILE_INCLUDE, "VS", "vs_5_0", flag, 0, &pVertexShaderBlob, &pErrorMessage);
 	if (FAILED(result))
 	{
-		//´æÔÚ´íÎóÐÅÏ¢
+		//å­˜åœ¨é”™è¯¯ä¿¡æ¯
 		if (pErrorMessage)
 		{
 			Log::LogShaderCompileInfo(pErrorMessage, VSFileName);
 		}
-		//²»´æÔÚ´íÎóÐÅÏ¢,Ò²¾ÍÊÇÃ»ÓÐÕÒµ½ShaderÎÄ¼þ
+		//ä¸å­˜åœ¨é”™è¯¯ä¿¡æ¯,ä¹Ÿå°±æ˜¯æ²¡æœ‰æ‰¾åˆ°Shaderæ–‡ä»¶
 		else
 		{
 			MessageBox(nullptr, L"can not find VS file", L"error", MB_OK);
@@ -428,18 +360,18 @@ bool VertexPixelShader::InitShader(WCHAR* VSFileName, WCHAR* PSFileName)
 	HR(g_pDevice->CreateVertexShader(pVertexShaderBlob->GetBufferPointer(),
 		pVertexShaderBlob->GetBufferSize(), nullptr, &vertexShader));
 
-	//±àÒëPixelShader,²¢´´½¨PixelShader
+	//ç¼–è¯‘PixelShader,å¹¶åˆ›å»ºPixelShader
 	result = D3DCompileFromFile(PSFileName, nullptr, D3D_COMPILE_STANDARD_FILE_INCLUDE, "PS", "ps_5_0", flag, 0,
 		&pPixelShaderBlob, &pErrorMessage);
 
 	if (FAILED(result))
 	{
-		//´æÔÚ´íÎóÐÅÏ¢
+		//å­˜åœ¨é”™è¯¯ä¿¡æ¯
 		if (pErrorMessage)
 		{
 			Log::LogShaderCompileInfo(pErrorMessage, PSFileName);
 		}
-		//²»´æÔÚ´íÎóÐÅÏ¢,Ò²¾ÍÊÇÃ»ÓÐÕÒµ½ShaderÎÄ¼þ
+		//ä¸å­˜åœ¨é”™è¯¯ä¿¡æ¯,ä¹Ÿå°±æ˜¯æ²¡æœ‰æ‰¾åˆ°Shaderæ–‡ä»¶
 		else
 		{
 			MessageBox(NULL, L"can not find PS file", L"error", MB_OK);
@@ -464,7 +396,7 @@ bool VertexPixelShader::InitShader(WCHAR* VSFileName, WCHAR* PSFileName)
 	ReflectShaderSampler(psShaderReflection);
 	CreateConstantBuffer();
 
-	//ÊÍ·ÅBlob
+	//é‡Šæ”¾Blob
 	ReleaseCOM(pVertexShaderBlob);
 	ReleaseCOM(pPixelShaderBlob);
 	return true;
@@ -478,10 +410,10 @@ void VertexPixelShader::Apply()
 
 void VertexPixelShader::SetShaderParam()
 {
-	//ÉèÖÃ¶¥µãÊäÈë²¼¾Ö
+	//è®¾ç½®é¡¶ç‚¹è¾“å…¥å¸ƒå±€
 	g_pDeviceContext->IASetInputLayout(inputLayout);
 
-	//ÉèÖÃVertexShaderºÍPixelShader
+	//è®¾ç½®VertexShaderå’ŒPixelShader
 	g_pDeviceContext->VSSetShader(vertexShader, nullptr, 0);
 	g_pDeviceContext->PSSetShader(pixelShader, nullptr, 0);
 }
@@ -588,4 +520,337 @@ bool VertexPixelShader::ReflectInputLayout(ID3D11ShaderReflection* vertexShaderR
 		vertexShaderBlob->GetBufferSize(), &inputLayout));
 
 	return true;
+}
+
+bool VertexPixelShader::UpdateConstantBuffer()
+{
+	for (auto cbIterator = mapShaderContantBuffer.begin(); cbIterator != mapShaderContantBuffer.end(); ++cbIterator)
+	{
+		shared_ptr<ShaderConstantBuffer> shaderConstantBuffer = cbIterator->second;
+		if (nullptr == shaderConstantBuffer)
+			continue;
+
+		if (!shaderConstantBuffer->bNeedUpdated)
+		{
+			//VS PS
+			g_pDeviceContext->VSSetConstantBuffers(shaderConstantBuffer->registerIndex, 1, &(shaderConstantBuffer->constantBuffer));
+			g_pDeviceContext->PSSetConstantBuffers(shaderConstantBuffer->registerIndex, 1, &(shaderConstantBuffer->constantBuffer));
+		}
+
+		D3D11_MAPPED_SUBRESOURCE mappedSubresource;
+		HR(g_pDeviceContext->Map(shaderConstantBuffer->constantBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedSubresource));
+
+		for (auto shaderVarIterator = shaderConstantBuffer->vecShaderVariableName.begin();
+			shaderVarIterator != shaderConstantBuffer->vecShaderVariableName.end(); ++shaderVarIterator)
+		{
+			if (mapShaderVariable.end() != mapShaderVariable.find(*shaderVarIterator))
+			{
+				shared_ptr<ShaderVariable> shaderVariable = mapShaderVariable[*shaderVarIterator];
+				if (nullptr != shaderVariable)
+				{
+					memcpy((unsigned char*)mappedSubresource.pData + shaderVariable->startOffset,
+						shaderVariable->variableCurrent, shaderVariable->size);
+				}
+			}
+		}
+		g_pDeviceContext->Unmap(shaderConstantBuffer->constantBuffer, 0);
+		g_pDeviceContext->VSSetConstantBuffers(shaderConstantBuffer->registerIndex, 1, &(shaderConstantBuffer->constantBuffer));
+		g_pDeviceContext->PSSetConstantBuffers(shaderConstantBuffer->registerIndex, 1, &(shaderConstantBuffer->constantBuffer));
+	}
+
+	return true;
+}
+
+bool VertexPixelShader::SetTexture(const string& variableName, ID3D11ShaderResourceView* texture)
+{
+	if (mapShaderTexture.end() != mapShaderTexture.find(variableName) && nullptr != texture)
+	{
+		shared_ptr<ShaderTexture> shaderTexture = mapShaderTexture[variableName];
+		g_pDeviceContext->PSSetShaderResources(shaderTexture->bindPoint, 1, &texture);
+	}
+	else
+	{
+		return false;
+	}
+	return true;
+}
+
+bool VertexPixelShader::SetTextureSampler(const string& variableName, ID3D11SamplerState* sampler)
+{
+	if (mapShaderSampler.end() != mapShaderSampler.find(variableName) && nullptr != sampler)
+	{
+		shared_ptr<ShaderSampler> shaderSampler = mapShaderSampler[variableName];
+		g_pDeviceContext->PSSetSamplers(shaderSampler->bindPoint, 1, &sampler);
+	}
+	else
+	{
+		return false;
+	}
+	return true;
+}
+
+
+//----------------------------------------------------------------
+//-------------------------VertexPixelShader----------------------
+//----------------------------------------------------------------
+ComputeShader::ComputeShader(WCHAR* csFilenPath)
+{
+	InitShader(csFilenPath);
+}
+
+ComputeShader::ComputeShader(const ComputeShader& other)
+{
+
+}
+
+ComputeShader::~ComputeShader()
+{
+
+}
+
+void ComputeShader::SetShaderParam()
+{
+	g_pDeviceContext->CSSetShader(computeShader, nullptr, 0);
+}
+
+void ComputeShader::Apply()
+{
+	UpdateConstantBuffer();
+	UpdateSutrctBuffer();
+	SetShaderParam();;
+}
+
+bool ComputeShader::InitShader(WCHAR* csFilenPath)
+{
+	HRESULT result;
+	ID3D10Blob* errorMessage = nullptr;
+	ID3D10Blob* csBlob = nullptr;
+	DWORD flag = D3DCOMPILE_ENABLE_STRICTNESS;
+
+#if _DEBUG
+	flag |= D3DCOMPILE_DEBUG | D3DCOMPILE_SKIP_OPTIMIZATION;
+#endif
+
+	result = D3DCompileFromFile(csFilenPath, NULL, NULL, "CS", "cs_5_0", flag, 0, &csBlob, &errorMessage);
+	if (FAILED(result))
+	{
+		if (errorMessage)
+		{
+			Log::LogShaderCompileInfo(errorMessage, csFilenPath);
+		}
+		else
+		{
+			MessageBox(NULL, L"can not find CS file", L"error", MB_OK);
+		}
+	}
+
+	g_pDevice->CreateComputeShader(csBlob->GetBufferPointer(), csBlob->GetBufferSize(),
+		NULL, &computeShader);
+
+	ID3D11ShaderReflection* csShaderReflection = nullptr;
+	HR(D3DReflect(csBlob->GetBufferPointer(), csBlob->GetBufferSize(), IID_ID3D11ShaderReflection, (void**)&csShaderReflection));
+
+	if (nullptr == csShaderReflection)
+		return false;
+
+	ReflectShaderConstantBuffer(csShaderReflection);
+	ReflectShaderTexture(csShaderReflection);
+	ReflectShaderSampler(csShaderReflection);
+	ReflectShaderStructBuffer(csShaderReflection);
+	ReflectShaderUAVTexture(csShaderReflection);
+	CreateConstantBuffer();
+
+	ReleaseCOM(csBlob);
+	ReleaseCOM(errorMessage);
+	ReleaseCOM(csShaderReflection);
+	return true;
+}
+
+bool ComputeShader::UpdateConstantBuffer()
+{
+	for (auto cbIterator = mapShaderContantBuffer.begin(); cbIterator != mapShaderContantBuffer.end(); ++cbIterator)
+	{
+		shared_ptr<ShaderConstantBuffer> shaderConstantBuffer = cbIterator->second;
+		if (nullptr == shaderConstantBuffer)
+			continue;
+
+		if (!shaderConstantBuffer->bNeedUpdated)
+		{
+			//CS
+			g_pDeviceContext->CSSetConstantBuffers(shaderConstantBuffer->registerIndex, 1, &(shaderConstantBuffer->constantBuffer));
+		}
+
+		D3D11_MAPPED_SUBRESOURCE mappedSubresource;
+		HR(g_pDeviceContext->Map(shaderConstantBuffer->constantBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedSubresource));
+
+		for (auto shaderVarIterator = shaderConstantBuffer->vecShaderVariableName.begin();
+			shaderVarIterator != shaderConstantBuffer->vecShaderVariableName.end(); ++shaderVarIterator)
+		{
+			if (mapShaderVariable.end() != mapShaderVariable.find(*shaderVarIterator))
+			{
+				shared_ptr<ShaderVariable> shaderVariable = mapShaderVariable[*shaderVarIterator];
+				if (nullptr != shaderVariable)
+				{
+					memcpy((unsigned char*)mappedSubresource.pData + shaderVariable->startOffset,
+						shaderVariable->variableCurrent, shaderVariable->size);
+				}
+			}
+		}
+		g_pDeviceContext->Unmap(shaderConstantBuffer->constantBuffer, 0);
+		g_pDeviceContext->CSSetConstantBuffers(shaderConstantBuffer->registerIndex, 1, &(shaderConstantBuffer->constantBuffer));
+	}
+
+	return true;
+}
+
+bool ComputeShader::SetTexture(const string& variableName, ID3D11ShaderResourceView* texture)
+{
+	if (mapShaderTexture.end() != mapShaderTexture.find(variableName) && nullptr != texture)
+	{
+		shared_ptr<ShaderTexture> shaderTexture = mapShaderTexture[variableName];
+		g_pDeviceContext->CSSetShaderResources(shaderTexture->bindPoint, 1, &texture);
+	}
+	else
+	{
+		return false;
+	}
+
+	return true;
+}
+
+bool ComputeShader::SetRWTexture(const string& variableName, ID3D11UnorderedAccessView* texture)
+{
+	if (mapRWShaderTexture.end() != mapRWShaderTexture.find(variableName) && nullptr != texture)
+	{
+		shared_ptr<ShaderTexture> shaderTexture = mapRWShaderTexture[variableName];
+		g_pDeviceContext->CSSetUnorderedAccessViews(shaderTexture->bindPoint, 1, &texture, nullptr);
+	}
+	else
+	{
+		return false;
+	}
+
+	return true;
+}
+
+bool ComputeShader::SetTextureSampler(const string& variableName, ID3D11SamplerState* sampler)
+{
+	if (mapShaderSampler.end() != mapShaderSampler.find(variableName) && nullptr != sampler)
+	{
+		shared_ptr<ShaderSampler> shaderSampler = mapShaderSampler[variableName];
+		g_pDeviceContext->CSSetSamplers(shaderSampler->bindPoint, 1, &sampler);
+	}
+	else
+	{
+		return false;
+	}
+
+	return true;
+}
+
+bool ComputeShader::ReflectShaderStructBuffer(ID3D11ShaderReflection* reflection)
+{
+	D3D11_SHADER_DESC shaderDesc;
+	HR(reflection->GetDesc(&shaderDesc));
+
+	for (int index = 0; index < (int)shaderDesc.BoundResources; ++index)
+	{
+		D3D11_SHADER_INPUT_BIND_DESC sibd;
+		reflection->GetResourceBindingDesc(index, &sibd);
+		if (sibd.Type == D3D_SHADER_INPUT_TYPE::D3D_SIT_STRUCTURED
+			&& mapShaderStructBuffer.find(sibd.Name) == mapShaderStructBuffer.end())
+		{
+			shared_ptr<ShaderStructBuffer> ssb = shared_ptr<ShaderStructBuffer>(new ShaderStructBuffer());
+			ssb->bNeedUpdated = false;
+			ssb->name = sibd.Name;
+			ssb->registerIndex = sibd.BindPoint;
+			ssb->size = sibd.NumSamples;
+			ssb->structNum = 0;
+			ssb->buffer = nullptr;
+			ssb->data = nullptr;
+			ssb->srv = nullptr;
+			mapShaderStructBuffer[ssb->name] = ssb;
+		}
+	}
+
+	return true;
+}
+
+bool ComputeShader::ReflectShaderUAVTexture(ID3D11ShaderReflection* reflection)
+{
+	D3D11_SHADER_DESC shaderDesc;
+	HR(reflection->GetDesc(&shaderDesc));
+
+	for (int brIndex = 0; brIndex < (int)shaderDesc.BoundResources; ++brIndex)
+	{
+		D3D11_SHADER_INPUT_BIND_DESC shaderIbDesc;
+		reflection->GetResourceBindingDesc(brIndex, &shaderIbDesc);
+		if (D3D_SIT_UAV_RWTYPED == shaderIbDesc.Type)
+		{
+			shared_ptr<ShaderTexture> shaderTexture = shared_ptr<ShaderTexture>(new ShaderTexture());
+			shaderTexture->name = shaderIbDesc.Name;
+			shaderTexture->bindPoint = shaderIbDesc.BindPoint;
+			if (mapRWShaderTexture.end() == mapRWShaderTexture.find(shaderIbDesc.Name))
+			{
+				mapRWShaderTexture[shaderIbDesc.Name] = shaderTexture;
+			}
+		}
+	}
+
+	return true;
+}
+
+void ComputeShader::SetStructBuffer(const string& bufferName, void* data, int num)
+{
+	if (mapShaderStructBuffer.find(bufferName) != mapShaderStructBuffer.end())
+	{
+		shared_ptr<ShaderStructBuffer> ssb = mapShaderStructBuffer[bufferName];
+		ssb->data = data;
+		ssb->structNum = num;
+	}
+}
+
+bool ComputeShader::UpdateSutrctBuffer()
+{
+	for (auto cbIterator = mapShaderStructBuffer.begin(); cbIterator != mapShaderStructBuffer.end(); ++cbIterator)
+	{
+		shared_ptr<ShaderStructBuffer> ssb = cbIterator->second;
+		if (nullptr == ssb->buffer)
+		{
+			if (ssb->data != nullptr && ssb->size != 0
+				&& ssb->structNum != 0)
+			{
+				D3D11_BUFFER_DESC desc;
+				ZeroMemory(&desc, sizeof(desc));
+				desc.BindFlags = D3D11_BIND_UNORDERED_ACCESS | D3D11_BIND_SHADER_RESOURCE;
+				desc.ByteWidth = ssb->size * ssb->structNum;
+				desc.MiscFlags = D3D11_RESOURCE_MISC_BUFFER_STRUCTURED;
+				desc.StructureByteStride = ssb->size;
+				D3D11_SUBRESOURCE_DATA InitData;
+				InitData.pSysMem = ssb->data;
+				HR(g_pDevice->CreateBuffer(&desc, &InitData, &ssb->buffer));
+
+				D3D11_SHADER_RESOURCE_VIEW_DESC srvDesc;
+				srvDesc.ViewDimension = D3D11_SRV_DIMENSION_BUFFEREX;
+				srvDesc.BufferEx.FirstElement = 0;
+				srvDesc.Format = DXGI_FORMAT_UNKNOWN;
+				srvDesc.BufferEx.NumElements = desc.ByteWidth / desc.StructureByteStride;
+				HR(g_pDevice->CreateShaderResourceView(ssb->buffer, &srvDesc, &ssb->srv));
+			}
+		}
+
+		g_pDeviceContext->CSSetShaderResources(ssb->registerIndex, 1, &ssb->srv);
+	}
+
+	return true;
+}
+
+void ComputeShader::Dispatch(UINT ThreadGroupCountX, UINT ThreadGroupCountY, UINT ThreadGroupCountZ)
+{
+	Apply();
+	g_pDeviceContext->Dispatch(ThreadGroupCountX, ThreadGroupCountY, ThreadGroupCountZ);
+	ID3D11ShaderResourceView* nullSRV[1] = { nullptr };
+	ID3D11UnorderedAccessView* nullUAV[1] = { nullptr };
+	g_pDeviceContext->CSSetShaderResources(0, 1, nullSRV);
+	g_pDeviceContext->CSSetUnorderedAccessViews(0, 1, nullUAV, nullptr);
 }

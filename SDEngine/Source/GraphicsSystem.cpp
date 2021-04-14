@@ -13,6 +13,7 @@
 #include "Shader/DepthBufferRT.h"
 #include "Shader/SSAOManager.h"
 #include "Texture/TextureManager.h"
+#include "Texture/RWRenderTexture.h"
 #include "IrradianceCubeMap.h"
 #include "PrefilterCubeMap.h"
 
@@ -53,23 +54,10 @@ bool GraphicsSystem::Init(int ScreenWidth, int ScreenHeight, HWND hwnd,HINSTANCE
 	//给游戏添加灯光 
 	shared_ptr<DirectionLight> m_spDirLight = shared_ptr<DirectionLight>(new DirectionLight());
 	m_spDirLight->SetLightDiretion(XMFLOAT3(-0.5f, -1.0f, 0.0f));
-	m_spDirLight->SetLightColor(XMFLOAT3(1.0f, 1.0f, 1.0f));
+	m_spDirLight->SetLightColor(XMFLOAT3(0.0f, 0.0f, 0.0f));
 	m_spDirLight->SetLightPostion(XMFLOAT3(10.0f, 10.0f, 10.0f));
 	GLightManager->Add(m_spDirLight);
 
-	shared_ptr<PointLight> m_PointLight = shared_ptr<PointLight>(new PointLight());
-	m_PointLight->SetLightColor(XMFLOAT3(1.0f, 1.0f, 1.0f));
-	m_PointLight->SetLightIntensity(5.0f);		
-	m_PointLight->SetLightPostion(XMFLOAT3(20.0f, 1.0f, -20.0f));
-		
-	shared_ptr<PointLight> m_PointLight1 = shared_ptr<PointLight>(new PointLight());
-	m_PointLight1->SetLightColor(XMFLOAT3(1.0f, 0.0f, 0.0f));
-	m_PointLight1->SetLightIntensity(5.0f);
-	m_PointLight1->SetLightPostion(XMFLOAT3(20.0f, 1.0f, 20.0f));
-
-	GLightManager->Add(m_PointLight);
-	GLightManager->Add(m_PointLight1);
-	
 	//创建mesh
 	//(1)
 	shared_ptr<Mesh> pHeadMesh = shared_ptr<Mesh>(new Mesh("Resource\\FBXModel\\head\\head.FBX"));
@@ -104,23 +92,46 @@ bool GraphicsSystem::Init(int ScreenWidth, int ScreenHeight, HWND hwnd,HINSTANCE
 	{
 		for (int y = 0; y < 11; ++y)
 		{
+			//Mesh
 			shared_ptr<Mesh> pOpacitySphereMesh = shared_ptr<Mesh>(new Mesh("Resource\\FBXModel\\sphere\\sphere.FBX"));
 			pOpacitySphereMesh->m_eMaterialType = MaterialType::DIFFUSE;
-			pOpacitySphereMesh->pureColor = XMFLOAT4(1.0f, 0.0f, 0.0f, 1.0f);
+			pOpacitySphereMesh->pureColor = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
 			pOpacitySphereMesh->bCastShadow = false;
 			pOpacitySphereMesh->roughness = 0.1f * float(x);
 			pOpacitySphereMesh->metal = 0.1f *  float(y);
 			mOpacitySphereObject = shared_ptr<GameObject>(new GameObject());
 			mOpacitySphereObject->SetMesh(pOpacitySphereMesh);
-			mOpacitySphereObject->m_pTransform->localScale = XMFLOAT3(1.0f, 1.0f, 1.0f);
-			mOpacitySphereObject->m_pTransform->localPosition = XMFLOAT3(5.0f, float(y) * 2.5f + 10.0f, float(x) * 2.5f);
+			mOpacitySphereObject->m_pTransform->localScale = XMFLOAT3(2.0f, 2.0f, 2.0f);
+			mOpacitySphereObject->m_pTransform->localPosition = XMFLOAT3(float(x) * 8.0f + 30.0f, 2.0f, float(y) * 8.0f - 30.0f);
 			GGameObjectManager->Add(mOpacitySphereObject);
+		}
+	}
+
+	for (int x = 0; x < 20; ++x)
+	{
+		for (int y = 0; y < 20; ++y)
+		{
+			float randFloat1 = (float)rand() / (float)RAND_MAX;
+			float randFloat2 = (float)rand() / (float)RAND_MAX;
+			float randFloat3 = (float)rand() / (float)RAND_MAX;
+			float r = randFloat1 >= 0.5 ? 1.0 : 0.0;
+			float g = randFloat2 >= 0.5 ? 1.0 : 0.0;
+			float b = randFloat3 >= 0.5 ? 1.0 : 0.0;
+			if (r == 0 && g == 0 && b == 0)
+				r = 1.0;
+
+			shared_ptr<PointLight> pointLight = shared_ptr<PointLight>(new PointLight());
+			pointLight->SetLightColor(XMFLOAT3(r, g, b));
+			pointLight->SetLightIntensity(3.0f);
+			pointLight->SetLightPostion(XMFLOAT3(float(x) * 8.0f, 2.0f, float(y) * 8.0f - 50.0f));
+			GLightManager->Add(pointLight);
 		}
 	}
 
 	mSponzaBottom = shared_ptr<GameObject>(new GameObject());
 	mSponzaBottom->SetMesh(pSponzaBottom);
 	mSponzaBottom->m_pTransform->localPosition = XMFLOAT3(0.0f, 0.0f, 0.0f);
+	mSponzaBottom->m_pTransform->localScale = XMFLOAT3(10.0f, 10.0f, 10.0f);
 
 	mSponzaNoBottom = shared_ptr<GameObject>(new GameObject());
 	mSponzaNoBottom->SetMesh(pSponzaNoBottom);
@@ -157,7 +168,7 @@ bool GraphicsSystem::Init(int ScreenWidth, int ScreenHeight, HWND hwnd,HINSTANCE
 	mLightBuffer = shared_ptr<RenderTexture>(new RenderTexture(ScreenWidth, ScreenHeight, TextureFormat::R32G32B32A32));
 	
 	mGeometryBuffer = shared_ptr<GeometryBuffer>(new 
-		GeometryBuffer(ScreenWidth,ScreenHeight,SCREEN_FAR,SCREEN_NEAR));
+		GeometryBuffer(ScreenWidth, ScreenHeight,SCREEN_FAR,SCREEN_NEAR));
 
 	mQuad = shared_ptr<Quad>(new Quad());
 
@@ -169,11 +180,13 @@ bool GraphicsSystem::Init(int ScreenWidth, int ScreenHeight, HWND hwnd,HINSTANCE
 		SSRGBuffer(ScreenWidth, ScreenHeight, SCREEN_FAR, SCREEN_NEAR));
 
 	ssaoManager = shared_ptr<SSAOManager>(new SSAOManager(ScreenWidth, ScreenHeight));
-	WCHAR* cubeMapResPath = L"Resource/Texture/uffizi_cross.dds";
+	WCHAR* cubeMapResPath = L"Resource/Texture/night.dds";
 	skyBox = shared_ptr<SkyBox>(new SkyBox(cubeMapResPath));
 	radianceCubeMap = shared_ptr<IrradianceCubeMap>(new IrradianceCubeMap(cubeMapResPath));
 	
 	prefliterCubeMap = shared_ptr<PrefliterCubeMap>(new PrefliterCubeMap(cubeMapResPath, 512, 512));
+	
+	mTiledLightRT = shared_ptr<RWRenderTexture>(new RWRenderTexture(ScreenWidth, ScreenHeight));
 	PreRender();
 	return true;
 }
@@ -388,8 +401,9 @@ void GraphicsSystem::RenderGeometryPass()
 
 void GraphicsSystem::RenderLightingPass()
 {
+	RenderTiledLightPass();
 	RenderDirLightPass();
-	//RenderPointLightPass();
+	RenderPointLightPass();
 	RenderFinalShadingPass();
 }
 
@@ -467,6 +481,12 @@ void GraphicsSystem::RenderDebugWindow()
 	//PreCompiteBRDF
 	GShaderManager->uiShader->SetTexture("ShaderTexture",
 		mConvolutedBrdfRT->GetSRV());
+	GShaderManager->uiShader->Apply();
+	mDebugWindow->Render(850, 600);
+
+	//TiledLight
+	GShaderManager->uiShader->SetTexture("ShaderTexture",
+		mTiledLightRT->GetSRV());
 	GShaderManager->uiShader->Apply();
 	mDebugWindow->Render(850, 600);
 
@@ -619,6 +639,22 @@ void  GraphicsSystem::RenderSSR()
 	RenderSSRPass();
 }
 
+void GraphicsSystem::RenderTiledLightPass()
+{
+	vector<PointLightParams> pointLights;
+	GLightManager->GetPointLights(pointLights);
+	if (pointLights.size() <= 0)
+		return;
+
+	GShaderManager->tiledLightShader->SetTexture("DepthTex", mGeometryBuffer->GetGBufferSRV(GBufferType::Depth));
+	GShaderManager->tiledLightShader->SetStructBuffer("PointLights", pointLights.data(), pointLights.size());
+	GShaderManager->tiledLightShader->SetRWTexture("OutputTexture", mTiledLightRT->GetUAV());
+	GShaderManager->tiledLightShader->SetFloat("lightCount", pointLights.size());
+	GShaderManager->tiledLightShader->SetFloat("farPlane", GCamera->mFarPlane);
+	GShaderManager->tiledLightShader->SetFloat("nearPlane", GCamera->mNearPlane);
+	GShaderManager->tiledLightShader->SetMatrix("View", GCamera->GetViewMatrix());
+	GShaderManager->tiledLightShader->Dispatch(100, 100, 1);
+}
 
 void GraphicsSystem::InitDebugConsole()
 {

@@ -25,7 +25,6 @@ public:
 private:
 	void Init(int nTextureWidth = STANDARD_RES_WIDTH, int nTextureHeight = STANDARD_RES_HEIGHT);
 
-
 private:
 	ID3D11Texture2D* m_pColorTexture;
 	ID3D11ShaderResourceView* m_pSRV;

@@ -14,10 +14,12 @@ public:
 	~LightManager();
 
 	static shared_ptr<LightManager> Get();
+
 public:
 	void Add(shared_ptr<PointLight> spPointLight);
 	void Add(shared_ptr<DirectionLight> spDirLight);
 	shared_ptr<DirectionLight> GetMainLight();
+	void GetPointLights(vector<PointLightParams>& lightArray);
 
 public:
 	vector<shared_ptr<PointLight>> m_vecPointLight;
