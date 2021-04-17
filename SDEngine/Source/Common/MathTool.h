@@ -9,6 +9,7 @@ struct FMath
 {
 	//返回一个矩阵的逆矩阵的转置
 	static XMMATRIX GetInvenseTranspose(CXMMATRIX ma);
+	static XMMATRIX GetInvense(CXMMATRIX ma);
 	static float Max(float left, float right);
 	static float lerp(float left, float right, float percent);
 };

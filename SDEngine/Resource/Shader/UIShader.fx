@@ -39,6 +39,5 @@ float4 PS(VertexOut outa) : SV_Target
 {
 	float4 color = ShaderTexture.Sample(LinearClamp, outa.Tex);
 	color = float4(color.xyz, 1.0);
-	color.rgb = ACESToneMappingAndGammaCorrect(color.rgb, 1.0);
 	return color;
 }

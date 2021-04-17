@@ -120,10 +120,12 @@ bool GraphicsSystem::Init(int ScreenWidth, int ScreenHeight, HWND hwnd,HINSTANCE
 			if (r == 0 && g == 0 && b == 0)
 				r = 1.0;
 
+			float posx = randFloat1 - 0.5;
+			float posy = randFloat2 - 0.5;
 			shared_ptr<PointLight> pointLight = shared_ptr<PointLight>(new PointLight());
 			pointLight->SetLightColor(XMFLOAT3(r, g, b));
 			pointLight->SetLightIntensity(3.0f);
-			pointLight->SetLightPostion(XMFLOAT3(float(x) * 8.0f, 2.0f, float(y) * 8.0f - 50.0f));
+			pointLight->SetLightPostion(XMFLOAT3(posx * 150.0f  + 60.0f, 2.0f, posy * 150.0f));
 			GLightManager->Add(pointLight);
 		}
 	}
@@ -652,7 +654,11 @@ void GraphicsSystem::RenderTiledLightPass()
 	GShaderManager->tiledLightShader->SetFloat("lightCount", pointLights.size());
 	GShaderManager->tiledLightShader->SetFloat("farPlane", GCamera->mFarPlane);
 	GShaderManager->tiledLightShader->SetFloat("nearPlane", GCamera->mNearPlane);
+	GShaderManager->tiledLightShader->SetFloat("ScreenWidth", GCamera->mScreenWidth);
+	GShaderManager->tiledLightShader->SetFloat("ScreenHeight", GCamera->mScreenHeight);
 	GShaderManager->tiledLightShader->SetMatrix("View", GCamera->GetViewMatrix());
+	GShaderManager->tiledLightShader->SetMatrix("ProjInv", FMath::GetInvense(GCamera->GetProjectionMatrix()));
+		
 	GShaderManager->tiledLightShader->Dispatch(100, 100, 1);
 }
 
