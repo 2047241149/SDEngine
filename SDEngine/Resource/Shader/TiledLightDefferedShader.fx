@@ -2,7 +2,7 @@
 #include "BRDF.fx"
 #include "ToneMap.fx"
 
-#define GroundThreadSize 32
+#define GroundThreadSize 16
 
 
 //µ„π‚‘¥
