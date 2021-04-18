@@ -14,7 +14,7 @@
 						SSR(屏幕空间反射)
 ![image](https://github.com/2047241149/SDEngine/blob/master/SDEngine/DefferedShading_SSR.png)
 
-						大量点光源光照剔除(TiledDefferLightCull)
+						大量点光源光照剔除(TiledDefferedLightCull)
 ![image](https://github.com/2047241149/SDEngine/blob/master/SDEngine/TiledLightShaing.png)
 
 
