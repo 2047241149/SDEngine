@@ -10,6 +10,7 @@ Texture2D AlbedoTex:register(t5);
 TextureCube IrradianceTex:register(t6);
 TextureCube PrefliterCubeMap:register(t7);
 Texture2D BrdfLut:register(t8);
+Texture2D LightBuffer:register(t9);
 
 SamplerState clampLinearSample:register(s0);  
 SamplerState TrilinearFliterClamp:register(s1);
@@ -60,6 +61,7 @@ float4 PS(VertexOut outa) : SV_Target
 	float metal = gBufferAttrbite.z;
 	float ao = SSAORT.Sample(clampLinearSample, outa.Tex).r;
 	float3 albedo = AlbedoTex.Sample(clampLinearSample, outa.Tex).xyz;
+	float3 pointLightColor = LightBuffer.Sample(clampLinearSample, outa.Tex).xyz;
 
 	//light
 	float3 L = -normalize(lightDir);
@@ -94,7 +96,7 @@ float4 PS(VertexOut outa) : SV_Target
 	float3 shadowFactor = DirLightShadowMap.Sample(clampLinearSample, outa.Tex).rgb;
 	float3 dirLightColor = (kd * albedo / PI + specularFactor * specular) * radiance * nDotl * shadowFactor;
 	float3 iblColor = (iblDiffuse + iblSpecular) * ao;
-	color.xyz = dirLightColor + iblColor;
+	color.xyz = dirLightColor + iblColor + pointLightColor;
 	color.w = 1.0;
 	return color;
 }

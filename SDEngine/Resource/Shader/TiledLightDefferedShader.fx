@@ -1,6 +1,8 @@
 
+#include "BRDF.fx"
+#include "ToneMap.fx"
 
-#define GroundThreadSize 16
+#define GroundThreadSize 32
 
 
 //点光源
@@ -9,13 +11,17 @@ struct PointLight
 	float3 pos;
 	float3 color;
 	float radius;
+	float4 attenuation;
 };
 
-cbuffer CBLight:register(b0)
+cbuffer CBCommon:register(b0)
 {
-	float lightCount;
+	float ScreenWidth;
+	float ScreenHeight;
+	float3 cameraPos;
 	float farPlane;
 	float nearPlane;
+	float lightCount;
 };
 
 cbuffer CBMatrix:register(b1)
@@ -24,11 +30,6 @@ cbuffer CBMatrix:register(b1)
 	matrix ProjInv;
 };
 
-cbuffer CBCommon:register(b2)
-{
-	float ScreenWidth;
-	float ScreenHeight;
-};
 
 uint GetNumTilesX()
 {
@@ -56,15 +57,10 @@ float GetSignedDistanceFromPlane(float3 p, float3 eqn)
 
 bool TestFrustumSides(float3 lightPos, float radius, float3 plane0, float3 plane1, float3 plane2, float3 plane3)
 {
-	float3 aa = lightPos;
-	float a1 = GetSignedDistanceFromPlane(lightPos, plane0);
-	float a2 = GetSignedDistanceFromPlane(lightPos, plane1);
-	float a3 = GetSignedDistanceFromPlane(lightPos, plane2);
-	float a4 = GetSignedDistanceFromPlane(lightPos, plane3);
-	bool intersectingOrInside0 = a1 < radius;
-	bool intersectingOrInside1 = a2 < radius;
-	bool intersectingOrInside2 = a3 < radius;
-	bool intersectingOrInside3 = a4 < radius;
+	bool intersectingOrInside0 = GetSignedDistanceFromPlane(lightPos, plane0) < radius;
+	bool intersectingOrInside1 = GetSignedDistanceFromPlane(lightPos, plane1) < radius;
+	bool intersectingOrInside2 = GetSignedDistanceFromPlane(lightPos, plane2) < radius;
+	bool intersectingOrInside3 = GetSignedDistanceFromPlane(lightPos, plane3) < radius;
 
 	return (intersectingOrInside0 && intersectingOrInside1 && intersectingOrInside2
 		&& intersectingOrInside3);
@@ -85,7 +81,12 @@ float DepthBufferConvertToLinear(float depth)
 
 
 Texture2D<float4> DepthTex:register(t0);
-StructuredBuffer<PointLight> PointLights : register(t1);
+Texture2D<float4> WorldPosTex:register(t1);
+Texture2D<float4> WorldNormalTex:register(t2);
+Texture2D<float4> SpecularRoughMetalTex:register(t3);
+Texture2D<float4> AlbedoTex:register(t4);
+SamplerState clampLinearSample:register(s0);
+StructuredBuffer<PointLight> PointLights : register(t5);
 RWTexture2D<float4> OutputTexture : register(u0);
 groupshared uint minDepthInt;
 groupshared uint maxDepthInt;
@@ -148,7 +149,9 @@ void CS(
 	for (uint i = 0; i < passCount; ++i)
 	{
 		uint lightIndex = i * threadCount + groupIndex;
-		lightIndex = min(lightIndex, lightCount);
+		if (lightIndex >= lightCount)
+			continue;
+
 		PointLight light = PointLights[lightIndex];
 		float3 viewLightPos = mul(float4(light.pos, 1.0), View).xyz;
 		if(TestFrustumSides(viewLightPos, light.radius, frustumEqn0, frustumEqn1, frustumEqn2, frustumEqn3))
@@ -165,10 +168,10 @@ void CS(
 	GroupMemoryBarrierWithGroupSync();
 
 	//(4)计算和每个Tiled的光源贡献值
-	float maxLightCount = 40.0;
+	float maxLightCount = 300.0;
 	float value = float(visibleLightCount) / maxLightCount;
 	float4 color = float4(0.0, 0.0, 0.0, 1.0);
-	if (value == 0)
+	/*if (value == 0)
 	{
 		color = float4(0.0, 0.0, 0.0, 1.0);
 	}
@@ -191,6 +194,57 @@ void CS(
 	else
 	{
 		color = float4(1.0, 1.0, 1.0, 1.0);
+	}*/
+
+	if (visibleLightCount > 0)
+	{
+		//G-Buffer-Pos(浪费1 float)
+		float2 uv = float2(float(dispatchThreadId.x) / ScreenWidth, float(dispatchThreadId.y) / ScreenHeight);
+		float3 worldPos = WorldPosTex.SampleLevel(clampLinearSample, uv, 0).xyz;
+
+		//G-Buffer-Normal(浪费1 float)
+		float3 worldNormal = WorldNormalTex.SampleLevel(clampLinearSample, uv, 0).xyz;
+		worldNormal = normalize(worldNormal);
+
+		float3 albedo = AlbedoTex.SampleLevel(clampLinearSample, uv, 0).xyz;
+
+		//G-Buffer-Specual-Rough-Metal(浪费1 float)
+		float3 gBufferAttrbite = SpecularRoughMetalTex.SampleLevel(clampLinearSample, uv, 0).xyz;
+		float specular = gBufferAttrbite.x;
+		float roughness = gBufferAttrbite.y;
+		float metal = gBufferAttrbite.z;
+
+		for (uint index = 0; index < visibleLightCount; ++index)
+		{
+			uint lightIndex = visibleLightIndices[index];
+			PointLight light = PointLights[lightIndex];
+			float3 pixelToLightDir = light.pos - worldPos;
+			float distance = length(pixelToLightDir);
+			float3 L = normalize(pixelToLightDir);
+			float3 V = normalize(cameraPos - worldPos);
+			float3 H = normalize(L + V);
+			float4 attenuation = light.attenuation;
+			float attenua = 1.0 / (attenuation.x + attenuation.y * distance + distance * distance * attenuation.z);
+			float3 radiance = light.color * attenua;
+
+			//f(cook_torrance) = D* F * G /(4 * (wo.n) * (wi.n))
+			float D = DistributionGGX(worldNormal, H, roughness);
+			float G = GeometrySmith(worldNormal, V, L, roughness);
+			float3 fo = GetFresnelF0(albedo, metal);
+			float cosTheta = max(dot(V, H), 0.0);
+			float3 F = FresnelSchlick(cosTheta, fo);
+			float3 ks = F;
+			float3 kd = float3(1.0, 1.0, 1.0) - ks;
+			kd *= 1.0 - metal;
+
+			float3 dfg = D * G * F;
+			float nDotl = max(dot(worldNormal, L), 0.0);
+			float nDotv = max(dot(worldNormal, V), 0.0);
+			float denominator = 4.0 * nDotv * nDotl;
+			float3 specularFactor = dfg / max(denominator, 0.001);
+
+			color.xyz += (kd * albedo / PI + specularFactor * specular) * radiance * nDotl * 2.2;
+		}
 	}
 
 	OutputTexture[dispatchThreadId.xy] = color;

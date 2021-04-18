@@ -101,7 +101,7 @@ bool ShaderManager::Init()
 	convolutedBRDFShader = shared_ptr<VertexPixelShader>(new VertexPixelShader(L"Resource/Shader/ConvolutedBRDFShader.fx",
 		L"Resource/Shader/ConvolutedBRDFShader.fx"));
 
-	tiledLightShader = shared_ptr<ComputeShader>(new ComputeShader(L"Resource/Shader/TiledLightCullShader.fx"));
+	tiledLightShader = shared_ptr<ComputeShader>(new ComputeShader(L"Resource/Shader/TiledLightDefferedShader.fx"));
 	return true;
 }
 

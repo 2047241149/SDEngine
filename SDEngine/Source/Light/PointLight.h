@@ -9,6 +9,7 @@ struct PointLightParams
 	XMFLOAT3 lightPos;
 	XMFLOAT3 lightColor;
 	float radius;
+	XMFLOAT4 attenuation;
 };
 
 class PointLight : public Light

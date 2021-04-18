@@ -52,6 +52,7 @@ void LightManager::GetPointLights(vector<PointLightParams>& lightArray)
 		light.lightColor = it->GetLightColor();
 		light.lightPos = it->GetPosition();
 		light.radius = it->GetRadius();
+		light.attenuation = it->GetLightAttenuation();
 		lightArray.push_back(light);
 	}
 }

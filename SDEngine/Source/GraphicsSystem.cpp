@@ -107,9 +107,9 @@ bool GraphicsSystem::Init(int ScreenWidth, int ScreenHeight, HWND hwnd,HINSTANCE
 		}
 	}
 
-	for (int x = 0; x < 20; ++x)
+	for (int x = 0; x < 32; ++x)
 	{
-		for (int y = 0; y < 20; ++y)
+		for (int y = 0; y < 32; ++y)
 		{
 			float randFloat1 = (float)rand() / (float)RAND_MAX;
 			float randFloat2 = (float)rand() / (float)RAND_MAX;
@@ -124,7 +124,7 @@ bool GraphicsSystem::Init(int ScreenWidth, int ScreenHeight, HWND hwnd,HINSTANCE
 			float posy = randFloat2 - 0.5;
 			shared_ptr<PointLight> pointLight = shared_ptr<PointLight>(new PointLight());
 			pointLight->SetLightColor(XMFLOAT3(r, g, b));
-			pointLight->SetLightIntensity(3.0f);
+			pointLight->SetLightIntensity(6.0f);
 			pointLight->SetLightPostion(XMFLOAT3(posx * 150.0f  + 60.0f, 2.0f, posy * 150.0f));
 			GLightManager->Add(pointLight);
 		}
@@ -405,7 +405,6 @@ void GraphicsSystem::RenderLightingPass()
 {
 	RenderTiledLightPass();
 	RenderDirLightPass();
-	RenderPointLightPass();
 	RenderFinalShadingPass();
 }
 
@@ -649,11 +648,17 @@ void GraphicsSystem::RenderTiledLightPass()
 		return;
 
 	GShaderManager->tiledLightShader->SetTexture("DepthTex", mGeometryBuffer->GetGBufferSRV(GBufferType::Depth));
+	GShaderManager->tiledLightShader->SetTexture("WorldPosTex", mGeometryBuffer->GetGBufferSRV(GBufferType::Pos));
+	GShaderManager->tiledLightShader->SetTexture("WorldNormalTex", mGeometryBuffer->GetGBufferSRV(GBufferType::Normal));
+	GShaderManager->tiledLightShader->SetTexture("SpecularRoughMetalTex", mGeometryBuffer->GetGBufferSRV(GBufferType::SpecularRoughMetal));
+	GShaderManager->tiledLightShader->SetTexture("AlbedoTex", mGeometryBuffer->GetGBufferSRV(GBufferType::Diffuse));
+	GShaderManager->defferedPointLightShader->SetTextureSampler("clampLinearSample", GTextureSamplerBilinearClamp);
 	GShaderManager->tiledLightShader->SetStructBuffer("PointLights", pointLights.data(), pointLights.size());
 	GShaderManager->tiledLightShader->SetRWTexture("OutputTexture", mTiledLightRT->GetUAV());
 	GShaderManager->tiledLightShader->SetFloat("lightCount", pointLights.size());
 	GShaderManager->tiledLightShader->SetFloat("farPlane", GCamera->mFarPlane);
 	GShaderManager->tiledLightShader->SetFloat("nearPlane", GCamera->mNearPlane);
+	GShaderManager->tiledLightShader->SetFloat3("cameraPos", GCamera->GetPosition());
 	GShaderManager->tiledLightShader->SetFloat("ScreenWidth", GCamera->mScreenWidth);
 	GShaderManager->tiledLightShader->SetFloat("ScreenHeight", GCamera->mScreenHeight);
 	GShaderManager->tiledLightShader->SetMatrix("View", GCamera->GetViewMatrix());
@@ -759,6 +764,7 @@ void GraphicsSystem::RenderDirLightPass()
 		GShaderManager->defferedDirLightShader->SetTexture("IrradianceTex", radianceCubeMap->GetIrradianceSrv());
 		GShaderManager->defferedDirLightShader->SetTexture("PrefliterCubeMap", prefliterCubeMap->GetPrefilterCubeMapSrv());
 		GShaderManager->defferedDirLightShader->SetTexture("BrdfLut", mConvolutedBrdfRT->GetSRV());
+		GShaderManager->defferedDirLightShader->SetTexture("LightBuffer", mTiledLightRT->GetSRV());
 		GShaderManager->defferedDirLightShader->SetFloat3("cameraPos", GCamera->GetPosition());
 		GShaderManager->defferedDirLightShader->SetFloat4("lightColor", lightColor);
 		GShaderManager->defferedDirLightShader->SetFloat3("lightDir", pDirLight->GetLightDirection());

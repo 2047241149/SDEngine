@@ -631,7 +631,7 @@ bool ComputeShader::InitShader(WCHAR* csFilenPath)
 	flag |= D3DCOMPILE_DEBUG | D3DCOMPILE_SKIP_OPTIMIZATION;
 #endif
 
-	result = D3DCompileFromFile(csFilenPath, NULL, NULL, "CS", "cs_5_0", flag, 0, &csBlob, &errorMessage);
+	result = D3DCompileFromFile(csFilenPath, NULL, D3D_COMPILE_STANDARD_FILE_INCLUDE, "CS", "cs_5_0", flag, 0, &csBlob, &errorMessage);
 	if (FAILED(result))
 	{
 		if (errorMessage)
