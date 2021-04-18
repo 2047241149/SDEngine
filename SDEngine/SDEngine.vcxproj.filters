@@ -375,5 +375,6 @@
     <None Include="Resource\Shader\ImportanceSampleGGX.fx" />
     <None Include="Resource\Shader\Common.fx" />
     <None Include="Resource\Shader\TiledLightCullShader.fx" />
+    <None Include="Resource\Shader\TiledLightDefferedShader.fx" />
   </ItemGroup>
 </Project>
