@@ -32,8 +32,3 @@ ID3D11ShaderResourceView* Texture::GetTexture()
 {
 	return m_pSRV;
 }
-
-ID3D11ShaderResourceView* Texture::LoadTexture(WCHAR* TextureFilename)
-{
-	return nullptr;
-}

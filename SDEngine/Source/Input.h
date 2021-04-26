@@ -2,7 +2,7 @@
 #ifndef _INPUT_CLASS_H
 #define _INPUT_CLASS_H
 
-#include "Common/Macro.h"
+#include "Common/CoreMini.h"
 //定义使用的D3DInput的版本
 #define DIRECTINPUT_VERSION 0x0800
 #include<dinput.h>
@@ -26,23 +26,28 @@ private:
 	int mMousePosX, mMousePosY;
 	int mMousePosXOffset, mMousePosYOffset;
 
+private:
+	static shared_ptr<Input> single;
 
 private:
 	bool ReadKeyboard();
 	bool ReadMouse();
 	void ProcessInput();
-	bool Initialize(HINSTANCE hInstance, HWND hwnd, int screenWidth, int screenHeight);
+
 
 public:
-	Input(HINSTANCE hInstance, HWND hwnd, int screenWidth, int screenHeight);
+	Input();
 	Input(const Input&);
 	~Input();
 
+	static shared_ptr<Input> Get();
 
 public:
-	
+	bool Init();
+
 	void ShutDown();
-	bool Frame();
+
+	bool Tick();
 
 	//ESC键是否按下
 	bool IsEscapePressed();
@@ -75,4 +80,6 @@ public:
 
 	void GetMousePositionOffset(int& MouseXOffset, int &MouseYOffset);
 };
+
+#define GInput Input::Get()
 #endif 

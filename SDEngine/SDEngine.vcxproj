@@ -125,9 +125,12 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Source\WindowInfo.cpp" />
     <ClCompile Include="Source\GameObject\CubeCamera.cpp" />
     <ClCompile Include="Source\IrradianceCubeMap.cpp" />
     <ClCompile Include="Source\PrefilterCubeMap.cpp" />
+    <ClCompile Include="Source\SceneManager.cpp" />
+    <ClCompile Include="Source\SceneRender.cpp" />
     <ClCompile Include="Source\Shader\CascadeShadowMap.cpp" />
     <ClCompile Include="Source\Shader\CascadeShadowMapManager.cpp" />
     <ClCompile Include="Source\Common\MathTool.cpp" />
@@ -175,12 +178,16 @@
     <ClCompile Include="Source\SDEngine.cpp" />
     <ClCompile Include="Source\Texture\Texture.cpp" />
     <ClCompile Include="Source\Shader\Wave.cpp" />
+    <ClCompile Include="Source\TiledDefferedSceneRender.cpp" />
     <ClCompile Include="Source\源.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Source\WindowInfo.h" />
     <ClInclude Include="Source\GameObject\CubeCamera.h" />
     <ClInclude Include="Source\IrradianceCubeMap.h" />
     <ClInclude Include="Source\PrefilterCubeMap.h" />
+    <ClInclude Include="Source\SceneManager.h" />
+    <ClInclude Include="Source\SceneRender.h" />
     <ClInclude Include="Source\Shader\CascadeShadowMap.h" />
     <ClInclude Include="Source\Shader\CascadeShadowMapManager.h" />
     <ClInclude Include="Source\Common\MathTool.h" />
@@ -234,6 +241,7 @@
     <ClInclude Include="Source\SDEngine.h" />
     <ClInclude Include="Source\Texture\Texture.h" />
     <ClInclude Include="Source\Shader\Wave.h" />
+    <ClInclude Include="Source\TiledDefferedSceneRender.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resource\Shader\DepthDisplayShader.fx">

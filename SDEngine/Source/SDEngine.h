@@ -23,7 +23,7 @@ private:
 
 private:
 	//帧函数
-	bool Frame();
+	bool Tick();
 
 	//初始化窗口函数
 	void InitWindow(int&, int&);

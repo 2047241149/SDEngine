@@ -28,21 +28,15 @@ void FPS::Initialize()
 
 void FPS::Frame()
 {
-
 	++mCount;  
-	//timeGetTime·µ»ØµÄ
 	float currentTime = timeGetTime();
+
 	if (currentTime >= (mStartTime + 1000))
 	{
 		mFPS = mCount;
 		mCount = 0;
 		mStartTime = currentTime;
 	}
-
-	/*float currentTime = timeGetTime();
-	float frameTime = std::fmax(currentTime - m_fFistStartTime, 0.0) + 0.0001;
-	mFPS = 1000.0f / float(frameTime);
-	m_fFistStartTime = currentTime;*/
 }
 
 float FPS::GetDeltaTime()
@@ -57,13 +51,13 @@ float FPS::GetDeltaTime()
 	}
 }
 
-FPS* FPS::GetInstance()
+shared_ptr<FPS> FPS::Get()
 {
-	if (mInstance == nullptr)
+	if (single == nullptr)
 	{
-		mInstance = shared_ptr<FPS>(new FPS());
+		single = shared_ptr<FPS>(new FPS());
 	}
-	return mInstance.get();
+	return single;
 }
 
 float FPS::GetTime()
@@ -71,9 +65,9 @@ float FPS::GetTime()
 	return (float)(timeGetTime() - m_fFistStartTime)/ 1000.0f;
 }
 
-
 int FPS::GetFPS()
 {
 	return mFPS;
 }
-shared_ptr<FPS> FPS::mInstance = nullptr;
+
+shared_ptr<FPS> FPS::single = nullptr;

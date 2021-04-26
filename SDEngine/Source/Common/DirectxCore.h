@@ -21,13 +21,11 @@ public:
 	DirectxCore(const DirectxCore&);
 	~DirectxCore();
 
-	//单例模式
 	static shared_ptr<DirectxCore> Get();
 
 	ID3DUserDefinedAnnotation* d3dUserDefinedAnnot;
 
-	//DirectxCore初始化函数
-	bool Init(int ScreenWidth, int ScreenHeight, bool vsync, HWND hwnd, bool fullscreen, float ScreenDepth, float ScreenNear);
+	bool Init(bool vsync, bool fullscreen, float ScreenDepth, float ScreenNear);
 
 public:
 	//绘制场景函数
@@ -42,7 +40,7 @@ public:
 	ID3D11DepthStencilView* GetDSV() { return md3dDepthStencilView; }
 	D3D11_VIEWPORT GetViewPort() { return mViewport; }
 
-	void GetVideoCardInfo(char*, int&); //获取显卡信息
+	void GetVideoCardInfo(char*, int&);
 
 	//Set函数
 	void SetBackBufferRender();  //设置背后缓存作为渲染目标

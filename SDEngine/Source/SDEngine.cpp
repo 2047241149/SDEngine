@@ -1,5 +1,5 @@
 #include "SDEngine.h"
-
+#include "WindowInfo.h"
 
 //全局变量
 static SDEngine* D3DAPP = NULL;
@@ -62,14 +62,11 @@ bool SDEngine::Init()
 {
 	int ScreenWidth, ScreenHeight;
 
-	//------第一,针对窗口类------
-	/*初始化屏幕宽度和高度*/
-	/*初始化系统类的窗口*/
+	//init windows
 	InitWindow(ScreenWidth, ScreenHeight);
+	GWindowInfo->Init(mHwnd, mHinstance, ScreenWidth, ScreenHeight);
 
-	//------第二,针对图形类------
-	/*创建图形类对象*/
-	mGraphicsSystem = shared_ptr<GraphicsSystem>(new GraphicsSystem(ScreenWidth,ScreenHeight,mHwnd,mHinstance));
+	mGraphicsSystem = shared_ptr<GraphicsSystem>(new GraphicsSystem());
 	if (!mGraphicsSystem)
 	{
 		MessageBox(NULL, L"mGraphicsSystem init failure", NULL, MB_OK);
@@ -106,7 +103,7 @@ void SDEngine::Run()
 		}
 		else
 		{
-			result = Frame();  //Frame运行的函数可能造成游戏退出
+			result = Tick();  //Frame运行的函数可能造成游戏退出
 			if (!result)
 			{
 				done = true;
@@ -115,20 +112,21 @@ void SDEngine::Run()
 	}
 }
 
-bool SDEngine::Frame()
+bool SDEngine::Tick()
 {
+	int fps = GFPS->GetFPS();
+	float deltatTime = 1.0 / (float(fps) + 0.001f);
 
-	mGraphicsSystem->Frame();
+	//Logic
+	mGraphicsSystem->Tick(deltatTime);
 
-	//进行每帧的图形渲染
+	//Graphics
 	mGraphicsSystem->Render();
 
-	int fps = FPS::GetInstance()->GetFPS();
 	string fpsStr;
 	int2str(fps, fpsStr);
 	string title = "SDENGINE     FPS = " + fpsStr;
 	SetWindowText(mHwnd, Str2Wstr(title).c_str());
-
 	return true;
 }
 

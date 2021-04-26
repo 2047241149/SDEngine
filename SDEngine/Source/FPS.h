@@ -17,7 +17,7 @@ private:
 	unsigned long m_fFistStartTime;
 
 private:
-	static shared_ptr<FPS> mInstance;
+	static shared_ptr<FPS> single;
 
 private:
 	void Initialize();
@@ -28,7 +28,7 @@ public:
 	FPS(const FPS&);
 	~FPS();
 
-	static FPS* GetInstance();
+	static shared_ptr<FPS> Get();
 
 public:
 
@@ -37,4 +37,6 @@ public:
 	float GetDeltaTime();
 	float GetTime();
 };
+
+#define GFPS FPS::Get()
 #endif // !_FPS_CLASS_H

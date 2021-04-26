@@ -1,4 +1,5 @@
 #include "DirectxCore.h"
+#include "../WindowInfo.h"
 
 DirectxCore::DirectxCore():
 	md3dDevice(nullptr),
@@ -40,7 +41,7 @@ shared_ptr<DirectxCore> DirectxCore::Get()
 }
 
 
-bool DirectxCore::Init(int ScreenWidth, int ScreenHeight, bool vsync, HWND hwnd, bool fullscreen, float ScreenDepth, float ScreenNear)
+bool DirectxCore::Init(bool vsync, bool fullscreen, float ScreenDepth, float ScreenNear)
 {
 	
 	//--------------------------------------------------------------
@@ -81,9 +82,9 @@ bool DirectxCore::Init(int ScreenWidth, int ScreenHeight, bool vsync, HWND hwnd,
 	//当一个模式匹配,存储监视器刷新速度的分子分母??
 	for (unsigned int i = 0; i<numModes; i++)
 	{
-		if (displayModeList[i].Width == (unsigned int)ScreenWidth)
+		if (displayModeList[i].Width == (unsigned int)GScreenWidth)
 		{
-			if (displayModeList[i].Height == (unsigned int)ScreenHeight)
+			if (displayModeList[i].Height == (unsigned int)GScreenHeight)
 			{
 				numerator = displayModeList[i].RefreshRate.Numerator;
 				denominator = displayModeList[i].RefreshRate.Denominator;
@@ -117,8 +118,8 @@ bool DirectxCore::Init(int ScreenWidth, int ScreenHeight, bool vsync, HWND hwnd,
 	DXGI_SWAP_CHAIN_DESC sd;
 	ZeroMemory(&sd, sizeof(sd));
 
-	sd.BufferDesc.Width = ScreenWidth;
-	sd.BufferDesc.Height = ScreenHeight;
+	sd.BufferDesc.Width = GScreenWidth;
+	sd.BufferDesc.Height = GScreenHeight;
 	sd.BufferDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
 
 	if (mVsyncEnable) //限不限帧
@@ -147,7 +148,7 @@ bool DirectxCore::Init(int ScreenWidth, int ScreenHeight, bool vsync, HWND hwnd,
 	}
 	sd.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
 	sd.BufferCount = 1;  //背后缓存数量
-	sd.OutputWindow = hwnd; //交换链所属的窗口
+	sd.OutputWindow = GHwnd; //交换链所属的窗口
 	sd.SwapEffect = DXGI_SWAP_EFFECT_DISCARD;
 	sd.Flags = 0;
 
@@ -204,8 +205,8 @@ bool DirectxCore::Init(int ScreenWidth, int ScreenHeight, bool vsync, HWND hwnd,
 	//--------------------------------------------------------------
 	D3D11_TEXTURE2D_DESC depthStencilDesc;
 	ZeroMemory(&depthStencilDesc, sizeof(depthStencilDesc));
-	depthStencilDesc.Width = ScreenWidth;
-	depthStencilDesc.Height = ScreenHeight;
+	depthStencilDesc.Width = GScreenWidth;
+	depthStencilDesc.Height = GScreenHeight;
 	depthStencilDesc.MipLevels = 1;
 	depthStencilDesc.ArraySize = 1;
 	depthStencilDesc.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
@@ -273,8 +274,8 @@ bool DirectxCore::Init(int ScreenWidth, int ScreenHeight, bool vsync, HWND hwnd,
 	//-------------------------------------------------------------
 	//创建并设定视口
 	//-------------------------------------------------------------
-	mViewport.Width = static_cast<float>(ScreenWidth);
-	mViewport.Height = static_cast<float>(ScreenHeight);
+	mViewport.Width = static_cast<float>(GScreenWidth);
+	mViewport.Height = static_cast<float>(GScreenHeight);
 	mViewport.MinDepth = 0.0f;
 	mViewport.MaxDepth = 1.0f;
 	mViewport.TopLeftX = 0.0f;
@@ -522,15 +523,12 @@ void DirectxCore::EndScene()
 	}
 }
 
-
-
 void DirectxCore::GetVideoCardInfo(char* cardName, int& memory)
 {
 	strcpy_s(cardName, 128, mVideoCardDescription);
 	memory = mVideoCardMemory;
 	return;
 }
-
 
 void DirectxCore::TurnOffAlphaBlend()
 {
@@ -553,7 +551,6 @@ void DirectxCore::TurnOnAlphaBlend()
 	md3dImmediateContext->OMSetBlendState(md3dEnableBlendState,blendFactor,1);
 }
 
-
 void DirectxCore::TurnOffZBuffer()
 {
 	md3dImmediateContext->OMSetDepthStencilState(md3dDisableDepthStencilState, 1);
@@ -563,7 +560,6 @@ void DirectxCore::SetBackBufferRender()
 {
 	md3dImmediateContext->OMSetRenderTargets(1, &md3dRenderTargetView, md3dDepthStencilView);
 }
-
 
 void DirectxCore::SetDefualtViewPort()
 {
@@ -623,7 +619,6 @@ void DirectxCore::TurnOnCullFront()
 	md3dImmediateContext->RSSetState(md3dCullFrontRS);
 }
 
-
 //恢复默认的
 void DirectxCore::RecoverDefaultDSS()
 {
@@ -671,6 +666,4 @@ void DirectxCore::TurnOnRenderSkyBoxDSS()
 	md3dImmediateContext->OMSetDepthStencilState(renderSkyBoxDSS, 0);
 }
 
-
 shared_ptr<DirectxCore> DirectxCore::m_pDirectxCore = nullptr;
-

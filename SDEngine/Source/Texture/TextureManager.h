@@ -18,7 +18,6 @@ public:
 	~TextureManager();
 
 public:
-	static shared_ptr<TextureManager> Get();
 	bool Init();
 	void Release();
 
@@ -33,6 +32,7 @@ private:
 
 public:
 	ID3D11ShaderResourceView* LoadGetSRV(string fileName);
+	static shared_ptr<TextureManager> Get();
 };
 
 #define GTextureManager TextureManager::Get()

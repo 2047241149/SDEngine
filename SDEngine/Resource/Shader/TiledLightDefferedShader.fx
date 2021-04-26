@@ -123,7 +123,7 @@ void CS(
 
 	GroupMemoryBarrierWithGroupSync();
 
-	//(2)计算每个Tiled的世界位置的MaxZ和MinZ
+	//(2)计算每个Tiled世界位置的MaxZ和MinZ
 	float depth = DepthTex[dispatchThreadId.xy].r;
 	float viewZ = DepthBufferConvertToLinear(depth);
 	uint depthInt = asuint(viewZ);
