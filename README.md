@@ -14,10 +14,11 @@
 						SSR(屏幕空间反射)
 ![image](https://github.com/2047241149/SDEngine/blob/master/SDEngine/DefferedShading_SSR.png)
 
-						大量点光源光照剔除(TiledDefferedLightCull)
+						TiledDefferedLightCull
 ![image](https://github.com/2047241149/SDEngine/blob/master/SDEngine/TiledLightShaing.png)
 
-
+						ClusterDefferedLightCull
+![image](https://github.com/2047241149/SDEngine/blob/master/SDEngine/ClusterDefferedShaing.png)					
                					PBR效果
 ![image](https://github.com/2047241149/SDEngine/blob/master/SDEngine/DefferedShading_Pbr1.png)
 ![image](https://github.com/2047241149/SDEngine/blob/master/SDEngine/DefferedShading_Pbr2.png)
