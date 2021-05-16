@@ -873,7 +873,7 @@ bool ComputeShader::UpdateRWStructBuffer()
 	for (auto cbIterator = mapShaderRWStructBuffer.begin(); cbIterator != mapShaderRWStructBuffer.end(); ++cbIterator)
 	{
 		shared_ptr<ShaderRWStructBuffer> ssrwb = cbIterator->second;
-		if (nullptr == ssrwb->buffer && nullptr == ssrwb->uav && nullptr == ssrwb->srv)
+		if (nullptr == ssrwb->uav)
 		{
 			if (ssrwb->size != 0
 				&& ssrwb->structNum != 0)

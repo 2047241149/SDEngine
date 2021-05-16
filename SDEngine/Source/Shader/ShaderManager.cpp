@@ -108,10 +108,10 @@ bool ShaderManager::Init()
 	clusterLightCullCS = shared_ptr<ComputeShader>(new ComputeShader(L"Resource/Shader/ClusterLightCull.fx"));
 	
 	clusterDefferedLightShader = shared_ptr<VertexPixelShader>(new VertexPixelShader(L"Resource/Shader/ClusterDefferedLightPixelShader.fx", L"Resource/Shader/ClusterDefferedLightPixelShader.fx"));
-	
-	clearClusterDataCS = shared_ptr<ComputeShader>(new ComputeShader(L"Resource/Shader/ClearClusterGlobalData.fx"));
 
 	clusterDefferedLightCS = shared_ptr<ComputeShader>(new ComputeShader(L"Resource/Shader/ClusterLightDefferedShader.fx"));
+	
+	maskUnvalidClusterCs = shared_ptr<ComputeShader>(new ComputeShader(L"Resource/Shader/MaskUnvalidClusterCs.fx"));
 	return true;
 }
 

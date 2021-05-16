@@ -18,7 +18,7 @@ class RenderCubeMap;
 class IrradianceCubeMap;
 class PrefliterCubeMap;
 class RWRenderTexture;
-class SceneManager;;
+class SceneManager;
 
 #include "SceneRender.h"
 #include "Common/DirectxCore.h"
@@ -98,6 +98,7 @@ private:
 	void RenderDirLightPass();
 	void RenderShadowMapPass();
 	void RenderSSR();
+	void RenderCullUnvalidClusterPass();
 	void RenderClusterLightCullPass();
 	void ClearRwStrcutData();
 

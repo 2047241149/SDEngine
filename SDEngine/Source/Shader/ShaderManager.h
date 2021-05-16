@@ -40,10 +40,9 @@ public:
 	shared_ptr<ComputeShader> tiledLightShader;
 	shared_ptr<ComputeShader> buildClusterCS;
 	shared_ptr<ComputeShader> clusterLightCullCS;
-	shared_ptr<ComputeShader> clearClusterDataCS;
 	shared_ptr<ComputeShader> clusterDefferedLightCS;
+	shared_ptr<ComputeShader> maskUnvalidClusterCs;
 	shared_ptr<VertexPixelShader> clusterDefferedLightShader;
-
 
 private:
 	static shared_ptr<ShaderManager> single;

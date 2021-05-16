@@ -22,6 +22,7 @@
 static const int CLUTER_SIZE_X = 16;
 static const int CLUTER_SIZE_Y = 12;
 static const int CLUTER_SIZE_Z = 24;
+static const int CLUTER_SIZE_NUM = CLUTER_SIZE_X * CLUTER_SIZE_Y * CLUTER_SIZE_Z;
 
 ClusterDefferedSceneRender::ClusterDefferedSceneRender()
 {
@@ -195,8 +196,8 @@ void ClusterDefferedSceneRender::RenderGeometryPass()
 
 void ClusterDefferedSceneRender::RenderLightingPass()
 {
-	ClearRwStrcutData();
 	RenderClusterLightCullPass();
+	RenderCullUnvalidClusterPass();
 
 	g_RenderMask->BeginEvent(L"ClusterPointLightPassCs");
 	if (bClusterUseCs)
@@ -458,8 +459,8 @@ void  ClusterDefferedSceneRender::RenderSSR()
 
 void ClusterDefferedSceneRender::ClearRwStrcutData()
 {
-	GShaderManager->clearClusterDataCS->SetRWStructBufferInData("globalIndexCount", nullptr, 1);
-	GShaderManager->clearClusterDataCS->Dispatch(1, 1, 1);
+	//GShaderManager->clearClusterDataCS->SetRWStructBufferInData("globalIndexCount", nullptr, 1);
+	//GShaderManager->clearClusterDataCS->Dispatch(1, 1, 1);
 
 	/*ID3D11Buffer* debugbuf = nullptr;
 	ID3D11Buffer* resultBuffer = GShaderManager->clearClusterDataCS->GetBufferOfUav("globalIndexCount");
@@ -503,16 +504,24 @@ void ClusterDefferedSceneRender::RenderClusterLightCullPass()
 		return;
 
 	ID3D11UnorderedAccessView* lightGridListUav = GShaderManager->buildClusterCS->GetUav("ClusterList");
-	ID3D11UnorderedAccessView* globalIndexCountUav = GShaderManager->clearClusterDataCS->GetUav("globalIndexCount");
-
+	ID3D11UnorderedAccessView* ClusterActiveListUav = GShaderManager->maskUnvalidClusterCs->GetUav("ClusterActiveList");
 	GShaderManager->clusterLightCullCS->SetStructBuffer("PointLights", pointLights.data(), pointLights.size());
 	GShaderManager->clusterLightCullCS->SetFloat("lightCount", pointLights.size());
 	GShaderManager->clusterLightCullCS->SetFloat("ScreenWidth", GCamera->mScreenWidth);
 	GShaderManager->clusterLightCullCS->SetFloat("ScreenHeight", GCamera->mScreenHeight);
 	GShaderManager->clusterLightCullCS->SetRWStructBuffer("ClusterList", lightGridListUav);
-	GShaderManager->clusterLightCullCS->SetRWStructBufferInData("LightGridList", nullptr, CLUTER_SIZE_X * CLUTER_SIZE_Y * CLUTER_SIZE_Z);
+	GShaderManager->clusterLightCullCS->SetRWStructBuffer("ClusterActiveList", ClusterActiveListUav);
+	GShaderManager->clusterLightCullCS->SetRWStructBufferInData("LightGridList", nullptr, CLUTER_SIZE_NUM);
 	GShaderManager->clusterLightCullCS->SetRWStructBufferInData("GlobalLightIndexList", nullptr, 2097152);
-	GShaderManager->clusterLightCullCS->SetRWStructBuffer("globalIndexCount", globalIndexCountUav);
+
+	UINT clearData[4] = {0, 0, 0, 0};
+	GShaderManager->clusterLightCullCS->SetRWStructBufferInData("globalIndexCount", clearData, 1);
+	ID3D11UnorderedAccessView* globalIndexCountUav = GShaderManager->clusterLightCullCS->GetUav("globalIndexCount");
+	if (globalIndexCountUav)
+	{
+		g_pDeviceContext->ClearUnorderedAccessViewUint(globalIndexCountUav, clearData);
+	}
+
 	GShaderManager->clusterLightCullCS->SetMatrix("View", GCamera->GetViewMatrix());
 	GShaderManager->clusterLightCullCS->SetMatrix("ProjInv", FMath::GetInvense(GCamera->GetProjectionMatrix()));
 	GShaderManager->clusterLightCullCS->Dispatch(1, 1, CLUTER_SIZE_Z / 2);
@@ -565,6 +574,7 @@ void ClusterDefferedSceneRender::RenderClusterPointLightPassCs()
 
 	ID3D11UnorderedAccessView* LightGridListUav = GShaderManager->clusterLightCullCS->GetUav("LightGridList");
 	ID3D11UnorderedAccessView* GlobalLightIndexListUav = GShaderManager->clusterLightCullCS->GetUav("GlobalLightIndexList");
+	
 	GShaderManager->clusterDefferedLightCS->SetTexture("DepthTex", mGeometryBuffer->GetGBufferSRV(GBufferType::Depth));
 	GShaderManager->clusterDefferedLightCS->SetTexture("WorldPosTex", mGeometryBuffer->GetGBufferSRV(GBufferType::Pos));
 	GShaderManager->clusterDefferedLightCS->SetTexture("WorldNormalTex", mGeometryBuffer->GetGBufferSRV(GBufferType::Normal));
@@ -598,7 +608,6 @@ void ClusterDefferedSceneRender::RenderDirLightPass()
 	shaderResourceView[3] = mGrayShadowMap->GetSRV();
 	shaderResourceView[4] = ssaoManager->GetSsaoSRV();
 	shaderResourceView[5] = mGeometryBuffer->GetGBufferSRV(GBufferType::Diffuse);
-
 	GDirectxCore->TurnOffZBuffer();
 
 	//TODO: 只存在一次IradianceMap渲染?
@@ -745,4 +754,18 @@ void ClusterDefferedSceneRender::PreBuildCluster()
 	GShaderManager->buildClusterCS->SetMatrix("View", GCamera->GetViewMatrix());
 	GShaderManager->buildClusterCS->SetMatrix("ProjInv", FMath::GetInvense(GCamera->GetProjectionMatrix()));
 	GShaderManager->buildClusterCS->Dispatch(CLUTER_SIZE_X, CLUTER_SIZE_Y, CLUTER_SIZE_Z);
+}
+
+void ClusterDefferedSceneRender::RenderCullUnvalidClusterPass()
+{
+	GShaderManager->maskUnvalidClusterCs->SetTexture("DepthTex", mGeometryBuffer->GetGBufferSRV(GBufferType::Depth));
+	GShaderManager->maskUnvalidClusterCs->SetTextureSampler("clampLinearSample", GTextureSamplerBilinearClamp);
+	GShaderManager->maskUnvalidClusterCs->SetRWStructBufferInData("ClusterActiveList", nullptr, CLUTER_SIZE_NUM);
+	GShaderManager->maskUnvalidClusterCs->SetFloat4("tileSizes", tileSizes);
+	GShaderManager->maskUnvalidClusterCs->SetFloat2("cluserFactor", clusterFactor);
+	GShaderManager->maskUnvalidClusterCs->SetFloat("farPlane", GCamera->mFarPlane);
+	GShaderManager->maskUnvalidClusterCs->SetFloat("nearPlane", GCamera->mNearPlane);
+	GShaderManager->maskUnvalidClusterCs->SetFloat("ScreenWidth", GCamera->mScreenWidth);
+	GShaderManager->maskUnvalidClusterCs->SetFloat("ScreenHeight", GCamera->mScreenHeight);
+	GShaderManager->maskUnvalidClusterCs->Dispatch(100, 100, 1);
 }
