@@ -43,6 +43,7 @@ RWStructuredBuffer<Cluter> ClusterList : register(u0);
 RWStructuredBuffer<LightGrid> LightGridList : register(u1);
 RWStructuredBuffer<float> GlobalLightIndexList : register(u2);
 RWStructuredBuffer<uint> globalIndexCount: register(u3);
+RWStructuredBuffer<float> ClusterActiveList: register(u4);
 //groupshared PointLight sharedLights[GROUD_THREAD_TOTAL_NUM];
 
 float GetSqdisPointAABB(float3 pos, uint cluterIndex)
@@ -93,6 +94,14 @@ void CS(
 	uint passCount = (lightCountInt + threadCount - 1) / threadCount;
 	uint clusterIndex = groupIndex + threadCount * groupId.z;
 	uint visibleLightCount = 0;
+
+	//Unvalid Cluster
+	if (ClusterActiveList[clusterIndex] == 0.0)
+	{
+		LightGridList[clusterIndex].offset = (float)globalIndexCount[0];
+		LightGridList[clusterIndex].count = 0.0;
+		return;
+	}
 
 	//one cluster max light num <= GROUD_THREAD_TOTAL_NUM
 	uint visibleLightIndexs[GROUD_THREAD_TOTAL_NUM];

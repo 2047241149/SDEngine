@@ -45,7 +45,6 @@ float DepthBufferConvertToLinear(float depth)
 	return (nearPlane*farPlane * a) / (depth + farPlane * a);
 };
 
-
 Texture2D<float4> DepthTex:register(t0);
 Texture2D<float4> WorldPosTex:register(t1);
 Texture2D<float4> WorldNormalTex:register(t2);

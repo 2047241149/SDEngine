@@ -411,5 +411,7 @@
     <None Include="Resource\Shader\ClearClusterGlobalData.fx" />
     <None Include="Resource\Shader\ClusterLightDefferedShader.fx" />
     <None Include="Resource\Shader\ClusterDefferedLightPixelShader.fx" />
+    <None Include="Resource\Shader\CullUnvalidClusterCs.fx" />
+    <None Include="Resource\Shader\MaskUnvalidClusterCs.fx" />
   </ItemGroup>
 </Project>
