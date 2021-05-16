@@ -125,6 +125,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Source\ClusterDefferedSceneRender.cpp" />
     <ClCompile Include="Source\WindowInfo.cpp" />
     <ClCompile Include="Source\GameObject\CubeCamera.cpp" />
     <ClCompile Include="Source\IrradianceCubeMap.cpp" />
@@ -182,6 +183,7 @@
     <ClCompile Include="Source\源.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Source\ClusterDefferedSceneRender.h" />
     <ClInclude Include="Source\WindowInfo.h" />
     <ClInclude Include="Source\GameObject\CubeCamera.h" />
     <ClInclude Include="Source\IrradianceCubeMap.h" />
@@ -404,6 +406,31 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resource\Shader\TiledLightDefferedShader.fx">
+      <FileType>Document</FileType>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resource\Shader\BuildClusterCS.fx">
+      <FileType>Document</FileType>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resource\Shader\ClusterLightCull.fx">
+      <FileType>Document</FileType>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resource\Shader\ClusterDefferedLightPixelShader.fx">
+      <FileType>Document</FileType>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resource\Shader\ClearClusterGlobalData.fx">
+      <FileType>Document</FileType>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resource\Shader\ClusterLightDefferedShader.fx">
       <FileType>Document</FileType>
     </None>
   </ItemGroup>

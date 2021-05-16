@@ -57,11 +57,24 @@ struct ShaderStructBuffer
 	int size;
 	int registerIndex;
 	string name;
-	ID3D11Buffer* buffer;
 	void* data;
 	bool bNeedUpdated;
 	int structNum;
+	ID3D11Buffer* buffer;
 	ID3D11ShaderResourceView* srv;
+};
+
+struct ShaderRWStructBuffer
+{
+	int size;
+	int registerIndex;
+	string name;
+	void* data;
+	bool bNeedUpdated;
+	int structNum;
+	ID3D11Buffer* buffer;
+	ID3D11ShaderResourceView* srv;
+	ID3D11UnorderedAccessView* uav;
 };
 
 //TODO:部分代码重复,待重构
@@ -81,20 +94,33 @@ public:
 	virtual void Apply() = 0;
 	bool SetMatrix(const string& variableName, const CXMMATRIX& matrix);
 	bool SetMatrixArrayElement(const string& variableName, const CXMMATRIX& matrix, int index);
+
+	//float
 	bool SetFloat(const string& variableName, float value);
 	bool SetFloat2(const string& variableName, XMFLOAT2 value);
 	bool SetFloat3(const string& variableName, XMFLOAT3 value);
 	bool SetFloat3ArrayElement(const string& variableName, XMFLOAT3 value, int index);
 	bool SetFloat4(const string& variableName, XMFLOAT4 value);
+
+	//uint
+	bool SetUint4(const string& variableName, UINT8 value[4]);
+	void SetRWStructBufferInData(const string& bufferName, void* data, int num);
+	bool SetRWStructBuffer(const string& bufferName, ID3D11UnorderedAccessView* uav);
 	virtual bool SetTexture(const string& variableName, ID3D11ShaderResourceView* texture) = 0;
 	virtual bool SetTextureSampler(const string& variableName, ID3D11SamplerState* sampler) = 0;
+	ID3D11ShaderResourceView* GetSrvOfUav(const string& bufferName);
+	ID3D11UnorderedAccessView* GetUav(const string& bufferName);
 
 protected:
 	bool ReflectShaderConstantBuffer(ID3D11ShaderReflection* reflection);
 	bool ReflectShaderTexture(ID3D11ShaderReflection* shaderReflection);
 	bool ReflectShaderSampler(ID3D11ShaderReflection* shaderReflection);
+	bool ReflectShaderRWStructBuffer(ID3D11ShaderReflection* reflection);
 	bool CreateConstantBuffer();
+
+	// TODO: refactor UpdateConstantBuffer and UpdateRWStructBuffer, too much reappearing code
 	virtual bool UpdateConstantBuffer() = 0;
+	virtual bool UpdateRWStructBuffer() = 0;
 	virtual void SetShaderParam() = 0;
 
 protected:
@@ -102,6 +128,9 @@ protected:
 	map<string, shared_ptr<ShaderVariable>> mapShaderVariable;
 	map<string, shared_ptr<ShaderTexture>> mapShaderTexture;
 	map<string, shared_ptr<ShaderSampler>> mapShaderSampler;
+
+	//RWStructBuffer exit in PixelShader And ComputeShader
+	map<string, shared_ptr<ShaderRWStructBuffer>> mapShaderRWStructBuffer;
 };
 
 class VertexPixelShader : public Shader
@@ -123,6 +152,7 @@ private:
 	virtual void SetShaderParam() override;
 	bool ReflectInputLayout(ID3D11ShaderReflection* vertexShaderReflection, ID3D10Blob* vertexShaderBlob);
 	virtual bool UpdateConstantBuffer() override;
+	virtual bool UpdateRWStructBuffer() override;
 
 private:
 	ID3D11VertexShader* vertexShader;
@@ -138,20 +168,22 @@ public:
 	~ComputeShader();
 
 public:
-	virtual void Apply() override;
 	virtual bool SetTexture(const string& variableName, ID3D11ShaderResourceView* texture) override;
 	bool SetRWTexture(const string& variableName, ID3D11UnorderedAccessView* texture);
 	virtual bool SetTextureSampler(const string& variableName, ID3D11SamplerState* sampler) override;
 	void SetStructBuffer(const string& bufferName, void* data, int num);
 	void Dispatch(UINT ThreadGroupCountX, UINT ThreadGroupCountY, UINT ThreadGroupCountZ);
+	ID3D11Buffer* GetBufferOfUav(const string& variableName);
 
 private:
 	bool ReflectShaderStructBuffer(ID3D11ShaderReflection* reflection);
 	bool ReflectShaderUAVTexture(ID3D11ShaderReflection* reflection);
 	virtual bool UpdateConstantBuffer() override;
+	virtual bool UpdateRWStructBuffer() override;
 	bool UpdateSutrctBuffer();
 	void SetShaderParam();
 	bool InitShader(WCHAR* csFilenPath);
+	virtual void Apply() override;
 
 private:
 	ID3D11ComputeShader* computeShader;

@@ -1,5 +1,5 @@
 ﻿#include "Shader.h"
-
+#include<algorithm>
 
 const int CONSTANT_BUFFER_SIZE = 16;
 const int SHADER_FLOAT_SIZE = 4;
@@ -219,6 +219,21 @@ bool Shader::SetFloat4(const string& variableName, XMFLOAT4 value)
 	return true;
 }
 
+bool Shader::SetUint4(const string& variableName, UINT8 value[4])
+{
+	if (mapShaderVariable.find(variableName) != mapShaderVariable.end())
+	{
+		shared_ptr<ShaderVariable> shaderVariable = mapShaderVariable[variableName];
+		if (ShaderVariableType::SHADER_FLOAT4 == shaderVariable->variableType && sizeof(XMFLOAT4) == shaderVariable->size)
+		{
+			memcpy(shaderVariable->variablePre, shaderVariable->variableCurrent, shaderVariable->size);
+			memcpy(shaderVariable->variableCurrent, (void*)&value, shaderVariable->size);
+		}
+	}
+
+	return true;
+}
+
 bool Shader::ReflectShaderTexture(ID3D11ShaderReflection* shaderReflection)
 {
 	D3D11_SHADER_DESC shaderDesc;
@@ -263,6 +278,35 @@ bool Shader::ReflectShaderSampler(ID3D11ShaderReflection* shaderReflection)
 	return true;
 }
 
+bool Shader::ReflectShaderRWStructBuffer(ID3D11ShaderReflection* reflection)
+{
+	D3D11_SHADER_DESC shaderDesc;
+	HR(reflection->GetDesc(&shaderDesc));
+
+	for (int index = 0; index < (int)shaderDesc.BoundResources; ++index)
+	{
+		D3D11_SHADER_INPUT_BIND_DESC sibd;
+		reflection->GetResourceBindingDesc(index, &sibd);
+		if (sibd.Type == D3D_SHADER_INPUT_TYPE::D3D_SIT_UAV_RWSTRUCTURED
+			&& mapShaderRWStructBuffer.find(sibd.Name) == mapShaderRWStructBuffer.end())
+		{
+			shared_ptr<ShaderRWStructBuffer> ssrwb = shared_ptr<ShaderRWStructBuffer>(new ShaderRWStructBuffer());
+			ssrwb->bNeedUpdated = false;
+			ssrwb->name = sibd.Name;
+			ssrwb->registerIndex = sibd.BindPoint;
+			ssrwb->size = sibd.NumSamples;
+			ssrwb->structNum = 0;
+			ssrwb->buffer = nullptr;
+			ssrwb->data = nullptr;
+			ssrwb->srv = nullptr;
+			ssrwb->uav = nullptr;
+			mapShaderRWStructBuffer[ssrwb->name] = ssrwb;
+		}
+	}
+
+	return true;
+}
+
 bool Shader::SetMatrixArrayElement(const string& variableName, const CXMMATRIX& matrix, int index)
 {
 	if (mapShaderVariable.find(variableName) != mapShaderVariable.end())
@@ -286,6 +330,50 @@ bool Shader::SetFloat3ArrayElement(const string& variableName, XMFLOAT3 value, i
 	{
 		shared_ptr<ShaderVariable> shaderVariable = mapShaderVariable[variableName];
 		memcpy((unsigned char*)shaderVariable->variableCurrent + index * sizeof(XMFLOAT4), (void*)&value, sizeof(XMFLOAT3));
+	}
+
+	return true;
+}
+
+
+void Shader::SetRWStructBufferInData(const string& bufferName, void* data, int num)
+{
+	if (mapShaderRWStructBuffer.find(bufferName) != mapShaderRWStructBuffer.end())
+	{
+		shared_ptr<ShaderRWStructBuffer> ssb = mapShaderRWStructBuffer[bufferName];
+		ssb->data = data;
+		ssb->structNum = num;
+	}
+}
+
+ID3D11ShaderResourceView* Shader::GetSrvOfUav(const string& bufferName)
+{
+	if (mapShaderRWStructBuffer.find(bufferName) != mapShaderRWStructBuffer.end())
+	{
+		shared_ptr<ShaderRWStructBuffer> ssrwb = mapShaderRWStructBuffer[bufferName];
+		return ssrwb->srv;
+	}
+
+	return nullptr;
+}
+
+ID3D11UnorderedAccessView* Shader::GetUav(const string& bufferName)
+{
+	if (mapShaderRWStructBuffer.find(bufferName) != mapShaderRWStructBuffer.end())
+	{
+		shared_ptr<ShaderRWStructBuffer> ssrwb = mapShaderRWStructBuffer[bufferName];
+		return ssrwb->uav;
+	}
+
+	return nullptr;
+}
+
+bool Shader::SetRWStructBuffer(const string& bufferName, ID3D11UnorderedAccessView* uav)
+{
+	if (mapShaderRWStructBuffer.find(bufferName) != mapShaderRWStructBuffer.end())
+	{
+		shared_ptr<ShaderRWStructBuffer> ssb = mapShaderRWStructBuffer[bufferName];
+		ssb->uav = uav;
 	}
 
 	return true;
@@ -394,6 +482,7 @@ bool VertexPixelShader::InitShader(WCHAR* VSFileName, WCHAR* PSFileName)
 	ReflectShaderTexture(vsShaderReflection);
 	ReflectShaderTexture(psShaderReflection);
 	ReflectShaderSampler(psShaderReflection);
+	ReflectShaderRWStructBuffer(psShaderReflection);
 	CreateConstantBuffer();
 
 	//释放Blob
@@ -405,6 +494,7 @@ bool VertexPixelShader::InitShader(WCHAR* VSFileName, WCHAR* PSFileName)
 void VertexPixelShader::Apply()
 {
 	UpdateConstantBuffer();
+	UpdateRWStructBuffer();
 	SetShaderParam();
 }
 
@@ -553,11 +643,84 @@ bool VertexPixelShader::UpdateConstantBuffer()
 				}
 			}
 		}
+
 		g_pDeviceContext->Unmap(shaderConstantBuffer->constantBuffer, 0);
 		g_pDeviceContext->VSSetConstantBuffers(shaderConstantBuffer->registerIndex, 1, &(shaderConstantBuffer->constantBuffer));
 		g_pDeviceContext->PSSetConstantBuffers(shaderConstantBuffer->registerIndex, 1, &(shaderConstantBuffer->constantBuffer));
 	}
 
+	return true;
+}
+
+bool VertexPixelShader::UpdateRWStructBuffer()
+{
+	struct UavParam
+	{
+		int registerIndex;
+		ID3D11UnorderedAccessView* uav;
+	};
+
+	struct CompareClass {
+		bool operator() (UavParam a, UavParam b) { return (a.registerIndex < b.registerIndex); }
+	} compareObject;
+
+
+	vector<UavParam> uavParamsArray;
+
+	for (auto cbIterator = mapShaderRWStructBuffer.begin(); cbIterator != mapShaderRWStructBuffer.end(); ++cbIterator)
+	{
+		shared_ptr<ShaderRWStructBuffer> ssrwb = cbIterator->second;
+		if (nullptr == ssrwb->buffer && nullptr == ssrwb->uav && nullptr == ssrwb->srv)
+		{
+			if (ssrwb->data != nullptr && ssrwb->size != 0
+				&& ssrwb->structNum != 0)
+			{
+				//create struct buffer
+				D3D11_BUFFER_DESC desc;
+				ZeroMemory(&desc, sizeof(desc));
+				desc.BindFlags = D3D11_BIND_UNORDERED_ACCESS | D3D11_BIND_SHADER_RESOURCE;
+				desc.ByteWidth = ssrwb->size * ssrwb->structNum;
+				desc.MiscFlags = D3D11_RESOURCE_MISC_BUFFER_STRUCTURED;
+				desc.StructureByteStride = ssrwb->size;
+				D3D11_SUBRESOURCE_DATA InitData;
+				InitData.pSysMem = ssrwb->data;
+				HR(g_pDevice->CreateBuffer(&desc, &InitData, &ssrwb->buffer));
+
+				//create srv
+				D3D11_SHADER_RESOURCE_VIEW_DESC srvDesc;
+				srvDesc.ViewDimension = D3D11_SRV_DIMENSION_BUFFEREX;
+				srvDesc.BufferEx.FirstElement = 0;
+				srvDesc.Format = DXGI_FORMAT_UNKNOWN;
+				srvDesc.BufferEx.NumElements = desc.ByteWidth / desc.StructureByteStride;
+				HR(g_pDevice->CreateShaderResourceView(ssrwb->buffer, &srvDesc, &ssrwb->srv));
+
+				//create rw struct buffer
+				D3D11_UNORDERED_ACCESS_VIEW_DESC uavDesc;
+				ZeroMemory(&uavDesc, sizeof(uavDesc));
+				uavDesc.ViewDimension = D3D11_UAV_DIMENSION_BUFFER;
+				uavDesc.Buffer.FirstElement = 0;
+				uavDesc.Format = DXGI_FORMAT_UNKNOWN;
+				uavDesc.Buffer.NumElements = desc.ByteWidth / desc.StructureByteStride;
+				g_pDevice->CreateUnorderedAccessView(ssrwb->buffer, &uavDesc, &ssrwb->uav);
+			}
+		}
+
+		uavParamsArray.push_back({ ssrwb->registerIndex, ssrwb->uav });
+	}
+
+	if (uavParamsArray.size() > 0)
+	{
+		sort(uavParamsArray.begin(), uavParamsArray.end(), compareObject);
+
+		vector<ID3D11UnorderedAccessView*> uavArray;
+		for (auto& It : uavParamsArray)
+		{
+			uavArray.push_back(It.uav);
+		}
+
+		g_pDeviceContext->OMSetRenderTargetsAndUnorderedAccessViews(D3D11_KEEP_RENDER_TARGETS_AND_DEPTH_STENCIL, nullptr, nullptr, uavParamsArray[0].registerIndex, uavArray.size(), uavArray.data(), nullptr);
+	}
+	
 	return true;
 }
 
@@ -617,6 +780,7 @@ void ComputeShader::Apply()
 {
 	UpdateConstantBuffer();
 	UpdateSutrctBuffer();
+	UpdateRWStructBuffer();
 	SetShaderParam();;
 }
 
@@ -658,6 +822,7 @@ bool ComputeShader::InitShader(WCHAR* csFilenPath)
 	ReflectShaderSampler(csShaderReflection);
 	ReflectShaderStructBuffer(csShaderReflection);
 	ReflectShaderUAVTexture(csShaderReflection);
+	ReflectShaderRWStructBuffer(csShaderReflection);
 	CreateConstantBuffer();
 
 	ReleaseCOM(csBlob);
@@ -698,6 +863,50 @@ bool ComputeShader::UpdateConstantBuffer()
 		}
 		g_pDeviceContext->Unmap(shaderConstantBuffer->constantBuffer, 0);
 		g_pDeviceContext->CSSetConstantBuffers(shaderConstantBuffer->registerIndex, 1, &(shaderConstantBuffer->constantBuffer));
+	}
+
+	return true;
+}
+
+bool ComputeShader::UpdateRWStructBuffer()
+{
+	for (auto cbIterator = mapShaderRWStructBuffer.begin(); cbIterator != mapShaderRWStructBuffer.end(); ++cbIterator)
+	{
+		shared_ptr<ShaderRWStructBuffer> ssrwb = cbIterator->second;
+		if (nullptr == ssrwb->buffer && nullptr == ssrwb->uav && nullptr == ssrwb->srv)
+		{
+			if (ssrwb->size != 0
+				&& ssrwb->structNum != 0)
+			{
+				//create struct buffer
+				D3D11_BUFFER_DESC desc;
+				ZeroMemory(&desc, sizeof(desc));
+				desc.BindFlags = D3D11_BIND_UNORDERED_ACCESS | D3D11_BIND_SHADER_RESOURCE;
+				desc.ByteWidth = ssrwb->size * ssrwb->structNum;
+				desc.MiscFlags = D3D11_RESOURCE_MISC_BUFFER_STRUCTURED;
+				desc.StructureByteStride = ssrwb->size;
+				HR(g_pDevice->CreateBuffer(&desc, nullptr, &ssrwb->buffer));
+
+				//create srv
+				D3D11_SHADER_RESOURCE_VIEW_DESC srvDesc;
+				srvDesc.ViewDimension = D3D11_SRV_DIMENSION_BUFFEREX;
+				srvDesc.BufferEx.FirstElement = 0;
+				srvDesc.Format = DXGI_FORMAT_UNKNOWN;
+				srvDesc.BufferEx.NumElements = desc.ByteWidth / desc.StructureByteStride;
+				HR(g_pDevice->CreateShaderResourceView(ssrwb->buffer, &srvDesc, &ssrwb->srv));
+
+				//create rw struct buffer
+				D3D11_UNORDERED_ACCESS_VIEW_DESC uavDesc;
+				ZeroMemory(&uavDesc, sizeof(uavDesc));
+				uavDesc.ViewDimension = D3D11_UAV_DIMENSION_BUFFER;
+				uavDesc.Buffer.FirstElement = 0;
+				uavDesc.Format = DXGI_FORMAT_UNKNOWN;
+				uavDesc.Buffer.NumElements = desc.ByteWidth / desc.StructureByteStride;
+				g_pDevice->CreateUnorderedAccessView(ssrwb->buffer, &uavDesc, &ssrwb->uav);
+			}
+		}
+
+		g_pDeviceContext->CSSetUnorderedAccessViews(ssrwb->registerIndex, 1, &ssrwb->uav, nullptr);
 	}
 
 	return true;
@@ -843,6 +1052,17 @@ bool ComputeShader::UpdateSutrctBuffer()
 	}
 
 	return true;
+}
+
+ID3D11Buffer* ComputeShader::GetBufferOfUav(const string& variableName)
+{
+	if (mapShaderRWStructBuffer.find(variableName) != mapShaderRWStructBuffer.end())
+	{
+		shared_ptr<ShaderRWStructBuffer> ssrwb = mapShaderRWStructBuffer[variableName];
+		return ssrwb->buffer;
+	}
+
+	return nullptr;
 }
 
 void ComputeShader::Dispatch(UINT ThreadGroupCountX, UINT ThreadGroupCountY, UINT ThreadGroupCountZ)

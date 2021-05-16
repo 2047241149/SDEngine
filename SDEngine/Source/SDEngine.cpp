@@ -3,7 +3,8 @@
 
 //全局变量
 static SDEngine* D3DAPP = NULL;
-
+static const int DEFAULT_WINDOW_WIDTH = 1024;
+static const int DEFAULT_WINDOW_HEIGHT = 768;
 
 //接受SystemClass类对象的全局回调函数
 LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
@@ -211,8 +212,8 @@ void SDEngine::InitWindow(int& ScrrenWidth, int &ScrrenHeight)
 	else
 	{
 		//如果窗口化,设定为1024*768分辨率
-		ScrrenWidth = 1024;
-		ScrrenHeight = 768;
+		ScrrenWidth = DEFAULT_WINDOW_WIDTH;
+		ScrrenHeight = DEFAULT_WINDOW_HEIGHT;
 
 		//窗口位于屏幕稍微的左上方
 		posX = (GetSystemMetrics(SM_CXSCREEN) - ScrrenWidth) / 2-200;

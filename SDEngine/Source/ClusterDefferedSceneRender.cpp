@@ -1,4 +1,4 @@
-#include "TiledDefferedSceneRender.h"
+#include "ClusterDefferedSceneRender.h"
 #include "SkyBox.h"
 #include "Texture/RenderTexture.h"
 #include "WindowInfo.h"
@@ -18,22 +18,26 @@
 #include "Texture/TextureManager.h"
 #include "SceneManager.h"
 
+// 1024/16 = 768/12, squrd tile
+static const int CLUTER_SIZE_X = 16;
+static const int CLUTER_SIZE_Y = 12;
+static const int CLUTER_SIZE_Z = 24;
 
-TiledDefferedSceneRender::TiledDefferedSceneRender()
+ClusterDefferedSceneRender::ClusterDefferedSceneRender()
 {
 	Init();
 }
 
-TiledDefferedSceneRender::~TiledDefferedSceneRender()
+ClusterDefferedSceneRender::~ClusterDefferedSceneRender()
 {
 }
 
-TiledDefferedSceneRender::TiledDefferedSceneRender(const TiledDefferedSceneRender&other)
+ClusterDefferedSceneRender::ClusterDefferedSceneRender(const ClusterDefferedSceneRender&other)
 {
 
 }
 
-bool TiledDefferedSceneRender::Init()
+bool ClusterDefferedSceneRender::Init()
 {
 	mSrcRT = shared_ptr<RenderTexture>(
 		new RenderTexture(GScreenWidth, GScreenHeight));
@@ -47,6 +51,8 @@ bool TiledDefferedSceneRender::Init()
 	mCascadeShadowsManager = shared_ptr<CascadedShadowsManager>(new CascadedShadowsManager(SHADOW_MAP_SIZE));
 
 	mGrayShadowMap = shared_ptr<RenderTexture>(new RenderTexture(GScreenWidth, GScreenHeight, TextureFormat::R32));
+
+	mLightBufferPointLight = shared_ptr<RenderTexture>(new RenderTexture(GScreenWidth, GScreenHeight, TextureFormat::R32G32B32A32));
 
 	mLightBuffer = shared_ptr<RenderTexture>(new RenderTexture(GScreenWidth, GScreenHeight, TextureFormat::R32G32B32A32));
 
@@ -68,28 +74,37 @@ bool TiledDefferedSceneRender::Init()
 	radianceCubeMap = shared_ptr<IrradianceCubeMap>(new IrradianceCubeMap(cubeMapResPath));
 
 	prefliterCubeMap = shared_ptr<PrefliterCubeMap>(new PrefliterCubeMap(cubeMapResPath, 512, 512));
-	mTiledLightRT = shared_ptr<RWRenderTexture>(new RWRenderTexture(GScreenWidth, GScreenHeight));
+	mClusterLightRT = shared_ptr<RWRenderTexture>(new RWRenderTexture(GScreenWidth, GScreenHeight));
+
+	tileSizes.x = CLUTER_SIZE_X;
+	tileSizes.y = CLUTER_SIZE_Y;
+	tileSizes.z = CLUTER_SIZE_Z;
+	tileSizes.w = (float)GWindowInfo->GetScreenWidth() / (float)CLUTER_SIZE_X;
+
+	clusterFactor.x = (float)CLUTER_SIZE_Z / FMath::Log2(GCamera->GetFarPlane() / GCamera->GetNearPlane());
+	clusterFactor.y = -((float)CLUTER_SIZE_Z *  FMath::Log2(GCamera->GetNearPlane()))/ FMath::Log2(GCamera->GetFarPlane() / GCamera->GetNearPlane());
 	return true;
 }
 
-void TiledDefferedSceneRender::PreRender()
+void ClusterDefferedSceneRender::PreRender()
 {
 	PreRenderDiffuseIrradiance();
 	PreRenderFiliterCubeMap();
 	PreRenderConvolutedBRDF();
+	PreBuildCluster();
 }
 
-void TiledDefferedSceneRender::Tick(float deltaTime)
+void ClusterDefferedSceneRender::Tick(float deltaTime)
 {
 	mCascadeShadowsManager->Update();
 }
 
-void TiledDefferedSceneRender::PreRenderDiffuseIrradiance()
+void ClusterDefferedSceneRender::PreRenderDiffuseIrradiance()
 {
 	radianceCubeMap->Render();
 }
 
-void TiledDefferedSceneRender::PreRenderConvolutedBRDF()
+void ClusterDefferedSceneRender::PreRenderConvolutedBRDF()
 {
 	mConvolutedBrdfRT->SetRenderTarget();
 	GDirectxCore->TurnOffZBuffer();
@@ -99,12 +114,12 @@ void TiledDefferedSceneRender::PreRenderConvolutedBRDF()
 	GDirectxCore->RecoverDefualtRS();
 }
 
-void TiledDefferedSceneRender::PreRenderFiliterCubeMap()
+void ClusterDefferedSceneRender::PreRenderFiliterCubeMap()
 {
 	prefliterCubeMap->Render();
 }
 
-void TiledDefferedSceneRender::Render()
+void ClusterDefferedSceneRender::Render()
 {
 	g_RenderMask->BeginEvent(L"BeginScene");
 	GDirectxCore->BeginScene(0.3f, 0.0f, 1.0f, 1.0f);
@@ -149,7 +164,7 @@ void TiledDefferedSceneRender::Render()
 	GDirectxCore->EndScene();
 }
 
-void TiledDefferedSceneRender::RenderGeometryPass()
+void ClusterDefferedSceneRender::RenderGeometryPass()
 {
 	mGeometryBuffer->SetRenderTarget(XMFLOAT3(0.0f, 0.0f, 0.5f));
 	vector<shared_ptr<GameObject>> vecGameObject = GGameObjectManager->m_vecGameObject;
@@ -178,15 +193,28 @@ void TiledDefferedSceneRender::RenderGeometryPass()
 }
 
 
-void TiledDefferedSceneRender::RenderLightingPass()
+void ClusterDefferedSceneRender::RenderLightingPass()
 {
-	RenderTiledLightPass();
+	ClearRwStrcutData();
+	RenderClusterLightCullPass();
+
+	g_RenderMask->BeginEvent(L"ClusterPointLightPassCs");
+	if (bClusterUseCs)
+	{
+		RenderClusterPointLightPassCs();
+	}
+	else
+	{
+		RenderClusterPointLightPassPs();
+	}
+
+	g_RenderMask->EndEvent();
 	RenderDirLightPass();
 	RenderFinalShadingPass();
 }
 
 
-void TiledDefferedSceneRender::RenderPostEffectPass()
+void ClusterDefferedSceneRender::RenderPostEffectPass()
 {
 	g_RenderMask->BeginEvent(L"FXAA");
 	GDirectxCore->SetBackBufferRender();
@@ -201,7 +229,7 @@ void TiledDefferedSceneRender::RenderPostEffectPass()
 	g_RenderMask->EndEvent();
 }
 
-void TiledDefferedSceneRender::RenderDebugWindow()
+void ClusterDefferedSceneRender::RenderDebugWindow()
 {
 	GDirectxCore->SetBackBufferRender();
 	GDirectxCore->SetDefualtViewPort();
@@ -264,7 +292,7 @@ void TiledDefferedSceneRender::RenderDebugWindow()
 
 	//TiledLight
 	GShaderManager->uiShader->SetTexture("ShaderTexture",
-		mTiledLightRT->GetSRV());
+		bClusterUseCs ? mClusterLightRT->GetSRV() : mLightBufferPointLight->GetSRV());
 	GShaderManager->uiShader->Apply();
 	mDebugWindow->Render(850, 600);
 
@@ -285,7 +313,7 @@ void TiledDefferedSceneRender::RenderDebugWindow()
 	GDirectxCore->TurnOnZBuffer();
 }
 
-void TiledDefferedSceneRender::RenderSSRPass()
+void ClusterDefferedSceneRender::RenderSSRPass()
 {
 	//mSSRRT->SetRenderTarget();
 	ID3D11RenderTargetView* backRTV = GDirectxCore->GetRTV();
@@ -328,7 +356,7 @@ void TiledDefferedSceneRender::RenderSSRPass()
 	GDirectxCore->TurnOffAlphaBlend();
 }
 
-void TiledDefferedSceneRender::RenderOpacity()
+void ClusterDefferedSceneRender::RenderOpacity()
 {
 	g_RenderMask->BeginEvent(L"RenderGeometryPass");
 	RenderGeometryPass();
@@ -348,7 +376,7 @@ void TiledDefferedSceneRender::RenderOpacity()
 }
 
 //绘制透明物体分为绘制透明
-void TiledDefferedSceneRender::RenderTransparency()
+void ClusterDefferedSceneRender::RenderTransparency()
 {
 	RenderGeneralTransparency();
 
@@ -357,7 +385,7 @@ void TiledDefferedSceneRender::RenderTransparency()
 #endif
 }
 
-void TiledDefferedSceneRender::RenderGeneralTransparency()
+void ClusterDefferedSceneRender::RenderGeneralTransparency()
 {
 	ID3D11RenderTargetView* backRTV = GDirectxCore->GetRTV();
 	ID3D11DepthStencilView* opacityDSV = mGeometryBuffer->GetDSV();
@@ -388,7 +416,7 @@ void TiledDefferedSceneRender::RenderGeneralTransparency()
 }
 
 
-void TiledDefferedSceneRender::RenderSceneBackDepthBuffer()
+void ClusterDefferedSceneRender::RenderSceneBackDepthBuffer()
 {
 	mBackDepthBufferRT->SetRenderTarget();
 	GDirectxCore->TurnOnCullFront();
@@ -408,7 +436,7 @@ void TiledDefferedSceneRender::RenderSceneBackDepthBuffer()
 
 }
 
-void TiledDefferedSceneRender::RenderSSRBufferPass()
+void ClusterDefferedSceneRender::RenderSSRBufferPass()
 {
 	ID3D11DepthStencilView* backDSV = mGeometryBuffer->GetDSV();
 	mSSRBuffer->SetRenderTarget(backDSV);
@@ -422,94 +450,145 @@ void TiledDefferedSceneRender::RenderSSRBufferPass()
 	GDirectxCore->SetBackBufferRender();
 }
 
-void  TiledDefferedSceneRender::RenderSSR()
+void  ClusterDefferedSceneRender::RenderSSR()
 {
 	RenderSSRBufferPass();
 	RenderSSRPass();
 }
 
-void TiledDefferedSceneRender::RenderTiledLightPass()
+void ClusterDefferedSceneRender::ClearRwStrcutData()
+{
+	GShaderManager->clearClusterDataCS->SetRWStructBufferInData("globalIndexCount", nullptr, 1);
+	GShaderManager->clearClusterDataCS->Dispatch(1, 1, 1);
+
+	/*ID3D11Buffer* debugbuf = nullptr;
+	ID3D11Buffer* resultBuffer = GShaderManager->clearClusterDataCS->GetBufferOfUav("globalIndexCount");
+	D3D11_BUFFER_DESC desc;
+	ZeroMemory(&desc, sizeof(desc));
+
+	resultBuffer->GetDesc(&desc);
+	desc.CPUAccessFlags = D3D11_CPU_ACCESS_READ;
+	desc.Usage = D3D11_USAGE_STAGING;
+	desc.BindFlags = 0;
+	desc.MiscFlags = 0;
+	if (FAILED(g_pDevice->CreateBuffer(&desc, nullptr, &debugbuf)))
+	{
+		return;
+	}
+
+	g_pDeviceContext->CopyResource(debugbuf, resultBuffer);
+	D3D11_MAPPED_SUBRESOURCE MappedResource;
+
+	UINT8* pData;
+	g_pDeviceContext->Map(debugbuf, 0, D3D11_MAP_READ, 0, &MappedResource);
+
+	pData = (UINT8*)MappedResource.pData;
+
+	UINT8 a = pData[0];
+
+	for (int index = 0; index < 1; ++index)
+	{
+		std::cout << "  test=  " << (int)pData[index] << "     "<< std::endl;
+
+	}
+
+	g_pDeviceContext->Unmap(debugbuf, 0);*/
+}
+
+void ClusterDefferedSceneRender::RenderClusterLightCullPass()
 {
 	vector<PointLightParams> pointLights;
 	GLightManager->GetPointLights(pointLights);
 	if (pointLights.size() <= 0)
 		return;
 
-	GShaderManager->tiledLightShader->SetTexture("DepthTex", mGeometryBuffer->GetGBufferSRV(GBufferType::Depth));
-	GShaderManager->tiledLightShader->SetTexture("WorldPosTex", mGeometryBuffer->GetGBufferSRV(GBufferType::Pos));
-	GShaderManager->tiledLightShader->SetTexture("WorldNormalTex", mGeometryBuffer->GetGBufferSRV(GBufferType::Normal));
-	GShaderManager->tiledLightShader->SetTexture("SpecularRoughMetalTex", mGeometryBuffer->GetGBufferSRV(GBufferType::SpecularRoughMetal));
-	GShaderManager->tiledLightShader->SetTexture("AlbedoTex", mGeometryBuffer->GetGBufferSRV(GBufferType::Diffuse));
-	GShaderManager->defferedPointLightShader->SetTextureSampler("clampLinearSample", GTextureSamplerBilinearClamp);
-	GShaderManager->tiledLightShader->SetStructBuffer("PointLights", pointLights.data(), pointLights.size());
-	GShaderManager->tiledLightShader->SetRWTexture("OutputTexture", mTiledLightRT->GetUAV());
-	GShaderManager->tiledLightShader->SetFloat("lightCount", pointLights.size());
-	GShaderManager->tiledLightShader->SetFloat("farPlane", GCamera->mFarPlane);
-	GShaderManager->tiledLightShader->SetFloat("nearPlane", GCamera->mNearPlane);
-	GShaderManager->tiledLightShader->SetFloat3("cameraPos", GCamera->GetPosition());
-	GShaderManager->tiledLightShader->SetFloat("ScreenWidth", GCamera->mScreenWidth);
-	GShaderManager->tiledLightShader->SetFloat("ScreenHeight", GCamera->mScreenHeight);
-	GShaderManager->tiledLightShader->SetFloat("bDebugLightCount", GSceneManager->bDebugLightCount ? 1.0 : 0.0);
-	GShaderManager->tiledLightShader->SetMatrix("View", GCamera->GetViewMatrix());
-	GShaderManager->tiledLightShader->SetMatrix("ProjInv", FMath::GetInvense(GCamera->GetProjectionMatrix()));
-	GShaderManager->tiledLightShader->Dispatch(100, 100, 1);
+	ID3D11UnorderedAccessView* lightGridListUav = GShaderManager->buildClusterCS->GetUav("ClusterList");
+	ID3D11UnorderedAccessView* globalIndexCountUav = GShaderManager->clearClusterDataCS->GetUav("globalIndexCount");
+
+	GShaderManager->clusterLightCullCS->SetStructBuffer("PointLights", pointLights.data(), pointLights.size());
+	GShaderManager->clusterLightCullCS->SetFloat("lightCount", pointLights.size());
+	GShaderManager->clusterLightCullCS->SetFloat("ScreenWidth", GCamera->mScreenWidth);
+	GShaderManager->clusterLightCullCS->SetFloat("ScreenHeight", GCamera->mScreenHeight);
+	GShaderManager->clusterLightCullCS->SetRWStructBuffer("ClusterList", lightGridListUav);
+	GShaderManager->clusterLightCullCS->SetRWStructBufferInData("LightGridList", nullptr, CLUTER_SIZE_X * CLUTER_SIZE_Y * CLUTER_SIZE_Z);
+	GShaderManager->clusterLightCullCS->SetRWStructBufferInData("GlobalLightIndexList", nullptr, 2097152);
+	GShaderManager->clusterLightCullCS->SetRWStructBuffer("globalIndexCount", globalIndexCountUav);
+	GShaderManager->clusterLightCullCS->SetMatrix("View", GCamera->GetViewMatrix());
+	GShaderManager->clusterLightCullCS->SetMatrix("ProjInv", FMath::GetInvense(GCamera->GetProjectionMatrix()));
+	GShaderManager->clusterLightCullCS->Dispatch(1, 1, CLUTER_SIZE_Z / 2);
 }
 
-void TiledDefferedSceneRender::RenderPointLightPass()
+void ClusterDefferedSceneRender::RenderClusterPointLightPassPs()
 {
-	ID3D11RenderTargetView* backRTV[1] = { nullptr };
-	ID3D11DepthStencilView* opacityDSV = mGeometryBuffer->GetDSV();
-	ID3D11RenderTargetView* pLightRTV = mLightBuffer->GetRenderTargetView();
+	vector<PointLightParams> pointLights;
+	GLightManager->GetPointLights(pointLights);
+	if (pointLights.size() <= 0)
+		return;
 
 	ID3D11ShaderResourceView* shaderResourceView[4];
 	shaderResourceView[0] = mGeometryBuffer->GetGBufferSRV(GBufferType::Pos);
 	shaderResourceView[1] = mGeometryBuffer->GetGBufferSRV(GBufferType::Normal);
 	shaderResourceView[2] = mGeometryBuffer->GetGBufferSRV(GBufferType::SpecularRoughMetal);
 	shaderResourceView[3] = mGeometryBuffer->GetGBufferSRV(GBufferType::Diffuse);
+	ID3D11UnorderedAccessView* LightGridListUav = GShaderManager->clusterLightCullCS->GetUav("LightGridList");
+	ID3D11UnorderedAccessView* GlobalLightIndexListUav = GShaderManager->clusterLightCullCS->GetUav("GlobalLightIndexList");
 
-	for (int index = 0; index < (int)GLightManager->m_vecPointLight.size(); ++index)
-	{
-		g_pDeviceContext->OMSetRenderTargets(1, backRTV, opacityDSV);
-		GDirectxCore->TurnOnMaskLightVolumeDSS();
-		GDirectxCore->TurnOffFaceCull();
-		shared_ptr<PointLight> pPoinntLight = GLightManager->m_vecPointLight[index];
-		GShaderManager->forwardPureColorShader->SetMatrix("World", pPoinntLight->GetWorldMatrix());
-		GShaderManager->forwardPureColorShader->SetMatrix("View", GCamera->GetViewMatrix());
-		GShaderManager->forwardPureColorShader->SetMatrix("Proj", GCamera->GetProjectionMatrix());
-		GShaderManager->forwardPureColorShader->SetMatrix("WorldInvTranspose", FMath::GetInvenseTranspose(pPoinntLight->GetWorldMatrix()));
-		GShaderManager->forwardPureColorShader->Apply();
-		//m_pPointVolume->RenderMesh();
-
-		g_pDeviceContext->OMSetRenderTargets(1, &pLightRTV, opacityDSV);
-		GDirectxCore->TurnOnLightBlend();
-		GDirectxCore->TurnOnRenderLightVolumeDSS();
-		shared_ptr<PointLight> pPointLight = GLightManager->m_vecPointLight[index];
-		XMFLOAT3 lightCol = pPointLight->GetLightColor();
-		XMFLOAT4 lightColor = XMFLOAT4(lightCol.x, lightCol.y, lightCol.z, pPointLight->GetLightIntensity());
-		GShaderManager->defferedPointLightShader->SetTexture("WorldPosTex", shaderResourceView[0]);
-		GShaderManager->defferedPointLightShader->SetTexture("WorldNormalTex", shaderResourceView[1]);
-		GShaderManager->defferedPointLightShader->SetTexture("SpecularRoughMetalTex", shaderResourceView[2]);
-		GShaderManager->defferedPointLightShader->SetTexture("AlbedoTex", shaderResourceView[3]);
-		GShaderManager->defferedPointLightShader->SetMatrix("World", pPointLight->GetWorldMatrix());
-		GShaderManager->defferedPointLightShader->SetMatrix("View", GCamera->GetViewMatrix());
-		GShaderManager->defferedPointLightShader->SetMatrix("Proj", GCamera->GetProjectionMatrix());
-		GShaderManager->defferedPointLightShader->SetFloat3("cameraPos", GCamera->GetPosition());
-		GShaderManager->defferedPointLightShader->SetFloat4("lightColor", lightColor);
-		GShaderManager->defferedPointLightShader->SetFloat3("lightPos", pPointLight->GetPosition());
-		GShaderManager->defferedPointLightShader->SetFloat("radius", pPointLight->GetRadius());
-		GShaderManager->defferedPointLightShader->SetFloat4("attenuation", pPointLight->GetLightAttenuation());
-		GShaderManager->defferedPointLightShader->SetTextureSampler("clampLinearSample", GTextureSamplerBilinearClamp);
-		GShaderManager->defferedPointLightShader->Apply();
-		//m_pPointVolume->RenderMesh();
-		GDirectxCore->TurnOffAlphaBlend();
-	}
-
-	GDirectxCore->RecoverDefualtRS();
-
+	mLightBufferPointLight->SetRenderTarget(0.0f, 0.0f, 0.0f, 0.0f);
+	GDirectxCore->TurnOffZBuffer();
+	GShaderManager->clusterDefferedLightShader->SetTexture("WorldPosTex", shaderResourceView[0]);
+	GShaderManager->clusterDefferedLightShader->SetTexture("WorldNormalTex", shaderResourceView[1]);
+	GShaderManager->clusterDefferedLightShader->SetTexture("SpecularRoughMetalTex", shaderResourceView[2]);
+	GShaderManager->clusterDefferedLightShader->SetTexture("AlbedoTex", shaderResourceView[3]);
+	GShaderManager->clusterDefferedLightShader->SetTexture("DepthTex", mGeometryBuffer->GetGBufferSRV(GBufferType::Depth));
+	GShaderManager->clusterDefferedLightShader->SetFloat("lightCount", pointLights.size());
+	GShaderManager->clusterDefferedLightShader->SetFloat3("cameraPos", GCamera->GetPosition());
+	GShaderManager->clusterDefferedLightShader->SetFloat("ScreenWidth", GWindowInfo->GetScreenWidth());
+	GShaderManager->clusterDefferedLightShader->SetFloat("ScreenHeight", GWindowInfo->GetScreenHeight());
+	GShaderManager->clusterDefferedLightShader->SetFloat("farPlane", GCamera->mFarPlane);
+	GShaderManager->clusterDefferedLightShader->SetFloat("nearPlane", GCamera->mNearPlane);
+	GShaderManager->clusterDefferedLightShader->SetFloat4("tileSizes", tileSizes);
+	GShaderManager->clusterDefferedLightShader->SetFloat2("cluserFactor", clusterFactor);
+	GShaderManager->clusterDefferedLightShader->SetRWStructBuffer("LightGridList", LightGridListUav);
+	GShaderManager->clusterDefferedLightShader->SetRWStructBuffer("GlobalLightIndexList", GlobalLightIndexListUav);
+	GShaderManager->clusterDefferedLightShader->SetRWStructBufferInData("PointLightList", pointLights.data(), pointLights.size());
+	GShaderManager->clusterDefferedLightShader->SetTextureSampler("clampLinearSample", GTextureSamplerBilinearClamp);
+	GShaderManager->clusterDefferedLightShader->Apply();
+	mQuad->Render();
 }
 
+void ClusterDefferedSceneRender::RenderClusterPointLightPassCs()
+{
+	vector<PointLightParams> pointLights;
+	GLightManager->GetPointLights(pointLights);
+	if (pointLights.size() <= 0)
+		return;
 
-void TiledDefferedSceneRender::RenderDirLightPass()
+	ID3D11UnorderedAccessView* LightGridListUav = GShaderManager->clusterLightCullCS->GetUav("LightGridList");
+	ID3D11UnorderedAccessView* GlobalLightIndexListUav = GShaderManager->clusterLightCullCS->GetUav("GlobalLightIndexList");
+	GShaderManager->clusterDefferedLightCS->SetTexture("DepthTex", mGeometryBuffer->GetGBufferSRV(GBufferType::Depth));
+	GShaderManager->clusterDefferedLightCS->SetTexture("WorldPosTex", mGeometryBuffer->GetGBufferSRV(GBufferType::Pos));
+	GShaderManager->clusterDefferedLightCS->SetTexture("WorldNormalTex", mGeometryBuffer->GetGBufferSRV(GBufferType::Normal));
+	GShaderManager->clusterDefferedLightCS->SetTexture("SpecularRoughMetalTex", mGeometryBuffer->GetGBufferSRV(GBufferType::SpecularRoughMetal));
+	GShaderManager->clusterDefferedLightCS->SetTexture("AlbedoTex", mGeometryBuffer->GetGBufferSRV(GBufferType::Diffuse));
+	GShaderManager->clusterDefferedLightCS->SetTextureSampler("clampLinearSample", GTextureSamplerBilinearClamp);
+	GShaderManager->clusterDefferedLightCS->SetStructBuffer("PointLights", pointLights.data(), pointLights.size());
+	GShaderManager->clusterDefferedLightCS->SetRWStructBuffer("LightGridList", LightGridListUav);
+	GShaderManager->clusterDefferedLightCS->SetRWStructBuffer("GlobalLightIndexList", GlobalLightIndexListUav);
+	GShaderManager->clusterDefferedLightCS->SetRWTexture("OutputTexture", mClusterLightRT->GetUAV());
+	GShaderManager->clusterDefferedLightCS->SetFloat4("tileSizes", tileSizes);
+	GShaderManager->clusterDefferedLightCS->SetFloat2("cluserFactor", clusterFactor);
+	GShaderManager->clusterDefferedLightCS->SetFloat("farPlane", GCamera->mFarPlane);
+	GShaderManager->clusterDefferedLightCS->SetFloat("nearPlane", GCamera->mNearPlane);
+	GShaderManager->clusterDefferedLightCS->SetFloat3("cameraPos", GCamera->GetPosition());
+	GShaderManager->clusterDefferedLightCS->SetFloat("ScreenWidth", GCamera->mScreenWidth);
+	GShaderManager->clusterDefferedLightCS->SetFloat("ScreenHeight", GCamera->mScreenHeight);
+	GShaderManager->clusterDefferedLightCS->SetFloat("bDebugLightCount", GSceneManager->bDebugLightCount ? 1.0 : 0.0);
+	GShaderManager->clusterDefferedLightCS->SetMatrix("View", GCamera->GetViewMatrix());
+	GShaderManager->clusterDefferedLightCS->SetMatrix("ProjInv", FMath::GetInvense(GCamera->GetProjectionMatrix()));
+	GShaderManager->clusterDefferedLightCS->Dispatch(100, 100, 1);
+}
+
+void ClusterDefferedSceneRender::RenderDirLightPass()
 {
 	mLightBuffer->SetRenderTarget();
 	ID3D11ShaderResourceView* shaderResourceView[6];
@@ -521,7 +600,6 @@ void TiledDefferedSceneRender::RenderDirLightPass()
 	shaderResourceView[5] = mGeometryBuffer->GetGBufferSRV(GBufferType::Diffuse);
 
 	GDirectxCore->TurnOffZBuffer();
-	GDirectxCore->TurnOnLightBlend();
 
 	//TODO: 只存在一次IradianceMap渲染?
 	for (int index = 0; index < (int)GLightManager->m_vecDirLight.size(); ++index)
@@ -538,7 +616,7 @@ void TiledDefferedSceneRender::RenderDirLightPass()
 		GShaderManager->defferedDirLightShader->SetTexture("IrradianceTex", radianceCubeMap->GetIrradianceSrv());
 		GShaderManager->defferedDirLightShader->SetTexture("PrefliterCubeMap", prefliterCubeMap->GetPrefilterCubeMapSrv());
 		GShaderManager->defferedDirLightShader->SetTexture("BrdfLut", mConvolutedBrdfRT->GetSRV());
-		GShaderManager->defferedDirLightShader->SetTexture("LightBuffer", mTiledLightRT->GetSRV());
+		GShaderManager->defferedDirLightShader->SetTexture("LightBuffer", bClusterUseCs ? mClusterLightRT->GetSRV() : mLightBufferPointLight->GetSRV());
 		GShaderManager->defferedDirLightShader->SetFloat3("cameraPos", GCamera->GetPosition());
 		GShaderManager->defferedDirLightShader->SetFloat4("lightColor", lightColor);
 		GShaderManager->defferedDirLightShader->SetFloat3("lightDir", pDirLight->GetLightDirection());
@@ -559,11 +637,10 @@ void TiledDefferedSceneRender::RenderDirLightPass()
 		mQuad->Render();
 	}
 
-	GDirectxCore->TurnOffAlphaBlend();
 	GDirectxCore->RecoverDefaultDSS();
 }
 
-void TiledDefferedSceneRender::RenderFinalShadingPass()
+void ClusterDefferedSceneRender::RenderFinalShadingPass()
 {
 	ID3D11RenderTargetView* pSceneRTV = mSrcRT->GetRenderTargetView();
 	ID3D11DepthStencilView* opacityDSV = mGeometryBuffer->GetDSV();
@@ -578,7 +655,7 @@ void TiledDefferedSceneRender::RenderFinalShadingPass()
 	GDirectxCore->RecoverDefaultDSS();
 }
 
-void TiledDefferedSceneRender::RenderShadowMapPass()
+void ClusterDefferedSceneRender::RenderShadowMapPass()
 {
 	if (GLightManager->m_vecDirLight.size() <= 0)
 		return;
@@ -628,18 +705,18 @@ void TiledDefferedSceneRender::RenderShadowMapPass()
 	GDirectxCore->RecoverDefaultDSS();
 }
 
-void TiledDefferedSceneRender::RenderSSAOPass()
+void ClusterDefferedSceneRender::RenderSSAOPass()
 {
 	//渲染得到SSAORT
 	ssaoManager->Render(mGeometryBuffer.get());
 }
 
-void TiledDefferedSceneRender::RenderSkyBoxPass()
+void ClusterDefferedSceneRender::RenderSkyBoxPass()
 {
 	skyBox->Render(mGeometryBuffer.get());
 }
-
-void TiledDefferedSceneRender::RenderPreZPass()
+ 
+void ClusterDefferedSceneRender::RenderPreZPass()
 {
 	mGeometryBuffer->SetDepthTarget();
 	vector<shared_ptr<GameObject>> vecGameObject = GGameObjectManager->m_vecGameObject;
@@ -655,4 +732,17 @@ void TiledDefferedSceneRender::RenderPreZPass()
 
 	//恢复默认的RS
 	GDirectxCore->RecoverDefualtRS();
+}
+
+void ClusterDefferedSceneRender::PreBuildCluster()
+{
+	GShaderManager->buildClusterCS->SetFloat("farPlane", GCamera->mFarPlane);
+	GShaderManager->buildClusterCS->SetFloat("nearPlane", GCamera->mNearPlane);
+	GShaderManager->buildClusterCS->SetFloat("ScreenWidth", GCamera->mScreenWidth);
+	GShaderManager->buildClusterCS->SetFloat("ScreenHeight", GCamera->mScreenHeight);
+	GShaderManager->buildClusterCS->SetFloat4("tileSizes", tileSizes);
+	GShaderManager->buildClusterCS->SetRWStructBufferInData("ClusterList", nullptr, CLUTER_SIZE_X * CLUTER_SIZE_Y * CLUTER_SIZE_Z);
+	GShaderManager->buildClusterCS->SetMatrix("View", GCamera->GetViewMatrix());
+	GShaderManager->buildClusterCS->SetMatrix("ProjInv", FMath::GetInvense(GCamera->GetProjectionMatrix()));
+	GShaderManager->buildClusterCS->Dispatch(CLUTER_SIZE_X, CLUTER_SIZE_Y, CLUTER_SIZE_Z);
 }

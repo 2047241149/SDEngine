@@ -12,6 +12,7 @@ struct FMath
 	static XMMATRIX GetInvense(CXMMATRIX ma);
 	static float Max(float left, float right);
 	static float lerp(float left, float right, float percent);
+	static float Log2(float num);
 };
 
 

@@ -39,3 +39,7 @@ float FMath::lerp(float left, float right, float percent)
 	return right * percent + (1 - percent) * left;
 }
 
+float FMath::Log2(float num)
+{
+	return log2(num);
+}

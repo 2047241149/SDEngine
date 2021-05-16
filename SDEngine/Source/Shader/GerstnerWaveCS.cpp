@@ -78,10 +78,8 @@ void GerstnerWaveCS::CreateBufferUAV()
 	ZeroMemory(&uavDesc, sizeof(uavDesc));
 	uavDesc.ViewDimension = D3D11_UAV_DIMENSION_BUFFER;
 	uavDesc.Buffer.FirstElement = 0;
-
 	uavDesc.Format = DXGI_FORMAT_UNKNOWN;
 	uavDesc.Buffer.NumElements = descBuf.ByteWidth / descBuf.StructureByteStride;
-
 	g_pDevice->CreateUnorderedAccessView(m_pWaveDataBuffer, &uavDesc, &m_pWaveDataUAV);
 }
 
@@ -183,7 +181,6 @@ void GerstnerWaveCS::CreateConstantBuffer()
 
 void GerstnerWaveCS::CreateStructBuffer()
 {
-
 	int nWaveArraySize = m_nWaveWidth * m_nWaveHeight * GroundThreadSize * GroundThreadSize;
 	m_pWaveDataBuffer = nullptr;
 	D3D11_BUFFER_DESC desc;

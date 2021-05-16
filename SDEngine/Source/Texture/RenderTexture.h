@@ -31,6 +31,7 @@ public:
 	void ShutDown();
 
 	void SetRenderTarget(float fRed = 0.0f, float fGreen = 0.0f, float fBlue = 0.0f, float fAlpha = 1.0f);
+	void SetRenderTargetNoClear();
 	void SetDepthTarget();
 	void ClearDepthBuffer();
 	void ClearRenderTarget(float fRed, float fGreen,float fBlue, float fAlpha);

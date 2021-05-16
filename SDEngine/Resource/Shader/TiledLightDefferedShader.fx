@@ -22,6 +22,7 @@ cbuffer CBCommon:register(b0)
 	float farPlane;
 	float nearPlane;
 	float lightCount;
+	float bDebugLightCount;
 };
 
 cbuffer CBMatrix:register(b1)
@@ -171,30 +172,6 @@ void CS(
 	float maxLightCount = 300.0;
 	float value = float(visibleLightCount) / maxLightCount;
 	float4 color = float4(0.0, 0.0, 0.0, 1.0);
-	/*if (value == 0)
-	{
-		color = float4(0.0, 0.0, 0.0, 1.0);
-	}
-	else if (value <= 0.1)
-	{
-		color = float4(1.0, 0.0, 0.0, 1.0);
-	}
-	else if (value <= 0.2)
-	{
-		color = float4(0.0, 1.0, 0.0, 1.0);
-	}
-	else if(value <= 0.4)
-	{
-		color = float4(0.0, 0.0, 1.0, 1.0);
-	}
-	else if (value <= 0.6)
-	{
-		color = float4(1.0, 1.0, 0.0, 1.0);
-	}
-	else
-	{
-		color = float4(1.0, 1.0, 1.0, 1.0);
-	}*/
 
 	if (visibleLightCount > 0)
 	{
@@ -244,6 +221,38 @@ void CS(
 			float3 specularFactor = dfg / max(denominator, 0.001);
 
 			color.xyz += (kd * albedo / PI + specularFactor * specular) * radiance * nDotl * 2.2;
+		}
+	}
+
+	if (bDebugLightCount == 1)
+	{
+		if (value == 0)
+		{
+			color = float4(0.0, 0.0, 0.0, 1.0);
+		}
+		else if (value <= 0.1)
+		{
+			color = float4(1.0, 0.0, 0.0, 1.0);
+		}
+		else if (value <= 0.2)
+		{
+			color = float4(0.0, 1.0, 0.0, 1.0);
+		}
+		else if (value <= 0.4)
+		{
+			color = float4(0.0, 0.0, 1.0, 1.0);
+		}
+		else if (value <= 0.6)
+		{
+			color = float4(1.0, 1.0, 0.0, 1.0);
+		}
+		else if (value <= 0.8)
+		{
+			color = float4(0.0, 1.0, 1.0, 1.0);
+		}
+		else
+		{
+			color = float4(1.0, 1.0, 1.0, 1.0);
 		}
 	}
 

@@ -34,7 +34,6 @@ private:
 	bool ReadMouse();
 	void ProcessInput();
 
-
 public:
 	Input();
 	Input(const Input&);

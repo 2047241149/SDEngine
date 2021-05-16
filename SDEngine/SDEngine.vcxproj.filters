@@ -180,6 +180,9 @@
     <ClCompile Include="Source\WindowInfo.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="Source\ClusterDefferedSceneRender.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\FPS.h">
@@ -362,6 +365,9 @@
     <ClInclude Include="Source\WindowInfo.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="Source\ClusterDefferedSceneRender.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="Resource\Shader\DepthGetShader.fx" />
@@ -400,5 +406,10 @@
     <None Include="Resource\Shader\Common.fx" />
     <None Include="Resource\Shader\TiledLightCullShader.fx" />
     <None Include="Resource\Shader\TiledLightDefferedShader.fx" />
+    <None Include="Resource\Shader\ClusterLightCull.fx" />
+    <None Include="Resource\Shader\BuildClusterCS.fx" />
+    <None Include="Resource\Shader\ClearClusterGlobalData.fx" />
+    <None Include="Resource\Shader\ClusterLightDefferedShader.fx" />
+    <None Include="Resource\Shader\ClusterDefferedLightPixelShader.fx" />
   </ItemGroup>
 </Project>

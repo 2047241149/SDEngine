@@ -25,6 +25,8 @@ public:
 	//sky_box
 	shared_ptr<SkyBox> skyBox;
 
+	bool bDebugLightCount = false;
+
 private:
 	static shared_ptr<SceneManager> single;
 

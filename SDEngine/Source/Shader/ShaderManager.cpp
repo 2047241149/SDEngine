@@ -102,6 +102,16 @@ bool ShaderManager::Init()
 		L"Resource/Shader/ConvolutedBRDFShader.fx"));
 
 	tiledLightShader = shared_ptr<ComputeShader>(new ComputeShader(L"Resource/Shader/TiledLightDefferedShader.fx"));
+	
+	buildClusterCS = shared_ptr<ComputeShader>(new ComputeShader(L"Resource/Shader/BuildClusterCS.fx"));
+	
+	clusterLightCullCS = shared_ptr<ComputeShader>(new ComputeShader(L"Resource/Shader/ClusterLightCull.fx"));
+	
+	clusterDefferedLightShader = shared_ptr<VertexPixelShader>(new VertexPixelShader(L"Resource/Shader/ClusterDefferedLightPixelShader.fx", L"Resource/Shader/ClusterDefferedLightPixelShader.fx"));
+	
+	clearClusterDataCS = shared_ptr<ComputeShader>(new ComputeShader(L"Resource/Shader/ClearClusterGlobalData.fx"));
+
+	clusterDefferedLightCS = shared_ptr<ComputeShader>(new ComputeShader(L"Resource/Shader/ClusterLightDefferedShader.fx"));
 	return true;
 }
 
