@@ -15,357 +15,375 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Source\FPS.cpp">
+    <ClCompile Include="Source\SDEngine\Common\CommonFunction.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Input.cpp">
+    <ClCompile Include="Source\SDEngine\Common\DirectxCore.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="Source\源.cpp">
+    <ClCompile Include="Source\SDEngine\Common\DirectxFrame.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="Source\LoadTexture\DDSTextureLoader.cpp">
+    <ClCompile Include="Source\SDEngine\Common\MathTool.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="Source\LoadTexture\Resource.cpp">
+    <ClCompile Include="Source\SDEngine\DebugTool\Debugwindow.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="Source\LoadTexture\WICTextureLoader.cpp">
+    <ClCompile Include="Source\SDEngine\DebugTool\Log.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="Source\GraphicsSystem.cpp">
+    <ClCompile Include="Source\SDEngine\GameObject\Camera.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="Source\SDEngine.cpp">
+    <ClCompile Include="Source\SDEngine\GameObject\CubeCamera.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="Source\SkyBox.cpp">
+    <ClCompile Include="Source\SDEngine\GameObject\GameObject.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Common\MathTool.cpp">
+    <ClCompile Include="Source\SDEngine\GameObject\GameObjectManager.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Light\DirectionLight.cpp">
+    <ClCompile Include="Source\SDEngine\GameObject\Mesh.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Light\Light.cpp">
+    <ClCompile Include="Source\SDEngine\GameObject\Quad.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Light\LightManager.cpp">
+    <ClCompile Include="Source\SDEngine\Import\ImportFBX.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Light\PointLight.cpp">
+    <ClCompile Include="Source\SDEngine\Light\DirectionLight.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Texture\NoiseTexture.cpp">
+    <ClCompile Include="Source\SDEngine\Light\Light.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Texture\TextureManager.cpp">
+    <ClCompile Include="Source\SDEngine\Light\LightManager.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Texture\Texture.cpp">
+    <ClCompile Include="Source\SDEngine\Light\PointLight.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Texture\RWRenderTexture.cpp">
+    <ClCompile Include="Source\SDEngine\LoadTexture\DDSTextureLoader.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Texture\TextureSamplerManager.cpp">
+    <ClCompile Include="Source\SDEngine\LoadTexture\Resource.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Texture\RenderTexture.cpp">
+    <ClCompile Include="Source\SDEngine\LoadTexture\WICTextureLoader.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Import\ImportFBX.cpp">
+    <ClCompile Include="Source\SDEngine\Shader\CascadeShadowMap.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Shader\Shader.cpp">
+    <ClCompile Include="Source\SDEngine\Shader\CascadeShadowMapManager.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Shader\SSAOManager.cpp">
+    <ClCompile Include="Source\SDEngine\Shader\CircleWave.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Shader\CascadeShadowMap.cpp">
+    <ClCompile Include="Source\SDEngine\Shader\DepthBufferRT.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Shader\CascadeShadowMapManager.cpp">
+    <ClCompile Include="Source\SDEngine\Shader\DirectionWave.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Shader\DepthBufferRT.cpp">
+    <ClCompile Include="Source\SDEngine\Shader\GeometryBuffer.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Shader\GeometryBuffer.cpp">
+    <ClCompile Include="Source\SDEngine\Shader\GerstnerWave.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Shader\GerstnerWave.cpp">
+    <ClCompile Include="Source\SDEngine\Shader\GerstnerWaveCS.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Shader\GerstnerWaveCS.cpp">
+    <ClCompile Include="Source\SDEngine\Shader\GrussianBlurCS.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Shader\GrussianBlurCS.cpp">
+    <ClCompile Include="Source\SDEngine\Shader\Shader.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Shader\SSRGBuffer.cpp">
+    <ClCompile Include="Source\SDEngine\Shader\ShaderManager.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Shader\ShaderManager.cpp">
+    <ClCompile Include="Source\SDEngine\Shader\SSAOManager.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Shader\CircleWave.cpp">
+    <ClCompile Include="Source\SDEngine\Shader\SSRGBuffer.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Shader\Wave.cpp">
+    <ClCompile Include="Source\SDEngine\Shader\Wave.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Shader\DirectionWave.cpp">
+    <ClCompile Include="Source\SDEngine\Texture\HdrTexture.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="Source\GameObject\Camera.cpp">
+    <ClCompile Include="Source\SDEngine\Texture\NoiseTexture.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="Source\GameObject\GameObject.cpp">
+    <ClCompile Include="Source\SDEngine\Texture\RenderCubeMap.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="Source\GameObject\GameObjectManager.cpp">
+    <ClCompile Include="Source\SDEngine\Texture\RenderTexture.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="Source\GameObject\Quad.cpp">
+    <ClCompile Include="Source\SDEngine\Texture\RWRenderTexture.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="Source\GameObject\Mesh.cpp">
+    <ClCompile Include="Source\SDEngine\Texture\stb_image.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Common\CommonFunction.cpp">
+    <ClCompile Include="Source\SDEngine\Texture\Texture.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="Source\DebugTool\Log.cpp">
+    <ClCompile Include="Source\SDEngine\Texture\TextureManager.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="Source\DebugTool\Debugwindow.cpp">
+    <ClCompile Include="Source\SDEngine\Texture\TextureSamplerManager.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Common\DirectxCore.cpp">
+    <ClCompile Include="Source\SDEngine\ClusterDefferedSceneRender.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Common\DirectxFrame.cpp">
+    <ClCompile Include="Source\SDEngine\FPS.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Texture\HdrTexture.cpp">
+    <ClCompile Include="Source\SDEngine\Game.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Texture\stb_image.cpp">
+    <ClCompile Include="Source\SDEngine\GraphicsSystem.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Texture\RenderCubeMap.cpp">
+    <ClCompile Include="Source\SDEngine\Input.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="Source\GameObject\CubeCamera.cpp">
+    <ClCompile Include="Source\SDEngine\IrradianceCubeMap.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="Source\IrradianceCubeMap.cpp">
+    <ClCompile Include="Source\SDEngine\PrefilterCubeMap.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="Source\PrefilterCubeMap.cpp">
+    <ClCompile Include="Source\SDEngine\SceneManager.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="Source\SceneRender.cpp">
+    <ClCompile Include="Source\SDEngine\SceneRender.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="Source\SceneManager.cpp">
+    <ClCompile Include="Source\SDEngine\SDEngine.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="Source\TiledDefferedSceneRender.cpp">
+    <ClCompile Include="Source\SDEngine\SkyBox.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="Source\WindowInfo.cpp">
+    <ClCompile Include="Source\SDEngine\TiledDefferedSceneRender.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="Source\ClusterDefferedSceneRender.cpp">
+    <ClCompile Include="Source\SDEngine\WindowInfo.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\SDEngine\源.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\SDEngine\EntryPoint.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Source\FPS.h">
+    <ClInclude Include="Source\SDEngine\Common\CommomVertexFormat.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Input.h">
+    <ClInclude Include="Source\SDEngine\Common\CommonFunction.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="Source\LoadTexture\DDSTextureLoader.h">
+    <ClInclude Include="Source\SDEngine\Common\CoreMini.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="Source\LoadTexture\Resource.h">
+    <ClInclude Include="Source\SDEngine\Common\DirectxCore.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="Source\LoadTexture\WICTextureLoader.h">
+    <ClInclude Include="Source\SDEngine\Common\DirectxFrame.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="Source\GraphicsSystem.h">
+    <ClInclude Include="Source\SDEngine\Common\GraphicsConfig.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="Source\SDEngine.h">
+    <ClInclude Include="Source\SDEngine\Common\Macro.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="Source\SkyBox.h">
+    <ClInclude Include="Source\SDEngine\Common\MathTool.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Common\MathTool.h">
+    <ClInclude Include="Source\SDEngine\Common\UtilityEnum.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Light\DirectionLight.h">
+    <ClInclude Include="Source\SDEngine\DebugTool\Debugwindow.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Light\LightManager.h">
+    <ClInclude Include="Source\SDEngine\DebugTool\Log.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Light\Light.h">
+    <ClInclude Include="Source\SDEngine\GameObject\Camera.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Light\PointLight.h">
+    <ClInclude Include="Source\SDEngine\GameObject\CubeCamera.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Texture\NoiseTexture.h">
+    <ClInclude Include="Source\SDEngine\GameObject\GameObject.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Texture\TextureManager.h">
+    <ClInclude Include="Source\SDEngine\GameObject\GameObjectManager.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Texture\Texture.h">
+    <ClInclude Include="Source\SDEngine\GameObject\Mesh.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Texture\RWRenderTexture.h">
+    <ClInclude Include="Source\SDEngine\GameObject\Quad.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Texture\TextureSamplerManager.h">
+    <ClInclude Include="Source\SDEngine\Import\ImportDll.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Texture\RenderTexture.h">
+    <ClInclude Include="Source\SDEngine\Import\ImportFBX.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Import\ImportFBX.h">
+    <ClInclude Include="Source\SDEngine\Light\DirectionLight.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Shader\Shader.h">
+    <ClInclude Include="Source\SDEngine\Light\Light.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Shader\SSAOManager.h">
+    <ClInclude Include="Source\SDEngine\Light\LightManager.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Shader\CascadeShadowMap.h">
+    <ClInclude Include="Source\SDEngine\Light\PointLight.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Shader\CascadeShadowMapManager.h">
+    <ClInclude Include="Source\SDEngine\LoadTexture\DDSTextureLoader.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Shader\DepthBufferRT.h">
+    <ClInclude Include="Source\SDEngine\LoadTexture\Resource.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Shader\GeometryBuffer.h">
+    <ClInclude Include="Source\SDEngine\LoadTexture\WICTextureLoader.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Shader\GerstnerWaveCS.h">
+    <ClInclude Include="Source\SDEngine\Shader\CascadeShadowMap.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Shader\GerstnerWave.h">
+    <ClInclude Include="Source\SDEngine\Shader\CascadeShadowMapManager.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Shader\GrussianBlurCS.h">
+    <ClInclude Include="Source\SDEngine\Shader\CircleWave.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Shader\SSRGBuffer.h">
+    <ClInclude Include="Source\SDEngine\Shader\DepthBufferRT.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Shader\ShaderManager.h">
+    <ClInclude Include="Source\SDEngine\Shader\DirectionWave.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Shader\CircleWave.h">
+    <ClInclude Include="Source\SDEngine\Shader\GeometryBuffer.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Shader\Wave.h">
+    <ClInclude Include="Source\SDEngine\Shader\GerstnerWave.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Shader\DirectionWave.h">
+    <ClInclude Include="Source\SDEngine\Shader\GerstnerWaveCS.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="Source\GameObject\Camera.h">
+    <ClInclude Include="Source\SDEngine\Shader\GrussianBlurCS.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="Source\GameObject\GameObject.h">
+    <ClInclude Include="Source\SDEngine\Shader\Shader.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="Source\GameObject\GameObjectManager.h">
+    <ClInclude Include="Source\SDEngine\Shader\ShaderManager.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="Source\GameObject\Quad.h">
+    <ClInclude Include="Source\SDEngine\Shader\SSAOManager.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="Source\GameObject\Mesh.h">
+    <ClInclude Include="Source\SDEngine\Shader\SSRGBuffer.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Common\UtilityEnum.h">
+    <ClInclude Include="Source\SDEngine\Shader\Wave.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Common\Macro.h">
+    <ClInclude Include="Source\SDEngine\Texture\HdrTexture.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Common\CommomVertexFormat.h">
+    <ClInclude Include="Source\SDEngine\Texture\NoiseTexture.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Common\CommonFunction.h">
+    <ClInclude Include="Source\SDEngine\Texture\RenderCubeMap.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Common\CoreMini.h">
+    <ClInclude Include="Source\SDEngine\Texture\RenderTexture.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Import\ImportDll.h">
+    <ClInclude Include="Source\SDEngine\Texture\RWRenderTexture.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="Source\DebugTool\Log.h">
+    <ClInclude Include="Source\SDEngine\Texture\stb_image.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="Source\DebugTool\Debugwindow.h">
+    <ClInclude Include="Source\SDEngine\Texture\Texture.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Common\DirectxCore.h">
+    <ClInclude Include="Source\SDEngine\Texture\TextureManager.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Common\DirectxFrame.h">
+    <ClInclude Include="Source\SDEngine\Texture\TextureSamplerManager.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Common\GraphicsConfig.h">
+    <ClInclude Include="Source\SDEngine\ClusterDefferedSceneRender.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Texture\stb_image.h">
+    <ClInclude Include="Source\SDEngine\CoreMinimal.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Texture\HdrTexture.h">
+    <ClInclude Include="Source\SDEngine\FPS.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Texture\RenderCubeMap.h">
+    <ClInclude Include="Source\SDEngine\Game.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="Source\GameObject\CubeCamera.h">
+    <ClInclude Include="Source\SDEngine\GraphicsSystem.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="Source\IrradianceCubeMap.h">
+    <ClInclude Include="Source\SDEngine\Input.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="Source\PrefilterCubeMap.h">
+    <ClInclude Include="Source\SDEngine\IrradianceCubeMap.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="Source\SceneRender.h">
+    <ClInclude Include="Source\SDEngine\PrefilterCubeMap.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="Source\SceneManager.h">
+    <ClInclude Include="Source\SDEngine\SceneManager.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="Source\TiledDefferedSceneRender.h">
+    <ClInclude Include="Source\SDEngine\SceneRender.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="Source\WindowInfo.h">
+    <ClInclude Include="Source\SDEngine\SDEngine.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="Source\ClusterDefferedSceneRender.h">
+    <ClInclude Include="Source\SDEngine\SkyBox.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\SDEngine\TiledDefferedSceneRender.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\SDEngine\WindowInfo.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Engine.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\SDEngine\EntryPoint.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
