@@ -436,7 +436,7 @@ bool VertexPixelShader::InitShader(WCHAR* VSFileName, WCHAR* PSFileName)
 		//存在错误信息
 		if (pErrorMessage)
 		{
-			Log::LogShaderCompileInfo(pErrorMessage, VSFileName);
+			//Log::LogShaderCompileInfo(pErrorMessage, VSFileName);
 		}
 		//不存在错误信息,也就是没有找到Shader文件
 		else
@@ -457,7 +457,7 @@ bool VertexPixelShader::InitShader(WCHAR* VSFileName, WCHAR* PSFileName)
 		//存在错误信息
 		if (pErrorMessage)
 		{
-			Log::LogShaderCompileInfo(pErrorMessage, PSFileName);
+			//Log::LogShaderCompileInfo(pErrorMessage, PSFileName);
 		}
 		//不存在错误信息,也就是没有找到Shader文件
 		else
@@ -800,7 +800,7 @@ bool ComputeShader::InitShader(WCHAR* csFilenPath)
 	{
 		if (errorMessage)
 		{
-			Log::LogShaderCompileInfo(errorMessage, csFilenPath);
+			//Log::LogShaderCompileInfo(errorMessage, csFilenPath);
 		}
 		else
 		{

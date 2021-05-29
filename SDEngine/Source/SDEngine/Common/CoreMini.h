@@ -20,7 +20,7 @@
 #include "../Common/MathTool.h"
 #include "CommomVertexFormat.h"
 #include "CommonFunction.h"
-#include "../DebugTool/Log.h"
+//#include "../DebugTool/Log.h"
 
 using namespace std;
 using namespace DirectX;

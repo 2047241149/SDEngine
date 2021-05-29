@@ -1,10 +1,5 @@
 #include "Game.h"
 
-void Print()
-{
-	printf("Hello World!");
-}
-
 Game::Game()
 {
 }

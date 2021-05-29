@@ -55,7 +55,7 @@ bool GrussianBlurCS::InitShader(WCHAR* csFilePath)
 	{
 		if (errorMessage)
 		{
-			Log::LogShaderCompileInfo(errorMessage, csFilePath);
+			//Log::LogShaderCompileInfo(errorMessage, csFilePath);
 		}
 		else
 		{
@@ -73,7 +73,7 @@ bool GrussianBlurCS::InitShader(WCHAR* csFilePath)
 	{
 		if (errorMessage)
 		{
-			Log::LogShaderCompileInfo(errorMessage, csFilePath);
+			//Log::LogShaderCompileInfo(errorMessage, csFilePath);
 		}
 		else
 		{

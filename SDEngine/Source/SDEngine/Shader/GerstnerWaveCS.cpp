@@ -112,7 +112,7 @@ void GerstnerWaveCS::CreateComputerShader(WCHAR* csWavePosPath, WCHAR* csWaveNor
 		//存在错误信息
 		if (errorMessage)
 		{
-			Log::LogShaderCompileInfo(errorMessage, csWavePosPath);
+			//Log::LogShaderCompileInfo(errorMessage, csWavePosPath);
 		}
 		//不存在错误信息,也就是没有找到Shader文件
 		else
@@ -134,7 +134,7 @@ void GerstnerWaveCS::CreateComputerShader(WCHAR* csWavePosPath, WCHAR* csWaveNor
 		//存在错误信息
 		if (errorMessage)
 		{
-			Log::LogShaderCompileInfo(errorMessage, csWavePosPath);
+			//Log::LogShaderCompileInfo(errorMessage, csWavePosPath);
 		}
 		//不存在错误信息,也就是没有找到Shader文件
 		else
