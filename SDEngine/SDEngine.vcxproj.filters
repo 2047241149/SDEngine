@@ -10,6 +10,9 @@
     <Filter Include="SDEngine\DebugTool">
       <UniqueIdentifier>{06D0D684-F2B3-97DA-5B14-922D4717825C}</UniqueIdentifier>
     </Filter>
+    <Filter Include="SDEngine\Event">
+      <UniqueIdentifier>{23ECF893-0FBA-EC99-F84D-5DC0E4BAC8FE}</UniqueIdentifier>
+    </Filter>
     <Filter Include="SDEngine\GameObject">
       <UniqueIdentifier>{92B80D7A-FE19-EB87-8787-313AF3E72147}</UniqueIdentifier>
     </Filter>
@@ -64,14 +67,23 @@
     <ClInclude Include="Source\SDEngine\Common\stb_image.h">
       <Filter>SDEngine\Common</Filter>
     </ClInclude>
-    <ClInclude Include="Source\SDEngine\CoreMinimal.h">
-      <Filter>SDEngine</Filter>
-    </ClInclude>
     <ClInclude Include="Source\SDEngine\DebugTool\Debugwindow.h">
       <Filter>SDEngine\DebugTool</Filter>
     </ClInclude>
     <ClInclude Include="Source\SDEngine\EntryPoint.h">
       <Filter>SDEngine</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\SDEngine\Event\Event.h">
+      <Filter>SDEngine\Event</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\SDEngine\Event\KeyEvent.h">
+      <Filter>SDEngine\Event</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\SDEngine\Event\MouseEvent.h">
+      <Filter>SDEngine\Event</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\SDEngine\Event\WindowEvent.h">
+      <Filter>SDEngine\Event</Filter>
     </ClInclude>
     <ClInclude Include="Source\SDEngine\FPS.h">
       <Filter>SDEngine</Filter>
@@ -226,6 +238,11 @@
     <ClInclude Include="Source\SDEngine\WindowInfo.h">
       <Filter>SDEngine</Filter>
     </ClInclude>
+    <ClInclude Include="Source\pch.h" />
+    <ClInclude Include="Source\CoreMinimal.h">
+      <Filter>SDEngine</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\SDEngine\GameWindow.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\SDEngine\ClusterDefferedSceneRender.cpp">
@@ -399,5 +416,7 @@
     <ClCompile Include="Source\SDEngine\源.cpp">
       <Filter>SDEngine</Filter>
     </ClCompile>
+    <ClCompile Include="Source\pch.cpp" />
+    <ClCompile Include="Source\SDEngine\GameWindow.cpp" />
   </ItemGroup>
 </Project>

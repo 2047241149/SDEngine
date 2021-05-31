@@ -24,24 +24,24 @@ DepthBufferRT::~DepthBufferRT()
 bool DepthBufferRT::Initialize(int TextureWidth, int TextureHeight)
 {
 
-	//µÚÒ»,Ìî³äÉî¶ÈÊÓÍ¼µÄ2DÎÆÀíÐÎÈÝ½á¹¹Ìå,²¢´´½¨2DäÖÈ¾ÎÆÀí
+	//ï¿½ï¿½Ò»,ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Í¼ï¿½ï¿½2Dï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ý½á¹¹ï¿½ï¿½,ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½2Dï¿½ï¿½È¾ï¿½ï¿½ï¿½ï¿½
 	D3D11_TEXTURE2D_DESC depthBufferDesc;
 	ZeroMemory(&depthBufferDesc, sizeof(depthBufferDesc));
 	depthBufferDesc.Width = TextureWidth;
 	depthBufferDesc.Height = TextureHeight;
 	depthBufferDesc.MipLevels = 1;
 	depthBufferDesc.ArraySize = 1;
-	depthBufferDesc.Format = DXGI_FORMAT_R24G8_TYPELESS; //24Î»ÊÇÎªÁËÉî¶È»º´æ£¬8Î»ÊÇÎªÁËÄ£°å»º´æ
+	depthBufferDesc.Format = DXGI_FORMAT_R24G8_TYPELESS; //24Î»ï¿½ï¿½Îªï¿½ï¿½ï¿½ï¿½È»ï¿½ï¿½æ£¬8Î»ï¿½ï¿½Îªï¿½ï¿½Ä£ï¿½å»ºï¿½ï¿½
 	depthBufferDesc.SampleDesc.Count = 1;
 	depthBufferDesc.SampleDesc.Quality = 0;
 	depthBufferDesc.Usage = D3D11_USAGE_DEFAULT;
-	depthBufferDesc.BindFlags = D3D11_BIND_DEPTH_STENCIL | D3D11_BIND_SHADER_RESOURCE;  //×¢ÒâÉî¶È»º´æ(ÎÆÀí)µÄ°ó¶¨±êÖ¾
+	depthBufferDesc.BindFlags = D3D11_BIND_DEPTH_STENCIL | D3D11_BIND_SHADER_RESOURCE;  //×¢ï¿½ï¿½ï¿½ï¿½È»ï¿½ï¿½ï¿½(ï¿½ï¿½ï¿½ï¿½)ï¿½Ä°ó¶¨±ï¿½Ö¾
 	depthBufferDesc.CPUAccessFlags = 0;
 	depthBufferDesc.MiscFlags = 0;
 	HR(g_pDevice->CreateTexture2D(&depthBufferDesc, NULL, &mDepthStencilTexture));
 	
 
-	//µÚ¶þ,Ìî³äÉî¶È»º´æÊÓÍ¼ÐÎÈÝ½á¹¹Ìå,²¢´´½¨Éî¶È»º´æÊÓÍ¼
+	//ï¿½Ú¶ï¿½,ï¿½ï¿½ï¿½ï¿½ï¿½È»ï¿½ï¿½ï¿½ï¿½ï¿½Í¼ï¿½ï¿½ï¿½Ý½á¹¹ï¿½ï¿½,ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½È»ï¿½ï¿½ï¿½ï¿½ï¿½Í¼
 	D3D11_DEPTH_STENCIL_VIEW_DESC depthStencilViewDesc;
 	ZeroMemory(&depthStencilViewDesc, sizeof(depthStencilViewDesc));
 	depthStencilViewDesc.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
@@ -50,15 +50,15 @@ bool DepthBufferRT::Initialize(int TextureWidth, int TextureHeight)
 	HR(g_pDevice->CreateDepthStencilView(mDepthStencilTexture, &depthStencilViewDesc, &mDepthStencilView));
 
 
-	//µÚÈý,Ìî³ä×ÅÉ«Æ÷×ÊÔ´ÊÓÍ¼ÐÎÈÝÌå,²¢½øÐÐ´´½¨×ÅÉ«Æ÷×ÊÔ´ÊÓÍ¼,×¢ÒâÕâÊÇÓÃÉî¶È»º´æ(ÎÆÀí)À´´´½¨µÄ£¬¶ø²»ÊÇäÖÈ¾Ä¿±ê»º´æ(ÎÆÀí)´´½¨µÄ
+	//ï¿½ï¿½ï¿½ï¿½,ï¿½ï¿½ï¿½ï¿½ï¿½É«ï¿½ï¿½ï¿½ï¿½Ô´ï¿½ï¿½Í¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½,ï¿½ï¿½ï¿½ï¿½ï¿½Ð´ï¿½ï¿½ï¿½ï¿½ï¿½É«ï¿½ï¿½ï¿½ï¿½Ô´ï¿½ï¿½Í¼,×¢ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½È»ï¿½ï¿½ï¿½(ï¿½ï¿½ï¿½ï¿½)ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½È¾Ä¿ï¿½ê»ºï¿½ï¿½(ï¿½ï¿½ï¿½ï¿½)ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 	D3D11_SHADER_RESOURCE_VIEW_DESC shaderResourceViewDesc;
-	shaderResourceViewDesc.Format = DXGI_FORMAT_R24_UNORM_X8_TYPELESS; //´ËÊ±ÒòÎªÊÇ½ö½ö½øÐÐÉî¶ÈÐ´£¬¶ø²»ÊÇÑÕÉ«Ð´£¬ËùÒÔ´ËÊ±Shader×ÊÔ´¸ñÊ½¸úÉî¶È»º´æÊÇÒ»ÑùµÄ
+	shaderResourceViewDesc.Format = DXGI_FORMAT_R24_UNORM_X8_TYPELESS; //ï¿½ï¿½Ê±ï¿½ï¿½Îªï¿½Ç½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ð´ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½É«Ð´ï¿½ï¿½ï¿½ï¿½ï¿½Ô´ï¿½Ê±Shaderï¿½ï¿½Ô´ï¿½ï¿½Ê½ï¿½ï¿½ï¿½ï¿½È»ï¿½ï¿½ï¿½ï¿½ï¿½Ò»ï¿½ï¿½ï¿½ï¿½
 	shaderResourceViewDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
 	shaderResourceViewDesc.Texture2D.MostDetailedMip = 0;
 	shaderResourceViewDesc.Texture2D.MipLevels = depthBufferDesc.MipLevels;
 	HR(g_pDevice->CreateShaderResourceView(mDepthStencilTexture, &shaderResourceViewDesc, &mShaderResourceView));
     
-	//µÚËÄ£¬ÉèÖÃÊÓ¿ÚµÄÊôÐÔ
+	//ï¿½ï¿½ï¿½Ä£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ó¿Úµï¿½ï¿½ï¿½ï¿½ï¿½
 	mViewPort.Width = (float)TextureWidth;
 	mViewPort.Height = (float)TextureHeight;
 	mViewPort.MinDepth = 0.0f;
@@ -79,33 +79,31 @@ void DepthBufferRT::ShutDown()
 }
 
 
-//ÈÃ´ËÊ±ËùÓÐÍ¼ÐÎäÖÈ¾µ½Õâ¸öÄ¿Ç°äÖÈ¾µÄÎ»ÖÃ
+//ï¿½Ã´ï¿½Ê±ï¿½ï¿½ï¿½ï¿½Í¼ï¿½ï¿½ï¿½ï¿½È¾ï¿½ï¿½ï¿½ï¿½ï¿½Ä¿Ç°ï¿½ï¿½È¾ï¿½ï¿½Î»ï¿½ï¿½
 void DepthBufferRT::SetRenderTarget()
 {
 	this->ClearDepth();
 
 	ID3D11RenderTargetView* renderTarget[1] = { nullptr };
 
-	//°ó¶¨äÖÈ¾Ä¿±êÊÓÍ¼ºÍÉî¶ÈÄ£°åÊÓÍ¼µ½Êä³öäÖÈ¾¹ÜÏß
+	//ï¿½ï¿½ï¿½ï¿½È¾Ä¿ï¿½ï¿½ï¿½ï¿½Í¼ï¿½ï¿½ï¿½ï¿½ï¿½Ä£ï¿½ï¿½ï¿½ï¿½Í¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½È¾ï¿½ï¿½ï¿½ï¿½
 	g_pDeviceContext->OMSetRenderTargets(1,renderTarget, mDepthStencilView);
 
-	//ÉèÖÃÊÓ¿Ú
+	//ï¿½ï¿½ï¿½ï¿½ï¿½Ó¿ï¿½
 	g_pDeviceContext->RSSetViewports(1, &mViewPort);
 }
 
 
-//²»ÓÃÇå³ý±³ºó»º´æ,ÒòÎª²»ÐèÒª½øÑÕÉ«Ð´(ColorWrite),½ö½ö½øÐÐÉî¶ÈÐ´
+//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ó»º´ï¿½,ï¿½ï¿½Îªï¿½ï¿½ï¿½ï¿½Òªï¿½ï¿½ï¿½ï¿½É«Ð´(ColorWrite),ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ð´
 void DepthBufferRT::ClearDepth()
 {
 
-	//Çå³ýÉî¶È»º´æºÍÄ£°å»º´æ
+	//ï¿½ï¿½ï¿½ï¿½ï¿½È»ï¿½ï¿½ï¿½ï¿½Ä£ï¿½å»ºï¿½ï¿½
 	g_pDeviceContext->ClearDepthStencilView(mDepthStencilView, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
 }
 
-// ½«¡°±»äÖÈ¾Ä£ÐÍµ½ÎÆÀíµÄÎÆÀí¡±×÷ÎªShaderResourceView×ÊÔ´·µ»Ø£¬Õâ¸ö×ÊÔ´½«»á¸úÆäËüµÄShaderResourceView×ÊÔ´Ò»Ñù±»ËÍÈëShaderÀï¼ÆËã.
+// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½È¾Ä£ï¿½Íµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ÎªShaderResourceViewï¿½ï¿½Ô´ï¿½ï¿½ï¿½Ø£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ô´ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ShaderResourceViewï¿½ï¿½Ô´Ò»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Shaderï¿½ï¿½ï¿½ï¿½ï¿½.
 ID3D11ShaderResourceView* DepthBufferRT::GetShaderResourceView()
 {
 	return mShaderResourceView;
 }
-
-

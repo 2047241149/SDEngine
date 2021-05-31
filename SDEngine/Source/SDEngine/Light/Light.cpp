@@ -1,4 +1,4 @@
-#include"Light.h"
+#include "Light.h"
 
 Light::Light():
 	m_bCastShadow(false),

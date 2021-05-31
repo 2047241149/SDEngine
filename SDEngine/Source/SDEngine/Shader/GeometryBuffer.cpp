@@ -33,9 +33,9 @@ GeometryBuffer::~GeometryBuffer()
 bool GeometryBuffer::Initialize(int TextureWidth, int TextureHeight, float ScreenDepth, float ScreenNear)
 {
 
-	//*************************´´½¨GBufferºÍRenderTargetView****************************************//
+	//*************************ï¿½ï¿½ï¿½ï¿½GBufferï¿½ï¿½RenderTargetView****************************************//
 
-	//´´½¨GBufferµÄtexture
+	//ï¿½ï¿½ï¿½ï¿½GBufferï¿½ï¿½texture
 	D3D11_TEXTURE2D_DESC gBufferTextureDesc;
 	ZeroMemory(&gBufferTextureDesc, sizeof(gBufferTextureDesc));
 
@@ -43,7 +43,7 @@ bool GeometryBuffer::Initialize(int TextureWidth, int TextureHeight, float Scree
 	gBufferTextureDesc.Height = TextureHeight;
 	gBufferTextureDesc.MipLevels = 1;
 	gBufferTextureDesc.ArraySize = 1;
-	gBufferTextureDesc.Format = DXGI_FORMAT_R32G32B32A32_FLOAT;  //ÎÆÀíÏñËØÎª12¸ö×Ö½Ú
+	gBufferTextureDesc.Format = DXGI_FORMAT_R32G32B32A32_FLOAT;  //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Îª12ï¿½ï¿½ï¿½Ö½ï¿½
 	gBufferTextureDesc.SampleDesc.Count = 1;
 	gBufferTextureDesc.SampleDesc.Quality = 0;
 	gBufferTextureDesc.Usage = D3D11_USAGE_DEFAULT;
@@ -59,7 +59,7 @@ bool GeometryBuffer::Initialize(int TextureWidth, int TextureHeight, float Scree
 	}
 
 
-	//´´½¨GBuffer¶ÔÓ¦µÄRenderTargetView
+	//ï¿½ï¿½ï¿½ï¿½GBufferï¿½ï¿½Ó¦ï¿½ï¿½RenderTargetView
 	D3D11_RENDER_TARGET_VIEW_DESC renderTargetViewDesc;
 
 	renderTargetViewDesc.Format = gBufferTextureDesc.Format;
@@ -72,7 +72,7 @@ bool GeometryBuffer::Initialize(int TextureWidth, int TextureHeight, float Scree
 
 
 
-	//ÀûÓÃRenderTargetView´´½¨ÏàÓ¦µÄGBuffer ShadreView
+	//ï¿½ï¿½ï¿½ï¿½RenderTargetViewï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ó¦ï¿½ï¿½GBuffer ShadreView
 	D3D11_SHADER_RESOURCE_VIEW_DESC gBufferShaderResourceViewDesc;
 	gBufferShaderResourceViewDesc.Format = gBufferTextureDesc.Format;
 	gBufferShaderResourceViewDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
@@ -85,26 +85,26 @@ bool GeometryBuffer::Initialize(int TextureWidth, int TextureHeight, float Scree
 			&mGBufferSRV[i]));
 	}
 
-	//*************************´´½¨DepthBufferºÍDepthStencilView*************************************************//
+	//*************************ï¿½ï¿½ï¿½ï¿½DepthBufferï¿½ï¿½DepthStencilView*************************************************//
 
-	//´´½¨DepthBufferµÄDesc
+	//ï¿½ï¿½ï¿½ï¿½DepthBufferï¿½ï¿½Desc
 	D3D11_TEXTURE2D_DESC depthBufferTextureDesc;
 	ZeroMemory(&depthBufferTextureDesc, sizeof(depthBufferTextureDesc));
 	depthBufferTextureDesc.Width = TextureWidth;
 	depthBufferTextureDesc.Height = TextureHeight;
 	depthBufferTextureDesc.MipLevels = 1;
 	depthBufferTextureDesc.ArraySize = 1;
-	depthBufferTextureDesc.Format = DXGI_FORMAT_R24G8_TYPELESS; //24Î»ÊÇÎªÁËÉî¶È»º´æ£¬8Î»ÊÇÎªÁËÄ£°å»º´æ  
+	depthBufferTextureDesc.Format = DXGI_FORMAT_R24G8_TYPELESS; //24Î»ï¿½ï¿½Îªï¿½ï¿½ï¿½ï¿½È»ï¿½ï¿½æ£¬8Î»ï¿½ï¿½Îªï¿½ï¿½Ä£ï¿½å»ºï¿½ï¿½  
 	depthBufferTextureDesc.SampleDesc.Count = 1;
 	depthBufferTextureDesc.SampleDesc.Quality = 0;
 	depthBufferTextureDesc.Usage = D3D11_USAGE_DEFAULT;
-	depthBufferTextureDesc.BindFlags = D3D11_BIND_DEPTH_STENCIL | D3D11_BIND_SHADER_RESOURCE;  //×¢ÒâÉî¶È»º´æ(ÎÆÀí)µÄ°ó¶¨±êÖ¾  
+	depthBufferTextureDesc.BindFlags = D3D11_BIND_DEPTH_STENCIL | D3D11_BIND_SHADER_RESOURCE;  //×¢ï¿½ï¿½ï¿½ï¿½È»ï¿½ï¿½ï¿½(ï¿½ï¿½ï¿½ï¿½)ï¿½Ä°ó¶¨±ï¿½Ö¾  
 	depthBufferTextureDesc.CPUAccessFlags = 0;
 	depthBufferTextureDesc.MiscFlags = 0;
 	HR(g_pDevice->CreateTexture2D(&depthBufferTextureDesc, NULL, &mDepthStencilTexture));
 
 
-	//µÚÎå,Ìî³äÉî¶È»º´æÊÓÍ¼ÐÎÈÝ½á¹¹Ìå,´´½¨Éî¶È»º´æ(Ä£°å»º´æ)ÊÓÍ¼
+	//ï¿½ï¿½ï¿½ï¿½,ï¿½ï¿½ï¿½ï¿½ï¿½È»ï¿½ï¿½ï¿½ï¿½ï¿½Í¼ï¿½ï¿½ï¿½Ý½á¹¹ï¿½ï¿½,ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½È»ï¿½ï¿½ï¿½(Ä£ï¿½å»ºï¿½ï¿½)ï¿½ï¿½Í¼
 	D3D11_DEPTH_STENCIL_VIEW_DESC depthStencilViewDesc;
 	ZeroMemory(&depthStencilViewDesc, sizeof(depthStencilViewDesc));
 	depthStencilViewDesc.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
@@ -112,9 +112,9 @@ bool GeometryBuffer::Initialize(int TextureWidth, int TextureHeight, float Scree
 	depthStencilViewDesc.Texture2D.MipSlice = 0;
 
 	HR(g_pDevice->CreateDepthStencilView(
-		mDepthStencilTexture, //ÎÒÃÇ»ùÓÚÕâ¸öÉî¶È»º´æ/Â©×Ö°å»º´æ´´½¨Ò»¸öÊÓÍ¼
+		mDepthStencilTexture, //ï¿½ï¿½ï¿½Ç»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½È»ï¿½ï¿½ï¿½/Â©ï¿½Ö°å»ºï¿½æ´´ï¿½ï¿½Ò»ï¿½ï¿½ï¿½ï¿½Í¼
 		&depthStencilViewDesc,
-		&mDepthStencilView));//Ö¸ÏòÉî¶È»º´æ/Â©×Ö°åÊÓÍ¼µÄÖ¸Õë
+		&mDepthStencilView));//Ö¸ï¿½ï¿½ï¿½ï¿½È»ï¿½ï¿½ï¿½/Â©ï¿½Ö°ï¿½ï¿½ï¿½Í¼ï¿½ï¿½Ö¸ï¿½ï¿½
 
 
 	D3D11_SHADER_RESOURCE_VIEW_DESC depthBufferSRVDesc;
@@ -127,14 +127,14 @@ bool GeometryBuffer::Initialize(int TextureWidth, int TextureHeight, float Scree
 		&mDepthBufferSRV));
 
 
-	//´´½¨randomRT
+	//ï¿½ï¿½ï¿½ï¿½randomRT
 	srand(static_cast<unsigned int>(time(NULL)));
 	unsigned char* rand_data = new unsigned char[TextureWidth * TextureHeight];
 	for (int i = 0; i < TextureHeight; ++i)
 	{
 		for (int j = 0; j < TextureWidth; ++j)
 		{
-			//È¡ÖµµÄÇ°°ËÎ»,Ò²¾Í0µ½255
+			//È¡Öµï¿½ï¿½Ç°ï¿½ï¿½Î»,Ò²ï¿½ï¿½0ï¿½ï¿½255
 			unsigned char value = static_cast<unsigned char>(rand())&static_cast<unsigned char>(0x00ff);
 			rand_data[i*TextureWidth + j] = value;
 		}
@@ -145,7 +145,7 @@ bool GeometryBuffer::Initialize(int TextureWidth, int TextureHeight, float Scree
 	randomRTDesc.Height = TextureHeight;
 	randomRTDesc.MipLevels = 1;
 	randomRTDesc.ArraySize = 1;
-	randomRTDesc.Format = DXGI_FORMAT_R8_UNORM;  //ÎÆÀíÏñËØÎª12¸ö×Ö½Ú
+	randomRTDesc.Format = DXGI_FORMAT_R8_UNORM;  //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Îª12ï¿½ï¿½ï¿½Ö½ï¿½
 	randomRTDesc.SampleDesc.Count = 1;
 	randomRTDesc.SampleDesc.Quality = 0;
 	randomRTDesc.Usage = D3D11_USAGE_DEFAULT;
@@ -163,8 +163,8 @@ bool GeometryBuffer::Initialize(int TextureWidth, int TextureHeight, float Scree
 
 	delete[] rand_data;
 
-	/*¶ÔÓ¦ÓÚGBufferºÍDepthBufferµÄÊÓ¿Ú´óÐ¡*/
-	//ÉèÖÃäÖÈ¾µÄÊÓ¿Ú
+	/*ï¿½ï¿½Ó¦ï¿½ï¿½GBufferï¿½ï¿½DepthBufferï¿½ï¿½ï¿½Ó¿Ú´ï¿½Ð¡*/
+	//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½È¾ï¿½ï¿½ï¿½Ó¿ï¿½
 	md3dViewport.Width = static_cast<float>(TextureWidth);
 	md3dViewport.Height = static_cast<float>(TextureHeight);
 	md3dViewport.MinDepth = 0.0f;
@@ -194,13 +194,13 @@ void GeometryBuffer::ShutDown()
 }
 
 
-//ÈÃ´ËÊ±ËùÓÐÍ¼ÐÎäÖÈ¾µ½Õâ¸öÄ¿Ç°äÖÈ¾µÄÎ»ÖÃ
+//ï¿½Ã´ï¿½Ê±ï¿½ï¿½ï¿½ï¿½Í¼ï¿½ï¿½ï¿½ï¿½È¾ï¿½ï¿½ï¿½ï¿½ï¿½Ä¿Ç°ï¿½ï¿½È¾ï¿½ï¿½Î»ï¿½ï¿½
 void GeometryBuffer::SetRenderTarget(XMFLOAT3 backColor)
 {
-	//°ó¶¨äÖÈ¾Ä¿±êÊÓÍ¼ºÍÉî¶ÈÄ£°åÊÓÍ¼µ½Êä³öäÖÈ¾¹ÜÏß£¬´ËÊ±äÖÈ¾Êä³öµ½Á½ÕÅÎÆÀíÖÐ
+	//ï¿½ï¿½ï¿½ï¿½È¾Ä¿ï¿½ï¿½ï¿½ï¿½Í¼ï¿½ï¿½ï¿½ï¿½ï¿½Ä£ï¿½ï¿½ï¿½ï¿½Í¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½È¾ï¿½ï¿½ï¿½ß£ï¿½ï¿½ï¿½Ê±ï¿½ï¿½È¾ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 	g_pDeviceContext->OMSetRenderTargets(BUFFER_COUNT, mRenderTargetViewArray, mDepthStencilView);
 
-	//ÉèÖÃÏàÓ¦µÄÊÓ¿Ú
+	//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ó¦ï¿½ï¿½ï¿½Ó¿ï¿½
 	g_pDeviceContext->RSSetViewports(1, &md3dViewport);
 
 	ClearGBuffer(backColor);
@@ -218,7 +218,7 @@ void GeometryBuffer::SetDepthTarget()
 void GeometryBuffer::ClearDepthBuffer()
 {
 
-	//Çå³ýÉî¶È»º´æºÍÄ£°å»º´æ
+	//ï¿½ï¿½ï¿½ï¿½ï¿½È»ï¿½ï¿½ï¿½ï¿½Ä£ï¿½å»ºï¿½ï¿½
 	g_pDeviceContext->ClearDepthStencilView(mDepthStencilView, D3D11_CLEAR_DEPTH|D3D11_CLEAR_STENCIL, 1.0f, 0);
 }
 
@@ -226,7 +226,7 @@ void GeometryBuffer::ClearDepthBuffer()
 
 void GeometryBuffer::ClearGBuffer(XMFLOAT3 backColor)
 {
-	//ÉèÖÃÇå³ý»º´æÎªµÄÑÕÉ«
+	//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Îªï¿½ï¿½ï¿½ï¿½É«
 	float color[4];
 	color[0] = backColor.x;
 	color[1] = backColor.y;

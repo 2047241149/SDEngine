@@ -1,9 +1,10 @@
-#include"Debugwindow.h"
+#include "Debugwindow.h"
+
 
 DebugWindow::DebugWindow(int ScrrenWidth, int ScrrenHeight, int BitmapWidth, int BitmapHeight)
 {
-    md3dVertexBuffer = NULL; //¶¥µã»º´æ
-    md3dIndexBuffer = NULL;  //Ë÷Òý»º´æ
+    md3dVertexBuffer = NULL; //ï¿½ï¿½ï¿½ã»ºï¿½ï¿½
+    md3dIndexBuffer = NULL;  //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 	mVertexCount = 0;
 	mIndexCount = 0;
 
@@ -25,7 +26,7 @@ DebugWindow::~DebugWindow()
 bool DebugWindow::Initialize(int ScrrenWidth, int ScrrenHeight, int BitmapWidth, int BitmapHeight)
 {
 	bool result;
-	//³õÊ¼»¯ÆÁÄ»³¤¿í£¬ÎÆÀí³¤¿í£¬×ø±êµã
+	//ï¿½ï¿½Ê¼ï¿½ï¿½ï¿½ï¿½Ä»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 	mScrrenWidth = ScrrenWidth;
 	mScrrenHeight = ScrrenHeight;
 	mBitmapWidth = BitmapWidth;
@@ -33,7 +34,7 @@ bool DebugWindow::Initialize(int ScrrenWidth, int ScrrenHeight, int BitmapWidth,
 	mPreviousPosX = -1;
 	mPreviousPosY = -1;
 
-	//³õÊ¼»¯¶¥µã»º´æ£¬Ë÷Òý»º´æ
+	//ï¿½ï¿½Ê¼ï¿½ï¿½ï¿½ï¿½ï¿½ã»ºï¿½æ£¬ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 	result = InitializeBuffer();
 	if (!result)
 	{
@@ -60,7 +61,7 @@ bool DebugWindow::Render(int positionX, int positionY)
 	{
 		return false;
 	}
-	//ÉèÖÃäÖÈ¾¹ÜÏßµÄ¶¥µã»º´æºÍË÷Òý»º´æ(IA½×¶Î)
+	//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½È¾ï¿½ï¿½ï¿½ßµÄ¶ï¿½ï¿½ã»ºï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½(IAï¿½×¶ï¿½)
 	RenderBuffers();
 	return true;
 }
@@ -68,27 +69,27 @@ bool DebugWindow::Render(int positionX, int positionY)
 bool DebugWindow::InitializeBuffer()
 {
 	Vertex* vertexs=NULL;
-	WORD*indices=NULL;  //Ò»¸ö×ÖÎªÁ½¸ö×Ö½Ú 
+	WORD*indices=NULL;  //Ò»ï¿½ï¿½ï¿½ï¿½Îªï¿½ï¿½ï¿½ï¿½ï¿½Ö½ï¿½ 
 
 	mVertexCount = 6;
 	mIndexCount = 6;
 
-	//´´½¨¶¥µãÊý×é
+	//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 	vertexs = new Vertex[mVertexCount];
 	if (!vertexs)
 		return false;
 
-	//´´½¨Ë÷ÒýÊý×é
+	//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 	indices = new WORD[mIndexCount];
 	if (!indices)
 		return false;
 	
-	//³õÊ¼»¯¶¥µãÊý×éÎª0
+	//ï¿½ï¿½Ê¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Îª0
 	memset(vertexs, 0, sizeof(Vertex)*mVertexCount);
 
 
-	//¸³ÓèË÷ÒýÊý×éÊý¾Ý
-	//×¢ÒâÓÃ×óÊÖ¶¨ÔòÅÐ¶¨ÊÇ²»ÊÇ±³Ãæ
+	//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+	//×¢ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö¶ï¿½ï¿½ï¿½ï¿½Ð¶ï¿½ï¿½Ç²ï¿½ï¿½Ç±ï¿½ï¿½ï¿½
 	indices[0] = 0;
 	indices[1] = 1;
 	indices[2] = 2;
@@ -96,7 +97,7 @@ bool DebugWindow::InitializeBuffer()
 	indices[4] = 4;
 	indices[5] = 5;
 
-	//µÚÒ»,Ìî³ä(¶¥µã)»º´æÐÎÈÝ½á¹¹ÌåºÍ×Ó×ÊÔ´Êý¾Ý½á¹¹Ìå,²¢´´½¨¶¥µã»º´æ(ÕâÀïÓÃµÄÊÇ¶¯Ì¬»º´æ)
+	//ï¿½ï¿½Ò»,ï¿½ï¿½ï¿½(ï¿½ï¿½ï¿½ï¿½)ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ý½á¹¹ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ô´ï¿½ï¿½ï¿½Ý½á¹¹ï¿½ï¿½,ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ã»ºï¿½ï¿½(ï¿½ï¿½ï¿½ï¿½ï¿½Ãµï¿½ï¿½Ç¶ï¿½Ì¬ï¿½ï¿½ï¿½ï¿½)
 	D3D11_BUFFER_DESC vertexBufferDesc;
 	vertexBufferDesc.Usage = D3D11_USAGE_DYNAMIC;
 	vertexBufferDesc.ByteWidth = sizeof(Vertex) * mVertexCount;
@@ -111,7 +112,7 @@ bool DebugWindow::InitializeBuffer()
 	vertexData.SysMemSlicePitch = 0;
 	HR(g_pDevice->CreateBuffer(&vertexBufferDesc, &vertexData, &md3dVertexBuffer));
 
-	//µÚ¶þ,Ìî³ä(Ë÷Òý)»º´æÐÎÈÝ½á¹¹ÌåºÍ×Ó×ÊÔ´Êý¾Ý½á¹¹Ìå,²¢´´½¨Ë÷Òý»º´æ
+	//ï¿½Ú¶ï¿½,ï¿½ï¿½ï¿½(ï¿½ï¿½ï¿½ï¿½)ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ý½á¹¹ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ô´ï¿½ï¿½ï¿½Ý½á¹¹ï¿½ï¿½,ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 	D3D11_BUFFER_DESC  indexBufferDesc;
 	indexBufferDesc.Usage = D3D11_USAGE_DEFAULT;
 	indexBufferDesc.ByteWidth = sizeof(WORD) * mIndexCount;
@@ -126,7 +127,7 @@ bool DebugWindow::InitializeBuffer()
 	indexData.SysMemSlicePitch = 0;
     HR(g_pDevice->CreateBuffer(&indexBufferDesc, &indexData, &md3dIndexBuffer));
 
-	//ÊÍ·Å¶¥µãÊý×éºÍË÷ÒýÊý×é(ÕâÊ±Êý¾ÝÒÑ¾­ÔØÈë»º´æ,²»ÐèÒªÕâÐ©Êý×éÁË)
+	//ï¿½Í·Å¶ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½(ï¿½ï¿½Ê±ï¿½ï¿½ï¿½ï¿½ï¿½Ñ¾ï¿½ï¿½ï¿½ï¿½ë»ºï¿½ï¿½,ï¿½ï¿½ï¿½ï¿½Òªï¿½ï¿½Ð©ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½)
 	delete[]vertexs;
 	vertexs = NULL;
 	delete[]indices;
@@ -137,7 +138,7 @@ bool DebugWindow::InitializeBuffer()
 
 void DebugWindow::ShutdownBuffer()
 {
-	//ÊÍ·Å¶¥µã»º´æºÍË÷Òý»º´æ
+	//ï¿½Í·Å¶ï¿½ï¿½ã»ºï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 	ReleaseCOM(md3dIndexBuffer);
 	ReleaseCOM(md3dVertexBuffer);
 
@@ -149,15 +150,15 @@ void DebugWindow::RenderBuffers()
 {
 
 
-	//ÉèÖÃ¶¥µã»º´æ
-	UINT stride = sizeof(Vertex); //Ã¿¸ö¶¥µãÔªËØµÄ¿ç¶È´óÐ¡£¬»òÕßËµÃ¿¸ö¶¥µãÔªËØµÄ´óÐ¡
+	//ï¿½ï¿½ï¿½Ã¶ï¿½ï¿½ã»ºï¿½ï¿½
+	UINT stride = sizeof(Vertex); //Ã¿ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ôªï¿½ØµÄ¿ï¿½È´ï¿½Ð¡ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ËµÃ¿ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ôªï¿½ØµÄ´ï¿½Ð¡
 	UINT offset = 0;
 	g_pDeviceContext->IASetVertexBuffers(0, 1, &md3dVertexBuffer, &stride, &offset);
 
-	//ÉèÖÃË÷Òý»º´æ
-	g_pDeviceContext->IASetIndexBuffer(md3dIndexBuffer, DXGI_FORMAT_R16_UINT, 0); //WordÎªÁ½¸ö×Ö½Ú
+	//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+	g_pDeviceContext->IASetIndexBuffer(md3dIndexBuffer, DXGI_FORMAT_R16_UINT, 0); //WordÎªï¿½ï¿½ï¿½ï¿½ï¿½Ö½ï¿½
 
-	//ÉèÖÃÍØÆË·½Ê½
+	//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ë·ï¿½Ê½
 	g_pDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
 	g_pDeviceContext->DrawIndexed(6, 0, 0);
@@ -170,20 +171,20 @@ void DebugWindow::RenderBuffers()
 
 bool DebugWindow::UpdateBuffers(int positionX, int positionY)
 {
-	//ÔÚ¶¥µã»º´æ×îÔ­Ê¼µÄÊý¾Ý±»¸Ä±äÁË,ÊôÓÚ¶¯Ì¬¶¥µã»º´æ(ÒÔÇ°½Ì³ÌÄÇÐ©Ô­Ê¼¶¥µãÊý¾ÝËäÈ»ºóÃæ³ÏÒâ±ä»»¾ØÕó£¬µ«ÊÇÎ´Ôø¸Ä±äÔ­Ê¼Êý¾Ý)
+	//ï¿½Ú¶ï¿½ï¿½ã»ºï¿½ï¿½ï¿½ï¿½Ô­Ê¼ï¿½ï¿½ï¿½ï¿½ï¿½Ý±ï¿½ï¿½Ä±ï¿½ï¿½ï¿½,ï¿½ï¿½ï¿½Ú¶ï¿½Ì¬ï¿½ï¿½ï¿½ã»ºï¿½ï¿½(ï¿½ï¿½Ç°ï¿½Ì³ï¿½ï¿½ï¿½Ð©Ô­Ê¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½È»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ä»»ï¿½ï¿½ï¿½ó£¬µï¿½ï¿½ï¿½Î´ï¿½ï¿½ï¿½Ä±ï¿½Ô­Ê¼ï¿½ï¿½ï¿½ï¿½)
 
-	//ÈçºÎäÖÈ¾Í¼Æ¬µÄÎ»ÖÃÎ´Ôø¸Ä±ä£¬¾ÍÍË³öº¯Êý£¬ÕâÑù¿ÉÒÔ½ÚÊ¡´óÁ¿´¦Àí
+	//ï¿½ï¿½ï¿½ï¿½ï¿½È¾Í¼Æ¬ï¿½ï¿½Î»ï¿½ï¿½Î´ï¿½ï¿½ï¿½Ä±ä£¬ï¿½ï¿½ï¿½Ë³ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ô½ï¿½Ê¡ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 	if ((positionX == mPreviousPosX)&&(positionY == mPreviousPosY))
 	{
 		return true;
 	}
 
-	//Èç¹û¸Ä±ääÖÈ¾Í¼Æ¬µÄÎ»ÖÃ¸Ä±äÁË£¬¾Í¸üÐÂÎ»ÖÃ
+	//ï¿½ï¿½ï¿½ï¿½Ä±ï¿½ï¿½ï¿½È¾Í¼Æ¬ï¿½ï¿½Î»ï¿½Ã¸Ä±ï¿½ï¿½Ë£ï¿½ï¿½Í¸ï¿½ï¿½ï¿½Î»ï¿½ï¿½
 	mPreviousPosX = positionX;
 	mPreviousPosY = positionY;
 
 
-	//Çó³öwin32×ø±êÏÂÍ¼Æ¬µÄµÄleft, right, top, bottom×ø±ê,ÓÉWIN32×ø±êPosXºÍPosY±äÎªD3D11×ø±êÏµ
+	//ï¿½ï¿½ï¿½win32ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Í¼Æ¬ï¿½Äµï¿½left, right, top, bottomï¿½ï¿½ï¿½ï¿½,ï¿½ï¿½WIN32ï¿½ï¿½ï¿½ï¿½PosXï¿½ï¿½PosYï¿½ï¿½ÎªD3D11ï¿½ï¿½ï¿½ï¿½Ïµ
 	float left, right, top, bottom;
 
 	left = (float)((mScrrenWidth / 2) *-1) + (float)positionX;
@@ -191,7 +192,7 @@ bool DebugWindow::UpdateBuffers(int positionX, int positionY)
 	top = (float)(mScrrenHeight / 2) - (float)positionY;
 	bottom = top - (float)mBitmapHeight;
 
-	//´´½¨ÁÙÊ±µÄ¶¥µãÊý×é
+	//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê±ï¿½Ä¶ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 	Vertex *vertexs;
 	vertexs = new Vertex[mVertexCount];
 	if (!vertexs)
@@ -199,7 +200,7 @@ bool DebugWindow::UpdateBuffers(int positionX, int positionY)
 		return false;
 	}
 
-	//¼ÓÔØÁÙÊ±¶¥µãÊý¾Ý,ÕâÐ©ÊÇDX11×ø±ê,¼´ÆÁÄ»ÖÐÐÄÎªÔ­µã
+	//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½,ï¿½ï¿½Ð©ï¿½ï¿½DX11ï¿½ï¿½ï¿½ï¿½,ï¿½ï¿½ï¿½ï¿½Ä»ï¿½ï¿½ï¿½ï¿½ÎªÔ­ï¿½ï¿½
 	vertexs[0].pos = XMFLOAT3(left, top, 0.0f);
 	vertexs[0].color = XMFLOAT2(0.0f, 0.0f);
 
@@ -218,21 +219,21 @@ bool DebugWindow::UpdateBuffers(int positionX, int positionY)
 	vertexs[5].pos = XMFLOAT3(right, bottom, 0.0f);
 	vertexs[5].color = XMFLOAT2(1.0f, 1.0f);
 
-	//Ëø¶¨¶¥µã»º´æÎªÁË¿ÉÒÔ½øÐÐÐ´Èë£¨¶¯Ì¬»º´æ²»ÄÜÓÃUpdateSubResourcesÐ´Èë£©
+	//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ã»ºï¿½ï¿½Îªï¿½Ë¿ï¿½ï¿½Ô½ï¿½ï¿½ï¿½Ð´ï¿½ë£¨ï¿½ï¿½Ì¬ï¿½ï¿½ï¿½æ²»ï¿½ï¿½ï¿½ï¿½UpdateSubResourcesÐ´ï¿½ë£©
 	D3D11_MAPPED_SUBRESOURCE mappedResource;
 	HR(g_pDeviceContext->Map(md3dVertexBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource));
 
-	//»ñÈ¡Ö¸Ïò¶¥µã»º´æµÄÖ¸Õë
+	//ï¿½ï¿½È¡Ö¸ï¿½ò¶¥µã»ºï¿½ï¿½ï¿½Ö¸ï¿½ï¿½
 	Vertex* verticesPtr;
 	verticesPtr = (Vertex*)mappedResource.pData;
 
-	//°ÑÊý¾Ý¸´ÖÆ½ø¶¥µã»º´æ
+	//ï¿½ï¿½ï¿½ï¿½ï¿½Ý¸ï¿½ï¿½Æ½ï¿½ï¿½ï¿½ï¿½ã»ºï¿½ï¿½
 	memcpy(verticesPtr, (void*)vertexs, (sizeof(Vertex) * mVertexCount));
 
-	//½âËø¶¥µã»º´æ
+	//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ã»ºï¿½ï¿½
 	g_pDeviceContext->Unmap(md3dVertexBuffer, 0);
 
-	//ÊÍ·Å¶¥µãÊý×é
+	//ï¿½Í·Å¶ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 	delete vertexs;
 	vertexs = NULL;
 	return true;

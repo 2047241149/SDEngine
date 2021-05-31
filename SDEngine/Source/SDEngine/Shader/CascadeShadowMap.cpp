@@ -26,7 +26,7 @@ CascadeShadowMap::~CascadeShadowMap()
 bool CascadeShadowMap::Init(int nTextureWidth, int nTexureHeight, int nCascadeNum)
 {
 
-	//´´½¨Éî¶È»º´æ(Ä£°å»º´æ)
+	//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½È»ï¿½ï¿½ï¿½(Ä£ï¿½å»ºï¿½ï¿½)
 	D3D11_TEXTURE2D_DESC depthStencilDesc;
 	ZeroMemory(&depthStencilDesc, sizeof(depthStencilDesc));
 	depthStencilDesc.Width = nTextureWidth * 3;
@@ -40,12 +40,12 @@ bool CascadeShadowMap::Init(int nTextureWidth, int nTexureHeight, int nCascadeNu
 	depthStencilDesc.BindFlags = D3D11_BIND_DEPTH_STENCIL | D3D11_BIND_SHADER_RESOURCE;
 	depthStencilDesc.CPUAccessFlags = 0;
 	depthStencilDesc.MiscFlags = 0;
-	HR(g_pDevice->CreateTexture2D(&depthStencilDesc,//Òª´´½¨µÄÎÆÀíµÄĞÎÈİ
+	HR(g_pDevice->CreateTexture2D(&depthStencilDesc,//Òªï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 		0,
 		&m_pDepthTexture2D));
 
 
-	//µÚÎå,´´½¨Éî¶È»º´æ(Ä£°å»º´æ)ÊÓÍ¼
+	//ï¿½ï¿½ï¿½ï¿½,ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½È»ï¿½ï¿½ï¿½(Ä£ï¿½å»ºï¿½ï¿½)ï¿½ï¿½Í¼
 	D3D11_DEPTH_STENCIL_VIEW_DESC depthStencilViewDesc;
 	ZeroMemory(&depthStencilViewDesc, sizeof(depthStencilViewDesc));
 	depthStencilViewDesc.Format = DXGI_FORMAT_D32_FLOAT;
@@ -58,7 +58,7 @@ bool CascadeShadowMap::Init(int nTextureWidth, int nTexureHeight, int nCascadeNu
 		&m_pDSV));
 
 
-	//´´½¨×ÅÉ«Æ÷×ÊÔ´ÊÓÍ¼
+	//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½É«ï¿½ï¿½ï¿½ï¿½Ô´ï¿½ï¿½Í¼
 	D3D11_SHADER_RESOURCE_VIEW_DESC shaderResourceViewDesc;
 	shaderResourceViewDesc.Format = DXGI_FORMAT_R32_FLOAT;
 	shaderResourceViewDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
@@ -80,22 +80,22 @@ void CascadeShadowMap::ShutDown()
 }
 
 
-//ÈÃ´ËÊ±ËùÓĞÍ¼ĞÎäÖÈ¾µ½Õâ¸öÄ¿Ç°äÖÈ¾µÄÎ»ÖÃ
+//ï¿½Ã´ï¿½Ê±ï¿½ï¿½ï¿½ï¿½Í¼ï¿½ï¿½ï¿½ï¿½È¾ï¿½ï¿½ï¿½ï¿½ï¿½Ä¿Ç°ï¿½ï¿½È¾ï¿½ï¿½Î»ï¿½ï¿½
 void CascadeShadowMap::SetRenderTarget(int nCascadeIndex)
 {
-	//°ó¶¨äÖÈ¾Ä¿±êÊÓÍ¼ºÍÉî¶ÈÄ£°åÊÓÍ¼µ½Êä³öäÖÈ¾¹ÜÏß£¬´ËÊ±äÖÈ¾Êä³öµ½Á½ÕÅÎÆÀíÖĞ
+	//ï¿½ï¿½ï¿½ï¿½È¾Ä¿ï¿½ï¿½ï¿½ï¿½Í¼ï¿½ï¿½ï¿½ï¿½ï¿½Ä£ï¿½ï¿½ï¿½ï¿½Í¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½È¾ï¿½ï¿½ï¿½ß£ï¿½ï¿½ï¿½Ê±ï¿½ï¿½È¾ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 	ID3D11RenderTargetView* rtv[1] = { nullptr };
 	g_pDeviceContext->OMSetRenderTargets(1, rtv, m_pDSV);
 //	ClearDepthBuffer();
 
-	//ÉèÖÃäÖÈ¾µÄÊÓ¿Ú
+	//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½È¾ï¿½ï¿½ï¿½Ó¿ï¿½
 	m_ViewPort.Width = static_cast<float>(m_nTextureWidth);
 	m_ViewPort.Height = static_cast<float>(m_nTextureHeight);
 	m_ViewPort.MinDepth = 0.0f;
 	m_ViewPort.MaxDepth = 1.0f;
 	m_ViewPort.TopLeftX = (float)m_nTextureWidth * (float)nCascadeIndex;
 	m_ViewPort.TopLeftY = 0.0f;
-	//ÉèÖÃÏàÓ¦µÄÊÓ¿Ú
+	//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ó¦ï¿½ï¿½ï¿½Ó¿ï¿½
 	g_pDeviceContext->RSSetViewports(1, &m_ViewPort);
 
 	
@@ -104,7 +104,7 @@ void CascadeShadowMap::SetRenderTarget(int nCascadeIndex)
 
 void CascadeShadowMap::ClearDepthBuffer()
 {
-	//Çå³ıÉî¶È»º´æºÍÄ£°å»º´æ
+	//ï¿½ï¿½ï¿½ï¿½ï¿½È»ï¿½ï¿½ï¿½ï¿½Ä£ï¿½å»ºï¿½ï¿½
 	g_pDeviceContext->ClearDepthStencilView(m_pDSV, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
 }
 

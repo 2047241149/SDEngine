@@ -1,33 +1,27 @@
 #include "GerstnerWave.h"
 
-
 GerstnerWave::GerstnerWave(int waveWidth, int waveHeight, float waveGridSize,
 	const vector<GerstnerWaveParam>& vecGerstnerWaveParam,
 	int mUVTile): Wave(waveWidth, waveHeight, waveGridSize, mUVTile),
 	m_vecGerstnerWaveParam(vecGerstnerWaveParam)
 {
-
 }
-
 
 GerstnerWave::GerstnerWave(const GerstnerWave& other) :Wave(other)
 {
-
 }
-
 
 GerstnerWave::~GerstnerWave()
 {
 
 }
 
-
-//¼ÆËãÎ»ÖÃ
+//ï¿½ï¿½ï¿½ï¿½Î»ï¿½ï¿½
 void GerstnerWave::CalculateVertexPos(float time)
 {
 	UINT index = 0;
 
-	//´Ó×óµ½ÓÒ£¬´ÓÏÂµ½ÉÏ
+	//ï¿½ï¿½ï¿½ï¿½ï¿½Ò£ï¿½ï¿½ï¿½ï¿½Âµï¿½ï¿½ï¿½
 	for (int posZ = -mWaveHeight / 2; posZ <= mWaveHeight / 2; ++posZ)
 	{
 		for (int posX = -mWaveWidth / 2; posX <= mWaveWidth / 2; ++posX)
@@ -62,10 +56,10 @@ float GerstnerWave::GetWaveVertexHeight(int x, int z, float time)
 
 		float fDdotXZ = dirWaveParam.fDrection.x * x + dirWaveParam.fDrection.y * z;
 
-		//ÆµÂÊ
+		//Æµï¿½ï¿½
 		float w = 2.0f * XM_PI / dirWaveParam.fWaveLength;
 
-		//ÏàÎ»²î³£Á¿
+		//ï¿½ï¿½Î»ï¿½î³£ï¿½ï¿½
 		float phaseConstant = dirWaveParam.fSpeed * w;
 
 
@@ -87,10 +81,10 @@ float GerstnerWave::GetPosXOffset(float x, float z, float time)
 
 		float fDdotXZ = gerstnerWaveParam.fDrection.x * x + gerstnerWaveParam.fDrection.y * z;
 
-		//ÆµÂÊ
+		//Æµï¿½ï¿½
 		float w = 2.0f * XM_PI / gerstnerWaveParam.fWaveLength;
 
-		//ÏàÎ»²î³£Á¿
+		//ï¿½ï¿½Î»ï¿½î³£ï¿½ï¿½
 		float phaseConstant = gerstnerWaveParam.fSpeed * w;
 
 		fPosXOffset += (float)gerstnerWaveParam.fAmplitude * gerstnerWaveParam.fSteepness *
@@ -111,10 +105,10 @@ float GerstnerWave::GetPosZOffset(float x, float z, float time)
 
 		float fDdotXZ = gerstnerWaveParam.fDrection.x * x + gerstnerWaveParam.fDrection.y * z;
 
-		//ÆµÂÊ
+		//Æµï¿½ï¿½
 		float w = 2.0f * XM_PI / gerstnerWaveParam.fWaveLength;
 
-		//ÏàÎ»²î³£Á¿
+		//ï¿½ï¿½Î»ï¿½î³£ï¿½ï¿½
 		float phaseConstant = gerstnerWaveParam.fSpeed * w;
 
 		fPosZOffset += (float)gerstnerWaveParam.fAmplitude * gerstnerWaveParam.fSteepness *

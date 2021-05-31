@@ -36,31 +36,30 @@ void Log::LogShaderCompileInfo(ID3D10Blob* errorMessage, WCHAR* shaderFilename)
 	unsigned long bufferSize, i;
 	ofstream fout;
 
-	// ╩Ях║ж╦оР╢МнСпео╒нд╠╬╣дж╦уК
+	// О©╫О©╫х║ж╦О©╫О©╫О©╫О©╫О©╫О©╫О©╫о╒О©╫д╠О©╫О©╫О©╫ж╦О©╫О©╫
 	compileErrors = (char*)(errorMessage->GetBufferPointer());
 
-	// ╩Ях║╢МнСпео╒нд╠╬╣дЁ╓╤х
+	// О©╫О©╫х║О©╫О©╫О©╫О©╫О©╫О©╫о╒О©╫д╠О©╫О©╫дЁО©╫О©╫О©╫
 	bufferSize = errorMessage->GetBufferSize();
 
-	// ╢╢╫╗р╩╦Жtxt,сцсзп╢хК╢МнСпео╒
+	// О©╫О©╫О©╫О©╫р╩О©╫О©╫txt,О©╫О©╫О©╫О©╫п╢О©╫О©╫О©╫О©╫О©╫О©╫О©╫о╒
 	fout.open("shader-error.txt");
 
-	//оКtxtнд╪Чп╢хК╢МнСпео╒
+	//О©╫О©╫txtО©╫д╪О©╫п╢О©╫О©╫О©╫О©╫О©╫О©╫О©╫о╒
 	for (i = 0; i < bufferSize; i++)
 	{
 		fout << compileErrors[i];
 	}
 
-	// ╧ь╠унд╪Ч
+	// О©╫ь╠О©╫О©╫д╪О©╫
 	fout.close();
 
 	// Release the error message.
 	errorMessage->Release();
 	errorMessage = 0;
 
-	//╣╞ЁЖлАпя╣дп║╢╟©з
+	//О©╫О©╫О©╫О©╫О©╫О©╫О©╫я╣О©╫п║О©╫О©╫О©╫О©╫
 	MessageBox(NULL, L"Error compiling shader.  Check shader-error.txt for message.", shaderFilename, MB_OK);
 }
 
 shared_ptr<Log> Log::single = nullptr;
-

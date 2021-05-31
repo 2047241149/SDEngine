@@ -68,7 +68,7 @@ void GraphicsSystem::InitDebugConsole()
 {
 	AllocConsole();
 	FILE* pf;
-	freopen_s(&pf, "CONOUT$", "w", stdout);   // ÖØ¶¨ÏòÊä³ö
+	freopen_s(&pf, "CONOUT$", "w", stdout);   // ï¿½Ø¶ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 }
 
 void GraphicsSystem::CloseDebugConsole()

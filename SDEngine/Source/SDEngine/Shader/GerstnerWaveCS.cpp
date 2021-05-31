@@ -8,13 +8,13 @@ GerstnerWaveCS::GerstnerWaveCS(UINT iWaveWidth, UINT iWaveHeight, WCHAR* csWaveP
 {
 
 
-	//waveWidth waveHeight ±ä³É 2 µÄÅ¼Êý±¶
+	//waveWidth waveHeight ï¿½ï¿½ï¿½ 2 ï¿½ï¿½Å¼ï¿½ï¿½ï¿½ï¿½
 	m_nWaveWidth = (iWaveWidth % 2) ? (iWaveWidth + 1) : (iWaveWidth);
 	m_nWaveHeight = (iWaveHeight % 2) ? (iWaveHeight + 1) : (iWaveHeight);
 
 	int nWaveVertexArraySize =(m_nWaveWidth * GroundThreadSize) * (m_nWaveHeight * GroundThreadSize);
 
-	//¶ÔÓ¦ (m_nWaveWidth * GroundThreadSize - 1) * (m_nWaveHeight * GroundThreadSize - 1)¸ö·½¿ò
+	//ï¿½ï¿½Ó¦ (m_nWaveWidth * GroundThreadSize - 1) * (m_nWaveHeight * GroundThreadSize - 1)ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 	int nWaceIndexArraySize = (m_nWaveWidth * GroundThreadSize - 1) * (m_nWaveHeight * GroundThreadSize - 1);
 	m_vecWaveVertexData.resize(nWaveVertexArraySize);
 	m_vecWaveIndexData.resize(nWaceIndexArraySize * 6);
@@ -38,8 +38,8 @@ void GerstnerWaveCS::UpdateWaveCB(float fCurrentTime)
 {
 
 
-	//¸üÐÂ±ä»»¾ØÕó³£Á¿»º´æµÄÖµ
-	//½«¾ØÕó×ªÖÃ,ÔÚ´«Èë³£Á¿»º´æÇ°½øÐÐ×ªÖÃ,ÒòÎªGPU¶Ô¾ØÕóÊý¾Ý»á×Ô¶¯½øÐÐÒ»´Î×ªÖÃ
+	//ï¿½ï¿½ï¿½Â±ä»»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Öµ
+	//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½×ªï¿½ï¿½,ï¿½Ú´ï¿½ï¿½ë³£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ç°ï¿½ï¿½ï¿½ï¿½×ªï¿½ï¿½,ï¿½ï¿½ÎªGPUï¿½Ô¾ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ý»ï¿½ï¿½Ô¶ï¿½ï¿½ï¿½ï¿½ï¿½Ò»ï¿½ï¿½×ªï¿½ï¿½
 	D3D11_MAPPED_SUBRESOURCE mappedSubresource;
 	g_pDeviceContext->Map(m_pCBWaveUpdate, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedSubresource);
 	auto pCBCommon = (CBGerstnerWaveUpdate*)(mappedSubresource.pData);
@@ -54,15 +54,15 @@ void GerstnerWaveCS::Render()
 
 	CreateAndCopyToDebugBuf();
 
-	//Èý½ÇÐÎÆ¬Ôª
+	//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ¬Ôª
 	g_pDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
-	//Éè¶¨VertexBuffetr
-	UINT stride = sizeof(VertexPCNTT); //Ã¿¸ö¶¥µãÔªËØµÄ¿ç¶È´óÐ¡£¬»òÕßËµÃ¿¸ö¶¥µãÔªËØµÄ´óÐ¡
+	//ï¿½è¶¨VertexBuffetr
+	UINT stride = sizeof(VertexPCNTT); //Ã¿ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ôªï¿½ØµÄ¿ï¿½È´ï¿½Ð¡ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ËµÃ¿ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ôªï¿½ØµÄ´ï¿½Ð¡
 	UINT offset = 0;
 	g_pDeviceContext->IASetVertexBuffers(0, 1, &m_pWaveVertexBuffer, &stride, &offset);
 
-	//Éè¶¨IndexBuffer
+	//ï¿½è¶¨IndexBuffer
 	g_pDeviceContext->IASetIndexBuffer(m_pWaveIndexBuffer, DXGI_FORMAT_R16_UINT, 0);
 
 	g_pDeviceContext->DrawIndexed(m_vecWaveIndexData.size(), 0, 0);
@@ -109,12 +109,12 @@ void GerstnerWaveCS::CreateComputerShader(WCHAR* csWavePosPath, WCHAR* csWaveNor
 	result = D3DCompileFromFile(csWavePosPath, NULL, NULL, "WaveVertexPosUVColor_CS", "cs_5_0", flag, 0, &ComputerShaderBuffer, &errorMessage);
 	if (FAILED(result))
 	{
-		//´æÔÚ´íÎóÐÅÏ¢
+		//ï¿½ï¿½ï¿½Ú´ï¿½ï¿½ï¿½ï¿½ï¿½Ï¢
 		if (errorMessage)
 		{
 			//Log::LogShaderCompileInfo(errorMessage, csWavePosPath);
 		}
-		//²»´æÔÚ´íÎóÐÅÏ¢,Ò²¾ÍÊÇÃ»ÓÐÕÒµ½ShaderÎÄ¼þ
+		//ï¿½ï¿½ï¿½ï¿½ï¿½Ú´ï¿½ï¿½ï¿½ï¿½ï¿½Ï¢,Ò²ï¿½ï¿½ï¿½ï¿½Ã»ï¿½ï¿½ï¿½Òµï¿½Shaderï¿½Ä¼ï¿½
 		else
 		{
 			MessageBox(NULL, L"can not find VS file", L"error", MB_OK);
@@ -131,12 +131,12 @@ void GerstnerWaveCS::CreateComputerShader(WCHAR* csWavePosPath, WCHAR* csWaveNor
 	result = D3DCompileFromFile(csWaveNormalPath, NULL, NULL, "WaveNormalTangent_CS", "cs_5_0", flag, 0, &ComputerShaderBuffer, &errorMessage);
 	if (FAILED(result))
 	{
-		//´æÔÚ´íÎóÐÅÏ¢
+		//ï¿½ï¿½ï¿½Ú´ï¿½ï¿½ï¿½ï¿½ï¿½Ï¢
 		if (errorMessage)
 		{
 			//Log::LogShaderCompileInfo(errorMessage, csWavePosPath);
 		}
-		//²»´æÔÚ´íÎóÐÅÏ¢,Ò²¾ÍÊÇÃ»ÓÐÕÒµ½ShaderÎÄ¼þ
+		//ï¿½ï¿½ï¿½ï¿½ï¿½Ú´ï¿½ï¿½ï¿½ï¿½ï¿½Ï¢,Ò²ï¿½ï¿½ï¿½ï¿½Ã»ï¿½ï¿½ï¿½Òµï¿½Shaderï¿½Ä¼ï¿½
 		else
 		{
 			MessageBox(NULL, L"can not find VS file", L"error", MB_OK);
@@ -158,7 +158,7 @@ void GerstnerWaveCS::CreateConstantBuffer()
 	D3D11_BUFFER_DESC cbufferDescUpdate;
 	ZeroMemory(&cbufferDescUpdate, sizeof(cbufferDescUpdate));
 	cbufferDescUpdate.Usage = D3D11_USAGE_DYNAMIC;
-	cbufferDescUpdate.ByteWidth = sizeof(CBGerstnerWaveUpdate);   //½á¹¹Ìå´óÐ¡,±ØÐëÎª16×Ö½Ú±¶Êý
+	cbufferDescUpdate.ByteWidth = sizeof(CBGerstnerWaveUpdate);   //ï¿½á¹¹ï¿½ï¿½ï¿½Ð¡,ï¿½ï¿½ï¿½ï¿½Îª16ï¿½Ö½Ú±ï¿½ï¿½ï¿½
 	cbufferDescUpdate.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
 	cbufferDescUpdate.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
 	cbufferDescUpdate.MiscFlags = 0;
@@ -169,7 +169,7 @@ void GerstnerWaveCS::CreateConstantBuffer()
 	D3D11_BUFFER_DESC cbufferDescNoUpdate;
 	ZeroMemory(&cbufferDescNoUpdate, sizeof(cbufferDescNoUpdate));
 	cbufferDescNoUpdate.Usage = D3D11_USAGE_DEFAULT;
-	cbufferDescNoUpdate.ByteWidth = sizeof(CBGerstnerWaveNoUpdate);   //½á¹¹Ìå´óÐ¡,±ØÐëÎª16×Ö½Ú±¶Êý
+	cbufferDescNoUpdate.ByteWidth = sizeof(CBGerstnerWaveNoUpdate);   //ï¿½á¹¹ï¿½ï¿½ï¿½Ð¡,ï¿½ï¿½ï¿½ï¿½Îª16ï¿½Ö½Ú±ï¿½ï¿½ï¿½
 	cbufferDescNoUpdate.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
 	cbufferDescNoUpdate.CPUAccessFlags = 0;
 	cbufferDescNoUpdate.MiscFlags = 0;
@@ -261,7 +261,7 @@ void GerstnerWaveCS::InitializeIndexBuffer()
 	{
 		for (int widthIndex = 0; widthIndex < WaveWidth; ++widthIndex)
 		{
-			//µÚÒ»¸öÈý½ÇÐÎ
+			//ï¿½ï¿½Ò»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 			//vertex1
 			WORD vertexIndex = heightIndex * (WaveWidth + 1) + widthIndex;
 			m_vecWaveIndexData[waveIndex] = vertexIndex;
@@ -280,7 +280,7 @@ void GerstnerWaveCS::InitializeIndexBuffer()
 
 
 
-			//µÚ¶þ¸öÈý½ÇÐÎ
+			//ï¿½Ú¶ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 			//vertex1
 			vertexIndex = heightIndex * (WaveWidth + 1) + widthIndex;
 			m_vecWaveIndexData[waveIndex] = vertexIndex;
@@ -321,7 +321,7 @@ void GerstnerWaveCS::InitializeIndexBuffer()
 void GerstnerWaveCS::CalculateWaveData()
 {
 
-	//---------------1.¼ÆËãWaveDataµÄPosÊý¾Ý-------------------------
+	//---------------1.ï¿½ï¿½ï¿½ï¿½WaveDataï¿½ï¿½Posï¿½ï¿½ï¿½ï¿½-------------------------
 	//ComputerShader
 	g_pDeviceContext->CSSetShader(m_pWavePosCS, NULL, 0);
 
@@ -334,7 +334,7 @@ void GerstnerWaveCS::CalculateWaveData()
 
 	g_pDeviceContext->Dispatch(m_nWaveWidth, m_nWaveHeight, 1);
 
-	//---------------2.¼ÆËã¼ÆËãWaveDataµÄNormalÊý¾Ý------------------------
+	//---------------2.ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½WaveDataï¿½ï¿½Normalï¿½ï¿½ï¿½ï¿½------------------------
 	g_pDeviceContext->CSSetShader(m_pWaveNormalCS, NULL, 0);
 	//RWStructBuffer
 	g_pDeviceContext->CSSetUnorderedAccessViews(0, 1, &m_pWaveDataUAV, nullptr);

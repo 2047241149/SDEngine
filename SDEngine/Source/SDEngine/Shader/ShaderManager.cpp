@@ -1,4 +1,3 @@
-
 #include "ShaderManager.h"
 #include "CascadeShadowMapManager.h"
 
@@ -32,7 +31,7 @@ bool ShaderManager::Init()
 	diffuseShader = shared_ptr<VertexPixelShader>(new
 		VertexPixelShader(L"Resource/Shader/DiffuseShader.fx", L"Resource/Shader/DiffuseShader.fx"));
 
-	//´´½¨ÒÔ¼°³õÊ¼»¯mPhongShader
+	//ï¿½ï¿½ï¿½ï¿½ï¿½Ô¼ï¿½ï¿½ï¿½Ê¼ï¿½ï¿½mPhongShader
 	defferedDirLightShader = shared_ptr<VertexPixelShader>(new
 		VertexPixelShader(L"Resource/Shader/DefferedDirLightShader.fx",
 			L"Resource/Shader/DefferedDirLightShader.fx"));

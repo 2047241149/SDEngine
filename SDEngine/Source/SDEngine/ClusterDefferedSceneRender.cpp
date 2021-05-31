@@ -143,7 +143,7 @@ void ClusterDefferedSceneRender::Render()
 	g_RenderMask->EndEvent();
 #endif
 
-	//draw transparent object(normal transparent object£¬SSR)
+	//draw transparent object(normal transparent objectï¿½ï¿½SSR)
 	g_RenderMask->BeginEvent(L"RenderTransparency");
 	RenderTransparency();
 	g_RenderMask->EndEvent();
@@ -318,7 +318,7 @@ void ClusterDefferedSceneRender::RenderSSRPass()
 {
 	//mSSRRT->SetRenderTarget();
 	ID3D11RenderTargetView* backRTV = GDirectxCore->GetRTV();
-	//¿¿Ä£°å¾´æÖµíÅÐ”à
+	//ï¿½ï¿½Ä£ï¿½å¾ï¿½ï¿½Öµï¿½ï¿½ï¿½Ð”ï¿½
 	g_pDeviceContext->OMSetRenderTargets(1, &backRTV, nullptr);
 	GDirectxCore->SetDefualtViewPort();
 	GDirectxCore->TurnOnAlphaBlend();
@@ -376,7 +376,7 @@ void ClusterDefferedSceneRender::RenderOpacity()
 	g_RenderMask->EndEvent();
 }
 
-//»æÖÆÍ¸Ã÷ÎïÌå·ÖÎª»æÖÆÍ¸Ã÷
+//ï¿½ï¿½ï¿½ï¿½Í¸ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Îªï¿½ï¿½ï¿½ï¿½Í¸ï¿½ï¿½
 void ClusterDefferedSceneRender::RenderTransparency()
 {
 	RenderGeneralTransparency();
@@ -432,7 +432,7 @@ void ClusterDefferedSceneRender::RenderSceneBackDepthBuffer()
 		}
 	}
 
-	//»Ö¸´Ä¬ÈÏµÄRS
+	//ï¿½Ö¸ï¿½Ä¬ï¿½Ïµï¿½RS
 	GDirectxCore->RecoverDefualtRS();
 
 }
@@ -610,7 +610,7 @@ void ClusterDefferedSceneRender::RenderDirLightPass()
 	shaderResourceView[5] = mGeometryBuffer->GetGBufferSRV(GBufferType::Diffuse);
 	GDirectxCore->TurnOffZBuffer();
 
-	//TODO: Ö»´æÔÚÒ»´ÎIradianceMapäÖÈ¾?
+	//TODO: Ö»ï¿½ï¿½ï¿½ï¿½Ò»ï¿½ï¿½IradianceMapï¿½ï¿½È¾?
 	for (int index = 0; index < (int)GLightManager->m_vecDirLight.size(); ++index)
 	{
 		shared_ptr<DirectionLight> pDirLight = GLightManager->m_vecDirLight[index];
@@ -671,8 +671,8 @@ void ClusterDefferedSceneRender::RenderShadowMapPass()
 
 	XMMATRIX lightViewMatrix = GLightManager->GetMainLight()->GetViewMatrix();
 
-	//äÖÈ¾ÐèÒªÍ¶ÉäÒõÓ°µÄÎïÌåµ½RTÉÏ
-	//ºóÃæ¿ÉÒÔ¿¼ÂÇÓÃGeometryShader¼õÉÙDrawCall
+	//ï¿½ï¿½È¾ï¿½ï¿½ÒªÍ¶ï¿½ï¿½ï¿½ï¿½Ó°ï¿½ï¿½ï¿½ï¿½ï¿½åµ½RTï¿½ï¿½
+	//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ô¿ï¿½ï¿½ï¿½ï¿½ï¿½GeometryShaderï¿½ï¿½ï¿½ï¿½DrawCall
 	mCascadeShadowsManager->ClearDepthBuffer();
 	for (int nCascadeIndex = 0; nCascadeIndex < CASCADE_SHADOW_MAP_NUM; ++nCascadeIndex)
 	{
@@ -695,7 +695,7 @@ void ClusterDefferedSceneRender::RenderShadowMapPass()
 		}
 	}
 
-	//äÖÈ¾µÃµ½ÒõÓ°
+	//ï¿½ï¿½È¾ï¿½Ãµï¿½ï¿½ï¿½Ó°
 	mGrayShadowMap->SetRenderTarget();
 	GDirectxCore->TurnOffZBuffer();
 	GShaderManager->shadowMapShader->SetTexture("WorldPosTex", mGeometryBuffer->GetGBufferSRV(GBufferType::Pos));
@@ -716,7 +716,7 @@ void ClusterDefferedSceneRender::RenderShadowMapPass()
 
 void ClusterDefferedSceneRender::RenderSSAOPass()
 {
-	//äÖÈ¾µÃµ½SSAORT
+	//ï¿½ï¿½È¾ï¿½Ãµï¿½SSAORT
 	ssaoManager->Render(mGeometryBuffer.get());
 }
 
@@ -739,7 +739,7 @@ void ClusterDefferedSceneRender::RenderPreZPass()
 		}
 	}
 
-	//»Ö¸´Ä¬ÈÏµÄRS
+	//ï¿½Ö¸ï¿½Ä¬ï¿½Ïµï¿½RS
 	GDirectxCore->RecoverDefualtRS();
 }
 

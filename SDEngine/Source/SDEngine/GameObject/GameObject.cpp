@@ -34,7 +34,7 @@ void GameObject::Render(RenderMode renderMode)
 	XMMATRIX worldMatrix = this->GetWorldMatrix();
 	XMFLOAT4 errorShaderColor = XMFLOAT4(1.0f, 0.0f, 0.0f, 1.0f);
 
-	//Èý½ÇÐÎÆ¬Ôª
+	//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ¬Ôª
 	g_pDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 	vector<ModelData>& mModelList = m_pMesh->m_pFBXModel->mModelList;
 	for (UINT index = 0; index < mModelList.size(); ++index)
@@ -44,7 +44,7 @@ void GameObject::Render(RenderMode renderMode)
 
 		for (UINT i = 0; i < mMeshList.size(); ++i)
 		{	
-			//¸ù¾Ý²ÄÖÊIdÉèÖÃÏàÓ¦µÄVertexShader,PixelShader
+			//ï¿½ï¿½ï¿½Ý²ï¿½ï¿½ï¿½Idï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ó¦ï¿½ï¿½VertexShader,PixelShader
 			MeshData& mesh = mMeshList[i];
 
 			MaterialTexFileName& material = mModelData->mMaterialMap[mesh.materialId];
@@ -64,7 +64,7 @@ void GameObject::Render(RenderMode renderMode)
 				GShaderManager->depthShader->SetMatrix("Proj", GCamera->GetProjectionMatrix());
 				GShaderManager->depthShader->Apply();
 			}
-			//´¿ÑÕÉ«»æÖÆÄ£Ê½ TODO:´úÂëÖØ¸´,ÐèÒªÖØ¹¹
+			//ï¿½ï¿½ï¿½ï¿½É«ï¿½ï¿½ï¿½ï¿½Ä£Ê½ TODO:ï¿½ï¿½ï¿½ï¿½ï¿½Ø¸ï¿½,ï¿½ï¿½Òªï¿½Ø¹ï¿½
 			else if (eMaterialType == MaterialType::PURE_COLOR)
 			{
 				GShaderManager->pureColorShader->SetMatrix("World", worldMatrix);
@@ -76,7 +76,7 @@ void GameObject::Render(RenderMode renderMode)
 				GShaderManager->pureColorShader->SetFloat("metal", m_pMesh->metal);
 				GShaderManager->pureColorShader->Apply();
 			}
-			//Âþ·´ÉäÌùÍ¼(½ö½öÓÐ)
+			//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Í¼(ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½)
 			else if (eMaterialType == MaterialType::DIFFUSE)
 			{
 				if (albedoSRV == nullptr|| material.diffuseMapFileName =="")
@@ -92,7 +92,7 @@ void GameObject::Render(RenderMode renderMode)
 				}
 				else if (albedoSRV)
 				{
-					//¿¼ÂÇViewMatrix,ProjMatrix,UIOrthoMatrix×÷ÎªÈ«¾ÖCB,ÒÔ¼°È«¾ÖSamplerState????
+					//ï¿½ï¿½ï¿½ï¿½ViewMatrix,ProjMatrix,UIOrthoMatrixï¿½ï¿½ÎªÈ«ï¿½ï¿½CB,ï¿½Ô¼ï¿½È«ï¿½ï¿½SamplerState????
 					GShaderManager->diffuseShader->SetMatrix("World", worldMatrix);
 					GShaderManager->diffuseShader->SetMatrix("View", GCamera->GetViewMatrix());
 					GShaderManager->diffuseShader->SetMatrix("Proj", GCamera->GetProjectionMatrix());
@@ -105,7 +105,7 @@ void GameObject::Render(RenderMode renderMode)
 					GShaderManager->diffuseShader->Apply();
 				}
 			}
-			//Âþ·´Éä + ·¨ÏßÌùÍ¼
+			//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ + ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Í¼
 			else if (eMaterialType == MaterialType::DIFFUSE_NORMAL)
 			{
 				if (albedoSRV && bumpSRV&&material.bumpMapFileName != "")
@@ -134,7 +134,7 @@ void GameObject::Render(RenderMode renderMode)
 					GShaderManager->pureColorShader->Apply();
 				}
 			}
-			//Âþ·´Éä + ¾µÃæÌùÍ¼
+			//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ + ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Í¼
 			else if (eMaterialType == MaterialType::DIFFUSE_SPECULAR)
 			{
 				if (albedoSRV && specSRV&&material.specularMapFileName != "")
@@ -162,7 +162,7 @@ void GameObject::Render(RenderMode renderMode)
 					GShaderManager->pureColorShader->Apply();
 				}
 			}
-			//Âþ·´ÉäÌùÍ¼ + ·¨ÏßÌùÍ¼ + ¾µÃæÌùÍ¼
+			//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Í¼ + ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Í¼ + ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Í¼
 			else if (eMaterialType == MaterialType::DIFFUSE_NORMAL_SPECULAR)
 			{
 				if (albedoSRV && bumpSRV&&specSRV && material.bumpMapFileName != "" &&  material.specularMapFileName!="")
@@ -192,7 +192,7 @@ void GameObject::Render(RenderMode renderMode)
 					GShaderManager->pureColorShader->Apply();
 				}
 			}
-			//Ïß¿ò»æÖÆÄ£Ê½
+			//ï¿½ß¿ï¿½ï¿½ï¿½ï¿½Ä£Ê½
 			else if(eMaterialType == MaterialType::WIRE_FRAME)
 			{
 				GShaderManager->pureColorShader->SetMatrix("World", worldMatrix);
@@ -206,7 +206,7 @@ void GameObject::Render(RenderMode renderMode)
 
 			} 
 
-			//½ö½ö»ñÈ¡Éî¶È»º´æ
+			//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½È¡ï¿½ï¿½È»ï¿½ï¿½ï¿½
 			else if (eMaterialType == MaterialType::DEPTH_BUFFER)
 			{
 				GShaderManager->depthGetShader->SetMatrix("World", worldMatrix);
@@ -215,13 +215,13 @@ void GameObject::Render(RenderMode renderMode)
 				GShaderManager->depthGetShader->Apply();
 			}
 
-			//ÉèÖÃ¶¥µã»º´æ
-			UINT stride = sizeof(mesh.mVertexData[0]); //Ã¿¸ö¶¥µãÔªËØµÄ¿ç¶È´óÐ¡£¬»òÕßËµÃ¿¸ö¶¥µãÔªËØµÄ´óÐ¡
+			//ï¿½ï¿½ï¿½Ã¶ï¿½ï¿½ã»ºï¿½ï¿½
+			UINT stride = sizeof(mesh.mVertexData[0]); //Ã¿ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ôªï¿½ØµÄ¿ï¿½È´ï¿½Ð¡ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ËµÃ¿ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ôªï¿½ØµÄ´ï¿½Ð¡
 			UINT offset = 0;
 			g_pDeviceContext->IASetVertexBuffers(0, 1, &mesh.mVertexBuffer, &stride, &offset);
 
-			//ÉèÖÃË÷Òý»º´æ
-			g_pDeviceContext->IASetIndexBuffer(mesh.mIndexBuffer, DXGI_FORMAT_R16_UINT, 0); //WordÎªÁ½¸ö×Ö½Ú																		  //ÉèÖÃÍØÆË·½Ê½
+			//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+			g_pDeviceContext->IASetIndexBuffer(mesh.mIndexBuffer, DXGI_FORMAT_R16_UINT, 0); //WordÎªï¿½ï¿½ï¿½ï¿½ï¿½Ö½ï¿½																		  //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ë·ï¿½Ê½
 
 			g_pDeviceContext->DrawIndexed(mesh.mIndexData.size(), 0, 0);
 		}
@@ -231,7 +231,7 @@ void GameObject::Render(RenderMode renderMode)
 
 void GameObject::RenderMesh()
 {
-	//Èý½ÇÐÎÆ¬Ôª
+	//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ¬Ôª
 	g_pDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
 	vector<ModelData>& mModelList = m_pMesh->m_pFBXModel->mModelList;
@@ -245,16 +245,16 @@ void GameObject::RenderMesh()
 		for (UINT i = 0; i < mMeshList.size(); ++i)
 		{
 
-			//¸ù¾Ý²ÄÖÊIdÉèÖÃÏàÓ¦µÄVertexShader,PixelShader
+			//ï¿½ï¿½ï¿½Ý²ï¿½ï¿½ï¿½Idï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ó¦ï¿½ï¿½VertexShader,PixelShader
 			MeshData& mesh = mMeshList[i];
 
-			//ÉèÖÃ¶¥µã»º´æ
-			UINT stride = sizeof(mesh.mVertexData[0]); //Ã¿¸ö¶¥µãÔªËØµÄ¿ç¶È´óÐ¡£¬»òÕßËµÃ¿¸ö¶¥µãÔªËØµÄ´óÐ¡
+			//ï¿½ï¿½ï¿½Ã¶ï¿½ï¿½ã»ºï¿½ï¿½
+			UINT stride = sizeof(mesh.mVertexData[0]); //Ã¿ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ôªï¿½ØµÄ¿ï¿½È´ï¿½Ð¡ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ËµÃ¿ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ôªï¿½ØµÄ´ï¿½Ð¡
 			UINT offset = 0;
 			g_pDeviceContext->IASetVertexBuffers(0, 1, &mesh.mVertexBuffer, &stride, &offset);
 
-			//ÉèÖÃË÷Òý»º´æ
-			g_pDeviceContext->IASetIndexBuffer(mesh.mIndexBuffer, DXGI_FORMAT_R16_UINT, 0); //WordÎªÁ½¸ö×Ö½Ú																		  //ÉèÖÃÍØÆË·½Ê½
+			//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+			g_pDeviceContext->IASetIndexBuffer(mesh.mIndexBuffer, DXGI_FORMAT_R16_UINT, 0); //WordÎªï¿½ï¿½ï¿½ï¿½ï¿½Ö½ï¿½																		  //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ë·ï¿½Ê½
 
 			g_pDeviceContext->DrawIndexed(mesh.mIndexData.size(), 0, 0);
 		}

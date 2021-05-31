@@ -1,9 +1,9 @@
-#include"Quad.h"
+#include "Quad.h"
 
 Quad::Quad()
 {
-    md3dVertexBuffer=nullptr; //¶¥µã»º´æ
-    md3dIndexBuffer = nullptr;  //Ë÷Òý»º´æ
+    md3dVertexBuffer=nullptr; //ï¿½ï¿½ï¿½ã»ºï¿½ï¿½
+    md3dIndexBuffer = nullptr;  //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 	mVertexCount = 0;
 	mIndexCount = 0;
 	Initialize();
@@ -26,7 +26,7 @@ bool Quad::Initialize()
 
 
 
-	//³õÊ¼»¯¶¥µã»º´æ£¬Ë÷Òý»º´æ
+	//ï¿½ï¿½Ê¼ï¿½ï¿½ï¿½ï¿½ï¿½ã»ºï¿½æ£¬ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 	result = InitializeBuffer();
 	if (!result)
 	{
@@ -46,13 +46,13 @@ void Quad::Shutdown()
 bool Quad::Render()
 {
 
-	//ÉèÖÃ¶¥µã»º´æ
-	UINT stride = sizeof(Vertex); //Ã¿¸ö¶¥µãÔªËØµÄ¿ç¶È´óÐ¡£¬»òÕßËµÃ¿¸ö¶¥µãÔªËØµÄ´óÐ¡
+	//ï¿½ï¿½ï¿½Ã¶ï¿½ï¿½ã»ºï¿½ï¿½
+	UINT stride = sizeof(Vertex); //Ã¿ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ôªï¿½ØµÄ¿ï¿½È´ï¿½Ð¡ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ËµÃ¿ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ôªï¿½ØµÄ´ï¿½Ð¡
 	UINT offset = 0;
 	g_pDeviceContext->IASetVertexBuffers(0, 1, &md3dVertexBuffer, &stride, &offset);
 
-	//ÉèÖÃË÷Òý»º´æ
-	g_pDeviceContext->IASetIndexBuffer(md3dIndexBuffer, DXGI_FORMAT_R16_UINT, 0); //WordÎªÁ½¸ö×Ö½Ú
+	//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+	g_pDeviceContext->IASetIndexBuffer(md3dIndexBuffer, DXGI_FORMAT_R16_UINT, 0); //WordÎªï¿½ï¿½ï¿½ï¿½ï¿½Ö½ï¿½
 
 																			
 	g_pDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
@@ -65,22 +65,22 @@ bool Quad::Render()
 bool Quad::InitializeBuffer()
 {
 	Vertex* vertexs = nullptr;
-	WORD*indices = nullptr;  //Ò»¸ö×ÖÎªÁ½¸ö×Ö½Ú 
+	WORD*indices = nullptr;  //Ò»ï¿½ï¿½ï¿½ï¿½Îªï¿½ï¿½ï¿½ï¿½ï¿½Ö½ï¿½ 
 
 	mVertexCount = 4;
 	mIndexCount = 6;
 
-	//´´½¨¶¥µãÊý×é
+	//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 	vertexs = new Vertex[mVertexCount];
 	if (!vertexs)
 		return false;
 
-	//´´½¨Ë÷ÒýÊý×é
+	//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 	indices = new WORD[mIndexCount];
 	if (!indices)
 		return false;
 	
-	//³õÊ¼»¯¶¥µãÊý×é
+	//ï¿½ï¿½Ê¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 	vertexs[0].pos = XMFLOAT3(-1.0f, 1.0f, 0.0f);
 	vertexs[0].texcoord = XMFLOAT2(0.0f, 0.0f);
 	vertexs[1].pos = XMFLOAT3(1.0f, 1.0f, 0.0f);
@@ -90,8 +90,8 @@ bool Quad::InitializeBuffer()
 	vertexs[3].pos = XMFLOAT3(1.0f, -1.0f, 0.0f);
 	vertexs[3].texcoord = XMFLOAT2(1.0f, 1.0f);
 
-	//¸³ÓèË÷ÒýÊý×éÊý¾Ý
-	//×¢ÒâÓÃ×óÊÖ¶¨ÔòÅÐ¶¨ÊÇ²»ÊÇ±³Ãæ
+	//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+	//×¢ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö¶ï¿½ï¿½ï¿½ï¿½Ð¶ï¿½ï¿½Ç²ï¿½ï¿½Ç±ï¿½ï¿½ï¿½
 	indices[0] = 0;
 	indices[1] = 1;
 	indices[2] = 2;
@@ -100,7 +100,7 @@ bool Quad::InitializeBuffer()
 	indices[5] = 2;
 
 
-	//µÚÒ»,Ìî³ä(¶¥µã)»º´æÐÎÈÝ½á¹¹ÌåºÍ×Ó×ÊÔ´Êý¾Ý½á¹¹Ìå,²¢´´½¨¶¥µã»º´æ(ÕâÀïÓÃµÄÊÇ¶¯Ì¬»º´æ)
+	//ï¿½ï¿½Ò»,ï¿½ï¿½ï¿½(ï¿½ï¿½ï¿½ï¿½)ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ý½á¹¹ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ô´ï¿½ï¿½ï¿½Ý½á¹¹ï¿½ï¿½,ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ã»ºï¿½ï¿½(ï¿½ï¿½ï¿½ï¿½ï¿½Ãµï¿½ï¿½Ç¶ï¿½Ì¬ï¿½ï¿½ï¿½ï¿½)
 	D3D11_BUFFER_DESC vertexBufferDesc;
 	vertexBufferDesc.Usage = D3D11_USAGE_DEFAULT;
 	vertexBufferDesc.ByteWidth = sizeof(Vertex) * mVertexCount;
@@ -115,7 +115,7 @@ bool Quad::InitializeBuffer()
 	vertexData.SysMemSlicePitch = 0;
 	HR(g_pDevice->CreateBuffer(&vertexBufferDesc, &vertexData, &md3dVertexBuffer));
 
-	//µÚ¶þ,Ìî³ä(Ë÷Òý)»º´æÐÎÈÝ½á¹¹ÌåºÍ×Ó×ÊÔ´Êý¾Ý½á¹¹Ìå,²¢´´½¨Ë÷Òý»º´æ
+	//ï¿½Ú¶ï¿½,ï¿½ï¿½ï¿½(ï¿½ï¿½ï¿½ï¿½)ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ý½á¹¹ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ô´ï¿½ï¿½ï¿½Ý½á¹¹ï¿½ï¿½,ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 	D3D11_BUFFER_DESC  indexBufferDesc;
 	indexBufferDesc.Usage = D3D11_USAGE_DEFAULT;
 	indexBufferDesc.ByteWidth = sizeof(WORD) * mIndexCount;
@@ -130,7 +130,7 @@ bool Quad::InitializeBuffer()
 	indexData.SysMemSlicePitch = 0;
     HR(g_pDevice->CreateBuffer(&indexBufferDesc, &indexData, &md3dIndexBuffer));
 
-	//ÊÍ·Å¶¥µãÊý×éºÍË÷ÒýÊý×é
+	//ï¿½Í·Å¶ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 	delete[]vertexs;
 	vertexs = nullptr;
 	delete[]indices;
@@ -141,7 +141,7 @@ bool Quad::InitializeBuffer()
 
 void Quad::ShutdownBuffer()
 {
-	//ÊÍ·Å¶¥µã»º´æºÍË÷Òý»º´æ
+	//ï¿½Í·Å¶ï¿½ï¿½ã»ºï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 	ReleaseCOM(md3dIndexBuffer);
 	ReleaseCOM(md3dVertexBuffer);
 

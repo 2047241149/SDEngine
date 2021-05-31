@@ -39,7 +39,7 @@ bool GrussianBlurCS::InitShader(WCHAR* csFilePath)
 	ID3D10Blob* CSBlobVertical;
 
 
-	//³õÊ¼»¯²ÎÊý
+	//ï¿½ï¿½Ê¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 	errorMessage = NULL;
 	CSBlobHorizontal = NULL;
 	CSBlobVertical = NULL;
@@ -49,7 +49,7 @@ bool GrussianBlurCS::InitShader(WCHAR* csFilePath)
 	flag |= D3DCOMPILE_DEBUG | D3DCOMPILE_SKIP_OPTIMIZATION;
 	#endif
 
-	//±àÒëComputeShaderHorizontal
+	//ï¿½ï¿½ï¿½ï¿½ComputeShaderHorizontal
 	result = D3DCompileFromFile(csFilePath, NULL, NULL, "CS_HorizontalBlur", "cs_5_0", flag, 0, &CSBlobHorizontal, &errorMessage);
 	if (FAILED(result))
 	{
@@ -67,7 +67,7 @@ bool GrussianBlurCS::InitShader(WCHAR* csFilePath)
 		CSBlobHorizontal->GetBufferSize(), nullptr, &m_pCSGrussianBlurHorizontal));
 
 
-	//±àÒëComputeShaderVertical
+	//ï¿½ï¿½ï¿½ï¿½ComputeShaderVertical
 	result = D3DCompileFromFile(csFilePath, nullptr, nullptr, "CS_VerticalBlur", "cs_5_0", flag, 0, &CSBlobVertical, &errorMessage);
 	if (FAILED(result))
 	{
@@ -123,7 +123,7 @@ void GrussianBlurCS::Run(int nScreenWidth, int nScreenHeight, RWRenderTexture* p
 	g_pDeviceContext->Dispatch(nScreenWidth, nDispatchY, 1);
 
 
-	//·ÀÖ¹SRVºÍUAVÍ¬Ê±½øÐÐ£¬ÄÄÅÂÊÇ²»Í¬µÄShader½×¶Î×ÊÔ´¶¼²»¿ÉÒÔ
+	//ï¿½ï¿½Ö¹SRVï¿½ï¿½UAVÍ¬Ê±ï¿½ï¿½ï¿½Ð£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ç²ï¿½Í¬ï¿½ï¿½Shaderï¿½×¶ï¿½ï¿½ï¿½Ô´ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 	g_pDeviceContext->CSSetShaderResources(0, 1, nullSRV);
 	g_pDeviceContext->CSSetUnorderedAccessViews(0, 1, nullUAV, nullptr);
 

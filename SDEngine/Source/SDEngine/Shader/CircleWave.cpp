@@ -21,7 +21,7 @@ CircleWave::~CircleWave()
 }
 
 
-//¼ÆËãÎ»ÖÃ
+//ï¿½ï¿½ï¿½ï¿½Î»ï¿½ï¿½
 void CircleWave::CalculateVertexPos(float time)
 {
 	Wave::CalculateVertexPos(time);
@@ -34,7 +34,7 @@ void CircleWave::UpdateWaveData(float time)
 }
 
 
-//½â›QÖÐÐÄ¼â·åÎÊÌâ
+//ï¿½ï¿½Qï¿½ï¿½ï¿½Ä¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 float CircleWave::GetWaveVertexHeight(int x, int z, float time)
 {
 	float fHeight = 0.0f;
@@ -45,16 +45,16 @@ float CircleWave::GetWaveVertexHeight(int x, int z, float time)
 		float fOffsetX = circleWaveParam.fCenter.x - x;
 		float fOffsetZ = circleWaveParam.fCenter.y - z;
 
-		//+0.000001ÊÇÎªÁË±£Ö¤·ÖÄ¸²»Îª0
+		//+0.000001ï¿½ï¿½Îªï¿½Ë±ï¿½Ö¤ï¿½ï¿½Ä¸ï¿½ï¿½Îª0
 		float distanceToCenter = sqrt(fOffsetX * fOffsetX + fOffsetZ *fOffsetZ) + 0.000001f;
 		fOffsetX /= distanceToCenter;
 		fOffsetZ /= distanceToCenter;
 		float DdotXZ = fOffsetX * x + fOffsetZ * z;
 
-		//ÆµÂÊ
+		//Æµï¿½ï¿½
 		float w = 2.0f * XM_PI / circleWaveParam.fWaveLength;
 
-		//ÏàÎ»²î³£Á¿
+		//ï¿½ï¿½Î»ï¿½î³£ï¿½ï¿½
 		float phaseConstant = circleWaveParam.fSpeed * w;
 		float sinParams = sin(DdotXZ * w + time * phaseConstant);
 

@@ -43,7 +43,7 @@ bool NoiseTexture::Init(int textureWidth, int textureHeight)
 	pInitialData.pSysMem = color;
 	pInitialData.SysMemPitch = textureWidth * sizeof(XMFLOAT3);
 
-	//Ìî³ä2DÎÆÀíÐÎÈÝ½á¹¹Ìå,²¢´´½¨2DäÖÈ¾Ä¿±êÎÆÀí
+	//ï¿½ï¿½ï¿½2Dï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ý½á¹¹ï¿½ï¿½,ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½2Dï¿½ï¿½È¾Ä¿ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 	textureDesc.Width = textureWidth;
 	textureDesc.Height = textureHeight;
 	textureDesc.MipLevels = 1;
@@ -56,7 +56,7 @@ bool NoiseTexture::Init(int textureWidth, int textureHeight)
 	textureDesc.MiscFlags = 0;
 	HR(g_pDevice->CreateTexture2D(&textureDesc, &pInitialData, &texture2d));
 
-	//´´½¨×ÅÉ«Æ÷×ÊÔ´ÊÓÍ¼
+	//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½É«ï¿½ï¿½ï¿½ï¿½Ô´ï¿½ï¿½Í¼
 	HR(g_pDevice->CreateShaderResourceView(texture2d, nullptr, &textureSRV));
 
 	ReleaseCOM(texture2d);
@@ -68,6 +68,3 @@ ID3D11ShaderResourceView* NoiseTexture::GetSRV()
 {
 	return textureSRV;
 }
-
-
-

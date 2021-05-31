@@ -4,14 +4,14 @@ Wave::Wave(int waveWidth, int waveHeight, float waveGridSize,int uvTile):
 	mWaveGridSize(waveGridSize),mUVTile(uvTile)
 {
 	mPosition = XMFLOAT3(0.0f, 0.0f, 0.0f);
-	//waveWidth waveHeight ±ä³É 2 µÄÅ¼Êý±¶
+	//waveWidth waveHeight ï¿½ï¿½ï¿½ 2 ï¿½ï¿½Å¼ï¿½ï¿½ï¿½ï¿½
 	mWaveWidth = (waveWidth % 2) ? (waveWidth + 1) : (waveWidth);
 	mWaveHeight = (waveHeight % 2) ? (waveHeight + 1) : (waveHeight);
 	
-	//¶¥µãÊý¾Ý(ºóÃæ¿ÉÓÅ»¯ÎªTriangleStrip)
+	//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½(ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Å»ï¿½ÎªTriangleStrip)
 	mWaveVertexData.resize((mWaveWidth + 1)* (mWaveHeight + 1));
 
-	//Ë÷ÒýÊý¾Ý
+	//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 	mWaveIndexData.resize(mWaveWidth * mWaveHeight * 6);
 	
 	Init();
@@ -22,14 +22,14 @@ Wave::Wave(int waveWidth, int waveHeight, float waveGridSize,int uvTile):
 Wave::Wave(int waveWidth, int waveHeight, float waveGridSize)
 {
 	mPosition = XMFLOAT3(0.0f, 0.0f, 0.0f);
-	//waveWidth waveHeight ±ä³É 2 µÄÅ¼Êý±¶
+	//waveWidth waveHeight ï¿½ï¿½ï¿½ 2 ï¿½ï¿½Å¼ï¿½ï¿½ï¿½ï¿½
 	mWaveWidth = (waveWidth % 2) ? (waveWidth + 1) : (waveWidth);
 	mWaveHeight = (waveHeight % 2) ? (waveHeight + 1) : (waveHeight);
 
-	//¶¥µãÊý¾Ý(ºóÃæ¿ÉÓÅ»¯ÎªTriangleStrip)
+	//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½(ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Å»ï¿½ÎªTriangleStrip)
 	mWaveVertexData.resize((mWaveWidth + 1)* (mWaveHeight + 1));
 
-	//Ë÷ÒýÊý¾Ý
+	//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 	mWaveIndexData.resize(mWaveWidth* mWaveHeight * 6);
 
 	Init();
@@ -74,7 +74,7 @@ void Wave::Init()
 	{
 		for (int widthIndex = 0; widthIndex < mWaveWidth; ++widthIndex)
 		{
-			//µÚÒ»¸öÈý½ÇÐÎ
+			//ï¿½ï¿½Ò»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 			//vertex1
 			WORD vertexIndex = heightIndex * (mWaveWidth + 1) + widthIndex;	
 			mWaveIndexData[waveIndex] = vertexIndex;
@@ -93,7 +93,7 @@ void Wave::Init()
 
 
 
-			//µÚ¶þ¸öÈý½ÇÐÎ
+			//ï¿½Ú¶ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 			//vertex1
 			vertexIndex = heightIndex * (mWaveWidth + 1) + widthIndex;
 			mWaveIndexData[waveIndex] = vertexIndex;
@@ -136,15 +136,15 @@ void Wave::Init()
 
 void Wave::Render()
 {
-	//Èý½ÇÐÎÆ¬Ôª
+	//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ¬Ôª
 	g_pDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
-	//Éè¶¨VertexBuffetr
-	UINT stride = sizeof(VertexPCNTT); //Ã¿¸ö¶¥µãÔªËØµÄ¿ç¶È´óÐ¡£¬»òÕßËµÃ¿¸ö¶¥µãÔªËØµÄ´óÐ¡
+	//ï¿½è¶¨VertexBuffetr
+	UINT stride = sizeof(VertexPCNTT); //Ã¿ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ôªï¿½ØµÄ¿ï¿½È´ï¿½Ð¡ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ËµÃ¿ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ôªï¿½ØµÄ´ï¿½Ð¡
 	UINT offset = 0;
 	g_pDeviceContext->IASetVertexBuffers(0, 1, &mVertexBuffer, &stride, &offset);
 
-	//ÉèÖÃË÷Òý»º´æ
+	//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 	g_pDeviceContext->IASetIndexBuffer(mIndexBuffer, DXGI_FORMAT_R16_UINT, 0);
 
 	g_pDeviceContext->DrawIndexed(mWaveIndexData.size(), 0, 0);
@@ -160,7 +160,7 @@ void Wave::CalculateVertexNormal()
 		{
 			int index = row * (mWaveWidth + 1) + column;
 			XMFLOAT3 vertex1 = mWaveVertexData[index].pos;
-			//×óÏÂ½Ç
+			//ï¿½ï¿½ï¿½Â½ï¿½
 			if ((0 == row && 0 == column))
 			{
 				XMFLOAT3 vertex2 = mWaveVertexData[(row + 1) * (mWaveWidth + 1) + column].pos;
@@ -168,28 +168,28 @@ void Wave::CalculateVertexNormal()
 				mWaveVertexData[index].normal = CrossNormal(vertex1, vertex2, vertex3);
 			}
 
-			//ÓÒÏÂ½Ç
+			//ï¿½ï¿½ï¿½Â½ï¿½
 			else if (0 == row && column == mWaveWidth)
 			{
 				XMFLOAT3 vertex2 = mWaveVertexData[row * (mWaveWidth + 1) + column - 1].pos;
 				XMFLOAT3 vertex3 = mWaveVertexData[(row + 1) * (mWaveWidth + 1) + column].pos;
 				mWaveVertexData[index].normal = CrossNormal(vertex1, vertex2, vertex3);
 			}
-			//×óÉÏ½Ç
+			//ï¿½ï¿½ï¿½Ï½ï¿½
 			else if (mWaveHeight == row && 0 == column)
 			{
 				XMFLOAT3 vertex2 = mWaveVertexData[row * (mWaveWidth + 1) + column + 1].pos;
 				XMFLOAT3 vertex3 = mWaveVertexData[(row - 1) * (mWaveWidth + 1) + column].pos;
 				mWaveVertexData[index].normal = CrossNormal(vertex1, vertex2, vertex3);
 			}
-			//ÓÒÉÏ½Ç
+			//ï¿½ï¿½ï¿½Ï½ï¿½
 			else if (mWaveHeight == row && column == mWaveWidth)
 			{
 				XMFLOAT3 vertex2 = mWaveVertexData[(row - 1) * (mWaveWidth + 1) + column].pos;
 				XMFLOAT3 vertex3 = mWaveVertexData[row * (mWaveWidth + 1) + column - 1].pos;
 				mWaveVertexData[index].normal = CrossNormal(vertex1, vertex2, vertex3);
 			}
-			//×ó±ß
+			//ï¿½ï¿½ï¿½
 			else if (0 == column)
 			{
 				XMFLOAT3 vertex2 = mWaveVertexData[(row + 1) * (mWaveWidth + 1) + column].pos;
@@ -201,7 +201,7 @@ void Wave::CalculateVertexNormal()
 					XMFLOAT3((normal1.x + normal2.x) / 2.0f, (normal1.y + normal2.y) / 2.0f, (normal1.z + normal2.z) / 2.0f);
 			}
 
-			//ÓÒ±ß
+			//ï¿½Ò±ï¿½
 			else if (column == mWaveWidth)
 			{
 				XMFLOAT3 vertex2 = mWaveVertexData[(row - 1) * (mWaveWidth + 1) + column].pos;
@@ -212,7 +212,7 @@ void Wave::CalculateVertexNormal()
 				mWaveVertexData[index].normal =
 					XMFLOAT3((normal1.x + normal2.x) / 2.0f, (normal1.y + normal2.y) / 2.0f, (normal1.z + normal2.z) / 2.0f);
 			}
-			//ÏÂ±ß
+			//ï¿½Â±ï¿½
 			else if (0 == row)
 			{
 				XMFLOAT3 vertex2 = mWaveVertexData[row  * (mWaveWidth + 1) + column - 1].pos;
@@ -223,7 +223,7 @@ void Wave::CalculateVertexNormal()
 				mWaveVertexData[index].normal =
 					XMFLOAT3((normal1.x + normal2.x) / 2.0f, (normal1.y + normal2.y) / 2.0f, (normal1.z + normal2.z) / 2.0f);
 			}
-			//ÉÏ±ß
+			//ï¿½Ï±ï¿½
 			else if (mWaveHeight == row)
 			{
 				XMFLOAT3 vertex2 = mWaveVertexData[row  * (mWaveWidth + 1) + column + 1].pos;
@@ -236,7 +236,7 @@ void Wave::CalculateVertexNormal()
 					XMFLOAT3((normal1.x + normal2.x) / 2.0f, 
 					(normal1.y + normal2.y) / 2.0f, (normal1.z + normal2.z) / 2.0f);
 			}
-			//ÀïÃæµÄ
+			//ï¿½ï¿½ï¿½ï¿½ï¿½
 			else
 			{
 				XMFLOAT3 vertex2 = mWaveVertexData[(row + 1)  * (mWaveWidth + 1) + column].pos;
@@ -262,7 +262,7 @@ void Wave::CalculateVertexPos(float time)
 {
 	UINT index = 0;
 
-	//´Ó×óµ½ÓÒ£¬´ÓÏÂµ½ÉÏ
+	//ï¿½ï¿½ï¿½ï¿½ï¿½Ò£ï¿½ï¿½ï¿½ï¿½Âµï¿½ï¿½ï¿½
 	for (int posZ = -mWaveHeight / 2; posZ <= mWaveHeight / 2; ++posZ)
 	{
 		for (int posX = -mWaveWidth / 2; posX <= mWaveWidth / 2; ++posX)
@@ -279,7 +279,7 @@ void Wave::CalculateVertexPos(float time)
 	}
 }
 
-//×óÊÖ×ø±êÏµË³Ê±Õë
+//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ÏµË³Ê±ï¿½ï¿½
 XMFLOAT3 Wave::CrossNormal(const XMFLOAT3& vertex1, const XMFLOAT3& vertex2, const XMFLOAT3& vertex3)
 {
 	XMFLOAT3 normal;
@@ -323,7 +323,7 @@ void Wave::CalculateVertexUV()
 }
 
 
-//¼ÆËãÇÐÏß
+//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 void Wave::CalculateVertexTangent()
 {
 	for (int row = 0; row < mWaveHeight + 1; ++row)
@@ -335,7 +335,7 @@ void Wave::CalculateVertexTangent()
 			VertexPCNTT vertex2;
 			VertexPCNTT vertex3;
 			
-			//³ý¿ª×îÉÏÃæÐÐºÍ×îÓÒÐÐ
+			//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ðºï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 			if (row >= 0 && row <= mWaveHeight - 1 && column >= 0 && column <= mWaveWidth - 1)
 			{
 				vertex1 = mWaveVertexData[index];
@@ -343,14 +343,14 @@ void Wave::CalculateVertexTangent()
 				vertex3 = mWaveVertexData[row * (mWaveWidth + 1) + column + 1];
 
 			}
-			//³ý¿ªÓÒÉÏ½ÇµÄ×îÓÒÐÐ
+			//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï½Çµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 			else if (row != mWaveHeight &&column == mWaveWidth)
 			{
 				vertex1 = mWaveVertexData[index];
 				vertex2 = mWaveVertexData[(row + 1) * (mWaveWidth + 1) + column];
 				vertex3 = mWaveVertexData[row * (mWaveWidth + 1) + column - 1];
 			}
-			//×îÉÏÃæÒ»ÐÐ
+			//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ò»ï¿½ï¿½
 			else
 			{
 				mWaveVertexData[index].tangent = mWaveVertexData[index - mWaveWidth - 1].tangent;
@@ -360,37 +360,37 @@ void Wave::CalculateVertexTangent()
 			float Edge1[3], Edge2[3];
 			float TexEdge1[2], TexEdge2[2];
 
-			//¼ÆËãÃæµÄÁ½¸öÏòÁ¿  
-			//±ßÏòÁ¿1  
+			//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½  
+			//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½1  
 			Edge1[0] = vertex2.pos.x - vertex1.pos.x; //E0X  
 			Edge1[1] = vertex2.pos.y - vertex1.pos.y; //E0Y  
 			Edge1[2] = vertex2.pos.z - vertex1.pos.z; //E0Z  
 
-			//±ßÏòÁ¿2  
+			//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½2  
 			Edge2[0] = vertex3.pos.x - vertex1.pos.x; //E1X  
 			Edge2[1] = vertex3.pos.y - vertex1.pos.y; //E1Y  
 			Edge2[2] = vertex3.pos.z - vertex1.pos.z; //E1Z  
 
-			//ÎÆÀí±ßÏòÁ¿1  
+			//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½1  
 			TexEdge1[0] = vertex2.uv.x - vertex1.uv.x; //U0  
 			TexEdge1[1] = vertex2.uv.y - vertex1.uv.y; //V0  
 
-			//ÎÆÀí±ßÏòÁ¿2  
+			//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½2  
 			TexEdge2[0] = vertex3.uv.x - vertex1.uv.x; //U1  
 			TexEdge2[1] = vertex3.uv.y - vertex1.uv.y; //V1  
 
-			 //Çó³öTBÔÚÄ£ÐÍ¿Õ¼ä×ø±êµÄ·½³ÌÏµÊý  
+			 //ï¿½ï¿½ï¿½TBï¿½ï¿½Ä£ï¿½Í¿Õ¼ï¿½ï¿½ï¿½ï¿½ï¿½Ä·ï¿½ï¿½ï¿½Ïµï¿½ï¿½  
 			float den = 1.0f / (TexEdge1[0] * TexEdge2[1] - TexEdge1[1] * TexEdge2[0]);
 
 
-			//Çó³öTangent  
+			//ï¿½ï¿½ï¿½Tangent  
 			XMFLOAT3 tangent;
 			tangent.x = den*(TexEdge2[1] * Edge1[0] - TexEdge1[1] * Edge2[0]);
 			tangent.y = den*(TexEdge2[1] * Edge1[1] - TexEdge1[1] * Edge2[1]);
 			tangent.z = den*(TexEdge2[1] * Edge1[2] - TexEdge1[1] * Edge2[2]);
 			NormalizeFloat3(tangent);
 
-			//Çó³ö´¹Ö±ÓÚNomralµÄTangent
+			//ï¿½ï¿½ï¿½ï¿½ï¿½Ö±ï¿½ï¿½Nomralï¿½ï¿½Tangent
 			XMFLOAT3& normal = mWaveVertexData[index].normal;
 			float dot = Dot(normal, tangent);
 			tangent.x = tangent.x - dot * normal.x;
@@ -406,30 +406,30 @@ void Wave::CalculateVertexTangent()
 void Wave::UpdateWaveData(float time)
 {
 	
-	//¼ÆËã¶¥µã·¨Ïß
+	//ï¿½ï¿½ï¿½ã¶¥ï¿½ã·¨ï¿½ï¿½
 	CalculateVertexPos(time);
 
-	//¼ÆËã·¨Ïß
+	//ï¿½ï¿½ï¿½ã·¨ï¿½ï¿½
 	CalculateVertexNormal();
 
-	//¼ÆËã¶¥µãUV
+	//ï¿½ï¿½ï¿½ã¶¥ï¿½ï¿½UV
 	CalculateVertexUV();
 
-	//¼ÆËã¶¥µãÇÐÏß
+	//ï¿½ï¿½ï¿½ã¶¥ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 	CalculateVertexTangent();
 
 
 	D3D11_MAPPED_SUBRESOURCE mappedResource;
 	g_pDeviceContext->Map(mVertexBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
 
-	//»ñÈ¡Ö¸Ïò¶¥µã»º´æµÄÖ¸Õë
+	//ï¿½ï¿½È¡Ö¸ï¿½ò¶¥µã»ºï¿½ï¿½ï¿½Ö¸ï¿½ï¿½
 	VertexPCNTT* verticesPtr;
 	verticesPtr = (VertexPCNTT*)mappedResource.pData;
 
-	//°ÑÊý¾Ý¸´ÖÆ½ø¶¥µã»º´æ
+	//ï¿½ï¿½ï¿½ï¿½ï¿½Ý¸ï¿½ï¿½Æ½ï¿½ï¿½ï¿½ï¿½ã»ºï¿½ï¿½
 	memcpy(verticesPtr, (void*)&mWaveVertexData[0], (sizeof(VertexPCNTT) * mWaveVertexData.size()));
 
-	//½âËø¶¥µã»º´æ
+	//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ã»ºï¿½ï¿½
 	g_pDeviceContext->Unmap(mVertexBuffer, 0);
 }
 

@@ -70,7 +70,7 @@ void SSAOManager::Render(GeometryBuffer* geometryBuffer)
 	if (nullptr == geometryBuffer)
 		return;
 
-	//äÖÈ¾µÃµ½SSAORT
+	//ï¿½ï¿½È¾ï¿½Ãµï¿½SSAORT
 	ssaoRT->SetRenderTarget(1.0f, 1.0f, 1.0f, 1.0f);
 	GDirectxCore->TurnOffZBuffer();
 	GShaderManager->ssaoShader->SetTexture("WorldPosTex", geometryBuffer->GetGBufferSRV(GBufferType::Pos));
@@ -89,7 +89,7 @@ void SSAOManager::Render(GeometryBuffer* geometryBuffer)
 	quad->Render();
 	GDirectxCore->TurnOnZBuffer();
 
-	//½µ²ÉÑùµÃµ½SSAODownSampleRT
+	//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ãµï¿½SSAODownSampleRT
 	ssaoDownSampleRT->SetRenderTarget();
 	GDirectxCore->TurnOffZBuffer();
 	GShaderManager->graphicsBlitShader->SetTexture("ScreenRT", ssaoRT->GetSRV());
@@ -98,7 +98,7 @@ void SSAOManager::Render(GeometryBuffer* geometryBuffer)
 	quad->Render();
 	GDirectxCore->TurnOnZBuffer();
 
-	//¶ÔSSAODownSampleRT½øÐÐÄ£ºýµÃµ½SSAODownSampleBlurRT
+	//ï¿½ï¿½SSAODownSampleRTï¿½ï¿½ï¿½ï¿½Ä£ï¿½ï¿½ï¿½Ãµï¿½SSAODownSampleBlurRT
 	ssaoDownSampleBlurRT->SetRenderTarget();
 	GDirectxCore->TurnOffZBuffer();
 	GShaderManager->ssaoBlurShader->SetTexture("ScreenRT", ssaoDownSampleRT->GetSRV());
@@ -107,7 +107,7 @@ void SSAOManager::Render(GeometryBuffer* geometryBuffer)
 	quad->Render();
 	GDirectxCore->TurnOnZBuffer();
 
-	//¶ÔSSAODownSampleBlurRTÉý²ÉÑù
+	//ï¿½ï¿½SSAODownSampleBlurRTï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 	ssaoUpSampleRT->SetRenderTarget();
 	GDirectxCore->TurnOffZBuffer();
 	GShaderManager->graphicsBlitShader->SetTexture("ScreenRT", ssaoDownSampleBlurRT->GetSRV());

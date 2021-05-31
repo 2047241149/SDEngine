@@ -42,14 +42,14 @@ void CascadedShadowsManager::Update()
 		float fFarY = tan(fFov / 2.0f) * fFarPlane;
 		float fFarX = fFarY / fAspect;
 
-		frustumPoint[0] = XMVectorSet(fNearPlane, fNearPlane, fNearPlane, 1.0f); //½üÆ½ÃæÓÒÉÏ½Ç
-		frustumPoint[1] = XMVectorSet(fNearPlane, fNearPlane, fNearPlane, 1.0f); //½üÆ½ÃæÓÒÏÂ½Ç
-		frustumPoint[2] = XMVectorSet(fNearPlane, fNearPlane, fNearPlane, 1.0f); //½üÆ½Ãæ×óÉÏ½Ç
-		frustumPoint[3] = XMVectorSet(fNearPlane, fNearPlane, fNearPlane, 1.0f); //½üÆ½Ãæ×óÏÂ½Ç
-		frustumPoint[4] = XMVectorSet(fFarX, fFarY, fFarPlane, 1.0f); //Ô¶Æ½ÃæÓÒÉÏ½Ç
-		frustumPoint[5] = XMVectorSet(fFarX, -fFarY, fFarPlane, 1.0f); //Ô¶Æ½ÃæÓÒÏÂ½Ç
-		frustumPoint[6] = XMVectorSet(-fFarX, fFarY, fFarPlane, 1.0f); //Ô¶Æ½Ãæ×óÉÏ½Ç
-		frustumPoint[7] = XMVectorSet(-fFarX, -fFarY, fFarPlane, 1.0f); //Ô¶Æ½Ãæ×óÏÂ½Ç
+		frustumPoint[0] = XMVectorSet(fNearPlane, fNearPlane, fNearPlane, 1.0f); //ï¿½ï¿½Æ½ï¿½ï¿½ï¿½ï¿½ï¿½Ï½ï¿½
+		frustumPoint[1] = XMVectorSet(fNearPlane, fNearPlane, fNearPlane, 1.0f); //ï¿½ï¿½Æ½ï¿½ï¿½ï¿½ï¿½ï¿½Â½ï¿½
+		frustumPoint[2] = XMVectorSet(fNearPlane, fNearPlane, fNearPlane, 1.0f); //ï¿½ï¿½Æ½ï¿½ï¿½ï¿½ï¿½ï¿½Ï½ï¿½
+		frustumPoint[3] = XMVectorSet(fNearPlane, fNearPlane, fNearPlane, 1.0f); //ï¿½ï¿½Æ½ï¿½ï¿½ï¿½ï¿½ï¿½Â½ï¿½
+		frustumPoint[4] = XMVectorSet(fFarX, fFarY, fFarPlane, 1.0f); //Ô¶Æ½ï¿½ï¿½ï¿½ï¿½ï¿½Ï½ï¿½
+		frustumPoint[5] = XMVectorSet(fFarX, -fFarY, fFarPlane, 1.0f); //Ô¶Æ½ï¿½ï¿½ï¿½ï¿½ï¿½Â½ï¿½
+		frustumPoint[6] = XMVectorSet(-fFarX, fFarY, fFarPlane, 1.0f); //Ô¶Æ½ï¿½ï¿½ï¿½ï¿½ï¿½Ï½ï¿½
+		frustumPoint[7] = XMVectorSet(-fFarX, -fFarY, fFarPlane, 1.0f); //Ô¶Æ½ï¿½ï¿½ï¿½ï¿½ï¿½Â½ï¿½
 
 
 		XMMATRIX viewMatrix = GCamera->GetViewMatrix();
@@ -58,13 +58,13 @@ void CascadedShadowsManager::Update()
 		XMVECTOR lightVsSceneAABBMin = XMVectorSet(FLT_MAX, FLT_MAX, FLT_MAX, FLT_MAX);
 		XMVECTOR tempFrustumPoint;
 
-		// ½«Ö÷Ïà»úÊÓ½ØÌåµÄ°Ë¸ö¶¥µã´ÓÖ÷Ïà»ú¿Õ¼ä±ä»»µ½ÊÀ½ç¿Õ¼ä
+		// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ó½ï¿½ï¿½ï¿½Ä°Ë¸ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Õ¼ï¿½ä»»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Õ¼ï¿½
 		for (int nFrustumindex = 0; nFrustumindex < FRUSTUN_VERTEX_NUM; ++nFrustumindex)
 		{
 			frustumPoint[nFrustumindex] = XMVector3TransformCoord(frustumPoint[nFrustumindex], invenseViewMatrix);
 		}
 
-		// ½«Ö÷Ïà»úÊÓ½ØÌåµÄ°Ë¸ö¶¥µã±ä»»µ½¹âÔ´Ïà»ú¿Õ¼ä
+		// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ó½ï¿½ï¿½ï¿½Ä°Ë¸ï¿½ï¿½ï¿½ï¿½ï¿½ä»»ï¿½ï¿½ï¿½ï¿½Ô´ï¿½ï¿½ï¿½ï¿½Õ¼ï¿½
 		for (int nFrustumindex = 0; nFrustumindex < FRUSTUN_VERTEX_NUM; ++nFrustumindex)
 		{
 			tempFrustumPoint = XMVector3TransformCoord(frustumPoint[nFrustumindex], lightViewMatrix);
@@ -75,28 +75,28 @@ void CascadedShadowsManager::Update()
 		float fLightVsSceneAABBMinZ = XMVectorGetZ(lightVsSceneAABBMin);
 		float fLightVsSceneAABBMaxZ = XMVectorGetZ(lightVsSceneAABBMax);
 
-		//ÔÚXY·¶Î§ÉÏ£¬½÷¼ÇÒ»µã£¬lightVsSceneAABBMaxºÍlightVsSceneAABBMinÓÉÓÚÐÎ±äÔ­Òò²¢²»Ò»¶¨°üÎ§Õû¸öÊÓ½ØÌå·¶Î§£¬ÎÒÃÇµÃÀ©´ólightVsSceneAABBµÄ·¶Î§
-		//lightVsSceneAABBµÄ·¶Î§Ó¦¸ÃÒÔÊÀ½ç¿Õ¼äµÄ°üÎ§·¶Î§Îª×¼£¬Òò´ËºË¶ÔÊÀ½ç¿Õ¼äµÄÌÝÐÎ¶Ô½ÇÏß´óÐ¡
+		//ï¿½ï¿½XYï¿½ï¿½Î§ï¿½Ï£ï¿½ï¿½ï¿½ï¿½ï¿½Ò»ï¿½ã£¬lightVsSceneAABBMaxï¿½ï¿½lightVsSceneAABBMinï¿½ï¿½ï¿½ï¿½ï¿½Î±ï¿½Ô­ï¿½ò²¢²ï¿½Ò»ï¿½ï¿½ï¿½ï¿½Î§ï¿½ï¿½ï¿½ï¿½ï¿½Ó½ï¿½ï¿½å·¶Î§ï¿½ï¿½ï¿½ï¿½ï¿½Çµï¿½ï¿½ï¿½ï¿½ï¿½lightVsSceneAABBï¿½Ä·ï¿½Î§
+		//lightVsSceneAABBï¿½Ä·ï¿½Î§Ó¦ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Õ¼ï¿½Ä°ï¿½Î§ï¿½ï¿½Î§Îª×¼ï¿½ï¿½ï¿½ï¿½ËºË¶ï¿½ï¿½ï¿½ï¿½ï¿½Õ¼ï¿½ï¿½ï¿½ï¿½ï¿½Î¶Ô½ï¿½ï¿½ß´ï¿½Ð¡
 		XMVECTOR vDiagonal = frustumPoint[0] - frustumPoint[7];
 		vDiagonal = XMVector3Length(vDiagonal);
 		float fCascadeDiagonal = XMVectorGetX(vDiagonal);
 		XMVECTOR vBorderoffset = (vDiagonal - (lightVsSceneAABBMax - lightVsSceneAABBMin)) * XMVectorSet(0.5f, 0.5f, 0.0, 0.0f);
 
-		//·ÀÖ¹vBorderoffsetµÄX»òYÎª¸ºÊýµÄÇé¿öÏÂ£¬¿ÉÄÜ²úÉúlightVsSceneAABBMin > lightVsSceneAABBMaxµÄ½á¹û
+		//ï¿½ï¿½Ö¹vBorderoffsetï¿½ï¿½Xï¿½ï¿½YÎªï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Â£ï¿½ï¿½ï¿½ï¿½Ü²ï¿½ï¿½ï¿½lightVsSceneAABBMin > lightVsSceneAABBMaxï¿½Ä½ï¿½ï¿½
 		//XMVECTOR vZero = XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f);
 		lightVsSceneAABBMax += vBorderoffset;
 		lightVsSceneAABBMin -= vBorderoffset;
 
 
-		//¾ÀÕýlightVsSceneAABBMaxºÍlightVsSceneAABBMinµÄ´óÐ¡£¬¶ÔÓ¦ShadowMapµÄ
-		//(1)ÊÀ½ç¿Õ¼äµÄOrthoViewFrustum´óÐ¡Ó¦¸ÃShadowMap´óÐ¡µÄÕûÊý±¶
-		//fWorldUnitPerTexel -->OrthoViewFrustum Ã¿¸öShadowMapÎÆËØ¶ÔÓ¦¶àÉÙ¸öÊÀ½çµ¥Î»
+		//ï¿½ï¿½ï¿½ï¿½lightVsSceneAABBMaxï¿½ï¿½lightVsSceneAABBMinï¿½Ä´ï¿½Ð¡ï¿½ï¿½ï¿½ï¿½Ó¦ShadowMapï¿½ï¿½
+		//(1)ï¿½ï¿½ï¿½ï¿½Õ¼ï¿½ï¿½OrthoViewFrustumï¿½ï¿½Ð¡Ó¦ï¿½ï¿½ShadowMapï¿½ï¿½Ð¡ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+		//fWorldUnitPerTexel -->OrthoViewFrustum Ã¿ï¿½ï¿½ShadowMapï¿½ï¿½ï¿½Ø¶ï¿½Ó¦ï¿½ï¿½ï¿½Ù¸ï¿½ï¿½ï¿½ï¿½çµ¥Î»
 		float fWorldUnitPerTexel = fCascadeDiagonal / (float)SHADOW_MAP_SIZE;
 		XMVECTOR vWorldUnitPerTexel = XMVectorSet(fWorldUnitPerTexel, fWorldUnitPerTexel, 0, 0);
 
-		//(2)lightVsSceneAABBMax£¬lightVsSceneAABBMin¶ÔÓ¦µ½ÕûÊý¸öfWorldUnitPerTexelµ¥Î»
-		//×ÛÉÏ(1)(2)ightVsSceneAABBMax£¬lightVsSceneAABBMin¾Í¿ÉÒÔ¶ÔÓ¦ÕûÊý¸öShadowMapµÄÎÆËØ,
-		//¾ÍÏû³ýÁËÖ®Ç°¸¡µãÊý¸öShadowMapÎÆËØÔì³ÉµÄÉÁË¸ÎÊÌâ
+		//(2)lightVsSceneAABBMaxï¿½ï¿½lightVsSceneAABBMinï¿½ï¿½Ó¦ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½fWorldUnitPerTexelï¿½ï¿½Î»
+		//ï¿½ï¿½ï¿½ï¿½(1)(2)ightVsSceneAABBMaxï¿½ï¿½lightVsSceneAABBMinï¿½Í¿ï¿½ï¿½Ô¶ï¿½Ó¦ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ShadowMapï¿½ï¿½ï¿½ï¿½ï¿½ï¿½,
+		//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö®Ç°ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ShadowMapï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Éµï¿½ï¿½ï¿½Ë¸ï¿½ï¿½ï¿½ï¿½
 		lightVsSceneAABBMin /= vWorldUnitPerTexel;
 		lightVsSceneAABBMin = XMVectorFloor(lightVsSceneAABBMin);
 		lightVsSceneAABBMin *= vWorldUnitPerTexel;
@@ -111,8 +111,8 @@ void CascadedShadowsManager::Update()
 		XMStoreFloat3(&f3LightVsSceneAABBMax, lightVsSceneAABBMax);
 		XMStoreFloat3(&f3LightVsSceneAABBMin, lightVsSceneAABBMin);
 
-		//ÕâÀïZÔ¶½ü¾àÀëÊ¡ÂÔÁËÕû¸ö³¡¾°AABB°üÎ§ºÐµÄÇó½»(¹ý³ÌÂÔÎª¸´ÔÓ)£¬Ö±½Ó»ØÍËGCamera->mFarPlane * 0.5f
-		//Ç°½øGCamera->mFarPlane * 0.15ÊÇÁËOthrhoÔ¶¶ËZBuffer 1.0³åÍ»
+		//ï¿½ï¿½ï¿½ï¿½ZÔ¶ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê¡ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½AABBï¿½ï¿½Î§ï¿½Ðµï¿½ï¿½ï¿½(ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Îªï¿½ï¿½ï¿½ï¿½)ï¿½ï¿½Ö±ï¿½Ó»ï¿½ï¿½ï¿½GCamera->mFarPlane * 0.5f
+		//Ç°ï¿½ï¿½GCamera->mFarPlane * 0.15ï¿½ï¿½ï¿½ï¿½OthrhoÔ¶ï¿½ï¿½ZBuffer 1.0ï¿½ï¿½Í»
 		mArrayLightOrthoMatrix[nCascadeindex] = XMMatrixOrthographicOffCenterLH
 		(
 			f3LightVsSceneAABBMin.x, f3LightVsSceneAABBMax.x,

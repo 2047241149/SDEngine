@@ -2,18 +2,19 @@
 
 wstring Str2Wstr(string str)
 {
-	if (str.length() == 0)
-		return L"";
-
-	std::wstring wstr;
-	wstr.assign(str.begin(), str.end());
-	return wstr;
+	int len;
+	int slength = (int)str.length() + 1;
+	len = MultiByteToWideChar(CP_ACP, 0, str.c_str(), slength, 0, 0);
+	wchar_t* buf = new wchar_t[len];
+	MultiByteToWideChar(CP_ACP, 0, str.c_str(), slength, buf, len);
+	std::wstring r(buf);
+	delete[] buf;
+	return r;
 }
-
 
 void int2str(const int &int_temp, string &string_temp)
 {
 	stringstream stream;
 	stream << int_temp;
-	string_temp = stream.str();   //此处也可以用 stream>>string_temp  
+	string_temp = stream.str();   //锟剿达拷也锟斤拷锟斤拷锟斤拷 stream>>string_temp  
 }

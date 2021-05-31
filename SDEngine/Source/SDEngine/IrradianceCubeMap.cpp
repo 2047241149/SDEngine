@@ -58,7 +58,7 @@ void IrradianceCubeMap::Render()
 		cubeGameObject->RenderMesh();
 	}
 
-	//ÒÑ¾­äÖÈ¾ÁËMipMapÁ´ÉÏµÄTopµÈ¼¶,µ÷ÓÃGenerateMips×Ô¶¯Éú³ÉÓàÏÂµÄMipµÈ¼¶
+	//ï¿½Ñ¾ï¿½ï¿½ï¿½È¾ï¿½ï¿½MipMapï¿½ï¿½ï¿½Ïµï¿½Topï¿½È¼ï¿½,ï¿½ï¿½ï¿½ï¿½GenerateMipsï¿½Ô¶ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Âµï¿½Mipï¿½È¼ï¿½
 	GDirectxCore->GenerateMips(renderCubeMap->GetSRV());
 	GDirectxCore->RecoverDefaultDSS();
 	GDirectxCore->RecoverDefualtRS();

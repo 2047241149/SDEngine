@@ -1,13 +1,12 @@
 #include"MathTool.h"
 
 
-
-//╥╣╩ьр╩╦Ж╬ьуС╣ддФ╬ьуС╣дв╙жц
+//О©╫О©╫О©╫О©╫р╩О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫в╙О©╫О©╫
 XMMATRIX FMath::GetInvenseTranspose(CXMMATRIX matrix)
 {
 	XMMATRIX A = matrix;
 
-	//╫╚╬ьуСA╣д╣зкдппжцаЦ,рРн╙оРа©йгнч╥╗╫Ьппф╫рф╣д
+	//О©╫О©╫О©╫О©╫О©╫О©╫AО©╫д╣О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫,О©╫О©╫н╙О©╫О©╫О©╫О©╫О©╫О©╫О©╫ч╥О©╫О©╫О©╫О©╫О©╫ф╫О©╫ф╣О©╫
 	A.r[3] = { 0.0f, 0.0f, 0.0f, 1.0f };
 
 	XMVECTOR det = XMMatrixDeterminant(A);
@@ -15,12 +14,12 @@ XMMATRIX FMath::GetInvenseTranspose(CXMMATRIX matrix)
 	return XMMatrixTranspose(MaInvense);
 }
 
-//╥╣╩ьр╩╦Ж╬ьуС╣ддФ╬ьуС
+//О©╫О©╫О©╫О©╫р╩О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫
 XMMATRIX FMath::GetInvense(CXMMATRIX matrix)
 {
 	XMMATRIX A = matrix;
 
-	//╫╚╬ьуСA╣д╣зкдппжцаЦ,рРн╙оРа©йгнч╥╗╫Ьппф╫рф╣д
+	//О©╫О©╫О©╫О©╫О©╫О©╫AО©╫д╣О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫,О©╫О©╫н╙О©╫О©╫О©╫О©╫О©╫О©╫О©╫ч╥О©╫О©╫О©╫О©╫О©╫ф╫О©╫ф╣О©╫
 	A.r[3] = { 0.0f, 0.0f, 0.0f, 1.0f };
 
 	XMVECTOR det = XMMatrixDeterminant(A);

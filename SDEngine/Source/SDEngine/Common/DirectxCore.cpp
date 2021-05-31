@@ -1,6 +1,7 @@
 #include "DirectxCore.h"
 #include "../WindowInfo.h"
 
+
 DirectxCore::DirectxCore():
 	md3dDevice(nullptr),
 	md3dImmediateContext(nullptr),
@@ -45,41 +46,41 @@ bool DirectxCore::Init(bool vsync, bool fullscreen, float ScreenDepth, float Scr
 {
 	
 	//--------------------------------------------------------------
-	//»ñÈ¡ÏÔÊ¾Ä£Ê½ÐÅÏ¢ºÍÏÔ¿¨ÐÅÏ¢
+	//ï¿½ï¿½È¡ï¿½ï¿½Ê¾Ä£Ê½ï¿½ï¿½Ï¢ï¿½ï¿½ï¿½Ô¿ï¿½ï¿½ï¿½Ï¢
 	//---------------------------------------------------------------
 
-	IDXGIAdapter* adpter;//ÊÊÅäÆ÷
+	IDXGIAdapter* adpter;//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 	IDXGIFactory* factory;
 	unsigned int numModes, numerator, denominator, stringLength;
 	DXGI_MODE_DESC* displayModeList;
 	DXGI_ADAPTER_DESC adapterDesc;
 	int error;
 
-	//´æ´¢vsynÉè¶¨
+	//ï¿½æ´¢vsynï¿½è¶¨
 	mVsyncEnable = vsync;
 
-	//´´½¨Ò»¸öDirectxÍ¼ÐÎ½Ó¿Úfactory
+	//ï¿½ï¿½ï¿½ï¿½Ò»ï¿½ï¿½DirectxÍ¼ï¿½Î½Ó¿ï¿½factory
 	HR(CreateDXGIFactory(__uuidof(IDXGIFactory), (void**)&factory));
 
-	//Ê¹ÓÃfactoryÀ´ÎªÏÔ¿¨´´½¨Ò»¸öadapter
+	//Ê¹ï¿½ï¿½factoryï¿½ï¿½Îªï¿½Ô¿ï¿½ï¿½ï¿½ï¿½ï¿½Ò»ï¿½ï¿½adapter
 	HR(factory->EnumAdapters(0, &adpter));
 
-	//ÁÐ¾ÙÖ÷ÒªµÄÊÊÅäÆ÷Êä³ö
+	//ï¿½Ð¾ï¿½ï¿½ï¿½Òªï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 	HR(adpter->EnumOutputs(0, &mAdapterOutput));
 
-	//»ñÈ¡ÊÊÓ¦ÊÊÅäÆ÷DXGI_FORMAT_R8G8B8A8_UNORMÏÔÊ¾¸ñÊ½µÄÄ£Ê½ÊýÄ¿
+	//ï¿½ï¿½È¡ï¿½ï¿½Ó¦ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½DXGI_FORMAT_R8G8B8A8_UNORMï¿½ï¿½Ê¾ï¿½ï¿½Ê½ï¿½ï¿½Ä£Ê½ï¿½ï¿½Ä¿
 	HR(mAdapterOutput->GetDisplayModeList(DXGI_FORMAT_R8G8B8A8_UNORM, DXGI_ENUM_MODES_INTERLACED, &numModes, NULL));
 
-	//´´½¨Ò»¸öÏÔÊ¾Ä£Ê½ÁÐ±í´æ·Å¿ÉÄÜµÄÏÔÊ¾Ä£Ê½(ÏÔ¿¨,¼àÊÓÆ÷)
+	//ï¿½ï¿½ï¿½ï¿½Ò»ï¿½ï¿½ï¿½ï¿½Ê¾Ä£Ê½ï¿½Ð±ï¿½ï¿½ï¿½Å¿ï¿½ï¿½Üµï¿½ï¿½ï¿½Ê¾Ä£Ê½(ï¿½Ô¿ï¿½,ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½)
 	displayModeList= new DXGI_MODE_DESC[numModes];
 	if (!displayModeList)
 		return false;
 
-	//Ìî³äÏÔÊ¾Ä£Ê½ÁÐ±í½á¹¹Ìå
+	//ï¿½ï¿½ï¿½ï¿½ï¿½Ê¾Ä£Ê½ï¿½Ð±ï¿½ï¿½á¹¹ï¿½ï¿½
 	HR(mAdapterOutput->GetDisplayModeList(DXGI_FORMAT_R8G8B8A8_UNORM, DXGI_ENUM_MODES_INTERLACED, &numModes, displayModeList));
 
-	//ä¯ÀÀËùÓÐµÄÏÔÊ¾Ä£Ê½,ÕÒµ½ÊÊºÏÆÁÄ»¿í¶ÈºÍ¸ß¶ÈµÄ
-	//µ±Ò»¸öÄ£Ê½Æ¥Åä,´æ´¢¼àÊÓÆ÷Ë¢ÐÂËÙ¶ÈµÄ·Ö×Ó·ÖÄ¸??
+	//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ðµï¿½ï¿½ï¿½Ê¾Ä£Ê½,ï¿½Òµï¿½ï¿½Êºï¿½ï¿½ï¿½Ä»ï¿½ï¿½ï¿½ÈºÍ¸ß¶Èµï¿½
+	//ï¿½ï¿½Ò»ï¿½ï¿½Ä£Ê½Æ¥ï¿½ï¿½,ï¿½æ´¢ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ë¢ï¿½ï¿½ï¿½Ù¶ÈµÄ·ï¿½ï¿½Ó·ï¿½Ä¸??
 	for (unsigned int i = 0; i<numModes; i++)
 	{
 		if (displayModeList[i].Width == (unsigned int)GScreenWidth)
@@ -92,13 +93,13 @@ bool DirectxCore::Init(bool vsync, bool fullscreen, float ScreenDepth, float Scr
 		}
 	}
 
-	//»ñÈ¡ÊÊÅäÆ÷(ÏÔ¿¨)ÐÎÈÝ
+	//ï¿½ï¿½È¡ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½(ï¿½Ô¿ï¿½)ï¿½ï¿½ï¿½ï¿½
 	HR(adpter->GetDesc(&adapterDesc));
 
-	//»ñÈ¡ÏÔ¿¨ÄÚ´æÁ¿
+	//ï¿½ï¿½È¡ï¿½Ô¿ï¿½ï¿½Ú´ï¿½ï¿½ï¿½
 	mVideoCardMemory = (int)(adapterDesc.DedicatedVideoMemory / 1024 / 1024);
 
-	//½«ÏÔ¿¨Ãû×Ö×ª´æÔÚ×Ö·ûÊý×é
+	//ï¿½ï¿½ï¿½Ô¿ï¿½ï¿½ï¿½ï¿½ï¿½×ªï¿½ï¿½ï¿½ï¿½ï¿½Ö·ï¿½ï¿½ï¿½ï¿½ï¿½
 	/*error = wcstombs(&stringLength, mVideoCardDescription, 128, adapterDesc.Description, 128);
 
 	if (error != 0)
@@ -106,7 +107,7 @@ bool DirectxCore::Init(bool vsync, bool fullscreen, float ScreenDepth, float Scr
 		return false;
 	}*/
 
-	//ÊÍ·ÅÏÔÊ¾Ä£Ê½ÁÐ±í
+	//ï¿½Í·ï¿½ï¿½ï¿½Ê¾Ä£Ê½ï¿½Ð±ï¿½
 	delete[] displayModeList;
 	displayModeList = NULL;
 	ReleaseCOM(adpter);
@@ -114,7 +115,7 @@ bool DirectxCore::Init(bool vsync, bool fullscreen, float ScreenDepth, float Scr
 
 
 	//-----------------------------------------------------
-	//Ìî³ä½»»»Á´ÐÎÈÝ½á¹¹Ìå
+	//ï¿½ï¿½ä½»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ý½á¹¹ï¿½ï¿½
 	//-----------------------------------------------------
 	DXGI_SWAP_CHAIN_DESC sd;
 	ZeroMemory(&sd, sizeof(sd));
@@ -123,7 +124,7 @@ bool DirectxCore::Init(bool vsync, bool fullscreen, float ScreenDepth, float Scr
 	sd.BufferDesc.Height = GScreenHeight;
 	sd.BufferDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
 
-	if (mVsyncEnable) //ÏÞ²»ÏÞÖ¡
+	if (mVsyncEnable) //ï¿½Þ²ï¿½ï¿½ï¿½Ö¡
 	{
 		sd.BufferDesc.RefreshRate.Numerator =numerator;
 		sd.BufferDesc.RefreshRate.Denominator = denominator;
@@ -134,11 +135,11 @@ bool DirectxCore::Init(bool vsync, bool fullscreen, float ScreenDepth, float Scr
 		sd.BufferDesc.RefreshRate.Denominator = 1;
 	}
     
-	//¹Ø±Õ¶àÖØ²ÉÑù
+	//ï¿½Ø±Õ¶ï¿½ï¿½Ø²ï¿½ï¿½ï¿½
 	sd.SampleDesc.Count = 1;
 	sd.SampleDesc.Quality = 0;
 	
-	//ÊÇ·ñ½øÐÐÈ«ÆÁ
+	//ï¿½Ç·ï¿½ï¿½ï¿½ï¿½È«ï¿½ï¿½
 	if (fullscreen)
 	{
 		sd.Windowed = false;  
@@ -148,8 +149,8 @@ bool DirectxCore::Init(bool vsync, bool fullscreen, float ScreenDepth, float Scr
 		sd.Windowed = true;
 	}
 	sd.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
-	sd.BufferCount = 1;  //±³ºó»º´æÊýÁ¿
-	sd.OutputWindow = GHwnd; //½»»»Á´ËùÊôµÄ´°¿Ú
+	sd.BufferCount = 1;  //ï¿½ï¿½ï¿½ó»º´ï¿½ï¿½ï¿½ï¿½ï¿½
+	sd.OutputWindow = GHwnd; //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä´ï¿½ï¿½ï¿½
 	sd.SwapEffect = DXGI_SWAP_EFFECT_DISCARD;
 	sd.Flags = 0;
 
@@ -162,7 +163,7 @@ bool DirectxCore::Init(bool vsync, bool fullscreen, float ScreenDepth, float Scr
 	sd.BufferDesc.Scaling = DXGI_MODE_SCALING_UNSPECIFIED;
 
 	//---------------------------------------------------------------
-	//´´½¨½»»»Á´ºÍD3DÉè±¸ºÍD3DÉè±¸ÉÏÏÂÎÄ
+	//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½D3Dï¿½è±¸ï¿½ï¿½D3Dï¿½è±¸ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 	//---------------------------------------------------------------
 	D3D_FEATURE_LEVEL featureLevel;
 	featureLevel = D3D_FEATURE_LEVEL_11_1;
@@ -194,7 +195,7 @@ bool DirectxCore::Init(bool vsync, bool fullscreen, float ScreenDepth, float Scr
 	#endif
 
 	//--------------------------------------------------------------
-	//µÚËÄ,´´½¨±³ºó»º´æÊÓÍ¼
+	//ï¿½ï¿½ï¿½ï¿½,ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ó»º´ï¿½ï¿½ï¿½Í¼
 	//--------------------------------------------------------------
 	ID3D11Texture2D*backBuffer;
 	md3dSwapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), reinterpret_cast<void**>(&backBuffer));
@@ -202,7 +203,7 @@ bool DirectxCore::Init(bool vsync, bool fullscreen, float ScreenDepth, float Scr
 	ReleaseCOM(backBuffer);
 
 	//--------------------------------------------------------------
-	//Ìî³ä2DTextureÉî¶È»º´æ(Ä£°å»º´æ)ÐÎÈÝ½á¹¹Ìå£¬´´½¨Éî¶È»º´æ(Ä£°å»º´æ)
+	//ï¿½ï¿½ï¿½2DTextureï¿½ï¿½È»ï¿½ï¿½ï¿½(Ä£ï¿½å»ºï¿½ï¿½)ï¿½ï¿½ï¿½Ý½á¹¹ï¿½å£¬ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½È»ï¿½ï¿½ï¿½(Ä£ï¿½å»ºï¿½ï¿½)
 	//--------------------------------------------------------------
 	D3D11_TEXTURE2D_DESC depthStencilDesc;
 	ZeroMemory(&depthStencilDesc, sizeof(depthStencilDesc));
@@ -217,13 +218,13 @@ bool DirectxCore::Init(bool vsync, bool fullscreen, float ScreenDepth, float Scr
 	depthStencilDesc.BindFlags = D3D11_BIND_DEPTH_STENCIL;
 	depthStencilDesc.CPUAccessFlags = 0;
 	depthStencilDesc.MiscFlags = 0;
-	HR(md3dDevice->CreateTexture2D(&depthStencilDesc,//Òª´´½¨µÄÎÆÀíµÄÐÎÈÝ
+	HR(md3dDevice->CreateTexture2D(&depthStencilDesc,//Òªï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 		0,
-		&md3dDepthStencilBuffer)); //Ö¸ÏòÉî¶È»º´æµÄÖ¸Õë
+		&md3dDepthStencilBuffer)); //Ö¸ï¿½ï¿½ï¿½ï¿½È»ï¿½ï¿½ï¿½ï¿½Ö¸ï¿½ï¿½
 
 
 	//-------------------------------------------------------------
-	//´´½¨²¢Éè¶¨Éî¶È»º´æ(Ä£°å»º´æ)×´Ì¬£¬Ö¸Ê¾ÈçºÎÊ¹ÓÃDepthºÍstencil(Test)
+	//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½è¶¨ï¿½ï¿½È»ï¿½ï¿½ï¿½(Ä£ï¿½å»ºï¿½ï¿½)×´Ì¬ï¿½ï¿½Ö¸Ê¾ï¿½ï¿½ï¿½Ê¹ï¿½ï¿½Depthï¿½ï¿½stencil(Test)
 	//-------------------------------------------------------------
 	D3D11_DEPTH_STENCIL_DESC DSDESC;
 	ZeroMemory(&DSDESC, sizeof(DSDESC));
@@ -234,12 +235,12 @@ bool DirectxCore::Init(bool vsync, bool fullscreen, float ScreenDepth, float Scr
 	DSDESC.StencilReadMask = 0xff;
 	DSDESC.StencilWriteMask = 0xff;
 
-	//Ç°ÃæÉè¶¨
+	//Ç°ï¿½ï¿½ï¿½è¶¨
 	DSDESC.FrontFace.StencilFailOp = D3D11_STENCIL_OP_KEEP;
 	DSDESC.FrontFace.StencilDepthFailOp = D3D11_STENCIL_OP_KEEP;
 	DSDESC.FrontFace.StencilPassOp = D3D11_STENCIL_OP_REPLACE;
 	DSDESC.FrontFace.StencilFunc = D3D11_COMPARISON_ALWAYS;
-	//±³ÃæÉè¶¨,ÔÚ¹âÕ¤»¯×´Ì¬ÌÞ³ý±³ÃæÊ±Õâ¸öÉè¶¨Ã»ÓÃ,µ«ÊÇÒÀÈ»ÒªÉè¶¨,²»È»ÎÞ·¨´´½¨Éî¶È(Ä£°å)×´Ì¬
+	//ï¿½ï¿½ï¿½ï¿½ï¿½è¶¨,ï¿½Ú¹ï¿½Õ¤ï¿½ï¿½×´Ì¬ï¿½Þ³ï¿½ï¿½ï¿½ï¿½ï¿½Ê±ï¿½ï¿½ï¿½ï¿½è¶¨Ã»ï¿½ï¿½,ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½È»Òªï¿½è¶¨,ï¿½ï¿½È»ï¿½Þ·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½(Ä£ï¿½ï¿½)×´Ì¬
 	DSDESC.BackFace.StencilFailOp = D3D11_STENCIL_OP_KEEP;
 	DSDESC.BackFace.StencilDepthFailOp = D3D11_STENCIL_OP_KEEP;
 	DSDESC.BackFace.StencilPassOp = D3D11_STENCIL_OP_KEEP;
@@ -248,32 +249,32 @@ bool DirectxCore::Init(bool vsync, bool fullscreen, float ScreenDepth, float Scr
 	md3dImmediateContext->OMSetDepthStencilState(md3dDepthStencilState, 0);
 
 	//--------------------------------------------------------------
-	//´´½¨Éî¶È»º´æ(Ä£°å»º´æ)ÊÓÍ¼
+	//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½È»ï¿½ï¿½ï¿½(Ä£ï¿½å»ºï¿½ï¿½)ï¿½ï¿½Í¼
 	//--------------------------------------------------------------
 	HR(md3dDevice->CreateDepthStencilView(
-		md3dDepthStencilBuffer, //ÎÒÃÇ»ùÓÚÕâ¸öÉî¶È»º´æ/Â©×Ö°å»º´æ´´½¨Ò»¸öÊÓÍ¼
+		md3dDepthStencilBuffer, //ï¿½ï¿½ï¿½Ç»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½È»ï¿½ï¿½ï¿½/Â©ï¿½Ö°å»ºï¿½æ´´ï¿½ï¿½Ò»ï¿½ï¿½ï¿½ï¿½Í¼
 		0,
-		&md3dDepthStencilView));//Ö¸ÏòÉî¶È»º´æ/Â©×Ö°åÊÓÍ¼µÄÖ¸Õë
+		&md3dDepthStencilView));//Ö¸ï¿½ï¿½ï¿½ï¿½È»ï¿½ï¿½ï¿½/Â©ï¿½Ö°ï¿½ï¿½ï¿½Í¼ï¿½ï¿½Ö¸ï¿½ï¿½
 
 	//-------------------------------------------------------------
-	//°ÑÄÇÐ©ÊÓÍ¼°ó¶¨µ½Êä³öºÏ²¢½×¶Î
+	//ï¿½ï¿½ï¿½ï¿½Ð©ï¿½ï¿½Í¼ï¿½ó¶¨µï¿½ï¿½ï¿½ï¿½ï¿½Ï²ï¿½ï¿½×¶ï¿½
 	//-------------------------------------------------------------
 	md3dImmediateContext->OMSetRenderTargets(1, &md3dRenderTargetView, md3dDepthStencilView);
 
-	//Õý³£µÄ¹âÕ¤»¯×´Ì¬
+	//ï¿½ï¿½ï¿½ï¿½ï¿½Ä¹ï¿½Õ¤ï¿½ï¿½×´Ì¬
 	HR(DirectXFrame::CreateRasterizerState(md3dDevice, &md3dRasterizerState));
 
-	//ÌÞ³ýÇ°Ãæ
+	//ï¿½Þ³ï¿½Ç°ï¿½ï¿½
 	HR(DirectXFrame::CreateRasterizerState(md3dDevice, &md3dCullFrontRS, D3D11_CULL_FRONT));
 
-	//Ïß¿ò»æÖÆ
+	//ï¿½ß¿ï¿½ï¿½ï¿½ï¿½
 	HR(DirectXFrame::CreateRasterizerState(md3dDevice, &md3dWireFrameRS, D3D11_CULL_BACK, D3D11_FILL_WIREFRAME));
 
-	//²»½øÐÐÌÞ³ý
+	//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Þ³ï¿½
 	HR(DirectXFrame::CreateRasterizerState(md3dDevice, &m_pTurnOffCullBackRS, D3D11_CULL_NONE));
 
 	//-------------------------------------------------------------
-	//´´½¨²¢Éè¶¨ÊÓ¿Ú
+	//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½è¶¨ï¿½Ó¿ï¿½
 	//-------------------------------------------------------------
 	mViewport.Width = static_cast<float>(GScreenWidth);
 	mViewport.Height = static_cast<float>(GScreenHeight);
@@ -284,7 +285,7 @@ bool DirectxCore::Init(bool vsync, bool fullscreen, float ScreenDepth, float Scr
 	md3dImmediateContext->RSSetViewports(1,&mViewport);
 
 
-	//µÚÊ®¶þ,Êä³öÒ»¸öTextÎÄ¼þ±£´æÏÔ¿¨µÄÐÅÏ¢ 
+	//ï¿½ï¿½Ê®ï¿½ï¿½,ï¿½ï¿½ï¿½Ò»ï¿½ï¿½Textï¿½Ä¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ô¿ï¿½ï¿½ï¿½ï¿½ï¿½Ï¢ 
 	char CardInfo[128];
 	int memory;
 	GetVideoCardInfo(CardInfo, memory);
@@ -292,7 +293,7 @@ bool DirectxCore::Init(bool vsync, bool fullscreen, float ScreenDepth, float Scr
 	os << "memory=" << memory << "  " << " CardInfo= " << CardInfo;
 
 
-	//´´½¨Ò»¸öÊ¹ZBufferÎÞÐ§µÄDepthStencilState×´Ì¬
+	//ï¿½ï¿½ï¿½ï¿½Ò»ï¿½ï¿½Ê¹ZBufferï¿½ï¿½Ð§ï¿½ï¿½DepthStencilState×´Ì¬
 	D3D11_DEPTH_STENCIL_DESC DisableDepthDESC;
 	ZeroMemory(&DisableDepthDESC, sizeof(DisableDepthDESC));
 	DisableDepthDESC.DepthEnable = false;
@@ -311,7 +312,7 @@ bool DirectxCore::Init(bool vsync, bool fullscreen, float ScreenDepth, float Scr
 	DisableDepthDESC.BackFace.StencilFunc = D3D11_COMPARISON_ALWAYS;
 	HR(md3dDevice->CreateDepthStencilState(&DisableDepthDESC, &md3dDisableDepthStencilState));
 
-	//´´½¨Ò»¸öÊ¹µÃZBufferÐ´ÎÞÐ§µÄDSS
+	//ï¿½ï¿½ï¿½ï¿½Ò»ï¿½ï¿½Ê¹ï¿½ï¿½ZBufferÐ´ï¿½ï¿½Ð§ï¿½ï¿½DSS
 	D3D11_DEPTH_STENCIL_DESC DisableDepthWriteDESC;
 	ZeroMemory(&DisableDepthWriteDESC, sizeof(DisableDepthWriteDESC));
 	DisableDepthWriteDESC.DepthEnable = true;
@@ -330,7 +331,7 @@ bool DirectxCore::Init(bool vsync, bool fullscreen, float ScreenDepth, float Scr
 	DisableDepthWriteDESC.BackFace.StencilFunc = D3D11_COMPARISON_ALWAYS;
 	HR(md3dDevice->CreateDepthStencilState(&DisableDepthWriteDESC, &md3dDisableZWriteDSS));
 
-	//´´½¨µÈÓÚDepth, ²¢ÇÒZWriteÎÞÐ§µÄDSS
+	//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Depth, ï¿½ï¿½ï¿½ï¿½ZWriteï¿½ï¿½Ð§ï¿½ï¿½DSS
 	D3D11_DEPTH_STENCIL_DESC equalDepthNoWriteDESC;
 	ZeroMemory(&equalDepthNoWriteDESC, sizeof(equalDepthNoWriteDESC));
 	equalDepthNoWriteDESC.DepthEnable = true;
@@ -349,7 +350,7 @@ bool DirectxCore::Init(bool vsync, bool fullscreen, float ScreenDepth, float Scr
 	equalDepthNoWriteDESC.BackFace.StencilFunc = D3D11_COMPARISON_ALWAYS;
 	HR(md3dDevice->CreateDepthStencilState(&equalDepthNoWriteDESC, &mEqualDepthStencilState));
 
-	//´´½¨Ò»¸ö±ê¼Ç·´ÉäÃæµÄDepthStencilState×´Ì¬
+	//ï¿½ï¿½ï¿½ï¿½Ò»ï¿½ï¿½ï¿½ï¿½Ç·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½DepthStencilState×´Ì¬
 	D3D11_DEPTH_STENCIL_DESC MaskReflectDESC;
 	ZeroMemory(&MaskReflectDESC, sizeof(MaskReflectDESC));
 	MaskReflectDESC.DepthEnable = true;
@@ -370,7 +371,7 @@ bool DirectxCore::Init(bool vsync, bool fullscreen, float ScreenDepth, float Scr
 	HR(md3dDevice->CreateDepthStencilState(&MaskReflectDESC, &md3dDSSMaskReflect));
 
 
-	//´´½¨Ò»¸öäÖÈ¾·´ÉäÃæµÄDepthStencilState×´Ì¬
+	//ï¿½ï¿½ï¿½ï¿½Ò»ï¿½ï¿½ï¿½ï¿½È¾ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½DepthStencilState×´Ì¬
 	D3D11_DEPTH_STENCIL_DESC EnableReflectDESC;
 	ZeroMemory(&EnableReflectDESC, sizeof(EnableReflectDESC));
 	EnableReflectDESC.DepthEnable = false;
@@ -391,7 +392,7 @@ bool DirectxCore::Init(bool vsync, bool fullscreen, float ScreenDepth, float Scr
 	HR(md3dDevice->CreateDepthStencilState(&EnableReflectDESC, &md3dDSSEnableReflect));
 
 
-	//´´½¨Ò»¸ö±ê¼ÇPointLightVolumeµÄDSS
+	//ï¿½ï¿½ï¿½ï¿½Ò»ï¿½ï¿½ï¿½ï¿½ï¿½PointLightVolumeï¿½ï¿½DSS
 	D3D11_DEPTH_STENCIL_DESC MaskLightVolumeDESC;
 	ZeroMemory(&MaskLightVolumeDESC, sizeof(MaskLightVolumeDESC));
 	MaskLightVolumeDESC.DepthEnable = true;
@@ -412,7 +413,7 @@ bool DirectxCore::Init(bool vsync, bool fullscreen, float ScreenDepth, float Scr
 	HR(md3dDevice->CreateDepthStencilState(&MaskLightVolumeDESC, &m_pDSSAddLightVolumeStencil));
 
 
-	//´´½¨Ò»¸öäÖÈ¾PointLightVolumeµÄDSS
+	//ï¿½ï¿½ï¿½ï¿½Ò»ï¿½ï¿½ï¿½ï¿½È¾PointLightVolumeï¿½ï¿½DSS
 	D3D11_DEPTH_STENCIL_DESC RenderLightVolumeDESC;
 	ZeroMemory(&RenderLightVolumeDESC, sizeof(RenderLightVolumeDESC));
 	RenderLightVolumeDESC.DepthEnable = false;
@@ -432,7 +433,7 @@ bool DirectxCore::Init(bool vsync, bool fullscreen, float ScreenDepth, float Scr
 	RenderLightVolumeDESC.BackFace.StencilFunc = D3D11_COMPARISON_EQUAL;
 	HR(md3dDevice->CreateDepthStencilState(&RenderLightVolumeDESC, &m_pDSSRenderLightVolume));
 
-	//´´½¨Ò»¸öäÖÈ¾SkyBoxµÄDSS
+	//ï¿½ï¿½ï¿½ï¿½Ò»ï¿½ï¿½ï¿½ï¿½È¾SkyBoxï¿½ï¿½DSS
 	D3D11_DEPTH_STENCIL_DESC SkyBoxDESC;
 	ZeroMemory(&SkyBoxDESC, sizeof(SkyBoxDESC));
 	SkyBoxDESC.DepthEnable = true;
@@ -441,19 +442,19 @@ bool DirectxCore::Init(bool vsync, bool fullscreen, float ScreenDepth, float Scr
 	SkyBoxDESC.StencilEnable = true;
 	SkyBoxDESC.StencilReadMask = 0xff;
 	SkyBoxDESC.StencilWriteMask = 0xff;
-	//Ç°ÃæÉè¶¨
+	//Ç°ï¿½ï¿½ï¿½è¶¨
 	SkyBoxDESC.FrontFace.StencilFailOp = D3D11_STENCIL_OP_KEEP;
 	SkyBoxDESC.FrontFace.StencilDepthFailOp = D3D11_STENCIL_OP_KEEP;
 	SkyBoxDESC.FrontFace.StencilPassOp = D3D11_STENCIL_OP_REPLACE;
 	SkyBoxDESC.FrontFace.StencilFunc = D3D11_COMPARISON_ALWAYS;
-	//±³ÃæÉè¶¨,ÔÚ¹âÕ¤»¯×´Ì¬ÌÞ³ý±³ÃæÊ±Õâ¸öÉè¶¨Ã»ÓÃ,µ«ÊÇÒÀÈ»ÒªÉè¶¨,²»È»ÎÞ·¨´´½¨Éî¶È(Ä£°å)×´Ì¬
+	//ï¿½ï¿½ï¿½ï¿½ï¿½è¶¨,ï¿½Ú¹ï¿½Õ¤ï¿½ï¿½×´Ì¬ï¿½Þ³ï¿½ï¿½ï¿½ï¿½ï¿½Ê±ï¿½ï¿½ï¿½ï¿½è¶¨Ã»ï¿½ï¿½,ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½È»Òªï¿½è¶¨,ï¿½ï¿½È»ï¿½Þ·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½(Ä£ï¿½ï¿½)×´Ì¬
 	SkyBoxDESC.BackFace.StencilFailOp = D3D11_STENCIL_OP_KEEP;
 	SkyBoxDESC.BackFace.StencilDepthFailOp = D3D11_STENCIL_OP_KEEP;
 	SkyBoxDESC.BackFace.StencilPassOp = D3D11_STENCIL_OP_KEEP;
 	SkyBoxDESC.BackFace.StencilFunc = D3D11_COMPARISON_ALWAYS;
 	HR(md3dDevice->CreateDepthStencilState(&SkyBoxDESC, &renderSkyBoxDSS));
 
-	//´´½¨alpha»ìºÏ¿ªÆôµÄ»ìºÏ×´Ì¬
+	//ï¿½ï¿½ï¿½ï¿½alphaï¿½ï¿½Ï¿ï¿½ï¿½ï¿½ï¿½Ä»ï¿½ï¿½×´Ì¬
 	D3D11_BLEND_DESC blendStateDescription;
 	ZeroMemory(&blendStateDescription, sizeof(D3D11_BLEND_DESC));
 	blendStateDescription.RenderTarget[0].BlendEnable = TRUE;
@@ -466,7 +467,7 @@ bool DirectxCore::Init(bool vsync, bool fullscreen, float ScreenDepth, float Scr
 	blendStateDescription.RenderTarget[0].RenderTargetWriteMask = 0x0f;
 	HR(md3dDevice->CreateBlendState(&blendStateDescription, &md3dEnableBlendState));
 
-	//ÓÃÓÚÑÓ³ÙäÖÈ¾µÄ¹âÕÕ»ìºÏµÄ×´Ì¬
+	//ï¿½ï¿½ï¿½ï¿½ï¿½Ó³ï¿½ï¿½ï¿½È¾ï¿½Ä¹ï¿½ï¿½Õ»ï¿½Ïµï¿½×´Ì¬
 	D3D11_BLEND_DESC lightBlendStateDesc;
 	ZeroMemory(&lightBlendStateDesc, sizeof(D3D11_BLEND_DESC));
 	lightBlendStateDesc.RenderTarget[0].BlendEnable = TRUE;
@@ -479,11 +480,11 @@ bool DirectxCore::Init(bool vsync, bool fullscreen, float ScreenDepth, float Scr
 	lightBlendStateDesc.RenderTarget[0].RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
 	HR(md3dDevice->CreateBlendState(&lightBlendStateDesc, &m_pLightBlendState));
 
-	//´´½¨alpha»ìºÏ¹Ø±ÕµÄ»ìºÏ×´Ì¬
+	//ï¿½ï¿½ï¿½ï¿½alphaï¿½ï¿½Ï¹Ø±ÕµÄ»ï¿½ï¿½×´Ì¬
 	blendStateDescription.RenderTarget[0].BlendEnable = false;
 	HR(md3dDevice->CreateBlendState(&blendStateDescription, &md3dDisableBlendState));
 
-	//ÓÃÓÚ±ê¼ÇäÖÈ¾½×¶Î
+	//ï¿½ï¿½ï¿½Ú±ï¿½ï¿½ï¿½ï¿½È¾ï¿½×¶ï¿½
 	HR(md3dImmediateContext->QueryInterface(__uuidof(ID3DUserDefinedAnnotation), (void**)&d3dUserDefinedAnnot));
 
 	return true;
@@ -495,31 +496,31 @@ void DirectxCore::BeginScene(float red, float green, float blue, float alpha)
 {
 	float color[4];
 
-	//ÉèÖÃÇå³ý»º´æ(backbuffer),ÉèÖÃÃ¿Ö¡³õÊ¼ÑÕÉ«
+	//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½(backbuffer),ï¿½ï¿½ï¿½ï¿½Ã¿Ö¡ï¿½ï¿½Ê¼ï¿½ï¿½É«
 	color[0] = red;
 	color[1] = green;
 	color[2] = blue;
 	color[3] = alpha;
 
-	//Çå³ý±³ºó»º´æ
+	//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ó»º´ï¿½
 	md3dImmediateContext->ClearRenderTargetView(md3dRenderTargetView,color);
 
-	//Çå³ýÉî¶È»º´æºÍÄ£°å»º´æ£¬ÉèÖÃÃ¿Ö¡³õÊ¼Öµ
+	//ï¿½ï¿½ï¿½ï¿½ï¿½È»ï¿½ï¿½ï¿½ï¿½Ä£ï¿½å»ºï¿½æ£¬ï¿½ï¿½ï¿½ï¿½Ã¿Ö¡ï¿½ï¿½Ê¼Öµ
 	md3dImmediateContext->ClearDepthStencilView(md3dDepthStencilView, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
 	
 }
 
 void DirectxCore::EndScene()
 {
-	//ÒòÎªäÖÈ¾ÒÑ¾­Íê³É,Ìá½»backbufferµ½ÆÁÄ»
+	//ï¿½ï¿½Îªï¿½ï¿½È¾ï¿½Ñ¾ï¿½ï¿½ï¿½ï¿½,ï¿½á½»backbufferï¿½ï¿½ï¿½ï¿½Ä»
 	if (mVsyncEnable)
 	{
-		//ÏÞÖ¡Ìá½»
+		//ï¿½ï¿½Ö¡ï¿½á½»
 		md3dSwapChain->Present(1, 0);
 	}
 	else
 	{
-		//¾¡¿ÉÄÜ¿ìÌá½»
+		//ï¿½ï¿½ï¿½ï¿½ï¿½Ü¿ï¿½ï¿½á½»
 		md3dSwapChain->Present(0, 0);
 	}
 }
@@ -573,7 +574,7 @@ void DirectxCore::TurnOnZBuffer()
 }
 void DirectxCore::ShutDown()
 {
-	//ÔÚÊÍ·ÅÆäËüD3D½Ó¿ÚÇ°,Ê¹½»»»Á´½øÈë´°¿ÚÄ£Ê½
+	//ï¿½ï¿½ï¿½Í·ï¿½ï¿½ï¿½ï¿½ï¿½D3Dï¿½Ó¿ï¿½Ç°,Ê¹ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ë´°ï¿½ï¿½Ä£Ê½
 	if (md3dSwapChain)
 	{
 		md3dSwapChain->SetFullscreenState(false, NULL);
@@ -620,13 +621,13 @@ void DirectxCore::TurnOnCullFront()
 	md3dImmediateContext->RSSetState(md3dCullFrontRS);
 }
 
-//»Ö¸´Ä¬ÈÏµÄ
+//ï¿½Ö¸ï¿½Ä¬ï¿½Ïµï¿½
 void DirectxCore::RecoverDefaultDSS()
 {
 	md3dImmediateContext->OMSetDepthStencilState(md3dDepthStencilState, 0);
 }
 
-//¹ØµôZBufferÐ´
+//ï¿½Øµï¿½ZBufferÐ´
 void DirectxCore::TurnOnDisbleZWriteDSS()
 {
 	md3dImmediateContext->OMSetDepthStencilState(md3dDisableZWriteDSS, 0);

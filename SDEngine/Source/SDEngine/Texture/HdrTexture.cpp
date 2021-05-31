@@ -1,5 +1,5 @@
-#include "HdrTexture.h"
 #include "stb_image.h"
+#include "HdrTexture.h"
 
 HdrTexture::HdrTexture(char* TextureFilename):
 	m_pSRV(nullptr)

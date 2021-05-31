@@ -61,7 +61,7 @@ void Mesh::InitBuffer()
 
 		for (int i = 0; i < (int)mModelData->mMeshList.size(); ++i)
 		{
-			//µÚÒ»,Ìî³ä(¶¥µã)»º´æÐÎÈÝ½á¹¹ÌåºÍ×Ó×ÊÔ´Êý¾Ý½á¹¹Ìå,²¢´´½¨¶¥µã»º´æ
+			//ï¿½ï¿½Ò»,ï¿½ï¿½ï¿½(ï¿½ï¿½ï¿½ï¿½)ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ý½á¹¹ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ô´ï¿½ï¿½ï¿½Ý½á¹¹ï¿½ï¿½,ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ã»ºï¿½ï¿½
 			MeshData& mMesh = mModelData->mMeshList[i];
 
 			D3D11_BUFFER_DESC vertexBufferDesc;
@@ -78,7 +78,7 @@ void Mesh::InitBuffer()
 			vertexData.SysMemSlicePitch = 0;
 			g_pDevice->CreateBuffer(&vertexBufferDesc, &vertexData, &mMesh.mVertexBuffer);
 
-			//µÚ¶þ,Ìî³ä(Ë÷Òý)»º´æÐÎÈÝ½á¹¹ÌåºÍ×Ó×ÊÔ´Êý¾Ý½á¹¹Ìå,²¢´´½¨Ë÷Òý»º´æ
+			//ï¿½Ú¶ï¿½,ï¿½ï¿½ï¿½(ï¿½ï¿½ï¿½ï¿½)ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ý½á¹¹ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ô´ï¿½ï¿½ï¿½Ý½á¹¹ï¿½ï¿½,ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 			D3D11_BUFFER_DESC  indexBufferDesc;
 			indexBufferDesc.Usage = D3D11_USAGE_DEFAULT;
 			indexBufferDesc.ByteWidth = sizeof(WORD) * mMesh.mIndexData.size();

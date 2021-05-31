@@ -20,7 +20,7 @@ DirectionWave::~DirectionWave()
 }
 
 
-//¼ÆËãÎ»ÖÃ
+//ï¿½ï¿½ï¿½ï¿½Î»ï¿½ï¿½
 void DirectionWave::CalculateVertexPos(float time)
 {
 	Wave::CalculateVertexPos(time);
@@ -42,10 +42,10 @@ float DirectionWave::GetWaveVertexHeight(int x, int z, float time)
 
 		float fDdotXZ = dirWaveParam.fDrection.x * x + dirWaveParam.fDrection.y * z;
 
-		//ÆµÂÊ
+		//Æµï¿½ï¿½
 		float w = 2.0f * XM_PI / dirWaveParam.fWaveLength;
 
-		//ÏàÎ»²î³£Á¿
+		//ï¿½ï¿½Î»ï¿½î³£ï¿½ï¿½
 		float phaseConstant = dirWaveParam.fSpeed * w;
 
 

@@ -1,5 +1,4 @@
-﻿
-#include"CubeCamera.h"
+﻿#include"CubeCamera.h"
 
 CubeCamera::CubeCamera(float fovY, float aspect, float nearPlane, float farPlane)
 {

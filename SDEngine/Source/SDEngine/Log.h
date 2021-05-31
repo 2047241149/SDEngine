@@ -4,6 +4,8 @@
 
 #include "CoreMinimal.h"
 #include "spdlog/logger.h"
+#include <spdlog/fmt/ostr.h>
+#include<d3d11_1.h>
 
 using namespace std;
 using namespace spdlog;

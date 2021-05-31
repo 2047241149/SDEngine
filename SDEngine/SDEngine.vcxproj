@@ -60,7 +60,7 @@
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <PreprocessorDefinitions>SD_BUILD_DLL;FBXSDK_SHARED;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>ThirdParty\spdlog\include;ThirdParty\fbxsdk\2017.1\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>Source;ThirdParty\spdlog\include;ThirdParty\fbxsdk\2017.1\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
       <Optimization>Disabled</Optimization>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
@@ -82,7 +82,7 @@ IF EXIST ThirdParty\fbxsdk\2017.1\lib\x64\debug\libfbxsdk.dll\ (xcopy /Q /E /Y /
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <PreprocessorDefinitions>SD_BUILD_DLL;FBXSDK_SHARED;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>ThirdParty\spdlog\include;ThirdParty\fbxsdk\2017.1\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>Source;ThirdParty\spdlog\include;ThirdParty\fbxsdk\2017.1\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <Optimization>Full</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
@@ -116,9 +116,13 @@ IF EXIST ThirdParty\fbxsdk\2017.1\lib\x64\debug\libfbxsdk.dll\ (xcopy /Q /E /Y /
     <ClInclude Include="Source\SDEngine\Common\MathTool.h" />
     <ClInclude Include="Source\SDEngine\Common\UtilityEnum.h" />
     <ClInclude Include="Source\SDEngine\Common\stb_image.h" />
-    <ClInclude Include="Source\SDEngine\CoreMinimal.h" />
+    <ClInclude Include="Source\CoreMinimal.h" />
     <ClInclude Include="Source\SDEngine\DebugTool\Debugwindow.h" />
     <ClInclude Include="Source\SDEngine\EntryPoint.h" />
+    <ClInclude Include="Source\SDEngine\Event\Event.h" />
+    <ClInclude Include="Source\SDEngine\Event\KeyEvent.h" />
+    <ClInclude Include="Source\SDEngine\Event\MouseEvent.h" />
+    <ClInclude Include="Source\SDEngine\Event\WindowEvent.h" />
     <ClInclude Include="Source\SDEngine\FPS.h" />
     <ClInclude Include="Source\SDEngine\Game.h" />
     <ClInclude Include="Source\SDEngine\GameObject\Camera.h" />
@@ -169,7 +173,9 @@ IF EXIST ThirdParty\fbxsdk\2017.1\lib\x64\debug\libfbxsdk.dll\ (xcopy /Q /E /Y /
     <ClInclude Include="Source\SDEngine\Texture\TextureSamplerManager.h" />
     <ClInclude Include="Source\SDEngine\Texture\stb_image.h" />
     <ClInclude Include="Source\SDEngine\TiledDefferedSceneRender.h" />
+    <ClInclude Include="Source\SDEngine\GameWindow.h" />
     <ClInclude Include="Source\SDEngine\WindowInfo.h" />
+    <ClInclude Include="Source\pch.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\SDEngine\ClusterDefferedSceneRender.cpp" />
@@ -227,8 +233,10 @@ IF EXIST ThirdParty\fbxsdk\2017.1\lib\x64\debug\libfbxsdk.dll\ (xcopy /Q /E /Y /
     <ClCompile Include="Source\SDEngine\Texture\TextureSamplerManager.cpp" />
     <ClCompile Include="Source\SDEngine\Texture\stb_image.cpp" />
     <ClCompile Include="Source\SDEngine\TiledDefferedSceneRender.cpp" />
+    <ClCompile Include="Source\SDEngine\GameWindow.cpp" />
     <ClCompile Include="Source\SDEngine\WindowInfo.cpp" />
     <ClCompile Include="Source\SDEngine\源.cpp" />
+    <ClCompile Include="Source\pch.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

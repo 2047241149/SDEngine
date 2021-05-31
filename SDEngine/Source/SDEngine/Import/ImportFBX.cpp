@@ -40,22 +40,22 @@ ImportFBX* ImportFBX::Get()
 
 void ImportFBX::ImportFbxFile(string fbxFileName, vector<ModelData>& mFBXModel)
 {
-	//Çå³ý»º´æÊý¾Ý
+	//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 	ClearMemFBXModelData();
 
-	//ÕâÀïÍ³Ò»ÓÃA\\B\\CµÄ¸ñÊ½À´·ÃÎÊÎÄ¼þ
+	//ï¿½ï¿½ï¿½ï¿½Í³Ò»ï¿½ï¿½A\\B\\Cï¿½Ä¸ï¿½Ê½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä¼ï¿½
 	string fileSpaceStr = "\\";
 	UINT pos = fbxFileName.rfind(fileSpaceStr);
 	fbxFileNamePre = fbxFileName.substr(0, pos) + fileSpaceStr;
 
-	//´´½¨FbxIOSettings
+	//ï¿½ï¿½ï¿½ï¿½FbxIOSettings
 	FbxIOSettings * ios = FbxIOSettings::Create(mFbxManager, IOSROOT);
 	mFbxManager->SetIOSettings(ios);
 
-	//´´½¨Ò»¸öFBXImort
+	//ï¿½ï¿½ï¿½ï¿½Ò»ï¿½ï¿½FBXImort
 	FbxImporter* fbxImport = FbxImporter::Create(mFbxManager, "");
 
-	//µ¼ÈëÎÄ¼þ
+	//ï¿½ï¿½ï¿½ï¿½ï¿½Ä¼ï¿½
 	if (!fbxImport->Initialize(fbxFileName.c_str(), -1, mFbxManager->GetIOSettings()))
 	{
 		printf("Call to FbxImporter::Initialize() failed.\n");
@@ -68,7 +68,7 @@ void ImportFBX::ImportFbxFile(string fbxFileName, vector<ModelData>& mFBXModel)
 
 	fbxImport->Import(mScene);
 	
-	//×ª»»ÎªDirectx×ø±êÖáÏµÍ³
+	//×ªï¿½ï¿½ÎªDirectxï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ÏµÍ³
 	FbxAxisSystem directxAxisSys = FbxAxisSystem::DirectX;
 	FbxAxisSystem sceneAxisSystem = mScene->GetGlobalSettings().GetAxisSystem();
 	if (sceneAxisSystem != directxAxisSys)
@@ -84,7 +84,7 @@ void ImportFBX::ImportFbxFile(string fbxFileName, vector<ModelData>& mFBXModel)
 	}
 	#endif*/
 
-	//Èý½Ç»¯Õû¸ö³¡¾°
+	//ï¿½ï¿½ï¿½Ç»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 	TriangulateRecursive(mScene->GetRootNode());
 
 	ReadSceneMeshData(mScene);
@@ -140,7 +140,7 @@ void ImportFBX::ProcessMesh(FbxMesh* mesh, MemFBXModelData* fbxModel)
 	int vertexCounter = 0;
 
 	vector<Triangle>& mTriangleData = fbxModel->mTriangleData;
-	//¶ÁÈ¡PolygonµÄ¼¸ºÎÊý¾Ý(ÕâÀïÖ÷ÒªÊÇÈý½ÇÐÎ)
+	//ï¿½ï¿½È¡Polygonï¿½Ä¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½(ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Òªï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½)
 	for (int i = 0; i < triangleCount; ++i)
 	{
 		
@@ -151,36 +151,36 @@ void ImportFBX::ProcessMesh(FbxMesh* mesh, MemFBXModelData* fbxModel)
 
 			int ctrlPointIndex = mesh->GetPolygonVertex(i, j);
 
-			//¶ÁÈ¡¶¥µãÊý¾Ý
+			//ï¿½ï¿½È¡ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 			ReadVertexPos(mesh, ctrlPointIndex, &triangle.vertexs[j].pos);
 
-			//¶ÁÈ¡¶¥µã·¨Ïß
+			//ï¿½ï¿½È¡ï¿½ï¿½ï¿½ã·¨ï¿½ï¿½
 			ReadVertexNormal(mesh, ctrlPointIndex, vertexCounter, &triangle.vertexs[j].normal);
 
-			//¶ÁÈ¡¶¥µãÑÕÉ«
+			//ï¿½ï¿½È¡ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½É«
 			ReadVertexColor(mesh, ctrlPointIndex, vertexCounter, &triangle.vertexs[j].color);
 
 			//ReadVertexTangent(mesh, ctrlPointIndex, vertexCounter, &triangle.vertexs[j].tangent);
 
-			//¶ÁÈ¡¶¥µãUV
+			//ï¿½ï¿½È¡ï¿½ï¿½ï¿½ï¿½UV
 			ReadVertexUV(mesh, ctrlPointIndex, mesh->GetTextureUVIndex(i, j), &triangle.vertexs[j].uv);
 
 			++vertexCounter;
 		}
 
-		//ÀûÓÃ¶ÁÈ¡µ½µÄ¶¥µãµÄnormalºÍpos¼ÆËãÇÐÏß·½Ïò
+		//ï¿½ï¿½ï¿½Ã¶ï¿½È¡ï¿½ï¿½ï¿½Ä¶ï¿½ï¿½ï¿½ï¿½normalï¿½ï¿½posï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ß·ï¿½ï¿½ï¿½
 		CalculateTriangleTangent(triangle);
 
 		mTriangleData.push_back(triangle);
 	}
 
 	
-	//¶ÁÈ¡meshµÄ²ÄÖÊÊôÐÔË÷Òý
+	//ï¿½ï¿½È¡meshï¿½Ä²ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 	ReadMeshMaterialIndex(mesh,mTriangleData);
 }
 
-//ÓÉÓÚ3DS MAXÀï×ø±êÖáÎªZÖáÏòÉÏµÄ£¬YÖáÏòÀïµÄÓÒÊÖ×ø±êÏµ£¬ D3D11Îª×óÊÖ×ø±êÏµ
-//²Î¿¼https://www.cnblogs.com/wantnon/p/4372764.html
+//ï¿½ï¿½ï¿½ï¿½3DS MAXï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ÎªZï¿½ï¿½ï¿½ï¿½ï¿½ÏµÄ£ï¿½Yï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ïµï¿½ï¿½ D3D11Îªï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ïµ
+//ï¿½Î¿ï¿½https://www.cnblogs.com/wantnon/p/4372764.html
 void ImportFBX::ReadVertexPos(FbxMesh* mesh, int ctrlPointIndex, XMFLOAT3* pos)
 {
 	FbxNode* meshNode = mesh->GetNode();
@@ -206,7 +206,7 @@ void ImportFBX::ReadVertexColor(FbxMesh* mesh, int ctrlPointIndex, int vertexCou
 		return;
 	}
 	FbxGeometryElementVertexColor* vertexColor = mesh->GetElementVertexColor();
-	//¸ù¾ÝÏàÓ¦µÄÓ³ÉäÄ£Ê½¶ÁÈ¡
+	//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ó¦ï¿½ï¿½Ó³ï¿½ï¿½Ä£Ê½ï¿½ï¿½È¡
 	switch (vertexColor->GetMappingMode())
 	{
 	case FbxGeometryElement::eByControlPoint:
@@ -418,8 +418,8 @@ void ImportFBX::ReadVertexUV(FbxMesh* mesh, int ctrlPointIndex, int uvIndex, XMF
 		{
 		case FbxGeometryElement::eDirect:
 		{
-			//ÒòÎªÕâÐ©ÕâÐ©Êý¾Ý¸öOpengl×ø±êÒ»Ñù£¬¶øÎÒÃÇÊÇÐèÒªÔÚD3D11ÀïäÖÈ¾µÄÊý¾Ý£¬ËùÒÔ²¿·ÖÊý¾ÝµÃ¸Ä±ä
-			//v·´×ª
+			//ï¿½ï¿½Îªï¿½ï¿½Ð©ï¿½ï¿½Ð©ï¿½ï¿½ï¿½Ý¸ï¿½Openglï¿½ï¿½ï¿½ï¿½Ò»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Òªï¿½ï¿½D3D11ï¿½ï¿½ï¿½ï¿½È¾ï¿½ï¿½ï¿½ï¿½ï¿½Ý£ï¿½ï¿½ï¿½ï¿½Ô²ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ÝµÃ¸Ä±ï¿½
+			//vï¿½ï¿½×ª
 			uv->x = (float)(vertexUV->GetDirectArray().GetAt(ctrlPointIndex).mData[0]);
 			uv->y = (float)(1.0f - vertexUV->GetDirectArray().GetAt(ctrlPointIndex).mData[1]);
 
@@ -460,7 +460,7 @@ void ImportFBX::ReadVertexUV(FbxMesh* mesh, int ctrlPointIndex, int uvIndex, XMF
 }
 
 
-//Ä¬ÈÏ¿¼ÂÇ²»´æÔÚ FbxLayeredTextureµÄÇé¿ö
+//Ä¬ï¿½Ï¿ï¿½ï¿½Ç²ï¿½ï¿½ï¿½ï¿½ï¿½ FbxLayeredTextureï¿½ï¿½ï¿½ï¿½ï¿½
 void ImportFBX::LoadMaterialTexture(FbxSurfaceMaterial* surfaceMaterial,
 	int materialIndex, map<int, MaterialTexFileName>& materialMap)
 {
@@ -502,7 +502,7 @@ void ImportFBX::ReadReletiveTextureFileName(FbxProperty* mproperty,
 	}
 
 	int textureNum = mproperty->GetSrcObjectCount<FbxFileTexture>();
-	//ÏÖÔÚÃ¿ÖÖÎÆÀí½ö½ö¶ÁÈ¡Ò»¸ö
+	//ï¿½ï¿½ï¿½ï¿½Ã¿ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½È¡Ò»ï¿½ï¿½
 	if (textureNum > 0)
 	{
 		FbxFileTexture* fbxFileTexture = mproperty->GetSrcObject<FbxFileTexture>(0);
@@ -535,12 +535,12 @@ void ImportFBX::ReadReletiveTextureFileName(FbxProperty* mproperty,
 
 }
 
-//¶ÁÈ¡meshµÄÈý½ÇÐÎµÄ²ÄÖÊË÷Òý
+//ï¿½ï¿½È¡meshï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ÎµÄ²ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 void ImportFBX::ReadMeshMaterialIndex(FbxMesh* mesh, vector<Triangle>& triangleData)
 {
 	int ltriangleCount = mesh->GetPolygonCount();
 
-	//»ñÈ¡meshµÄ²ÄÖÊË÷ÒýÊý×é
+	//ï¿½ï¿½È¡meshï¿½Ä²ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 	fbxsdk::FbxLayerElementArrayTemplate<int>* pMaterialIndices;
 	FbxGeometryElement::EMappingMode materialMappingMode = FbxGeometryElement::eNone;
 
@@ -553,7 +553,7 @@ void ImportFBX::ReadMeshMaterialIndex(FbxMesh* mesh, vector<Triangle>& triangleD
 
 			switch (materialMappingMode)
 			{
-				//mesh´æÔÚ¶àÖÖ²ÄÖÊ
+				//meshï¿½ï¿½ï¿½Ú¶ï¿½ï¿½Ö²ï¿½ï¿½ï¿½
 			case fbxsdk::FbxLayerElement::eByPolygon:
 			{
 				if (pMaterialIndices->GetCount() == ltriangleCount)
@@ -566,7 +566,7 @@ void ImportFBX::ReadMeshMaterialIndex(FbxMesh* mesh, vector<Triangle>& triangleD
 				}
 			}
 			break;
-			//mesh½ö´æÔÚÒ»ÖÖ²ÄÖÊ
+			//meshï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ò»ï¿½Ö²ï¿½ï¿½ï¿½
 			case fbxsdk::FbxLayerElement::eAllSame:
 			{
 				int materialIndex = pMaterialIndices->GetAt(0);
@@ -607,7 +607,7 @@ void ImportFBX::LoadMaterial(FbxMesh* mesh, map<int, MaterialTexFileName>& mater
 	}
 }
 
-//½«´ÓFBXÎÄ¼þ¶ÁÈ¡µÄÊý¾Ý×ª»»ÎªDXäÖÈ¾µÄÊý¾Ý
+//ï¿½ï¿½ï¿½ï¿½FBXï¿½Ä¼ï¿½ï¿½ï¿½È¡ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½×ªï¿½ï¿½ÎªDXï¿½ï¿½È¾ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 void ImportFBX::ChangeModelData(ModelData* destModel, MemFBXModelData* srcMemFBXModel)
 {
 	destModel->mMaterialMap = srcMemFBXModel->mMaterialMap;
@@ -616,7 +616,7 @@ void ImportFBX::ChangeModelData(ModelData* destModel, MemFBXModelData* srcMemFBX
 	vector<Triangle>& mTriangleData = srcMemFBXModel->mTriangleData;
 	
 	bool isExitTexture = true;
-	//Èç¹ûÕâ¸ö½Úµã²»´æÔÚ´øÎÆÀíµÄ½Úµã
+	//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Úµã²»ï¿½ï¿½ï¿½Ú´ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä½Úµï¿½
 	if (destModel->mMaterialMap.size() == 0)
 	{
 		isExitTexture = false;
@@ -631,14 +631,14 @@ void ImportFBX::ChangeModelData(ModelData* destModel, MemFBXModelData* srcMemFBX
 
 	if (isExitTexture)
 	{
-		//×ª»»meshµÄ²ÄÖÊIdÊý¾Ý
+		//×ªï¿½ï¿½meshï¿½Ä²ï¿½ï¿½ï¿½Idï¿½ï¿½ï¿½ï¿½
 		for (auto it = mMaterialMap.begin(); it != mMaterialMap.end(); it++)
 		{
 			destModel->mMeshList[i].materialId = it->first;
 			++i;
 		}
 
-		//×ª»»meshµÄ¶¥µãÊý¾Ý
+		//×ªï¿½ï¿½meshï¿½Ä¶ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 		for (int triangleIndex = 0; triangleIndex < (int)mTriangleData.size(); ++triangleIndex)
 		{
 			int meshIndex = 0;
@@ -678,7 +678,7 @@ void ImportFBX::ChangeModelData(ModelData* destModel, MemFBXModelData* srcMemFBX
 	}
 	
 
-	//×ª»»meshµÄË÷ÒýÊý¾Ý
+	//×ªï¿½ï¿½meshï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 	for (int j = 0; j < (int)destModel->mMeshList.size(); ++j)
 	{
 		int vertexNum = destModel->mMeshList[j].mVertexData.size();
@@ -714,12 +714,12 @@ void ImportFBX::TriangulateRecursive(FbxNode* node)
 	const int lChildCount = node->GetChildCount();
 	for (int lChildIndex = 0; lChildIndex < lChildCount; ++lChildIndex)
 	{
-		// Žqƒm[ƒh‚ð’Tõ
+		// ï¿½qï¿½mï¿½[ï¿½hï¿½ï¿½Tï¿½ï¿½
 		TriangulateRecursive(node->GetChild(lChildIndex));
 	}
 }
 
-//ÓÉÓÚ¶¥µãÊý¾ÝºÍ·¨ÏßÊý¾Ý¶¼ÊÇ¶ÔµÄ£¬¶øÇÐÏßÊÇ´íÎóµÄ£¬ËùÒÔ×ÔÐÐ¼ÆËãÇÐÏß
+//ï¿½ï¿½ï¿½Ú¶ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ÝºÍ·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ý¶ï¿½ï¿½Ç¶ÔµÄ£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ç´ï¿½ï¿½ï¿½Ä£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ð¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 void ImportFBX::CalculateTriangleTangent(Triangle& triangle)
 {
 	float edge1[3], edge2[3];
@@ -737,15 +737,15 @@ void ImportFBX::CalculateTriangleTangent(Triangle& triangle)
 	edge2[1] = vertex3.pos.y - vertex1.pos.y; //E1Y  
 	edge2[2] = vertex3.pos.z - vertex1.pos.z; //E1Z  
 
-									  //ÎÆÀí±ßÏòÁ¿1  
+									  //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½1  
 	texEdge1[0] = vertex2.uv.x - vertex1.uv.x; //U0  
 	texEdge1[1] = vertex2.uv.y - vertex1.uv.y; //V0  
 
-	//ÎÆÀí±ßÏòÁ¿2  
+	//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½2  
 	texEdge2[0] = vertex3.uv.x - vertex1.uv.x; //U1  
 	texEdge2[1] = vertex3.uv.y - vertex1.uv.y; //V1  
 
-	//Çó³öTBÔÚÄ£ÐÍ¿Õ¼ä×ø±êµÄ·½³ÌÏµÊý  									 
+	//ï¿½ï¿½ï¿½TBï¿½ï¿½Ä£ï¿½Í¿Õ¼ï¿½ï¿½ï¿½ï¿½ï¿½Ä·ï¿½ï¿½ï¿½Ïµï¿½ï¿½  									 
 	float den = 1.0f / (texEdge1[0] * texEdge2[1] - texEdge1[1] * texEdge2[0]);
 
 	XMFLOAT3 tangent;
@@ -758,7 +758,7 @@ void ImportFBX::CalculateTriangleTangent(Triangle& triangle)
 	tangent.y /= length;
 	tangent.z /= length;
 
-	//Çó³öTangent
+	//ï¿½ï¿½ï¿½Tangent
 	for (int i = 0; i < 3; ++i)
 	{
 		triangle.vertexs[i].tangent = tangent;

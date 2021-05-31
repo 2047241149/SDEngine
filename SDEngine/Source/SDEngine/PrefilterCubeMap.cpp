@@ -46,7 +46,7 @@ bool PrefliterCubeMap::Render()
 	ID3D11RenderTargetView* rtvs[MaxCubeMapFaces];
 	const float color[4] = { 0.0, 0.0, 0.0, 1.0f };
 	XMMATRIX projMatrix = cubeCamera->GetProjMatrix();
-	//µÚÒ»,Ìî³ä2DÎÆÀíÐÎÈÝ½á¹¹Ìå,²¢´´½¨2DäÖÈ¾Ä¿±êÎÆÀí
+	//ï¿½ï¿½Ò»,ï¿½ï¿½ï¿½2Dï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ý½á¹¹ï¿½ï¿½,ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½2Dï¿½ï¿½È¾Ä¿ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 
 	//Texture2D
 	D3D11_TEXTURE2D_DESC cubeMapTextureDesc;
@@ -69,7 +69,7 @@ bool PrefliterCubeMap::Render()
 	shaderResourceViewDesc.Format = cubeMapTextureDesc.Format;
 	shaderResourceViewDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURECUBE;
 	shaderResourceViewDesc.Texture2D.MostDetailedMip = 0;
-	shaderResourceViewDesc.Texture2D.MipLevels = MaxMipLevel; //-1»áÉú³Éµ½1X1ÏñËØµÄMipMap
+	shaderResourceViewDesc.Texture2D.MipLevels = MaxMipLevel; //-1ï¿½ï¿½ï¿½ï¿½ï¿½Éµï¿½1X1ï¿½ï¿½ï¿½Øµï¿½MipMap
 	HR(g_pDevice->CreateShaderResourceView(cubeMapTexture, &shaderResourceViewDesc, &srv));
 
 	GDirectxCore->TurnOnRenderSkyBoxDSS();

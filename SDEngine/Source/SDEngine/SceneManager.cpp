@@ -165,10 +165,10 @@ void SceneManager::Tick(float deltaTime)
 	GInput->GetMousePositionOffset(mouseXOffset, mouseYOffset);
 	int fps = GFPS->GetFPS();
 
-	//йС╠Йср╪Э╢╕сз╟╢об╣дв╢л╛╡едэ╫Ьппё╗вСсррф╤╞ё╘ё╗г╟╨Срф╤╞ё╘ё╗пЩв╙╣д╡ывВё╘
+	//О©╫О©╫О©╫О©╫р╪О©╫О©╫О©╫О©╫з╟О©╫О©╫б╣О©╫в╢л╛О©╫О©╫О©╫э╫О©╫О©╫пёО©╫О©╫О©╫О©╫О©╫О©╫ф╤О©╫О©╫О©╫О©╫О©╫г╟О©╫О©╫О©╫ф╤О©╫О©╫О©╫О©╫О©╫О©╫О©╫в╙О©╫д╡О©╫О©╫О©╫О©╫О©╫
 	if (GInput->IsMouseRightButtuonPressed() && fps >= 5 && fps <= 1000000)
 	{
-		//"W","S"╪Э╡ывВ
+		//"W","S"О©╫О©╫О©╫О©╫О©╫О©╫
 		if (GInput->IsWPressed())
 		{
 			GCamera->Walk(deltaTime*CAMERA_SPEED);
@@ -178,7 +178,7 @@ void SceneManager::Tick(float deltaTime)
 			GCamera->Walk(-deltaTime * CAMERA_SPEED);
 		}
 
-		//"A","D"╪Э╡ывВ
+		//"A","D"О©╫О©╫О©╫О©╫О©╫О©╫
 		if (GInput->IsAPressed())
 		{
 			GCamera->Strafe(-deltaTime * CAMERA_SPEED);
@@ -188,7 +188,7 @@ void SceneManager::Tick(float deltaTime)
 			GCamera->Strafe(deltaTime*CAMERA_SPEED);
 		}
 
-		//"Q","E"╪Э╡ывВ
+		//"Q","E"О©╫О©╫О©╫О©╫О©╫О©╫
 		if (GInput->IsQPressed())
 		{
 			GCamera->UpDown(-deltaTime * CAMERA_SPEED);
@@ -198,14 +198,14 @@ void SceneManager::Tick(float deltaTime)
 			GCamera->UpDown(deltaTime*CAMERA_SPEED);
 		}
 
-		//╫Ьппйс╫гиооб╣дпЩв╙(╦З╦у©╙й╪╣дпЩв╙╫г╤хтзуЩ╦╨90╤хж╝╪Д)
+		//О©╫О©╫О©╫О©╫О©╫с╫О©╫О©╫О©╫О©╫б╣О©╫О©╫О©╫в╙(О©╫О©╫О©╫у©О©╫й╪О©╫О©╫О©╫О©╫в╙О©╫г╤О©╫О©╫О©╫О©╫О©╫О©╫О©╫90О©╫О©╫ж╝О©╫О©╫)
 		if (rotateY <= 90.0f && rotateY >= -90.0f)
 		{
 			rotateY += (float)mouseYOffset*deltaTime;
 			GCamera->Pitch((float)mouseYOffset*deltaTime*2.0f);
 		}
 
-		//╫Ьппйс╫гвСср╣дпЩв╙
+		//О©╫О©╫О©╫О©╫О©╫с╫О©╫О©╫О©╫О©╫р╣О©╫О©╫О©╫в╙
 		GCamera->RotateY((float)mouseXOffset*deltaTime*2.0f);
 	}
 
@@ -231,7 +231,7 @@ void SceneManager::Tick(float deltaTime)
 		bDebugLightCount = false;
 	}
 
-	//хГ╧Ш╟╢обESCё╛тРфф╩╣╢╟©з
+	//О©╫О©╫О©╫О©╫О©╫О©╫О©╫ESCО©╫О©╫О©╫О©╫О©╫ф╩О©╫О©╫О©╫О©╫О©╫
 	if (GInput->IsEscapePressed())
 	{
 		DestroyWindow(GHwnd);

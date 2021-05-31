@@ -1,20 +1,18 @@
 #include "SDEngine.h"
 #include "WindowInfo.h"
-#include <stdio.h>
 
-//È«¾Ö±äÁ¿
+
 static SDEngine* D3DAPP = NULL;
 static const int DEFAULT_WINDOW_WIDTH = 1024;
 static const int DEFAULT_WINDOW_HEIGHT = 768;
 
-//½ÓÊÜSystemClassÀà¶ÔÏóµÄÈ«¾Ö»Øµ÷º¯Êı
-LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
+/*LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
 	switch (message)
 	{
 	case WM_DESTROY:
 	{
-		PostQuitMessage(0);  //·¢ËÍWM_QUITÏûÏ¢µ½ÏûÏ¢¶ÓÁĞ ½ÓÊÕµ½WM_QUITÌø³öÏûÏ¢Ñ­»·
+		PostQuitMessage(0);
 		return 0;
 	}
 
@@ -26,7 +24,6 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 	case WM_KEYDOWN:
 	{
-		//Èç¹û°´ÏÂÊÇESC¼ü£¬ÔòÍË³ö
 		if ((unsigned int)wParam == VK_ESCAPE)
 		{
 			PostQuitMessage(0);
@@ -34,13 +31,10 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 		return 0;
 	}
 
-	//½«ÆäËüÏûÏ¢´«ËÍµ½D3DAPPÒ²¾ÍÊÇSystemClass¶ÔÏóµÄMessageHandlerº¯Êı
 	default:
 		return D3DAPP->MessageHandler(hwnd, message, wParam, lParam);
-
 	}
-}
-
+}*/
 
 
 SDEngine::SDEngine()
@@ -53,13 +47,11 @@ SDEngine::SDEngine(const SDEngine& sys)
 
 }
 
-/*²»ÔÚÎö¹¹º¯ÊıÖĞ»ØÊÕÄÚ´æµÄÒ»µãÔ­ÒòÊÇ½÷É÷¶Ô´ıÄÚ´æµÄ»ØÊÕÎÊÌâ*/
 SDEngine::~SDEngine()
 {
 	ShutDown();
 }
 
-/*ÏµÍ³Àà³õÊ¼»¯º¯Êı*/
 bool SDEngine::Init()
 {
 	int ScreenWidth, ScreenHeight;
@@ -89,11 +81,9 @@ void SDEngine::Run()
 	MSG msg = { 0 };
 	bool done, result;
 
-	/*Ñ­»·Ö±µ½ÊÕµ½À´×Ô´°¿ÚµÄ»òÕßÊ¹ÓÃÕßµÄquitÏûÏ¢*/
 	done = false;
 	while (!done)
 	{
-		//²Ù×÷´°¿ÚÏûÏ¢
 		if (PeekMessage(&msg, 0, 0, 0, PM_REMOVE))
 		{
 			if (msg.message == WM_QUIT)
@@ -101,11 +91,11 @@ void SDEngine::Run()
 				done = true;
 			}	
 			TranslateMessage(&msg);
-			DispatchMessage(&msg);       //°ÑÏûÏ¢·¢ËÍµ½WindProc()ÖĞ
+			DispatchMessage(&msg);
 		}
 		else
 		{
-			result = Tick();  //FrameÔËĞĞµÄº¯Êı¿ÉÄÜÔì³ÉÓÎÏ·ÍË³ö
+			result = Tick();
 			if (!result)
 			{
 				done = true;
@@ -147,10 +137,9 @@ LRESULT CALLBACK SDEngine::MessageHandler(HWND hwnd, UINT message, WPARAM wParam
 		   return 0;
 	   }
 
-	   //ÆäËüµÄÏûÏ¢±»ËÍµ½Ä¬ÈÏ´¦ÀíÏûÏ¢º¯Êı
 	   default:
 	   {
-		   return DefWindowProc(hwnd, message, wParam, lParam); //ÎªÈ«¾Ö¾²Ì¬º¯Êı
+		   return DefWindowProc(hwnd, message, wParam, lParam);
 	   }
 	}
 }
@@ -163,18 +152,14 @@ void SDEngine::InitWindow(int& ScrrenWidth, int &ScrrenHeight)
 	DEVMODE dmScrrenSettings;
 	int posX, posY;
 
-	//»ñÈ¡Ò»¸ö¶îÍâµÄÖ¸ÏòÕâ¸ö¶ÔÏóµÄÖ¸Õë
 	D3DAPP = this;   
 
-	//»ñÈ¡Ó¦ÓÃÊµÀı¾ä±ú
 	mHinstance = GetModuleHandle(NULL);
 
-	//¸øÓèÓ¦ÓÃÒ»¸öÃû×Ö
 	mApplicationName = L"Engine";
 
-	//Éè¶¨Òª´´½¨µÄÀàµÄÊôĞÔ	
 	wc.style = CS_HREDRAW | CS_VREDRAW | CS_OWNDC;
-	wc.lpfnWndProc = WndProc;
+	//wc.lpfnWndProc = WndProc;
 	wc.cbClsExtra = 0;
 	wc.cbWndExtra = 0;
 	wc.hInstance = mHinstance;
@@ -186,17 +171,13 @@ void SDEngine::InitWindow(int& ScrrenWidth, int &ScrrenHeight)
 	wc.lpszClassName = mApplicationName;
 	wc.cbSize = sizeof(WNDCLASSEX);
 
-	//×¢²áÕâ¸öÀà
 	RegisterClassEx(&wc);
 
-	//»ñÈ¡ÆÁÄ»·Ö±æÂÊµÄ¿í¶ÈºÍ¸ß¶È
 	ScrrenWidth = GetSystemMetrics(SM_CXSCREEN);
 	ScrrenHeight= GetSystemMetrics(SM_CYSCREEN);
 
-	//È¡¾öÓÚÊÇ·ñÎªÈ«ÆÁÄ»
 	if (FULL_SCREEN)
 	{
-		//Èç¹ûÎªÈ«ÆÁÄ»,ÔòÉè¶¨ÆÁÄ»ÎªÓÃ»§×ÀÃæµÄ×î´ó»¯²¢ÇÒÎª32bit
 		memset(&dmScrrenSettings, 0, sizeof(dmScrrenSettings));
 		dmScrrenSettings.dmSize = sizeof(dmScrrenSettings);
 		dmScrrenSettings.dmPelsWidth = (unsigned long)ScrrenWidth;
@@ -204,58 +185,48 @@ void SDEngine::InitWindow(int& ScrrenWidth, int &ScrrenHeight)
 		dmScrrenSettings.dmBitsPerPel = 32;
 		dmScrrenSettings.dmFields = DM_BITSPERPEL | DM_PELSWIDTH | DM_PELSHEIGHT;
 
-		//¸Ä±äÏÔÊ¾Éè¶¨,ÉèÖÃÎªÈ«ÆÁÄ»
 		ChangeDisplaySettings(&dmScrrenSettings, CDS_FULLSCREEN);
 
-		//Éè¶¨´°¿Ú×óÉÏ½ÇµÄÎ»ÖÃ
 		posX = posY = 0;
 	}
 	else
 	{
-		//Èç¹û´°¿Ú»¯,Éè¶¨Îª1024*768·Ö±æÂÊ
+		//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ú»ï¿½,ï¿½è¶¨Îª1024*768ï¿½Ö±ï¿½ï¿½ï¿½
 		ScrrenWidth = DEFAULT_WINDOW_WIDTH;
 		ScrrenHeight = DEFAULT_WINDOW_HEIGHT;
 
-		//´°¿ÚÎ»ÓÚÆÁÄ»ÉÔÎ¢µÄ×óÉÏ·½
 		posX = (GetSystemMetrics(SM_CXSCREEN) - ScrrenWidth) / 2-200;
 		posY = (GetSystemMetrics(SM_CYSCREEN) - ScrrenHeight) / 2-100;
 
 	}
 
-	//´´½¨´°¿Ú,²¢ÇÒ»ñÈ¡´°¿ÚµÄ¾ä±ú
 	mHwnd = CreateWindowEx(WS_EX_APPWINDOW, mApplicationName, mApplicationName,
 		WS_OVERLAPPEDWINDOW,
 		posX, posY, ScrrenWidth, ScrrenHeight, NULL, NULL, mHinstance, NULL);
 
-	//½«´°¿ÚÏÔÊ¾ÓÚÆÁÄ»Ö®ÉÏ,²¢Éè¶¨¸Ã´°¿ÚÎªÖ÷Òª¼¯ÖĞµã
+	//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê¾ï¿½ï¿½ï¿½ï¿½Ä»Ö®ï¿½ï¿½,ï¿½ï¿½ï¿½è¶¨ï¿½Ã´ï¿½ï¿½ï¿½Îªï¿½ï¿½Òªï¿½ï¿½ï¿½Ğµï¿½
 	ShowWindow(mHwnd, SW_SHOW);
 	SetForegroundWindow(mHwnd);
 	SetFocus(mHwnd);
 
-	//Òş²ØÊó±ê¹â±ê
 	ShowCursor(false);
 }
 
 void SDEngine::ShutdownWindow()
 {
 
-	//ÏÔÊ¾Êó±ê¹â±ê
 	ShowCursor(true);
 
-	//Èç¹ûÀë¿ªÈ«ÆÁÄ»Ä£Ê½,»Ö¸´ÏÔÊ¾Éè¶¨
 	if (FULL_SCREEN)
 	{
 		ChangeDisplaySettings(NULL, 0);
 	}
 
-	//ÒÆ³ı(ÆÆ»µ)´°¿Ú
 	DestroyWindow(mHwnd);
 	mHwnd = nullptr;
 
-	//ÒÆ³ı³ÌĞòÊµÀı
 	UnregisterClass(mApplicationName, mHinstance);
 	mHinstance = nullptr;
 
-	//ÖÃ¿ÕÓ¦ÓÃÀà¶ÔÏó
 	D3DAPP = nullptr;
 }

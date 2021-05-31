@@ -53,7 +53,7 @@ bool RenderTexture::Init(int nTextureWidth, int nTexureHeight, TextureFormat eTe
 
 		renderTargetViewDesc.Format = textureDesc.Format;
 		shaderResourceViewDesc.Format = textureDesc.Format;
-		//µÚÒ»,Ìî³ä2DÎÆÀíĞÎÈİ½á¹¹Ìå,²¢´´½¨2DäÖÈ¾Ä¿±êÎÆÀí
+		//ï¿½ï¿½Ò»,ï¿½ï¿½ï¿½2Dï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½İ½á¹¹ï¿½ï¿½,ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½2Dï¿½ï¿½È¾Ä¿ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 		textureDesc.Width = nTextureWidth;
 		textureDesc.Height = nTexureHeight;
 		textureDesc.MipLevels = 1;
@@ -65,12 +65,12 @@ bool RenderTexture::Init(int nTextureWidth, int nTexureHeight, TextureFormat eTe
 		textureDesc.MiscFlags = 0;
 		HR(g_pDevice->CreateTexture2D(&textureDesc, NULL, &m_pBackTexture2D));
 
-		//µÚ¶ş£¬Ìî³ääÖÈ¾Ä¿±êÊÓÍ¼ĞÎÈİÌå,²¢½øĞĞ´´½¨Ä¿±êäÖÈ¾ÊÓÍ¼
+		//ï¿½Ú¶ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½È¾Ä¿ï¿½ï¿½ï¿½ï¿½Í¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½,ï¿½ï¿½ï¿½ï¿½ï¿½Ğ´ï¿½ï¿½ï¿½Ä¿ï¿½ï¿½ï¿½ï¿½È¾ï¿½ï¿½Í¼
 		renderTargetViewDesc.ViewDimension = D3D11_RTV_DIMENSION_TEXTURE2D;
 		renderTargetViewDesc.Texture2D.MipSlice = 0;
 		HR(g_pDevice->CreateRenderTargetView(m_pBackTexture2D, &renderTargetViewDesc, &m_pRTV));
 
-		//µÚÈı,´´½¨×ÅÉ«Æ÷×ÊÔ´ÊÓÍ¼
+		//ï¿½ï¿½ï¿½ï¿½,ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½É«ï¿½ï¿½ï¿½ï¿½Ô´ï¿½ï¿½Í¼
 		shaderResourceViewDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
 		shaderResourceViewDesc.Texture2D.MostDetailedMip = 0;
 		shaderResourceViewDesc.Texture2D.MipLevels = 1;
@@ -80,7 +80,7 @@ bool RenderTexture::Init(int nTextureWidth, int nTexureHeight, TextureFormat eTe
 	depthStencilDesc.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
 	depthStencilViewDesc.Format = depthStencilDesc.Format;
 
-	//µÚËÄ,´´½¨Éî¶È»º´æ(Ä£°å»º´æ)
+	//ï¿½ï¿½ï¿½ï¿½,ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½È»ï¿½ï¿½ï¿½(Ä£ï¿½å»ºï¿½ï¿½)
 	depthStencilDesc.Width = nTextureWidth;
 	depthStencilDesc.Height = nTexureHeight;
 	depthStencilDesc.MipLevels = 1;
@@ -91,21 +91,21 @@ bool RenderTexture::Init(int nTextureWidth, int nTexureHeight, TextureFormat eTe
 	depthStencilDesc.BindFlags = D3D11_BIND_DEPTH_STENCIL;
 	depthStencilDesc.CPUAccessFlags = 0;
 	depthStencilDesc.MiscFlags = 0;
-	HR(g_pDevice->CreateTexture2D(&depthStencilDesc,//Òª´´½¨µÄÎÆÀíµÄĞÎÈİ
+	HR(g_pDevice->CreateTexture2D(&depthStencilDesc,//Òªï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 		0,
 		&m_pDepthTexture2D));
 
-	//µÚÎå,´´½¨Éî¶È»º´æ(Ä£°å»º´æ)ÊÓÍ¼
+	//ï¿½ï¿½ï¿½ï¿½,ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½È»ï¿½ï¿½ï¿½(Ä£ï¿½å»ºï¿½ï¿½)ï¿½ï¿½Í¼
 	ZeroMemory(&depthStencilViewDesc, sizeof(depthStencilViewDesc));
 	depthStencilViewDesc.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2D;
 	depthStencilViewDesc.Texture2D.MipSlice = 0;
 
 	HR(g_pDevice->CreateDepthStencilView(
-		m_pDepthTexture2D, //ÎÒÃÇ»ùÓÚÕâ¸öÉî¶È»º´æ/Â©×Ö°å»º´æ´´½¨Ò»¸öÊÓÍ¼
+		m_pDepthTexture2D, //ï¿½ï¿½ï¿½Ç»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½È»ï¿½ï¿½ï¿½/Â©ï¿½Ö°å»ºï¿½æ´´ï¿½ï¿½Ò»ï¿½ï¿½ï¿½ï¿½Í¼
 		&depthStencilViewDesc,
-		&m_pDSV));//Ö¸ÏòÉî¶È»º´æ/Â©×Ö°åÊÓÍ¼µÄÖ¸Õë
+		&m_pDSV));//Ö¸ï¿½ï¿½ï¿½ï¿½È»ï¿½ï¿½ï¿½/Â©ï¿½Ö°ï¿½ï¿½ï¿½Í¼ï¿½ï¿½Ö¸ï¿½ï¿½
 
-	//µÚÁù,ÉèÖÃäÖÈ¾µÄÊÓ¿Ú
+	//ï¿½ï¿½ï¿½ï¿½,ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½È¾ï¿½ï¿½ï¿½Ó¿ï¿½
 	m_ViewPort.Width = static_cast<float>(nTextureWidth);
 	m_ViewPort.Height = static_cast<float>(nTexureHeight);
 	m_ViewPort.MinDepth = 0.0f;
@@ -148,13 +148,13 @@ void RenderTexture::SetDepthTarget()
 
 void RenderTexture::ClearDepthBuffer()
 {
-	//Çå³ıÉî¶È»º´æºÍÄ£°å»º´æ
+	//ï¿½ï¿½ï¿½ï¿½ï¿½È»ï¿½ï¿½ï¿½ï¿½Ä£ï¿½å»ºï¿½ï¿½
 	g_pDeviceContext->ClearDepthStencilView(m_pDSV, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
 }
 
 void RenderTexture::ClearRenderTarget(float red, float green, float blue, float alpha)
 {
-	//ÉèÖÃÇå³ı»º´æÎªµÄÑÕÉ«
+	//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Îªï¿½ï¿½ï¿½ï¿½É«
 	float color[4];
 	color[0] = red;
 	color[1] = green;

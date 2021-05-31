@@ -2,14 +2,12 @@
 
 #ifndef _SYSTEM_CLASS_H
 #define _SYSTEM_CLASS_H
-
 #define WIN32_LEAN_AND_MEAN  //这个宏可以减少Win32头文件的大小
 
 #include<Windows.h>  
 #include<memory>
 #include "GraphicsSystem.h"
 #include"FPS.h"
-
 
 
 class SDEngine
@@ -50,7 +48,6 @@ public:
 
 	/*初始化函数*/
 	bool Init();
-
 
 	/*运行函数*/
 	void Run();

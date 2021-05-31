@@ -1,5 +1,6 @@
 #include"FPS.h"
 
+
 FPS::FPS()
 {
 	Initialize();

@@ -8,12 +8,12 @@ namespace DirectXFrame
 		
 		D3D11_RASTERIZER_DESC rasterDesc;
 		rasterDesc.AntialiasedLineEnable = false;
-		rasterDesc.CullMode = CullMode; //±³ÃæÌÞ³ý
+		rasterDesc.CullMode = CullMode; //ï¿½ï¿½ï¿½ï¿½ï¿½Þ³ï¿½
 		rasterDesc.DepthBias = 0;
 		rasterDesc.DepthBiasClamp = 0.0f;
-		rasterDesc.DepthClipEnable = bDepthClipEnable; //Éî¶È²Ã¼ô¿ªÆô
-		rasterDesc.FillMode = FillMode; //ÊµÌåäÖÈ¾
-		rasterDesc.FrontCounterClockwise = false; //Ë³Ê±Õë
+		rasterDesc.DepthClipEnable = bDepthClipEnable; //ï¿½ï¿½È²Ã¼ï¿½ï¿½ï¿½ï¿½ï¿½
+		rasterDesc.FillMode = FillMode; //Êµï¿½ï¿½ï¿½ï¿½È¾
+		rasterDesc.FrontCounterClockwise = false; //Ë³Ê±ï¿½ï¿½
 		rasterDesc.MultisampleEnable = false;
 		rasterDesc.ScissorEnable = false;
 		rasterDesc.SlopeScaledDepthBias = 0.0f;

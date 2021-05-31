@@ -1,9 +1,8 @@
-
 #include"Camera.h"
 
 Camera::Camera()
 {
-	//³õÊ¼»¯µÚÒ»ÈË³ÆÏà»úµÄ²ÎÊý£¬¸Õ¿ªÊ¼Ïà»úÊÇÎ»ÓÚÖÐ¼äµÄ
+	//ï¿½ï¿½Ê¼ï¿½ï¿½ï¿½ï¿½Ò»ï¿½Ë³ï¿½ï¿½ï¿½ï¿½ï¿½Ä²ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Õ¿ï¿½Ê¼ï¿½ï¿½ï¿½ï¿½ï¿½Î»ï¿½ï¿½ï¿½Ð¼ï¿½ï¿½
 	mPosition = XMFLOAT3(0.f, 0.0f, -1.0f);
 	mRight = XMFLOAT3(1.0f, 0.0f, 0.0f);
 	mUp = XMFLOAT3(0.0f, 1.0f, 0.0f);
@@ -20,7 +19,7 @@ Camera::~Camera()
 
 }
 
-//Ïà»úÎ»ÖÃ
+//ï¿½ï¿½ï¿½Î»ï¿½ï¿½
 void Camera::SetPosition(float x, float y, float z)
 {
 	mPosition.x = x;
@@ -45,7 +44,7 @@ XMVECTOR Camera::GetPositionXM()const
 	return XMLoadFloat3(&mPosition);
 }
 
-//»ñÈ¡Ïà»úµÄ»ù´¡ÏòÁ¿(Up,Look,Right)
+//ï¿½ï¿½È¡ï¿½ï¿½ï¿½ï¿½Ä»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½(Up,Look,Right)
 XMFLOAT3 Camera::GetUp()const
 {
 	return mUp;
@@ -77,13 +76,13 @@ XMVECTOR Camera::GetRightXM()const
 	return XMLoadFloat3(&mRight);
 }
 
-//»ñÈ¡Ïà»ú±ä»»¾ØÕó
+//ï¿½ï¿½È¡ï¿½ï¿½ï¿½ï¿½ä»»ï¿½ï¿½ï¿½ï¿½
 XMMATRIX Camera::GetViewMatrix()const
 {
 	return mViewMatrix;
 }
 
-//Í¨¹ýÏà»úÔÚÊÀ½ç¿Õ¼äµÄÎ»ÖÃ£¬Ä¿±êµã£¬ÒÔ¼°ÉÏÏòÁ¿À´¶¨ÒåÏà»ú±ä»»¾ØÕó
+//Í¨ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Õ¼ï¿½ï¿½Î»ï¿½Ã£ï¿½Ä¿ï¿½ï¿½ã£¬ï¿½Ô¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ä»»ï¿½ï¿½ï¿½ï¿½
 void Camera::LookAt(FXMVECTOR pos, FXMVECTOR target, FXMVECTOR worldUp)
 {
 	XMVECTOR Look = XMVectorSubtract(target, pos);
@@ -91,12 +90,12 @@ void Camera::LookAt(FXMVECTOR pos, FXMVECTOR target, FXMVECTOR worldUp)
 	XMVECTOR Right = XMVector3Cross(Up, Look);
 	Up = XMVector3Cross(Look, Right);
 
-	//¹æ¸ñ»¯Èý¸öÏÈÀ´
+	//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 	XMVector3Normalize(Look);
 	XMVector3Normalize(Up);
 	XMVector3Normalize(Right);
 
-	//½«²ÎÊý´æÈëCameraÀàÖÐ
+	//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Cameraï¿½ï¿½ï¿½ï¿½
 	XMStoreFloat3(&mPosition, pos);
 	XMStoreFloat3(&mLook, Look);
 	XMStoreFloat3(&mUp, Up);
@@ -104,11 +103,11 @@ void Camera::LookAt(FXMVECTOR pos, FXMVECTOR target, FXMVECTOR worldUp)
 }
 
 
-//ÍùÏà»ú×ø±êÏµLookµÄ·½ÏòÇ°½ø»òÕßºóÍË,È»ºó´ËÊ±Look,Up,Right¶¼²»¸Ä±ä,½ö½öÊÇÎ»ÖÃÔÚ¸Ä±ä
+//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ÏµLookï¿½Ä·ï¿½ï¿½ï¿½Ç°ï¿½ï¿½ï¿½ï¿½ï¿½ßºï¿½ï¿½ï¿½,È»ï¿½ï¿½ï¿½Ê±Look,Up,Rightï¿½ï¿½ï¿½ï¿½ï¿½Ä±ï¿½,ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Î»ï¿½ï¿½ï¿½Ú¸Ä±ï¿½
 void Camera::Walk(float d)
 {
 	//mPosition+=d*mLook
-	//XMVectorReplicate·µ»ØµÄÊÇXMVECTOR(d,d,d,d)
+	//XMVectorReplicateï¿½ï¿½ï¿½Øµï¿½ï¿½ï¿½XMVECTOR(d,d,d,d)
 	XMVECTOR s = XMVectorReplicate(d);
 	XMVECTOR l = XMLoadFloat3(&mLook);
 	XMVECTOR p = XMLoadFloat3(&mPosition);
@@ -117,11 +116,11 @@ void Camera::Walk(float d)
 	XMStoreFloat3(&mPosition, XMVectorMultiplyAdd(s, l, p));
 }
 
-//ÍùÏà»ú×ø±êÏµRight·½ÏòÇ°½ø»òÕßºóÍË,È»ºó´ËÊ±Look,Up,Right¶¼²»¸Ä±ä,½ö½öÊÇÎ»ÖÃÔÚ¸Ä±ä
+//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ÏµRightï¿½ï¿½ï¿½ï¿½Ç°ï¿½ï¿½ï¿½ï¿½ï¿½ßºï¿½ï¿½ï¿½,È»ï¿½ï¿½ï¿½Ê±Look,Up,Rightï¿½ï¿½ï¿½ï¿½ï¿½Ä±ï¿½,ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Î»ï¿½ï¿½ï¿½Ú¸Ä±ï¿½
 void Camera::Strafe(float d)
 {
 	//mPosition+=d*mRight
-	//XMVectorReplicate·µ»ØµÄÊÇXMVECTOR(d,d,d,d)
+	//XMVectorReplicateï¿½ï¿½ï¿½Øµï¿½ï¿½ï¿½XMVECTOR(d,d,d,d)
 	XMVECTOR s = XMVectorReplicate(d);
 	XMVECTOR r = XMLoadFloat3(&mRight);
 	XMVECTOR p = XMLoadFloat3(&mPosition);
@@ -130,12 +129,12 @@ void Camera::Strafe(float d)
 	XMStoreFloat3(&mPosition, XMVectorMultiplyAdd(s, r, p));
 }
 
-//Ïà»úÉÏÏÂµÄÒÆ¶¯ÊÇÎ»ÖÃÔÚYÖµÉÏµÄ¸Ä±ä£¬¶øLook,Up,Right¶¼²»¸Ä±ä,½ö½öÊÇÎ»ÖÃÔÚ¸Ä±ä
+//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Âµï¿½ï¿½Æ¶ï¿½ï¿½ï¿½Î»ï¿½ï¿½ï¿½ï¿½YÖµï¿½ÏµÄ¸Ä±ä£¬ï¿½ï¿½Look,Up,Rightï¿½ï¿½ï¿½ï¿½ï¿½Ä±ï¿½,ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Î»ï¿½ï¿½ï¿½Ú¸Ä±ï¿½
 void Camera::UpDown(float d)
 {
 
 	//mPosition+=d*up
-	//XMVectorReplicate·µ»ØµÄÊÇXMVECTOR(d,d,d,d)
+	//XMVectorReplicateï¿½ï¿½ï¿½Øµï¿½ï¿½ï¿½XMVECTOR(d,d,d,d)
 	XMVECTOR s = XMVectorReplicate(d);
 	XMVECTOR up = XMVectorSet(0.0f, 1.0f, 0.0f,0.0f);
 	XMVECTOR p = XMLoadFloat3(&mPosition);
@@ -145,7 +144,7 @@ void Camera::UpDown(float d)
 }
 
 
-//LookºÍUpÏòÁ¿ÈÆÏà»ú×ø±êÏµµÄrightÏòÁ¿½øÐÐÐý×ª£¬´ËÊ±lookºÍupÏòÁ¿¸Ä±ä£¬¶ørightºÍpoisiton²»¸Ä±ä
+//Lookï¿½ï¿½Upï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ïµï¿½ï¿½rightï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½×ªï¿½ï¿½ï¿½ï¿½Ê±lookï¿½ï¿½upï¿½ï¿½ï¿½ï¿½ï¿½Ä±ä£¬ï¿½ï¿½rightï¿½ï¿½poisitonï¿½ï¿½ï¿½Ä±ï¿½
 void Camera::Pitch(float angle)
 {
 	XMMATRIX R = XMMatrixRotationAxis(XMLoadFloat3(&mRight), angle);
@@ -153,7 +152,7 @@ void Camera::Pitch(float angle)
 	XMStoreFloat3(&mUp, XMVector3TransformNormal(XMLoadFloat3(&mUp), R));
 } 
 
-//ÈÆÊÀ½ç×ø±êÏµµÄYÖá½øÐÐÐý×ª(¶ø·ÇÏà»ú×ø±êÏµµÄUpÏòÁ¿,ÕâµãÈÝÒ×ÊÜµ½¹ßÐÔË¼Î¬¶øÎó½â£¬ÊµÔÚÎÞ·¨Àí½â¾ÍÓÃÈËµÄÊÓ½ÇÔÚÏÖÊµÊÀ½çÊÇÔõÃ´Ðý×ªµÄÁ£×Ó½âÊÍ),look,up,rightÈÆYÖá½øÐÐÐý×ª£¬Î»ÖÃ²»±ä
+//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ïµï¿½ï¿½Yï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½×ª(ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ïµï¿½ï¿½Upï¿½ï¿½ï¿½ï¿½,ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Üµï¿½ï¿½ï¿½ï¿½ï¿½Ë¼Î¬ï¿½ï¿½ï¿½ï¿½â£¬Êµï¿½ï¿½ï¿½Þ·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ëµï¿½ï¿½Ó½ï¿½ï¿½ï¿½ï¿½ï¿½Êµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ã´ï¿½ï¿½×ªï¿½ï¿½ï¿½ï¿½ï¿½Ó½ï¿½ï¿½ï¿½),look,up,rightï¿½ï¿½Yï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½×ªï¿½ï¿½Î»ï¿½Ã²ï¿½ï¿½ï¿½
 void Camera::RotateY(float angle)
 {
 	XMMATRIX R = XMMatrixRotationY(angle);
@@ -169,9 +168,9 @@ void Camera::UpdateViewMatrix()
 	XMVECTOR L = XMLoadFloat3(&mLook);
 	XMVECTOR P = XMLoadFloat3(&mPosition);
 
-	//Õý½»¹æ¸ñ»¯right,look,up
+	//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½right,look,up
 	
-	//¹æ¸ñ»¯lookÏòÁ¿
+	//ï¿½ï¿½ï¿½lookï¿½ï¿½ï¿½ï¿½
 	L = XMVector3Normalize(L);
 	
 	//U=look(X)right
@@ -180,7 +179,7 @@ void Camera::UpdateViewMatrix()
 	//R=up(X)look
 	R= XMVector3Normalize(XMVector3Cross(U, L));
 
-	//Çó³öÏà»ú±ä»»¾ØÕóÄ³Ð©²ÎÊýÀïÃæµÄµã»ý
+	//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ä»»ï¿½ï¿½ï¿½ï¿½Ä³Ð©ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Äµï¿½ï¿½
 	float x = -XMVectorGetX(XMVector3Dot(P, R));
 	float y = -XMVectorGetX(XMVector3Dot(P, U));
 	float z = -XMVectorGetX(XMVector3Dot(P, L));
@@ -226,13 +225,13 @@ void Camera::SetUIOrthoParams(float screenWidth, float screenHeight)
 	mScreenHeight = screenHeight;
 }
 
-//»ñÈ¡»ù´¡Ïà»ú±ä»»¾ØÕó
+//ï¿½ï¿½È¡ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ä»»ï¿½ï¿½ï¿½ï¿½
 XMMATRIX Camera::GetUIViewMatrix()const
 {
-	//ÉÏÏòÁ¿,Î»ÖÃÏòÁ¿,¹Û²ìÏòÁ¿
+	//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½,Î»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½,ï¿½Û²ï¿½ï¿½ï¿½ï¿½ï¿½
 	XMVECTOR Up, Postion, LookAt;
 
-	//ÉèÖÃÏà»úµÄÎ»ÖÃ
+	//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Î»ï¿½ï¿½
 	Postion = XMVectorSet(0.0f, 0.0f, -10.0f, 0.0f);
 	LookAt = XMVectorSet(0.0f, 0.0f, 100.0f, 0.0f);
 	Up = XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
@@ -241,7 +240,7 @@ XMMATRIX Camera::GetUIViewMatrix()const
 
 }
 
-//»ñÈ¡UIÕý½»Í¶Ó°¾ØÕó
+//ï¿½ï¿½È¡UIï¿½ï¿½ï¿½ï¿½Í¶Ó°ï¿½ï¿½ï¿½ï¿½
 XMMATRIX Camera::GetUIOrthoMatrix()const
 {
 	return XMMatrixOrthographicLH(mScreenWidth, mScreenHeight, mNearPlane, mFarPlane);
