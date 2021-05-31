@@ -25,6 +25,7 @@ project "SDEngine"
 
 	includedirs
 	{
+		"%{prj.name}/Source",
 		"%{prj.name}/ThirdParty/spdlog/include",
 		"%{prj.name}/ThirdParty/fbxsdk/2017.1/include",
 	}
