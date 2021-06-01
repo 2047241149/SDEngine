@@ -1,5 +1,5 @@
-#pragma once
-#include "Event.h"
+﻿#pragma once
+#include "EventBase.h"
 
 class MouseMovedEvent : public Event
 {
@@ -20,6 +20,7 @@ public:
 	{
 		stringstream ss;
 		ss << "MouseMovedEvent: " << mouseX << ", " << mouseY;
+		return ss.str();
 	}
 
 	EVENT_CLASS_TYPE(MouseMove)
@@ -45,17 +46,26 @@ public:
 
 class MouseButtonPressedEvent : public MouseButtonEvent
 {
-public:
-	MouseButtonPressedEvent(MouseKey inMousekey) :
-		MouseButtonEvent(inMousekey)
-	{
+private:
+	float mouseX, mouseY;
 
+public:
+	MouseButtonPressedEvent(MouseKey inMousekey, float inMouseX, float inMouseY) :
+		MouseButtonEvent(inMousekey),
+		mouseX(inMouseX),
+		mouseY(inMouseY)
+	{
 	}
+
+	float GetMouseX() { return mouseX; }
+
+	float GetMouseY() { return mouseY; }
 
 	string ToString() const override
 	{
 		stringstream ss;
 		ss << "MouseButtonPressedEvent: " << (int)mousekey;
+		return ss.str();
 	}
 
 	EVENT_CLASS_TYPE(MousePressed)
@@ -74,6 +84,7 @@ public:
 	{
 		stringstream ss;
 		ss << "MouseButtonReleasedEvent: " << (int)mousekey;
+		return ss.str();
 	}
 
 	EVENT_CLASS_TYPE(MouseReleased)

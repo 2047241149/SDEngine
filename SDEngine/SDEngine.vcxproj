@@ -120,6 +120,7 @@ IF EXIST ThirdParty\fbxsdk\2017.1\lib\x64\debug\libfbxsdk.dll\ (xcopy /Q /E /Y /
     <ClInclude Include="Source\SDEngine\DebugTool\Debugwindow.h" />
     <ClInclude Include="Source\SDEngine\EntryPoint.h" />
     <ClInclude Include="Source\SDEngine\Event\Event.h" />
+    <ClInclude Include="Source\SDEngine\Event\EventBase.h" />
     <ClInclude Include="Source\SDEngine\Event\KeyEvent.h" />
     <ClInclude Include="Source\SDEngine\Event\MouseEvent.h" />
     <ClInclude Include="Source\SDEngine\Event\WindowEvent.h" />

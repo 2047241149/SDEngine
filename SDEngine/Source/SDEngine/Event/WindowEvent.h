@@ -1,5 +1,5 @@
-#pragma once
-#include "Event.h"
+﻿#pragma once
+#include "EventBase.h"
 
 class WindowResizeEvent : public Event
 {
@@ -44,7 +44,7 @@ public:
 	GameTickEvent() = default;
 
 	EVENT_CLASS_TYPE(GameTick)
-	EVENT_CLASS_CATEGORY(EventCategory::EventCategoryGame)
+	EVENT_CLASS_CATEGORY(EventCategoryGame)
 };
 
 class GameUpdateEvent : public Event
@@ -53,7 +53,7 @@ public:
 	GameUpdateEvent() = default;
 
 	EVENT_CLASS_TYPE(GameUpdate)
-	EVENT_CLASS_CATEGORY(EventCategory::EventCategoryGame)
+	EVENT_CLASS_CATEGORY(EventCategoryGame)
 };
 
 class GameRenderEvent : public Event

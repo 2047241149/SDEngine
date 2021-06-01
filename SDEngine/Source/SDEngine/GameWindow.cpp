@@ -1,53 +1,33 @@
 ﻿#include "GameWindow.h"
 #include "Common/CommonFunction.h"
+#include "Event/Event.h"
+
+static GameWindow* gameWindow = nullptr;
 
 LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
-	switch (message)
-	{
-	case WM_DESTROY:
-	{
-		PostQuitMessage(0);
-		return 0;
-	}
-
-	case WM_CLOSE:
-	{
-		PostQuitMessage(0);
-		return 0;
-	}
-
-	case WM_KEYDOWN:
-	{
-		if ((unsigned int)wParam == VK_ESCAPE)
-		{
-			PostQuitMessage(0);
-		}
-		return 0;
-	}
-
-	default:
-		return DefWindowProc(hwnd, message, wParam, lParam);;
-	}
+	return gameWindow->MessageHandler(hwnd, message, wParam, lParam);
 }
 
-GameWindow::GameWindow(const WindowProp& props)
+GameWindow::GameWindow(const EventCallback& inEvent, const WindowProp& props)
 {
-	Init(props);
+	Init(inEvent, props);
 }
 
 GameWindow::~GameWindow()
 {
-
+	ShutDown();
 }
 
-void GameWindow::Init(const WindowProp& props)
+void GameWindow::Init(const EventCallback& inEvent, const WindowProp& props)
 {
 	data.width = props.width;
 	data.height = props.height;
 	data.title = props.tile;
 	data.bVSync = false;
 	data.fullScreen = false;
+	gameWindow = this;
+	eventCallback = inEvent;
 	InitWindow();
 }
 
@@ -56,7 +36,6 @@ void GameWindow::InitWindow()
 	WNDCLASSEX wc;
 	DEVMODE dmScrrenSettings;
 	int posX, posY;
-
 	hinstance = GetModuleHandle(0);
 	wstring nameStr = Str2Wstr(data.title);
 	LPCWSTR name = nameStr.c_str();
@@ -119,14 +98,25 @@ void GameWindow::InitWindow()
 	ShowCursor(true);
 }
 
-void GameWindow::OnUpdate()
+void GameWindow::ShutDown()
 {
-
+	DestroyWindow(hwnd);
 }
 
-void GameWindow::SetEventCallback(const EventCallback& callBack)
+void GameWindow::OnUpdate()
 {
-	data.callback = callBack;
+	MSG msg = { 0 };
+
+	if (PeekMessage(&msg, 0, 0, 0, PM_REMOVE))
+	{
+		TranslateMessage(&msg);
+		DispatchMessage(&msg);
+	}
+}
+
+void GameWindow::SetEventCallback(const EventCallback& inCallBack)
+{
+	eventCallback = inCallBack;
 }
 
 void GameWindow::SetVSync(bool bEnabled)
@@ -139,7 +129,86 @@ bool GameWindow::IsVSync()
 	return data.bVSync;
 }
 
-shared_ptr<GameWindow> GameWindow::Create(const WindowProp& props)
+shared_ptr<GameWindow> GameWindow::Create(const EventCallback& inEvent, const WindowProp& props)
 {
-	return shared_ptr<GameWindow>(new GameWindow(props));
+	return shared_ptr<GameWindow>(new GameWindow(inEvent, props));
+}
+
+LRESULT CALLBACK GameWindow::MessageHandler(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
+{
+	switch (message)
+	{
+		case WM_SIZE:
+		{
+			int newWidth = LOWORD(lParam);
+			int newHeight = HIWORD(lParam);
+			WindowResizeEvent event(newWidth, newHeight);
+			eventCallback(event);
+		}
+		case WM_KEYDOWN:
+		{
+			KeyPressedEvent event((UINT)wParam, 1);
+			eventCallback(event);
+			return 0;
+		}
+		case WM_KEYUP:
+		{
+			KeyReleasedEvent event((UINT)wParam);
+			eventCallback(event);
+
+			return 0;
+		}
+
+		case WM_LBUTTONDOWN:
+		{
+			float mouseX = GET_X_LPARAM(lParam);
+			float mouseY = GET_Y_LPARAM(lParam);
+			MouseKey key = MouseKey::LeftButton;
+			MouseButtonPressedEvent event(key, mouseX, mouseY);
+			eventCallback(event);
+			return 0;
+		}
+
+		case WM_LBUTTONUP:
+		{
+			float mouseX = GET_X_LPARAM(lParam);
+			float mouseY = GET_Y_LPARAM(lParam);
+			MouseKey key = MouseKey::LeftButton;
+			MouseButtonReleasedEvent event(key);
+			eventCallback(event);
+			return 0;
+		}
+
+		case WM_RBUTTONDOWN:
+		{
+			float mouseX = GET_X_LPARAM(lParam);
+			float mouseY = GET_Y_LPARAM(lParam);
+			MouseKey key = MouseKey::RightButton;
+			MouseButtonPressedEvent event(key, mouseX, mouseY);
+			eventCallback(event);
+			return 0;
+		}
+
+		case WM_RBUTTONUP:
+		{
+			float mouseX = GET_X_LPARAM(lParam);
+			float mouseY = GET_Y_LPARAM(lParam);
+			MouseKey key = MouseKey::RightButton;
+			MouseButtonReleasedEvent event(key);
+			eventCallback(event);
+			return 0;
+		}
+
+		case WM_MOUSEMOVE:
+		{
+			float mouseX = GET_X_LPARAM(lParam);
+			float mouseY = GET_Y_LPARAM(lParam);
+			MouseMovedEvent event(mouseX, mouseY);
+			eventCallback(event);
+			return 0;
+		}
+
+		default:
+			return DefWindowProc(hwnd, message, wParam, lParam);
+	}
 }

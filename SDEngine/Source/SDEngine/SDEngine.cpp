@@ -1,4 +1,4 @@
-#include "SDEngine.h"
+﻿#include "SDEngine.h"
 #include "WindowInfo.h"
 
 
@@ -191,7 +191,6 @@ void SDEngine::InitWindow(int& ScrrenWidth, int &ScrrenHeight)
 	}
 	else
 	{
-		//������ڻ�,�趨Ϊ1024*768�ֱ���
 		ScrrenWidth = DEFAULT_WINDOW_WIDTH;
 		ScrrenHeight = DEFAULT_WINDOW_HEIGHT;
 
@@ -204,7 +203,6 @@ void SDEngine::InitWindow(int& ScrrenWidth, int &ScrrenHeight)
 		WS_OVERLAPPEDWINDOW,
 		posX, posY, ScrrenWidth, ScrrenHeight, NULL, NULL, mHinstance, NULL);
 
-	//��������ʾ����Ļ֮��,���趨�ô���Ϊ��Ҫ���е�
 	ShowWindow(mHwnd, SW_SHOW);
 	SetForegroundWindow(mHwnd);
 	SetFocus(mHwnd);

@@ -1,6 +1,7 @@
-#pragma once
+﻿#pragma once
 
 #include "CoreMinimal.h"
+class Event;
 
 class GameWindow;
 
@@ -12,6 +13,7 @@ public:
 
 public:
 	void Run();
+	void OnEvent(Event& event);
 
 private:
 	shared_ptr<GameWindow> window;

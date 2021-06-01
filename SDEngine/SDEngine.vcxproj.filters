@@ -73,9 +73,6 @@
     <ClInclude Include="Source\SDEngine\EntryPoint.h">
       <Filter>SDEngine</Filter>
     </ClInclude>
-    <ClInclude Include="Source\SDEngine\Event\Event.h">
-      <Filter>SDEngine\Event</Filter>
-    </ClInclude>
     <ClInclude Include="Source\SDEngine\Event\KeyEvent.h">
       <Filter>SDEngine\Event</Filter>
     </ClInclude>
@@ -243,6 +240,10 @@
       <Filter>SDEngine</Filter>
     </ClInclude>
     <ClInclude Include="Source\SDEngine\GameWindow.h" />
+    <ClInclude Include="Source\SDEngine\Event\EventBase.h">
+      <Filter>SDEngine\Event</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\SDEngine\Event\Event.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\SDEngine\ClusterDefferedSceneRender.cpp">

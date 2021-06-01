@@ -1,5 +1,5 @@
-#pragma once
-#include "Event/Event.h"
+ï»¿#pragma once
+#include "Event/EventBase.h"
 
 
 struct WindowProp 
@@ -22,7 +22,7 @@ class GameWindow
 {
 public:
 	using EventCallback = std::function<void(Event&)>;
-	GameWindow(const WindowProp& props);
+	GameWindow(const EventCallback& inEvent, const WindowProp& props);
 	virtual ~GameWindow();
 
 public:
@@ -34,11 +34,13 @@ public:
 	void SetEventCallback(const EventCallback& callBack);
 	void SetVSync(bool bEnabled);
 	bool IsVSync();
-	static shared_ptr<GameWindow> Create(const WindowProp& props = WindowProp());
-	
+	static shared_ptr<GameWindow> Create(const EventCallback& inEvent, const WindowProp& props = WindowProp());
+	LRESULT CALLBACK MessageHandler(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam);
+
 private:
-	void Init(const WindowProp& props);
+	void Init(const EventCallback& inEvent, const WindowProp& props = WindowProp());
 	void InitWindow();
+	void ShutDown();
 
 private:
 	struct WindowData
@@ -47,10 +49,10 @@ private:
 		int width, height;
 		bool bVSync;
 		bool fullScreen;
-		EventCallback callback;
 	};
 
+	EventCallback eventCallback;
 	WindowData data;
-	HINSTANCE hinstance; //Ó¦ÓÃÊµÀı¾ä±ú
-	HWND hwnd; //Ó¦ÓÃ´°¿Ú¾ä±ú
+	HINSTANCE hinstance; //åº”ç”¨å®ä¾‹å¥æŸ„
+	HWND hwnd; //åº”ç”¨çª—å£å¥æŸ„
 };

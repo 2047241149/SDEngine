@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 #include<stdio.h>
 #include<iostream>
@@ -11,6 +11,7 @@
 #include<string>
 #include<functional>
 #include<Windows.h>
+#include<windowsx.h>
 using namespace std;
 
 #ifdef SD_BUILD_DLL

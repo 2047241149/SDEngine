@@ -1,21 +1,21 @@
-#pragma once
+﻿#pragma once
 
-#include "Event.h"
+#include "EventBase.h"
 
 class KeyEvent : public Event
 {
 protected:
-	int keyCode;
+	UINT keyCode;
 
-	KeyEvent(int inKeyCode) :
+	KeyEvent(UINT inKeyCode) :
 		keyCode(inKeyCode)
 	{
 	}
 
 public:
-	int GetKeyCode(){ return keyCode; }
+	UINT GetKeyCode(){ return keyCode; }
 	
-	EVENT_CLASS_CATEGORY(EventCategoryKeybord) | EventCategoryInput)
+	EVENT_CLASS_CATEGORY(EventCategoryKeybord | EventCategoryInput)
 };
 
 
@@ -25,7 +25,7 @@ private:
 	int repeatCount;
 
 public:
-	KeyPressedEvent(int inKeyCode, int inRepeatCount)
+	KeyPressedEvent(UINT inKeyCode, int inRepeatCount)
 		:KeyEvent(inKeyCode),
 		repeatCount(inRepeatCount)
 	{
@@ -43,11 +43,11 @@ public:
 	EVENT_CLASS_TYPE(KeyPressed)
 };
 
-class KeyPressedEvent : public KeyEvent
+class KeyReleasedEvent : public KeyEvent
 {
 
 public:
-	KeyPressedEvent(int inKeyCode)
+	KeyReleasedEvent(UINT inKeyCode)
 		:KeyEvent(inKeyCode)
 	{
 	}
@@ -55,7 +55,7 @@ public:
 	string ToString() const override
 	{
 		stringstream ss;
-		ss << "KeyPressedEvent: " << keyCode;
+		ss << "KeyReleasedEvent: " << keyCode;
 		return ss.str();
 	}
 
