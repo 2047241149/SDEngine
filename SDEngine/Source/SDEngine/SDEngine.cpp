@@ -6,37 +6,6 @@ static SDEngine* D3DAPP = NULL;
 static const int DEFAULT_WINDOW_WIDTH = 1024;
 static const int DEFAULT_WINDOW_HEIGHT = 768;
 
-/*LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
-{
-	switch (message)
-	{
-	case WM_DESTROY:
-	{
-		PostQuitMessage(0);
-		return 0;
-	}
-
-	case WM_CLOSE:
-	{
-		PostQuitMessage(0);
-		return 0;
-	}
-
-	case WM_KEYDOWN:
-	{
-		if ((unsigned int)wParam == VK_ESCAPE)
-		{
-			PostQuitMessage(0);
-		}
-		return 0;
-	}
-
-	default:
-		return D3DAPP->MessageHandler(hwnd, message, wParam, lParam);
-	}
-}*/
-
-
 SDEngine::SDEngine()
 {
 	Init();

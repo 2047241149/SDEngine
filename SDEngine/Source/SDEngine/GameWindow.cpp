@@ -9,9 +9,9 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 	return gameWindow->MessageHandler(hwnd, message, wParam, lParam);
 }
 
-GameWindow::GameWindow(const EventCallback& inEvent, const WindowProp& props)
+GameWindow::GameWindow():
+		bStartEvent(false)
 {
-	Init(inEvent, props);
 }
 
 GameWindow::~GameWindow()
@@ -19,7 +19,7 @@ GameWindow::~GameWindow()
 	ShutDown();
 }
 
-void GameWindow::Init(const EventCallback& inEvent, const WindowProp& props)
+void GameWindow::Init(const WindowProp& props)
 {
 	data.width = props.width;
 	data.height = props.height;
@@ -27,7 +27,6 @@ void GameWindow::Init(const EventCallback& inEvent, const WindowProp& props)
 	data.bVSync = false;
 	data.fullScreen = false;
 	gameWindow = this;
-	eventCallback = inEvent;
 	InitWindow();
 }
 
@@ -116,7 +115,8 @@ void GameWindow::OnUpdate()
 
 void GameWindow::SetEventCallback(const EventCallback& inCallBack)
 {
-	eventCallback = inCallBack;
+	Get()->bStartEvent = true;
+	Get()->eventCallback = inCallBack;
 }
 
 void GameWindow::SetVSync(bool bEnabled)
@@ -126,24 +126,29 @@ void GameWindow::SetVSync(bool bEnabled)
 
 bool GameWindow::IsVSync()
 {
-	return data.bVSync;
-}
-
-shared_ptr<GameWindow> GameWindow::Create(const EventCallback& inEvent, const WindowProp& props)
-{
-	return shared_ptr<GameWindow>(new GameWindow(inEvent, props));
+	return Get()->data.bVSync;
 }
 
 LRESULT CALLBACK GameWindow::MessageHandler(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
+	if(!bStartEvent)
+		return DefWindowProc(hwnd, message, wParam, lParam);
+
 	switch (message)
 	{
+		case WM_CLOSE:
+		{
+			WindowCloseEvent event;
+			eventCallback(event);
+			return 0;
+		}
 		case WM_SIZE:
 		{
 			int newWidth = LOWORD(lParam);
 			int newHeight = HIWORD(lParam);
 			WindowResizeEvent event(newWidth, newHeight);
 			eventCallback(event);
+			return 0;
 		}
 		case WM_KEYDOWN:
 		{
@@ -212,3 +217,15 @@ LRESULT CALLBACK GameWindow::MessageHandler(HWND hwnd, UINT message, WPARAM wPar
 			return DefWindowProc(hwnd, message, wParam, lParam);
 	}
 }
+
+shared_ptr<GameWindow> GameWindow::Get()
+{
+	if (nullptr == single)
+	{
+		single = shared_ptr<GameWindow>(new GameWindow());
+	}
+
+	return single;
+}
+
+shared_ptr<GameWindow> GameWindow::single = nullptr;

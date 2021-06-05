@@ -33,6 +33,7 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Source\CoreMinimal.h" />
     <ClInclude Include="Source\Engine.h" />
     <ClInclude Include="Source\SDEngine\ClusterDefferedSceneRender.h">
       <Filter>SDEngine</Filter>
@@ -73,6 +74,12 @@
     <ClInclude Include="Source\SDEngine\EntryPoint.h">
       <Filter>SDEngine</Filter>
     </ClInclude>
+    <ClInclude Include="Source\SDEngine\Event\Event.h">
+      <Filter>SDEngine\Event</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\SDEngine\Event\EventBase.h">
+      <Filter>SDEngine\Event</Filter>
+    </ClInclude>
     <ClInclude Include="Source\SDEngine\Event\KeyEvent.h">
       <Filter>SDEngine\Event</Filter>
     </ClInclude>
@@ -105,6 +112,9 @@
     </ClInclude>
     <ClInclude Include="Source\SDEngine\GameObject\Quad.h">
       <Filter>SDEngine\GameObject</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\SDEngine\GameWindow.h">
+      <Filter>SDEngine</Filter>
     </ClInclude>
     <ClInclude Include="Source\SDEngine\GraphicsSystem.h">
       <Filter>SDEngine</Filter>
@@ -236,14 +246,8 @@
       <Filter>SDEngine</Filter>
     </ClInclude>
     <ClInclude Include="Source\pch.h" />
-    <ClInclude Include="Source\CoreMinimal.h">
-      <Filter>SDEngine</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\SDEngine\GameWindow.h" />
-    <ClInclude Include="Source\SDEngine\Event\EventBase.h">
-      <Filter>SDEngine\Event</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\SDEngine\Event\Event.h" />
+    <ClInclude Include="Source\SDEngine\Layer.h" />
+    <ClInclude Include="Source\SDEngine\LayerManager.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\SDEngine\ClusterDefferedSceneRender.cpp">
@@ -287,6 +291,9 @@
     </ClCompile>
     <ClCompile Include="Source\SDEngine\GameObject\Quad.cpp">
       <Filter>SDEngine\GameObject</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\SDEngine\GameWindow.cpp">
+      <Filter>SDEngine</Filter>
     </ClCompile>
     <ClCompile Include="Source\SDEngine\GraphicsSystem.cpp">
       <Filter>SDEngine</Filter>
@@ -418,6 +425,6 @@
       <Filter>SDEngine</Filter>
     </ClCompile>
     <ClCompile Include="Source\pch.cpp" />
-    <ClCompile Include="Source\SDEngine\GameWindow.cpp" />
+    <ClCompile Include="Source\SDEngine\LayerManager.cpp" />
   </ItemGroup>
 </Project>

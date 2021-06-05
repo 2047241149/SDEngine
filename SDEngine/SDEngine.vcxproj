@@ -104,6 +104,7 @@ IF EXIST ThirdParty\fbxsdk\2017.1\lib\x64\debug\libfbxsdk.dll\ (xcopy /Q /E /Y /
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Source\CoreMinimal.h" />
     <ClInclude Include="Source\Engine.h" />
     <ClInclude Include="Source\SDEngine\ClusterDefferedSceneRender.h" />
     <ClInclude Include="Source\SDEngine\Common\CommomVertexFormat.h" />
@@ -116,7 +117,6 @@ IF EXIST ThirdParty\fbxsdk\2017.1\lib\x64\debug\libfbxsdk.dll\ (xcopy /Q /E /Y /
     <ClInclude Include="Source\SDEngine\Common\MathTool.h" />
     <ClInclude Include="Source\SDEngine\Common\UtilityEnum.h" />
     <ClInclude Include="Source\SDEngine\Common\stb_image.h" />
-    <ClInclude Include="Source\CoreMinimal.h" />
     <ClInclude Include="Source\SDEngine\DebugTool\Debugwindow.h" />
     <ClInclude Include="Source\SDEngine\EntryPoint.h" />
     <ClInclude Include="Source\SDEngine\Event\Event.h" />
@@ -132,11 +132,14 @@ IF EXIST ThirdParty\fbxsdk\2017.1\lib\x64\debug\libfbxsdk.dll\ (xcopy /Q /E /Y /
     <ClInclude Include="Source\SDEngine\GameObject\GameObjectManager.h" />
     <ClInclude Include="Source\SDEngine\GameObject\Mesh.h" />
     <ClInclude Include="Source\SDEngine\GameObject\Quad.h" />
+    <ClInclude Include="Source\SDEngine\GameWindow.h" />
     <ClInclude Include="Source\SDEngine\GraphicsSystem.h" />
     <ClInclude Include="Source\SDEngine\Import\ImportDll.h" />
     <ClInclude Include="Source\SDEngine\Import\ImportFBX.h" />
     <ClInclude Include="Source\SDEngine\Input.h" />
     <ClInclude Include="Source\SDEngine\IrradianceCubeMap.h" />
+    <ClInclude Include="Source\SDEngine\Layer.h" />
+    <ClInclude Include="Source\SDEngine\LayerManager.h" />
     <ClInclude Include="Source\SDEngine\Light\DirectionLight.h" />
     <ClInclude Include="Source\SDEngine\Light\Light.h" />
     <ClInclude Include="Source\SDEngine\Light\LightManager.h" />
@@ -174,7 +177,6 @@ IF EXIST ThirdParty\fbxsdk\2017.1\lib\x64\debug\libfbxsdk.dll\ (xcopy /Q /E /Y /
     <ClInclude Include="Source\SDEngine\Texture\TextureSamplerManager.h" />
     <ClInclude Include="Source\SDEngine\Texture\stb_image.h" />
     <ClInclude Include="Source\SDEngine\TiledDefferedSceneRender.h" />
-    <ClInclude Include="Source\SDEngine\GameWindow.h" />
     <ClInclude Include="Source\SDEngine\WindowInfo.h" />
     <ClInclude Include="Source\pch.h" />
   </ItemGroup>
@@ -193,10 +195,12 @@ IF EXIST ThirdParty\fbxsdk\2017.1\lib\x64\debug\libfbxsdk.dll\ (xcopy /Q /E /Y /
     <ClCompile Include="Source\SDEngine\GameObject\GameObjectManager.cpp" />
     <ClCompile Include="Source\SDEngine\GameObject\Mesh.cpp" />
     <ClCompile Include="Source\SDEngine\GameObject\Quad.cpp" />
+    <ClCompile Include="Source\SDEngine\GameWindow.cpp" />
     <ClCompile Include="Source\SDEngine\GraphicsSystem.cpp" />
     <ClCompile Include="Source\SDEngine\Import\ImportFBX.cpp" />
     <ClCompile Include="Source\SDEngine\Input.cpp" />
     <ClCompile Include="Source\SDEngine\IrradianceCubeMap.cpp" />
+    <ClCompile Include="Source\SDEngine\LayerManager.cpp" />
     <ClCompile Include="Source\SDEngine\Light\DirectionLight.cpp" />
     <ClCompile Include="Source\SDEngine\Light\Light.cpp" />
     <ClCompile Include="Source\SDEngine\Light\LightManager.cpp" />
@@ -234,7 +238,6 @@ IF EXIST ThirdParty\fbxsdk\2017.1\lib\x64\debug\libfbxsdk.dll\ (xcopy /Q /E /Y /
     <ClCompile Include="Source\SDEngine\Texture\TextureSamplerManager.cpp" />
     <ClCompile Include="Source\SDEngine\Texture\stb_image.cpp" />
     <ClCompile Include="Source\SDEngine\TiledDefferedSceneRender.cpp" />
-    <ClCompile Include="Source\SDEngine\GameWindow.cpp" />
     <ClCompile Include="Source\SDEngine\WindowInfo.cpp" />
     <ClCompile Include="Source\SDEngine\源.cpp" />
     <ClCompile Include="Source\pch.cpp" />

@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 extern Game* CreateGame();
 
@@ -9,5 +9,5 @@ int main()
 	auto* game = CreateGame();
 	game->Run();
 	delete game;
-	return 0;
+	return 1;
 }

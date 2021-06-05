@@ -1,4 +1,4 @@
-#include "GraphicsSystem.h"
+﻿#include "GraphicsSystem.h"
 #include "GameObject/Camera.h"
 #include "Input.h"
 #include "SceneManager.h"
@@ -24,7 +24,7 @@ GraphicsSystem::GraphicsSystem(const GraphicsSystem&other)
 bool GraphicsSystem::Init()
 {
 	//Init D3d11 Core Object
-	GDirectxCore->Init(VSYNC_ENABLE, FULL_SCREEN, SCREEN_NEAR, SCREEN_FAR);
+	GDirectxCore->Init(VSYNC_ENABLE, FULL_SCREEN);
 
 	//Init Console Debug Windows
 	InitDebugConsole();

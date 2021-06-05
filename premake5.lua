@@ -1,5 +1,6 @@
-workspace "SDEngine"
+﻿workspace "SDEngine"
 	architecture "x64"
+	startproject "TestGame"
 
 	configurations
 	{

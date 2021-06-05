@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 #ifndef _WINDOWS_INFO_H
 #define _WINDOWS_INFO_H
 #include "Common/DirectxCore.h"

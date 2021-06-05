@@ -28,10 +28,10 @@ public:
 };
 
 
-class WindoowCloseEvent : public Event
+class WindowCloseEvent : public Event
 {
 public:
-	WindoowCloseEvent() = default;
+	WindowCloseEvent() = default;
 
 	EVENT_CLASS_TYPE(WindowClose)
 	EVENT_CLASS_CATEGORY(EventCategory::EventCategoryGame)

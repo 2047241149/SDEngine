@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 #ifndef DIRECTX_CORE_H
 #define DIRECTX_CORE_H
 
@@ -16,7 +16,6 @@ private:
 	void ShutDown();
 
 public:
-
 	DirectxCore();
 	DirectxCore(const DirectxCore&);
 	~DirectxCore();
@@ -25,14 +24,14 @@ public:
 
 	ID3DUserDefinedAnnotation* d3dUserDefinedAnnot;
 
-	bool Init(bool vsync, bool fullscreen, float ScreenDepth, float ScreenNear);
+	bool Init(bool vsync, bool fullscreen);
 
 public:
-	//»æÖÆ³¡¾°º¯Êı
+	//ç»˜åˆ¶åœºæ™¯å‡½æ•°
 	void BeginScene(float red, float green, float blue, float alpha);
 	void EndScene();
 
-	//Getº¯Êı
+	//Getå‡½æ•°
 	ID3D11Device* GetDevice() { return md3dDevice; }
 	ID3D11DeviceContext* GetDeviceContext(){ return md3dImmediateContext; }
 	IDXGIOutput* GetDXGIOutput() { return mAdapterOutput; }
@@ -42,39 +41,39 @@ public:
 
 	void GetVideoCardInfo(char*, int&);
 
-	//Setº¯Êı
-	void SetBackBufferRender();  //ÉèÖÃ±³ºó»º´æ×÷ÎªäÖÈ¾Ä¿±ê
-	void SetDefualtViewPort(); //ÖØÖÃ¸ÃÊÓ¿Ú
+	//Setå‡½æ•°
+	void SetBackBufferRender();  //è®¾ç½®èƒŒåç¼“å­˜ä½œä¸ºæ¸²æŸ“ç›®æ ‡
+	void SetDefualtViewPort(); //é‡ç½®è¯¥è§†å£
 
-	//´ò¿ªºÍ¹Ø±Õalpha»ìºÏº¯Êı
+	//æ‰“å¼€å’Œå…³é—­alphaæ··åˆå‡½æ•°
 	void TurnOnAlphaBlend();
 	void TurnOffAlphaBlend();
 
-	//´ò¿ªºÍ¹Ø±ÕZTest
+	//æ‰“å¼€å’Œå…³é—­ZTest
 	void TurnOnZBuffer();
 	void TurnOffZBuffer();
 	
-	//´ò¿ªSolidäÖÈ¾ºÍÏß¿òäÖÈ¾
+	//æ‰“å¼€Solidæ¸²æŸ“å’Œçº¿æ¡†æ¸²æŸ“
 	void RecoverDefualtRS();
 	void TurnOnWireFrameRender();
 
-	//´ò¿ª±ê¼Ç·´ÉäÃæµÄDSS
+	//æ‰“å¼€æ ‡è®°åå°„é¢çš„DSS
 	void TurnOnMaskReflectDSS();
 
-	//´ò¿ª½øĞĞ·´ÉäµÄDSS
+	//æ‰“å¼€è¿›è¡Œåå°„çš„DSS
 	void TurnOnEnableReflectDSS();
 
 	void TurnOnRenderSkyBoxDSS();
 
-	//ÌŞ³ıÇ°Ãæ
+	//å‰”é™¤å‰é¢
 	void TurnOnCullFront();
 
-	//»Ö¸´Ä¬ÈÏµÄ
+	//æ¢å¤é»˜è®¤çš„
 	void RecoverDefaultDSS();
 
 	void TurnOnPreDepthDSS();
 
-	//¹ØµôZBufferĞ´
+	//å…³æ‰ZBufferå†™
 	void TurnOnDisbleZWriteDSS();
 
 	void TurnOnLightBlend();
@@ -91,39 +90,38 @@ public:
 	}
 
 private:
-	bool mVsyncEnable;  //ÊÇ·ñÏŞÖ¡äÖÈ¾
-	int mVideoCardMemory; //ÏÔ¿¨ÄÚ´æ
-	char mVideoCardDescription[128]; //ÏÔ¿¨Ãû×Ö
+	bool mVsyncEnable;  //æ˜¯å¦é™å¸§æ¸²æŸ“
+	int mVideoCardMemory; //æ˜¾å¡å†…å­˜
+	char mVideoCardDescription[128]; //æ˜¾å¡åå­—
 
 private:
 	static shared_ptr<DirectxCore> m_pDirectxCore;
 
 private:
 	IDXGIOutput* mAdapterOutput;
-	ID3D11Device* md3dDevice;//D3D11Éè±¸
-	ID3D11DeviceContext* md3dImmediateContext;//D3D11Éè±¸ÉÏÏÂÎÄ
-	IDXGISwapChain* md3dSwapChain;//D3D½»»»Á´
-	ID3D11RenderTargetView* md3dRenderTargetView; //D3D11äÖÈ¾Ä¿±êÊÓÍ¼
-	ID3D11DepthStencilView* md3dDepthStencilView; //D3D11Éî¶È(Ä£°å)ÊÓÍ¼
-	ID3D11Texture2D* md3dDepthStencilBuffer; //D3D11µÄ¡°DepthStencil»º´æ¡±
-	ID3D11DepthStencilState* md3dDepthStencilState; //Éî¶È(Ä£°å)»º´æ×´Ì¬
-	ID3D11DepthStencilState* md3dDisableDepthStencilState; //Éî¶È²âÊÔÊ§Ğ§µÄ»º´æ×´Ì¬
-	ID3D11DepthStencilState* mEqualDepthStencilState; //Éî¶È(Ä£°å)»º´æ×´Ì¬
-	ID3D11DepthStencilState* md3dDisableZWriteDSS; //Éî¶ÈĞ´ÎŞĞ§µÄ»º´æ×´Ì¬
-	ID3D11DepthStencilState* md3dDSSMaskReflect;  //±ê¼Ç·´ÉäÃæ
-	ID3D11DepthStencilState* md3dDSSEnableReflect; //½øĞĞ·´ÉäÃæ
-	ID3D11DepthStencilState* m_pDSSAddLightVolumeStencil; //±ê¼ÇÏñËØÔÚ¹âÔ´Ìå»ıÄÚµÄDSS
-	ID3D11DepthStencilState* m_pDSSRenderLightVolume; //äÖÈ¾¹âÔ´Ìå»ıµÄDSS
+	ID3D11Device* md3dDevice;//D3D11è®¾å¤‡
+	ID3D11DeviceContext* md3dImmediateContext;//D3D11è®¾å¤‡ä¸Šä¸‹æ–‡
+	IDXGISwapChain* md3dSwapChain;//D3Däº¤æ¢é“¾
+	ID3D11RenderTargetView* md3dRenderTargetView; //D3D11æ¸²æŸ“ç›®æ ‡è§†å›¾
+	ID3D11DepthStencilView* md3dDepthStencilView; //D3D11æ·±åº¦(æ¨¡æ¿)è§†å›¾
+	ID3D11Texture2D* md3dDepthStencilBuffer; //D3D11çš„â€œDepthStencilç¼“å­˜â€
+	ID3D11DepthStencilState* md3dDepthStencilState; //æ·±åº¦(æ¨¡æ¿)ç¼“å­˜çŠ¶æ€
+	ID3D11DepthStencilState* md3dDisableDepthStencilState; //æ·±åº¦æµ‹è¯•å¤±æ•ˆçš„ç¼“å­˜çŠ¶æ€
+	ID3D11DepthStencilState* mEqualDepthStencilState; //æ·±åº¦(æ¨¡æ¿)ç¼“å­˜çŠ¶æ€
+	ID3D11DepthStencilState* md3dDisableZWriteDSS; //æ·±åº¦å†™æ— æ•ˆçš„ç¼“å­˜çŠ¶æ€
+	ID3D11DepthStencilState* md3dDSSMaskReflect;  //æ ‡è®°åå°„é¢
+	ID3D11DepthStencilState* md3dDSSEnableReflect; //è¿›è¡Œåå°„é¢
+	ID3D11DepthStencilState* m_pDSSAddLightVolumeStencil; //æ ‡è®°åƒç´ åœ¨å…‰æºä½“ç§¯å†…çš„DSS
+	ID3D11DepthStencilState* m_pDSSRenderLightVolume; //æ¸²æŸ“å…‰æºä½“ç§¯çš„DSS
 	ID3D11DepthStencilState* renderSkyBoxDSS;
-	ID3D11RasterizerState* md3dRasterizerState; //D3DµÄ¹âÕ¤»¯×´Ì¬
-	ID3D11RasterizerState* md3dWireFrameRS; //D3DµÄ¹âÕ¤»¯×´Ì¬
-	ID3D11RasterizerState* md3dCullFrontRS; //ÌŞ³ıÇ°Ãæ
-	ID3D11RasterizerState* m_pTurnOffCullBackRS; //ÌŞ³ıÇ°Ãæ
-	ID3D11BlendState* md3dEnableBlendState; //¿ªÆôalphaµÄ»ìºÏ×´Ì¬
-	ID3D11BlendState* md3dDisableBlendState; //¹Ø±ÕalphaµÄ»ìºÏ×´Ì¬
+	ID3D11RasterizerState* md3dRasterizerState; //D3Dçš„å…‰æ …åŒ–çŠ¶æ€
+	ID3D11RasterizerState* md3dWireFrameRS; //D3Dçš„å…‰æ …åŒ–çŠ¶æ€
+	ID3D11RasterizerState* md3dCullFrontRS; //å‰”é™¤å‰é¢
+	ID3D11RasterizerState* m_pTurnOffCullBackRS; //å‰”é™¤å‰é¢
+	ID3D11BlendState* md3dEnableBlendState; //å¼€å¯alphaçš„æ··åˆçŠ¶æ€
+	ID3D11BlendState* md3dDisableBlendState; //å…³é—­alphaçš„æ··åˆçŠ¶æ€
 	ID3D11BlendState* m_pLightBlendState;
 	D3D11_VIEWPORT mViewport;
-
 };
 
 
