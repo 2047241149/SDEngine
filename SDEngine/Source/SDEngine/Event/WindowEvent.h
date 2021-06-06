@@ -1,6 +1,7 @@
 ﻿#pragma once
 #include "EventBase.h"
 
+
 class WindowResizeEvent : public Event
 {
 private:
@@ -34,6 +35,15 @@ public:
 	WindowCloseEvent() = default;
 
 	EVENT_CLASS_TYPE(WindowClose)
+	EVENT_CLASS_CATEGORY(EventCategory::EventCategoryGame)
+};
+
+class KillFocusEvent : public Event
+{
+public:
+	KillFocusEvent() = default;
+
+	EVENT_CLASS_TYPE(killWindowFous)
 	EVENT_CLASS_CATEGORY(EventCategory::EventCategoryGame)
 };
 

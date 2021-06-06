@@ -18,6 +18,23 @@ public:
 	EVENT_CLASS_CATEGORY(EventCategoryKeybord | EventCategoryInput)
 };
 
+class CharEvent : public KeyEvent
+{
+public:
+	CharEvent(UINT inKeyCode)
+		:KeyEvent(inKeyCode)
+	{
+	}
+
+	string ToString() const override
+	{
+		stringstream ss;
+		ss << "CharEvent: " << keyCode;
+		return ss.str();
+	}
+
+	EVENT_CLASS_TYPE(Char)
+};
 
 class KeyPressedEvent : public KeyEvent
 {

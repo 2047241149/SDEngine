@@ -12,4 +12,23 @@ public:
 	virtual void OnDetach() override;
 	virtual void OnUpdate(float deltaTime) override;
 	virtual void OnEvent(Event& event) override;
+
+
+private:
+	void SetImguiKeyCode(UINT keyCode, int taregetValue);
+	void UpdateMousePos();
+
+public:
+	//Keyborad event
+	bool OnKeyPressedEvent(KeyPressedEvent& event);
+	bool OnKeyReleasedEvent(KeyReleasedEvent& event);
+	bool OnCharEvent(CharEvent& event);
+
+	//Mouse event
+	bool OnMouseButtonPressedEvent(MouseButtonPressedEvent& event);
+	bool OnMouseButtonReleasedEvent(MouseButtonReleasedEvent& event);
+	bool OnMouseMovedEvent(MouseMovedEvent& event);
+	bool OnMouseScrollEvent(MouseScrollEvent& event);
+
+	bool OnKillWindowFocus(KillFocusEvent& event);
 };

@@ -1,5 +1,6 @@
-#include"Input.h"
+﻿#include"Input.h"
 #include "WindowInfo.h"
+#include "GameWindow.h"
 
 Input::Input()
 {
@@ -15,31 +16,29 @@ Input::~Input()
 
 bool Input::Init()
 {
-	mDirectInput = NULL;
-	mDirectInputKeyboard = NULL;
-	mDirectInputMouse = NULL;
-	mMousePosX = 0;
-	mMousePosY = 0;
+	directInput = NULL;
+	directInputKeyboard = NULL;
+	directInputMouse = NULL;
+	mousePosX = 0;
+	mousePosY = 0;
 
-	HR(DirectInput8Create(GHinstance, DIRECTINPUT_VERSION, IID_IDirectInput8, (void**)&mDirectInput, NULL));
-	HR(mDirectInput->CreateDevice(GUID_SysKeyboard, &mDirectInputKeyboard, NULL));
-	HR(mDirectInputKeyboard->SetDataFormat(&c_dfDIKeyboard));
-	HR(mDirectInputKeyboard->SetCooperativeLevel(GHwnd, DISCL_FOREGROUND | DISCL_EXCLUSIVE));
-	HR(mDirectInput->CreateDevice(GUID_SysMouse, &mDirectInputMouse, NULL));
-	HR(mDirectInputMouse->SetDataFormat(&c_dfDIMouse));
-	HR(mDirectInputMouse->SetCooperativeLevel(GHwnd, DISCL_FOREGROUND | DISCL_EXCLUSIVE));
+	HR(DirectInput8Create(GWindowHinstance, DIRECTINPUT_VERSION, IID_IDirectInput8, (void**)&directInput, NULL));
+	HR(directInput->CreateDevice(GUID_SysKeyboard, &directInputKeyboard, NULL));
+	HR(directInputKeyboard->SetDataFormat(&c_dfDIKeyboard));
+	HR(directInputKeyboard->SetCooperativeLevel(GWindowHwnd, DISCL_FOREGROUND | DISCL_EXCLUSIVE));
+	HR(directInput->CreateDevice(GUID_SysMouse, &directInputMouse, NULL));
+	HR(directInputMouse->SetDataFormat(&c_dfDIMouse));
+	HR(directInputMouse->SetCooperativeLevel(GWindowHwnd, DISCL_FOREGROUND | DISCL_EXCLUSIVE));
 	return TRUE;
 
 }
 
-
 void Input::ShutDown()
 {
-	ReleaseCOM(mDirectInputMouse);
-	ReleaseCOM(mDirectInputKeyboard);
-	ReleaseCOM(mDirectInput);
+	ReleaseCOM(directInputMouse);
+	ReleaseCOM(directInputKeyboard);
+	ReleaseCOM(directInput);
 }
-
 
 bool Input::Tick()
 {
@@ -61,25 +60,24 @@ bool Input::Tick()
 	return true;
 }
 
-
-
 bool Input::ReadKeyboard()
 {
 	//read keybord state
 	HRESULT result;
-	result = mDirectInputKeyboard->GetDeviceState(sizeof(mKeyboardState), (LPVOID)&mKeyboardState);
+	result = directInputKeyboard->GetDeviceState(sizeof(keyboardState), (LPVOID)&keyboardState);
 
 	if (FAILED(result))
 	{
 		if ((result == DIERR_INPUTLOST) || (result == DIERR_NOTACQUIRED))
 		{
-			mDirectInputKeyboard->Acquire();
+			directInputKeyboard->Acquire();
 		}
 		else
 		{
 			return false;
 		}
 	}
+
 	return true;
 }
 
@@ -89,13 +87,13 @@ bool Input::ReadMouse()
 	HRESULT result;
 
 	//read mouse state
-	result = mDirectInputMouse->GetDeviceState(sizeof(DIMOUSESTATE), (LPVOID)&mMouseState);
+	result = directInputMouse->GetDeviceState(sizeof(DIMOUSESTATE), (LPVOID)&mouseState);
    
 	if (FAILED(result))
 	{
 		if ((result == DIERR_INPUTLOST) || (result == DIERR_NOTACQUIRED))
 		{
-			mDirectInputMouse->Acquire();
+			directInputMouse->Acquire();
 		}
 		else
 		{
@@ -108,104 +106,37 @@ bool Input::ReadMouse()
 
 void Input::ProcessInput()
 {
-	mMousePosXOffset = mMouseState.lX;
-	mMousePosYOffset = mMouseState.lY;
-	mMousePosX += mMouseState.lX;
-	mMousePosY += mMouseState.lY;
+	mousePosXOffset = mouseState.lX;
+	mousePosYOffset = mouseState.lY;
+	mousePosX += mouseState.lX;
+	mousePosY += mouseState.lY;
 
-   //mouse pos must be in screen
-	if (mMousePosX < 0)
+    //mouse pos must be in screen
+	if (mousePosX < 0)
 	{
-		mMousePosX = 0;
+		mousePosX = 0;
 	}
-	if (mMousePosY < 0)
+
+	if (mousePosY < 0)
 	{
-		mMousePosY = 0;
+		mousePosY = 0;
 	}
-	if (mMousePosX > GScreenWidth)
+
+	if (mousePosX > GScreenWidth)
 	{
-		mMousePosX = GScreenWidth;
+		mousePosX = GScreenWidth;
 	}
-	if (mMousePosY > GScreenHeight)
+
+	if (mousePosY > GScreenHeight)
 	{
-		mMousePosY = GScreenHeight;
+		mousePosY = GScreenHeight;
 	}
 }
 
-bool Input::IsEscapePressed()
-{
-	if (mKeyboardState[DIK_ESCAPE] & 0x80)
-	{
-		return true;
-	}
-		return false;
-}
-
-bool Input::IsWPressed()
-{
-	if (mKeyboardState[DIK_W] & 0x80)
-	{
-		return true;
-	}
-	return false;
-}
-
-
-bool Input::IsSPressed()
-{
-	if (mKeyboardState[DIK_S] & 0x80)
-	{
-		return true;
-	}
-	return false;
-}
-
-
-
-bool Input::IsAPressed()
-{
-	if (mKeyboardState[DIK_A] & 0x80)
-	{
-		return true;
-	}
-	return false;
-}
-
-
-
-bool Input::IsDPressed()
-{
-	if (mKeyboardState[DIK_D] & 0x80)
-	{
-		return true;
-	}
-	return false;
-}
-
-
-
-bool Input::IsQPressed()
-{
-	if (mKeyboardState[DIK_Q] & 0x80)
-	{
-		return true;
-	}
-	return false;
-}
-
-
-bool Input::IsEPressed()
-{
-	if (mKeyboardState[DIK_E] & 0x80)
-	{
-		return true;
-	}
-	return false;
-}
 
 bool Input::IsKeyDown(int key)
 {
-	if (mKeyboardState[key] & 0x80)
+	if (keyboardState[key] & 0x80)
 	{
 		return true;
 	}
@@ -215,23 +146,34 @@ bool Input::IsKeyDown(int key)
 
 bool Input::IsMouseRightButtuonPressed()
 {
-	if (mMouseState.rgbButtons[1] & 0x80)
+	if (mouseState.rgbButtons[1] & 0x80)
 	{
 		return true;
 	}
+
 	return false;
 }
 
+/*bool Input::IsMouseButtuonPressed(MouseKey keyCode)
+{
+	if (mouseState.rgbButtons[int(keyCode)] & 0x80)
+	{
+		return true;
+	}
+
+	return false;
+}*/
+
 void Input::GetMousePosition(int& MouseX, int& MouseY)
 {
-	MouseX = mMousePosX;
-	MouseY = mMousePosY;
+	MouseX = mousePosX;
+	MouseY = mousePosY;
 }
 
 void Input::GetMousePositionOffset(int& MouseXOffset, int &MouseYOffset)
 {
-	MouseXOffset = mMousePosXOffset;
-	MouseYOffset = mMousePosYOffset;
+	MouseXOffset = mousePosXOffset;
+	MouseYOffset = mousePosYOffset;
 }
 
 shared_ptr<Input> Input::Get()

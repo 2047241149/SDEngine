@@ -3,9 +3,7 @@
 #define DIRECTX_CORE_H
 
 #include "../Common/CoreMini.h"
-#include "../Import/ImportDll.h"
 #include "DirectxFrame.h"
-#pragma comment(lib,"DXGI.lib")
 
 using namespace std;
 using namespace DirectX;

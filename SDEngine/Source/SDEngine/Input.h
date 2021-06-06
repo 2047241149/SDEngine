@@ -1,30 +1,28 @@
-#pragma once
+ï»¿#pragma once
 #ifndef _INPUT_CLASS_H
 #define _INPUT_CLASS_H
 
 #include "Common/CoreMini.h"
-//¶¨ÒåÊ¹ÓÃµÄD3DInputµÄ°æ±¾
+#include "Event/EventBase.h"
+//direct input version
 #define DIRECTINPUT_VERSION 0x0800
 #include<dinput.h>
-#pragma comment(lib,"Dinput8.lib")
+
 class Input
 {
-private:
-	//DirectInput½Ó¿Ú,IDirectInputDevice8½Ó¿Ú
-	IDirectInput8* mDirectInput;
-	IDirectInputDevice8* mDirectInputKeyboard;
-	IDirectInputDevice8* mDirectInputMouse;
+protected:
+	//interface for direct input
+	IDirectInput8* directInput;
+	IDirectInputDevice8* directInputKeyboard;
+	IDirectInputDevice8* directInputMouse;
 
-	//ÆÁÄ»¿í¶ÈºÍ¸ß¶È
-	int mScreenWidth, mScreenHeight;
+    //keyboard state
+	unsigned char keyboardState[256];
+	DIMOUSESTATE mouseState;
 
-    //¼üÅÌºÍÊó±êÏÖ´æ×´Ì¬
-	unsigned char mKeyboardState[256];
-	DIMOUSESTATE mMouseState;
-
-	//Êó±êÎ»ÖÃ(win32×ø±êÏµÏÂµÄ)
-	int mMousePosX, mMousePosY;
-	int mMousePosXOffset, mMousePosYOffset;
+	//mouse state
+	int mousePosX, mousePosY;
+	int mousePosXOffset, mousePosYOffset;
 
 private:
 	static shared_ptr<Input> single;
@@ -43,40 +41,13 @@ public:
 
 public:
 	bool Init();
-
 	void ShutDown();
-
 	bool Tick();
 
-	//ESC¼üÊÇ·ñ°´ÏÂ
-	bool IsEscapePressed();
-
-	//W¼üÊÇ·ñ°´ÏÂ
-	bool IsWPressed();
-
-	//S¼üÊÇ·ñ°´ÏÂ
-	bool IsSPressed();
-
-	//A¼üÊÇ·ñ°´ÏÂ
-	bool IsAPressed();
-
-	//D¼üÊÇ·ñ°´ÏÂ
-	bool IsDPressed();
-
-	//A¼üÊÇ·ñ°´ÏÂ
-	bool IsQPressed();
-
-	//D¼üÊÇ·ñ°´ÏÂ
-	bool IsEPressed();
-
-	//Êó±êÓÒ¼üÊÇ·ñ°´ÏÂ
+	//bool IsMouseButtuonPressed(MouseKey keyCode);
 	bool IsMouseRightButtuonPressed();
-
 	bool IsKeyDown(int key);
-
-	//»ñÈ¡Êó±êµÄÎ»ÖÃ
 	void GetMousePosition(int& MouseX, int &MouseY);
-
 	void GetMousePositionOffset(int& MouseXOffset, int &MouseYOffset);
 };
 

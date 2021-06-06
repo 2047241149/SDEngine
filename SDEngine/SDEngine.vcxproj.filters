@@ -128,9 +128,6 @@
     <ClInclude Include="Source\SDEngine\GraphicsSystem.h">
       <Filter>SDEngine</Filter>
     </ClInclude>
-    <ClInclude Include="Source\SDEngine\Import\ImportDll.h">
-      <Filter>SDEngine\Import</Filter>
-    </ClInclude>
     <ClInclude Include="Source\SDEngine\Import\ImportFBX.h">
       <Filter>SDEngine\Import</Filter>
     </ClInclude>

@@ -5,7 +5,7 @@
 #include "LayerManager.h"
 #include "Common/DirectxCore.h"
 #include "FPS.h"
-#define BIND_EVENT(func, object) (std::bind(&func, object, std::placeholders::_1))
+#include "Input.h"
 
 Game::Game()
 {
@@ -15,6 +15,7 @@ Game::Game()
 	GGameWindow->Init();
 	GGameWindow->SetEventCallback(BIND_EVENT(Game::OnEvent, this));
 	GDirectxCore->Init(GIsVSync, GIsFullScrren);
+	GInput->Init();
 }
 
 Game::~Game()

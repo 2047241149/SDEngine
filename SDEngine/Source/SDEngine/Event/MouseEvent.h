@@ -1,13 +1,13 @@
 ﻿#pragma once
 #include "EventBase.h"
 
-class MouseMovedEvent : public Event
+class MousePosEvent : public Event
 {
-private:
+protected:
 	float mouseX, mouseY;
 
 public:
-	MouseMovedEvent(float inMouseX, float inMouseY):
+	MousePosEvent(float inMouseX, float inMouseY):
 		mouseX(inMouseX),
 		mouseY(inMouseY)
 	{
@@ -15,6 +15,19 @@ public:
 
 	float GetMouseX() { return mouseX; }
 	float GetMouseY() { return mouseY; }
+
+	EVENT_CLASS_CATEGORY(EventCategoryMouse | EventCategoryInput)
+};
+
+
+class MouseMovedEvent : public MousePosEvent
+{
+public:
+	MouseMovedEvent(float inMouseX, float inMouseY) :
+		MousePosEvent(inMouseX, inMouseY)
+	{
+
+	}
 
 	string ToString() const override
 	{
@@ -24,8 +37,27 @@ public:
 	}
 
 	EVENT_CLASS_TYPE(MouseMove)
-	EVENT_CLASS_CATEGORY(EventCategoryMouse | EventCategoryInput)
 };
+
+class MouseScrollEvent : public MousePosEvent
+{
+public:
+	MouseScrollEvent(float inMouseX, float inMouseY) :
+		MousePosEvent(inMouseX, inMouseY)
+	{
+
+	}
+
+	string ToString() const override
+	{
+		stringstream ss;
+		ss << "MouseScrollEvent: " << mouseX << ", " << mouseY;
+		return ss.str();
+	}
+
+	EVENT_CLASS_TYPE(MouseScroll)
+};
+
 
 class MouseButtonEvent : public Event 
 {

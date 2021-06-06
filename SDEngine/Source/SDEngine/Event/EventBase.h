@@ -4,22 +4,23 @@
 #include "Log.h"
 
 #define BIT(x) (1 << x)
+#define BIND_EVENT(func, object) (std::bind(&func, object, std::placeholders::_1))
 
 enum class EventType
 {
 	None = 0,
 
 	//Wiondow
-	WindowClose, WindowResize, WindowMove,
+	WindowClose, WindowResize, WindowMove, killWindowFous,
 
 	//Game
 	GameTick, GameUpdate, GameRender,
 
 	//keyboard
-	KeyPressed, KeyReleased,
+	KeyPressed, KeyReleased, Char,
 
 	//mouse
-	MousePressed, MouseReleased, MouseMove,
+	MousePressed, MouseReleased, MouseMove, MouseScroll,
 };
 
 enum EventCategory

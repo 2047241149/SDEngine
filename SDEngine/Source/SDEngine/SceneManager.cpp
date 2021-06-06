@@ -1,4 +1,4 @@
-#include "SceneManager.h"
+﻿#include "SceneManager.h"
 #include "Texture/TextureManager.h"
 #include "Common/GraphicsConfig.h"
 #include "GameObject/Camera.h"
@@ -165,47 +165,41 @@ void SceneManager::Tick(float deltaTime)
 	GInput->GetMousePositionOffset(mouseXOffset, mouseYOffset);
 	int fps = GFPS->GetFPS();
 
-	//����Ҽ����ڰ��µ�״̬���ܽ��У������ƶ�����ǰ���ƶ�������ת�Ĳ�����
 	if (GInput->IsMouseRightButtuonPressed() && fps >= 5 && fps <= 1000000)
 	{
-		//"W","S"������
-		if (GInput->IsWPressed())
+		if (GInput->IsKeyDown(DIK_W))
 		{
 			GCamera->Walk(deltaTime*CAMERA_SPEED);
 		}
-		else if (GInput->IsSPressed())
+		else if (GInput->IsKeyDown(DIK_S))
 		{
 			GCamera->Walk(-deltaTime * CAMERA_SPEED);
 		}
 
-		//"A","D"������
-		if (GInput->IsAPressed())
+		if (GInput->IsKeyDown(DIK_A))
 		{
 			GCamera->Strafe(-deltaTime * CAMERA_SPEED);
 		}
-		else if (GInput->IsDPressed())
+		else if (GInput->IsKeyDown(DIK_D))
 		{
 			GCamera->Strafe(deltaTime*CAMERA_SPEED);
 		}
 
-		//"Q","E"������
-		if (GInput->IsQPressed())
+		if (GInput->IsKeyDown(DIK_Q))
 		{
 			GCamera->UpDown(-deltaTime * CAMERA_SPEED);
 		}
-		else if (GInput->IsEPressed())
+		else if (GInput->IsKeyDown(DIK_E))
 		{
 			GCamera->UpDown(deltaTime*CAMERA_SPEED);
 		}
 
-		//�����ӽ����µ���ת(���տ�ʼ����ת�Ƕ�������90��֮��)
 		if (rotateY <= 90.0f && rotateY >= -90.0f)
 		{
 			rotateY += (float)mouseYOffset*deltaTime;
 			GCamera->Pitch((float)mouseYOffset*deltaTime*2.0f);
 		}
 
-		//�����ӽ����ҵ���ת
 		GCamera->RotateY((float)mouseXOffset*deltaTime*2.0f);
 	}
 
@@ -231,8 +225,7 @@ void SceneManager::Tick(float deltaTime)
 		bDebugLightCount = false;
 	}
 
-	//�������ESC�����ƻ�����
-	if (GInput->IsEscapePressed())
+	if (GInput->IsKeyDown(DIK_ESCAPE))
 	{
 		DestroyWindow(GHwnd);
 	}

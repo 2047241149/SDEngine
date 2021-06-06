@@ -156,11 +156,16 @@ LRESULT CALLBACK GameWindow::MessageHandler(HWND hwnd, UINT message, WPARAM wPar
 			eventCallback(event);
 			return 0;
 		}
+		case WM_CHAR:
+		{
+			CharEvent event((UINT)wParam);
+			eventCallback(event);
+			return 0;
+		}
 		case WM_KEYUP:
 		{
 			KeyReleasedEvent event((UINT)wParam);
 			eventCallback(event);
-
 			return 0;
 		}
 
@@ -209,6 +214,28 @@ LRESULT CALLBACK GameWindow::MessageHandler(HWND hwnd, UINT message, WPARAM wPar
 			float mouseX = GET_X_LPARAM(lParam);
 			float mouseY = GET_Y_LPARAM(lParam);
 			MouseMovedEvent event(mouseX, mouseY);
+			eventCallback(event);
+			return 0;
+		}
+
+		case WM_MOUSEWHEEL:
+		{
+			float scrollValue = (float)GET_WHEEL_DELTA_WPARAM(wParam) / (float)WHEEL_DELTA;
+			MouseScrollEvent event(0.0, scrollValue);
+			eventCallback(event);
+			return 0;
+		}
+		case WM_MOUSEHWHEEL:
+		{
+			float scrollValue = (float)GET_WHEEL_DELTA_WPARAM(wParam) / (float)WHEEL_DELTA;
+			MouseScrollEvent event(scrollValue, 0.0);
+			eventCallback(event);
+			return 0;
+		}
+
+		case WM_KILLFOCUS:
+		{
+			KillFocusEvent event;
 			eventCallback(event);
 			return 0;
 		}

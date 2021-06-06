@@ -38,7 +38,14 @@ project "SDEngine"
 	links
 	{
 		"imgui",
-		"libfbxsdk.lib"
+		"libfbxsdk.lib",
+		"Dinput8.lib",
+		"d3d11.lib",
+		"d3dcompiler.lib",
+		"dxguid.lib",
+		"winmm.lib",
+		"comctl32.lib",
+		"dxgi.lib",
 	}
 
 	filter "system:windows"

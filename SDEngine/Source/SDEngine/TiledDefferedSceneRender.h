@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 #ifndef _TILED_DEFFERED_SCENE_RENDER_H
 #define _TILED_DEFFERED_SCENE_RENDER_H
 

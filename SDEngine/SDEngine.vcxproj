@@ -69,7 +69,7 @@
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>libfbxsdk.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>libfbxsdk.lib;Dinput8.lib;d3d11.lib;d3dcompiler.lib;dxguid.lib;winmm.lib;comctl32.lib;dxgi.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <ImportLibrary>..\bin\Debug-x86_64\SDEngine\SDEngine.lib</ImportLibrary>
     </Link>
     <PostBuildEvent>
@@ -95,7 +95,7 @@ IF EXIST ThirdParty\fbxsdk\2017.1\lib\x64\debug\libfbxsdk.dll\ (xcopy /Q /E /Y /
       <SubSystem>Windows</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalDependencies>libfbxsdk.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>libfbxsdk.lib;Dinput8.lib;d3d11.lib;d3dcompiler.lib;dxguid.lib;winmm.lib;comctl32.lib;dxgi.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <ImportLibrary>..\bin\Release-x86_64\SDEngine\SDEngine.lib</ImportLibrary>
     </Link>
     <PostBuildEvent>
@@ -136,7 +136,6 @@ IF EXIST ThirdParty\fbxsdk\2017.1\lib\x64\debug\libfbxsdk.dll\ (xcopy /Q /E /Y /
     <ClInclude Include="Source\SDEngine\GameObject\Quad.h" />
     <ClInclude Include="Source\SDEngine\GameWindow.h" />
     <ClInclude Include="Source\SDEngine\GraphicsSystem.h" />
-    <ClInclude Include="Source\SDEngine\Import\ImportDll.h" />
     <ClInclude Include="Source\SDEngine\Import\ImportFBX.h" />
     <ClInclude Include="Source\SDEngine\Input.h" />
     <ClInclude Include="Source\SDEngine\IrradianceCubeMap.h" />
