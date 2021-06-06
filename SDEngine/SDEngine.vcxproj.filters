@@ -10,6 +10,9 @@
     <Filter Include="SDEngine\DebugTool">
       <UniqueIdentifier>{06D0D684-F2B3-97DA-5B14-922D4717825C}</UniqueIdentifier>
     </Filter>
+    <Filter Include="SDEngine\EditorUI">
+      <UniqueIdentifier>{86BF9CD2-F2D5-9A68-3B4D-268AA7A26BF0}</UniqueIdentifier>
+    </Filter>
     <Filter Include="SDEngine\Event">
       <UniqueIdentifier>{23ECF893-0FBA-EC99-F84D-5DC0E4BAC8FE}</UniqueIdentifier>
     </Filter>
@@ -71,6 +74,12 @@
     <ClInclude Include="Source\SDEngine\DebugTool\Debugwindow.h">
       <Filter>SDEngine\DebugTool</Filter>
     </ClInclude>
+    <ClInclude Include="Source\SDEngine\EditorUI\ImGuiLayer.h">
+      <Filter>SDEngine\EditorUI</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\SDEngine\EditorUI\ImGuiRender.h">
+      <Filter>SDEngine\EditorUI</Filter>
+    </ClInclude>
     <ClInclude Include="Source\SDEngine\EntryPoint.h">
       <Filter>SDEngine</Filter>
     </ClInclude>
@@ -129,6 +138,12 @@
       <Filter>SDEngine</Filter>
     </ClInclude>
     <ClInclude Include="Source\SDEngine\IrradianceCubeMap.h">
+      <Filter>SDEngine</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\SDEngine\Layer.h">
+      <Filter>SDEngine</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\SDEngine\LayerManager.h">
       <Filter>SDEngine</Filter>
     </ClInclude>
     <ClInclude Include="Source\SDEngine\Light\DirectionLight.h">
@@ -246,8 +261,6 @@
       <Filter>SDEngine</Filter>
     </ClInclude>
     <ClInclude Include="Source\pch.h" />
-    <ClInclude Include="Source\SDEngine\Layer.h" />
-    <ClInclude Include="Source\SDEngine\LayerManager.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\SDEngine\ClusterDefferedSceneRender.cpp">
@@ -267,6 +280,12 @@
     </ClCompile>
     <ClCompile Include="Source\SDEngine\DebugTool\Debugwindow.cpp">
       <Filter>SDEngine\DebugTool</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\SDEngine\EditorUI\ImGuiLayer.cpp">
+      <Filter>SDEngine\EditorUI</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\SDEngine\EditorUI\ImGuiRender.cpp">
+      <Filter>SDEngine\EditorUI</Filter>
     </ClCompile>
     <ClCompile Include="Source\SDEngine\FPS.cpp">
       <Filter>SDEngine</Filter>
@@ -305,6 +324,9 @@
       <Filter>SDEngine</Filter>
     </ClCompile>
     <ClCompile Include="Source\SDEngine\IrradianceCubeMap.cpp">
+      <Filter>SDEngine</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\SDEngine\LayerManager.cpp">
       <Filter>SDEngine</Filter>
     </ClCompile>
     <ClCompile Include="Source\SDEngine\Light\DirectionLight.cpp">
@@ -425,6 +447,5 @@
       <Filter>SDEngine</Filter>
     </ClCompile>
     <ClCompile Include="Source\pch.cpp" />
-    <ClCompile Include="Source\SDEngine\LayerManager.cpp" />
   </ItemGroup>
 </Project>

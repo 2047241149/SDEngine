@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 #ifndef _FPS_H
 #define _FPS_H
 
@@ -11,8 +11,8 @@ using namespace std;
 class FPS
 {
 private:
-	int mFPS;  //Ã¿ÃëÔËĞĞµÄÖ¡Êı
-	int mCount; //ÔËÀ´¼ÆËãÃ¿ÃëÖ¡ÊıµÄ¼ÆÊıÆ÷
+	int mFPS;  //æ¯ç§’è¿è¡Œçš„å¸§æ•°
+	int mCount; //è¿æ¥è®¡ç®—æ¯ç§’å¸§æ•°çš„è®¡æ•°å™¨
 	unsigned long mStartTime;  
 	unsigned long m_fFistStartTime;
 
@@ -22,7 +22,6 @@ private:
 private:
 	void Initialize();
 
-
 public:
 	FPS();
 	FPS(const FPS&);
@@ -31,7 +30,6 @@ public:
 	static shared_ptr<FPS> Get();
 
 public:
-
 	void Frame();
 	int GetFPS();
 	float GetDeltaTime();

@@ -4,6 +4,7 @@
 #include "Event/WindowEvent.h"
 #include "LayerManager.h"
 #include "Common/DirectxCore.h"
+#include "FPS.h"
 #define BIND_EVENT(func, object) (std::bind(&func, object, std::placeholders::_1))
 
 Game::Game()
@@ -13,7 +14,6 @@ Game::Game()
 
 	GGameWindow->Init();
 	GGameWindow->SetEventCallback(BIND_EVENT(Game::OnEvent, this));
-
 	GDirectxCore->Init(GIsVSync, GIsFullScrren);
 }
 
@@ -44,13 +44,14 @@ void Game::Run()
 	while (bRunning)
 	{
 		GGameWindow->OnUpdate();
+		GFPS->Frame();
+		GDirectxCore->BeginScene(1.0, 0.0, 0.0, 1.0);
 
 		for (auto it = layerManager->Begin(); it != layerManager->End(); ++it)
 		{
-			(*it)->OnUpdate();
+			(*it)->OnUpdate(GFPS->GetDeltaTime());
 		}
 
-		GDirectxCore->BeginScene(1.0, 0.0, 0.0, 1.0);
 		GDirectxCore->EndScene();
 	}
 }

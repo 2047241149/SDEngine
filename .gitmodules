@@ -1,3 +1,6 @@
 [submodule "SDEngine/ThirdParty/spdlog"]
 	path = SDEngine/ThirdParty/spdlog
 	url = https://github.com/gabime/spdlog.git
+[submodule "SDEngine/ThirdParty/imgui"]
+	path = SDEngine/ThirdParty/imgui
+	url = https://github.com/ocornut/imgui.git

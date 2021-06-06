@@ -10,6 +10,8 @@
 
 outputdir = "%{cfg.buildcfg}-%{cfg.architecture}"
 
+include "SDEngine/ThirdParty/imgui"
+
 project "SDEngine"
 	location "SDEngine"
 	kind "SharedLib"
@@ -27,19 +29,22 @@ project "SDEngine"
 	includedirs
 	{
 		"%{prj.name}/Source",
+		"%{prj.name}/Source/SDEngine",
 		"%{prj.name}/ThirdParty/spdlog/include",
 		"%{prj.name}/ThirdParty/fbxsdk/2017.1/include",
+		"%{prj.name}/ThirdParty/imgui",
 	}
 
 	links
 	{
+		"imgui",
 		"libfbxsdk.lib"
 	}
 
 	filter "system:windows"
 		cppdialect "C++17"
 		staticruntime "off"
-		systemversion "10.0.17763.0"
+		systemversion "latest"
 
 		defines
 		{
@@ -78,6 +83,7 @@ project "TestGame"
 	includedirs
 	{
 		"SDEngine/Source",
+		"SDEngine/SDEngine",
 		"SDEngine/ThirdParty/spdlog/include"
 	}
 
@@ -89,7 +95,7 @@ project "TestGame"
 	filter "system:windows"
 		cppdialect "C++17"
 		staticruntime "off"
-		systemversion "10.0.17763.0"
+		systemversion "latest"
 
 	filter "configurations:Debug"
 		symbols "On"

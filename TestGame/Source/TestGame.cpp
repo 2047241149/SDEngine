@@ -20,15 +20,15 @@ public:
 	{
 		Log::Info("OnDetach{0}", layerName);
 	}
-	virtual void OnUpdate() override 
+	virtual void OnUpdate(float deltaTime) override 
 	{
-		Log::Info("OnUpdate{0}", layerName);
+		//Log::Info("OnUpdate{0}", deltaTime);
 	};
 
 
 	virtual void OnEvent(Event& event) override 
 	{
-		Log::Info("OnUpdate{0}", event);
+		//Log::Info("OnUpdate{0}", event);
 	}
 };
 
@@ -39,6 +39,7 @@ public:
 		Game()
 	{
 		PushLayer(shared_ptr<Layer>(new ExmPlayer()));
+		PushLayer(shared_ptr<Layer>(new ImGuiLayer()));
 	}
 
 	~TestGame()
