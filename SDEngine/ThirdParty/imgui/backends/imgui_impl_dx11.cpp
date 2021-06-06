@@ -1,4 +1,4 @@
-﻿// dear imgui: Renderer Backend for DirectX11
+// dear imgui: Renderer Backend for DirectX11
 // This needs to be used along with a Platform Backend (e.g. Win32)
 
 // Implemented features:
@@ -27,7 +27,7 @@
 //  2016-05-07: DirectX11: Disabling depth-write.
 
 #include "imgui.h"
-#include "ImGuiRender.h"
+#include "imgui_impl_dx11.h"
 
 // DirectX
 #include <stdio.h>
