@@ -20,6 +20,7 @@ public:
 public:
 	void PushLayer(shared_ptr<Layer> layer);
 	void PopLayer(shared_ptr<Layer> layer);
+	virtual void Update() {};
 
 private:
 	shared_ptr<GameWindow> window;

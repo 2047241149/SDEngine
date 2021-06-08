@@ -45,7 +45,7 @@ bool GraphicsSystem::Init()
 
 bool GraphicsSystem::Tick(float deltaTime)
 {
-	if (GInput->IsKeyDown(DIK_7))
+	if (GInput->IsKeyDown(EKey::KEY_7))
 	{
 		bSSAO = false;
 	}

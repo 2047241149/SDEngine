@@ -2,13 +2,15 @@
 #ifndef _INPUT_CLASS_H
 #define _INPUT_CLASS_H
 
+#include "CoreMinimal.h"
 #include "Common/CoreMini.h"
-#include "Event/EventBase.h"
+#include "Event/KeyCode.h"
+
 //direct input version
 #define DIRECTINPUT_VERSION 0x0800
 #include<dinput.h>
 
-class Input
+class SD_API Input
 {
 protected:
 	//interface for direct input
@@ -44,9 +46,8 @@ public:
 	void ShutDown();
 	bool Tick();
 
-	//bool IsMouseButtuonPressed(MouseKey keyCode);
-	bool IsMouseRightButtuonPressed();
-	bool IsKeyDown(int key);
+	bool IsMouseButtuonPressed(EMouse keyCode);
+	bool IsKeyDown(EKey keyCode);
 	void GetMousePosition(int& MouseX, int &MouseY);
 	void GetMousePositionOffset(int& MouseXOffset, int &MouseYOffset);
 };

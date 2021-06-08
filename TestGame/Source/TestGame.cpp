@@ -22,6 +22,10 @@ public:
 	}
 	virtual void OnUpdate(float deltaTime) override 
 	{
+		if (GInput->IsKeyDown(EKey::A))
+		{
+			Log::Info("A");
+		}
 		//Log::Info("OnUpdate{0}", deltaTime);
 	};
 

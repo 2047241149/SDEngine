@@ -25,10 +25,12 @@ bool Input::Init()
 	HR(DirectInput8Create(GWindowHinstance, DIRECTINPUT_VERSION, IID_IDirectInput8, (void**)&directInput, NULL));
 	HR(directInput->CreateDevice(GUID_SysKeyboard, &directInputKeyboard, NULL));
 	HR(directInputKeyboard->SetDataFormat(&c_dfDIKeyboard));
-	HR(directInputKeyboard->SetCooperativeLevel(GWindowHwnd, DISCL_FOREGROUND | DISCL_EXCLUSIVE));
+	HR(directInputKeyboard->SetCooperativeLevel(GWindowHwnd, DISCL_FOREGROUND | DISCL_NONEXCLUSIVE));
 	HR(directInput->CreateDevice(GUID_SysMouse, &directInputMouse, NULL));
 	HR(directInputMouse->SetDataFormat(&c_dfDIMouse));
-	HR(directInputMouse->SetCooperativeLevel(GWindowHwnd, DISCL_FOREGROUND | DISCL_EXCLUSIVE));
+	HR(directInputMouse->SetCooperativeLevel(GWindowHwnd, DISCL_FOREGROUND | DISCL_NONEXCLUSIVE));
+	directInputKeyboard->Acquire();
+	directInputMouse->Acquire();
 	return TRUE;
 
 }
@@ -64,6 +66,7 @@ bool Input::ReadKeyboard()
 {
 	//read keybord state
 	HRESULT result;
+	directInputKeyboard->Poll();
 	result = directInputKeyboard->GetDeviceState(sizeof(keyboardState), (LPVOID)&keyboardState);
 
 	if (FAILED(result))
@@ -85,6 +88,7 @@ bool Input::ReadKeyboard()
 bool Input::ReadMouse()
 {
 	HRESULT result;
+	directInputMouse->Poll();
 
 	//read mouse state
 	result = directInputMouse->GetDeviceState(sizeof(DIMOUSESTATE), (LPVOID)&mouseState);
@@ -100,6 +104,7 @@ bool Input::ReadMouse()
 			return false;
 		}
 	}
+
 	return true;
 }
 
@@ -134,9 +139,9 @@ void Input::ProcessInput()
 }
 
 
-bool Input::IsKeyDown(int key)
+bool Input::IsKeyDown(EKey keyCode)
 {
-	if (keyboardState[key] & 0x80)
+	if (keyboardState[int(keyCode)] & 0x80)
 	{
 		return true;
 	}
@@ -144,17 +149,7 @@ bool Input::IsKeyDown(int key)
 	return false;
 }
 
-bool Input::IsMouseRightButtuonPressed()
-{
-	if (mouseState.rgbButtons[1] & 0x80)
-	{
-		return true;
-	}
-
-	return false;
-}
-
-/*bool Input::IsMouseButtuonPressed(MouseKey keyCode)
+bool Input::IsMouseButtuonPressed(EMouse keyCode)
 {
 	if (mouseState.rgbButtons[int(keyCode)] & 0x80)
 	{
@@ -162,7 +157,7 @@ bool Input::IsMouseRightButtuonPressed()
 	}
 
 	return false;
-}*/
+}
 
 void Input::GetMousePosition(int& MouseX, int& MouseY)
 {

@@ -47,6 +47,7 @@ void Game::Run()
 		GGameWindow->OnUpdate();
 		GFPS->Frame();
 		GDirectxCore->BeginScene(1.0, 0.0, 0.0, 1.0);
+		GInput->Tick();
 
 		for (auto it = layerManager->Begin(); it != layerManager->End(); ++it)
 		{

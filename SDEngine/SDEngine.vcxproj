@@ -104,6 +104,7 @@ IF EXIST ThirdParty\fbxsdk\2017.1\lib\x64\debug\libfbxsdk.dll\ (xcopy /Q /E /Y /
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Source\SDEngine\Event\KeyCode.h" />
     <ClInclude Include="Source\CoreMinimal.h" />
     <ClInclude Include="Source\Engine.h" />
     <ClInclude Include="Source\SDEngine\ClusterDefferedSceneRender.h" />

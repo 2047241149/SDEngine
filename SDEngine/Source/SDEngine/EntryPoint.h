@@ -4,8 +4,7 @@ extern Game* CreateGame();
 
 int main()
 {
-	Log::Error("Hello World");
-	Log::Info("Hello World  {1}_{0}", "engine", "sd");
+	Log::Info("Hello World SDEngine");
 	auto* game = CreateGame();
 	game->Run();
 	delete game;

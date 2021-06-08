@@ -165,31 +165,31 @@ void SceneManager::Tick(float deltaTime)
 	GInput->GetMousePositionOffset(mouseXOffset, mouseYOffset);
 	int fps = GFPS->GetFPS();
 
-	if (GInput->IsMouseRightButtuonPressed() && fps >= 5 && fps <= 1000000)
+	if (GInput->IsMouseButtuonPressed(EMouse::Right) && fps >= 5 && fps <= 1000000)
 	{
-		if (GInput->IsKeyDown(DIK_W))
+		if (GInput->IsKeyDown(EKey::W))
 		{
 			GCamera->Walk(deltaTime*CAMERA_SPEED);
 		}
-		else if (GInput->IsKeyDown(DIK_S))
+		else if (GInput->IsKeyDown(EKey::S))
 		{
 			GCamera->Walk(-deltaTime * CAMERA_SPEED);
 		}
 
-		if (GInput->IsKeyDown(DIK_A))
+		if (GInput->IsKeyDown(EKey::A))
 		{
 			GCamera->Strafe(-deltaTime * CAMERA_SPEED);
 		}
-		else if (GInput->IsKeyDown(DIK_D))
+		else if (GInput->IsKeyDown(EKey::D))
 		{
 			GCamera->Strafe(deltaTime*CAMERA_SPEED);
 		}
 
-		if (GInput->IsKeyDown(DIK_Q))
+		if (GInput->IsKeyDown(EKey::Q))
 		{
 			GCamera->UpDown(-deltaTime * CAMERA_SPEED);
 		}
-		else if (GInput->IsKeyDown(DIK_E))
+		else if (GInput->IsKeyDown(EKey::E))
 		{
 			GCamera->UpDown(deltaTime*CAMERA_SPEED);
 		}
@@ -206,17 +206,17 @@ void SceneManager::Tick(float deltaTime)
 	GCamera->UpdateViewMatrix();
 
 	//TODO:refactor to imgui control
-	if (GInput->IsKeyDown(DIK_1))
+	if (GInput->IsKeyDown(EKey::KEY_1))
 	{
 		GDirectxCore->RecoverDefualtRS();
 	}
 
-	if (GInput->IsKeyDown(DIK_2))
+	if (GInput->IsKeyDown(EKey::KEY_2))
 	{
 		GDirectxCore->TurnOnWireFrameRender();
 	}
 
-	if (GInput->IsKeyDown(DIK_0))
+	if (GInput->IsKeyDown(EKey::KEY_0))
 	{
 		bDebugLightCount = true;
 	}
@@ -225,7 +225,7 @@ void SceneManager::Tick(float deltaTime)
 		bDebugLightCount = false;
 	}
 
-	if (GInput->IsKeyDown(DIK_ESCAPE))
+	if (GInput->IsKeyDown(EKey::ESCAPE))
 	{
 		DestroyWindow(GHwnd);
 	}

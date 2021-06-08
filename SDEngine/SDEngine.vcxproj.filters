@@ -137,9 +137,6 @@
     <ClInclude Include="Source\SDEngine\IrradianceCubeMap.h">
       <Filter>SDEngine</Filter>
     </ClInclude>
-    <ClInclude Include="Source\SDEngine\Layer.h">
-      <Filter>SDEngine</Filter>
-    </ClInclude>
     <ClInclude Include="Source\SDEngine\LayerManager.h">
       <Filter>SDEngine</Filter>
     </ClInclude>
@@ -258,6 +255,12 @@
       <Filter>SDEngine</Filter>
     </ClInclude>
     <ClInclude Include="Source\pch.h" />
+    <ClInclude Include="Source\SDEngine\Layer.h">
+      <Filter>SDEngine</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\SDEngine\Event\KeyCode.h">
+      <Filter>SDEngine\Event</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\SDEngine\ClusterDefferedSceneRender.cpp">
