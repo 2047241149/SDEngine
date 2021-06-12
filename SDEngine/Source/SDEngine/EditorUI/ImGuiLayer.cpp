@@ -1,7 +1,7 @@
 ﻿#include "ImguiLayer.h"
-#include "imgui.h"
-#include "ImGuiRender.h"
 #include "GameWindow.h"
+#include "backends/imgui_impl_dx11.h"
+#include "backends/imgui_impl_win32.h"
 #include "SDEngine/Common/DirectxCore.h"
 
 ImGuiLayer::ImGuiLayer() :
@@ -20,70 +20,55 @@ void ImGuiLayer::OnAttach()
 	IMGUI_CHECKVERSION();
 	ImGui::CreateContext();
 
+	// Setup backend capabilities flags
+	ImGuiIO& io = ImGui::GetIO(); (void)io;
+	io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
+	io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
+	io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;
+
 	// Setup Dear ImGui style
 	ImGui::StyleColorsDark();
 
-	// Setup backend capabilities flags
-	ImGuiIO& io = ImGui::GetIO();
-	io.BackendFlags |= ImGuiBackendFlags_HasMouseCursors;
-	io.BackendFlags |= ImGuiBackendFlags_HasSetMousePos;
-	io.ImeWindowHandle = GWindowHwnd;
-	
-	//imgui key map to win32
-	io.KeyMap[ImGuiKey_Tab] = VK_TAB;
-	io.KeyMap[ImGuiKey_LeftArrow] = VK_LEFT;
-	io.KeyMap[ImGuiKey_RightArrow] = VK_RIGHT;
-	io.KeyMap[ImGuiKey_UpArrow] = VK_UP;
-	io.KeyMap[ImGuiKey_DownArrow] = VK_DOWN;
-	io.KeyMap[ImGuiKey_PageUp] = VK_PRIOR;
-	io.KeyMap[ImGuiKey_PageDown] = VK_NEXT;
-	io.KeyMap[ImGuiKey_Home] = VK_HOME;
-	io.KeyMap[ImGuiKey_End] = VK_END;
-	io.KeyMap[ImGuiKey_Insert] = VK_INSERT;
-	io.KeyMap[ImGuiKey_Delete] = VK_DELETE;
-	io.KeyMap[ImGuiKey_Backspace] = VK_BACK;
-	io.KeyMap[ImGuiKey_Space] = VK_SPACE;
-	io.KeyMap[ImGuiKey_Enter] = VK_RETURN;
-	io.KeyMap[ImGuiKey_Escape] = VK_ESCAPE;
-	io.KeyMap[ImGuiKey_KeyPadEnter] = VK_RETURN;
-	io.KeyMap[ImGuiKey_A] = 'A';
-	io.KeyMap[ImGuiKey_C] = 'C';
-	io.KeyMap[ImGuiKey_V] = 'V';
-	io.KeyMap[ImGuiKey_X] = 'X';
-	io.KeyMap[ImGuiKey_Y] = 'Y';
-	io.KeyMap[ImGuiKey_Z] = 'Z';
+	ImGuiStyle& style = ImGui::GetStyle();
+	if (io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
+	{
+		style.WindowRounding = 0.0f;
+		style.Colors[ImGuiCol_WindowBg].w = 1.0f;
+	}
 
+	ImGui_ImplWin32_Init(GWindowHwnd);
 	ImGui_ImplDX11_Init(g_pDevice, g_pDeviceContext);
 }
 
 void ImGuiLayer::OnDetach()
 {
-
+	// Cleanup
+	ImGui_ImplDX11_Shutdown();
+	ImGui_ImplWin32_Shutdown();
+	ImGui::DestroyContext();
 }
 
 void ImGuiLayer::OnUpdate(float deltaTime)
 {
 	ImGui_ImplDX11_NewFrame();
-	ImGuiIO& io = ImGui::GetIO();
-	//io.DisplaySize = ImVec2(GWindowWidth, GWindowHeight);
-	RECT rect = { 0, 0, 0, 0 };
-	::GetClientRect(GWindowHwnd, &rect);
-	io.DisplaySize = ImVec2((float)(rect.right - rect.left), (float)(rect.bottom - rect.top));
-	io.DeltaTime = 0.003;
-	io.KeyCtrl = (::GetKeyState(VK_CONTROL) & 0x8000) != 0;
-	io.KeyShift = (::GetKeyState(VK_SHIFT) & 0x8000) != 0;
-	io.KeyAlt = (::GetKeyState(VK_MENU) & 0x8000) != 0;
-	io.KeySuper = false;
-
-	UpdateMousePos();
+	ImGui_ImplWin32_NewFrame();
 	ImGui::NewFrame();
+
+	ImGuiIO& io = ImGui::GetIO();
 	bool bShow = true;
 	ImGui::ShowDemoWindow(&bShow);
 	ImGui::Render();
 	ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
+	
+	// Update and Render additional Platform Windows
+	if (io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
+	{
+		ImGui::UpdatePlatformWindows();
+		ImGui::RenderPlatformWindowsDefault();
+	}
 }
 
-void ImGuiLayer::OnEvent(Event& event)
+/*void ImGuiLayer::OnEvent(Event& event)
 {
 	EventDispatcher eventDispatcher(event);
 	eventDispatcher.Dispath<KeyPressedEvent>(BIND_EVENT(ImGuiLayer::OnKeyPressedEvent, this));
@@ -94,9 +79,8 @@ void ImGuiLayer::OnEvent(Event& event)
 	eventDispatcher.Dispath<MouseButtonReleasedEvent>(BIND_EVENT(ImGuiLayer::OnMouseButtonReleasedEvent, this));
 	eventDispatcher.Dispath<MouseMovedEvent>(BIND_EVENT(ImGuiLayer::OnMouseMovedEvent, this));
 	eventDispatcher.Dispath<MouseScrollEvent>(BIND_EVENT(ImGuiLayer::OnMouseScrollEvent, this));
-	
 	eventDispatcher.Dispath<KillFocusEvent>(BIND_EVENT(ImGuiLayer::OnKillWindowFocus, this));
-}
+}*/
 
 void ImGuiLayer::SetImguiKeyCode(UINT keyCode, int taregetValue)
 {

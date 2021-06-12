@@ -14,6 +14,7 @@ Game::Game()
 
 	GGameWindow->Init();
 	GGameWindow->SetEventCallback(BIND_EVENT(Game::OnEvent, this));
+	GGameWindow->SetVSync(true);
 	GDirectxCore->Init(GIsVSync, GIsFullScrren);
 	GInput->Init();
 }
@@ -44,10 +45,12 @@ void Game::Run()
 {
 	while (bRunning)
 	{
-		GGameWindow->OnUpdate();
+		if (GGameWindow->OnUpdateMsg())
+			continue;
+
 		GFPS->Frame();
-		GDirectxCore->BeginScene(1.0, 0.0, 0.0, 1.0);
 		GInput->Tick();
+		GDirectxCore->BeginScene(1.0, 0.0, 0.0, 1.0);
 
 		for (auto it = layerManager->Begin(); it != layerManager->End(); ++it)
 		{

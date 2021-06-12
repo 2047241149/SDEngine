@@ -9,7 +9,7 @@ struct WindowProp
 	int height;
 
 	WindowProp(const string& inTitle = "SDEngine",
-		int inWidth = 1024, int inHeight = 768):
+		int inWidth = 1280, int inHeight = 800):
 		tile(inTitle),
 		width(inWidth),
 		height(inHeight)
@@ -27,7 +27,7 @@ public:
 
 public:
 	void Init(const WindowProp& props = WindowProp());
-	void OnUpdate();
+	bool OnUpdateMsg();
 	
 	//Window attributes
 	int GetWidth() { return data.width; }

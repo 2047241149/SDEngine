@@ -74,10 +74,10 @@
     <ClInclude Include="Source\SDEngine\DebugTool\Debugwindow.h">
       <Filter>SDEngine\DebugTool</Filter>
     </ClInclude>
-    <ClInclude Include="Source\SDEngine\EditorUI\ImGuiLayer.h">
+    <ClInclude Include="Source\SDEngine\EditorUI\ImGuiBuild.h">
       <Filter>SDEngine\EditorUI</Filter>
     </ClInclude>
-    <ClInclude Include="Source\SDEngine\EditorUI\ImGuiRender.h">
+    <ClInclude Include="Source\SDEngine\EditorUI\ImGuiLayer.h">
       <Filter>SDEngine\EditorUI</Filter>
     </ClInclude>
     <ClInclude Include="Source\SDEngine\EntryPoint.h">
@@ -87,6 +87,9 @@
       <Filter>SDEngine\Event</Filter>
     </ClInclude>
     <ClInclude Include="Source\SDEngine\Event\EventBase.h">
+      <Filter>SDEngine\Event</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\SDEngine\Event\KeyCode.h">
       <Filter>SDEngine\Event</Filter>
     </ClInclude>
     <ClInclude Include="Source\SDEngine\Event\KeyEvent.h">
@@ -135,6 +138,9 @@
       <Filter>SDEngine</Filter>
     </ClInclude>
     <ClInclude Include="Source\SDEngine\IrradianceCubeMap.h">
+      <Filter>SDEngine</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\SDEngine\Layer.h">
       <Filter>SDEngine</Filter>
     </ClInclude>
     <ClInclude Include="Source\SDEngine\LayerManager.h">
@@ -255,12 +261,8 @@
       <Filter>SDEngine</Filter>
     </ClInclude>
     <ClInclude Include="Source\pch.h" />
-    <ClInclude Include="Source\SDEngine\Layer.h">
-      <Filter>SDEngine</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\SDEngine\Event\KeyCode.h">
-      <Filter>SDEngine\Event</Filter>
-    </ClInclude>
+    <ClInclude Include="Source\SDEngine\EditorUI\imgui_impl_dx11.h" />
+    <ClInclude Include="Source\SDEngine\EditorUI\imgui_impl_win32.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\SDEngine\ClusterDefferedSceneRender.cpp">
@@ -282,9 +284,6 @@
       <Filter>SDEngine\DebugTool</Filter>
     </ClCompile>
     <ClCompile Include="Source\SDEngine\EditorUI\ImGuiLayer.cpp">
-      <Filter>SDEngine\EditorUI</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\SDEngine\EditorUI\ImGuiRender.cpp">
       <Filter>SDEngine\EditorUI</Filter>
     </ClCompile>
     <ClCompile Include="Source\SDEngine\FPS.cpp">
@@ -447,5 +446,7 @@
       <Filter>SDEngine</Filter>
     </ClCompile>
     <ClCompile Include="Source\pch.cpp" />
+    <ClCompile Include="Source\SDEngine\EditorUI\imgui_impl_dx11.cpp" />
+    <ClCompile Include="Source\SDEngine\EditorUI\imgui_impl_win32.cpp" />
   </ItemGroup>
 </Project>

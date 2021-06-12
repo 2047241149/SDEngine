@@ -36,7 +36,6 @@ bool SDEngine::Init()
 		return false;
 	}
 
-
 	return true;
 }
 

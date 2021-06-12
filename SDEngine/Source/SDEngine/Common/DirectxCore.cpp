@@ -48,7 +48,6 @@ bool DirectxCore::Init(bool vsync, bool fullscreen)
 	unsigned int numModes, numerator, denominator, stringLength;
 	DXGI_MODE_DESC* displayModeList;
 	DXGI_ADAPTER_DESC adapterDesc;
-	int error;
 	mVsyncEnable = vsync;
 
 	HR(CreateDXGIFactory(__uuidof(IDXGIFactory), (void**)&factory));
@@ -78,15 +77,6 @@ bool DirectxCore::Init(bool vsync, bool fullscreen)
 
 	mVideoCardMemory = (int)(adapterDesc.DedicatedVideoMemory / 1024 / 1024);
 
-	//���Կ�����ת�����ַ�����
-	/*error = wcstombs(&stringLength, mVideoCardDescription, 128, adapterDesc.Description, 128);
-
-	if (error != 0)
-	{
-		return false;
-	}*/
-
-	//�ͷ���ʾģʽ�б�
 	delete[] displayModeList;
 	displayModeList = NULL;
 	ReleaseCOM(adpter);
@@ -97,12 +87,15 @@ bool DirectxCore::Init(bool vsync, bool fullscreen)
 
 	sd.BufferDesc.Width = GWindowWidth;
 	sd.BufferDesc.Height = GWindowHeight;
+
+	sd.BufferDesc.Width = 1261;
+	sd.BufferDesc.Height = 783;
 	sd.BufferDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
 
 	if (mVsyncEnable)
 	{
-		sd.BufferDesc.RefreshRate.Numerator =numerator;
-		sd.BufferDesc.RefreshRate.Denominator = denominator;
+		sd.BufferDesc.RefreshRate.Numerator = 60;
+		sd.BufferDesc.RefreshRate.Denominator = 1;
 	}
 	else
 	{
@@ -121,26 +114,27 @@ bool DirectxCore::Init(bool vsync, bool fullscreen)
 	{
 		sd.Windowed = true;
 	}
+
 	sd.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
-	sd.BufferCount = 1;
+	sd.BufferCount = 2;
 	sd.OutputWindow = GWindowHwnd;
 	sd.SwapEffect = DXGI_SWAP_EFFECT_DISCARD;
-	sd.Flags = 0;
+	sd.Flags = DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH;
 
 	#if defined(_DEBUG)
 	// If the project is in a debug build, enable the debug layer.
-		sd.Flags = D3D11_CREATE_DEVICE_DEBUG;
+		//sd.Flags = D3D11_CREATE_DEVICE_DEBUG;
 	#endif
 	
-	sd.BufferDesc.ScanlineOrdering = DXGI_MODE_SCANLINE_ORDER_UNSPECIFIED;
-	sd.BufferDesc.Scaling = DXGI_MODE_SCALING_UNSPECIFIED;
+	//sd.BufferDesc.ScanlineOrdering = DXGI_MODE_SCANLINE_ORDER_UNSPECIFIED;
+	//sd.BufferDesc.Scaling = DXGI_MODE_SCALING_UNSPECIFIED;
 
 	D3D_FEATURE_LEVEL featureLevel;
-	featureLevel = D3D_FEATURE_LEVEL_11_1;
+	featureLevel = D3D_FEATURE_LEVEL_11_0;
 	HR(D3D11CreateDeviceAndSwapChain(NULL, D3D_DRIVER_TYPE_HARDWARE, NULL, 0, &featureLevel, 1,
 		D3D11_SDK_VERSION, &sd, &md3dSwapChain, &md3dDevice, NULL, &md3dImmediateContext));
 
-	#if defined(DEBUG) | defined(_DEBUG)
+	/*#if defined(DEBUG) | defined(_DEBUG)
 		ID3D11Debug *pD3DDebug = NULL;
 		if (SUCCEEDED(md3dDevice->QueryInterface(__uuidof(ID3D11Debug), reinterpret_cast<VOID**>(&pD3DDebug))))
 		{
@@ -162,7 +156,7 @@ bool DirectxCore::Init(bool vsync, bool fullscreen)
 				d3dInfoQueue->SetBreakOnCategory(D3D11_MESSAGE_CATEGORY_RESOURCE_MANIPULATION, true);
 			}
 		}
-	#endif
+	#endif*/
 
 	ID3D11Texture2D*backBuffer;
 	md3dSwapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), reinterpret_cast<void**>(&backBuffer));
@@ -203,14 +197,14 @@ bool DirectxCore::Init(bool vsync, bool fullscreen)
 	DSDESC.BackFace.StencilPassOp = D3D11_STENCIL_OP_KEEP;
 	DSDESC.BackFace.StencilFunc = D3D11_COMPARISON_ALWAYS;
 	HR(md3dDevice->CreateDepthStencilState(&DSDESC, &md3dDepthStencilState));
-	md3dImmediateContext->OMSetDepthStencilState(md3dDepthStencilState, 0);
+	//md3dImmediateContext->OMSetDepthStencilState(md3dDepthStencilState, 0);
 
 	HR(md3dDevice->CreateDepthStencilView(
 		md3dDepthStencilBuffer,
 		0,
 		&md3dDepthStencilView));
 
-	md3dImmediateContext->OMSetRenderTargets(1, &md3dRenderTargetView, md3dDepthStencilView);
+	//md3dImmediateContext->OMSetRenderTargets(1, &md3dRenderTargetView, md3dDepthStencilView);
 
 	HR(DirectXFrame::CreateRasterizerState(md3dDevice, &md3dRasterizerState));
 
@@ -226,13 +220,7 @@ bool DirectxCore::Init(bool vsync, bool fullscreen)
 	mViewport.MaxDepth = 1.0f;
 	mViewport.TopLeftX = 0.0f;
 	mViewport.TopLeftY = 0.0f;
-	md3dImmediateContext->RSSetViewports(1,&mViewport);
-
-	/*char CardInfo[128];
-	int memory;
-	GetVideoCardInfo(CardInfo, memory);
-	ofstream os("I:/1.txt");
-	os << "memory=" << memory << "  " << " CardInfo= " << CardInfo;*/
+	//md3dImmediateContext->RSSetViewports(1,&mViewport);
 
 	D3D11_DEPTH_STENCIL_DESC DisableDepthDESC;
 	ZeroMemory(&DisableDepthDESC, sizeof(DisableDepthDESC));
@@ -418,14 +406,13 @@ bool DirectxCore::Init(bool vsync, bool fullscreen)
 void DirectxCore::BeginScene(float red, float green, float blue, float alpha)
 {
 	float color[4];
-
-	//�����������(backbuffer),����ÿ֡��ʼ��ɫ
 	color[0] = red;
 	color[1] = green;
 	color[2] = blue;
 	color[3] = alpha;
 
-	md3dImmediateContext->ClearRenderTargetView(md3dRenderTargetView,color);
+	md3dImmediateContext->OMSetRenderTargets(1, &md3dRenderTargetView, NULL);
+	md3dImmediateContext->ClearRenderTargetView(md3dRenderTargetView, color);
 	md3dImmediateContext->ClearDepthStencilView(md3dDepthStencilView, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
 }
 

@@ -1,7 +1,10 @@
 ﻿#include "GameWindow.h"
 #include "Common/CommonFunction.h"
 #include "Event/Event.h"
+#include "backends/imgui_impl_dx11.h"
+#include "backends/imgui_impl_win32.h"
 
+extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 static GameWindow* gameWindow = nullptr;
 
 LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
@@ -35,7 +38,7 @@ void GameWindow::InitWindow()
 	WNDCLASSEX wc;
 	DEVMODE dmScrrenSettings;
 	int posX, posY;
-	hinstance = GetModuleHandle(0);
+	hinstance = GetModuleHandle(NULL);
 	wstring nameStr = Str2Wstr(data.title);
 	LPCWSTR name = nameStr.c_str();
 
@@ -84,17 +87,15 @@ void GameWindow::InitWindow()
 	}
 
 	hwnd = CreateWindowEx(WS_EX_APPWINDOW, name, name, WS_OVERLAPPEDWINDOW,
-		posX, posY, ScrrenWidth, ScrrenHeight, NULL, NULL, hinstance, NULL);
+		100, 100, ScrrenWidth, ScrrenHeight, NULL, NULL, hinstance, NULL);
 
 	if (!hwnd)
 	{
 		Log::Error("Create Window Failed!");
 	}
 
-	ShowWindow(hwnd, SW_SHOW);
-	SetForegroundWindow(hwnd);
-	SetFocus(hwnd);
-	ShowCursor(true);
+	ShowWindow(hwnd, SW_SHOWDEFAULT);
+	UpdateWindow(hwnd);
 }
 
 void GameWindow::ShutDown()
@@ -102,15 +103,18 @@ void GameWindow::ShutDown()
 	DestroyWindow(hwnd);
 }
 
-void GameWindow::OnUpdate()
+bool GameWindow::OnUpdateMsg()
 {
 	MSG msg = { 0 };
 
-	if (PeekMessage(&msg, 0, 0, 0, PM_REMOVE))
+	if (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE))
 	{
 		TranslateMessage(&msg);
 		DispatchMessage(&msg);
+		return true;
 	}
+
+	return false;
 }
 
 void GameWindow::SetEventCallback(const EventCallback& inCallBack)
@@ -133,6 +137,9 @@ LRESULT CALLBACK GameWindow::MessageHandler(HWND hwnd, UINT message, WPARAM wPar
 {
 	if(!bStartEvent)
 		return DefWindowProc(hwnd, message, wParam, lParam);
+
+	if (ImGui_ImplWin32_WndProcHandler(hwnd, message, wParam, lParam))
+		return true;
 
 	switch (message)
 	{
