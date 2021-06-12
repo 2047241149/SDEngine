@@ -38,25 +38,19 @@ project "SDEngine"
 	links
 	{
 		"imgui",
-		"libfbxsdk.lib",
-		"Dinput8.lib",
-		"d3d11.lib",
-		"d3dcompiler.lib",
+		-- "libfbxsdk.lib",
 		"dxguid.lib",
-		"winmm.lib",
-		"comctl32.lib",
 		"dxgi.lib",
 	}
 
 	filter "system:windows"
 		cppdialect "C++17"
-		staticruntime "off"
+		staticruntime "on"
 		systemversion "latest"
 
 		defines
 		{
 			"_SILENCE_CXX17_STRSTREAM_DEPRECATION_WARNING",
-			"FBXSDK_SHARED"
 		}
 
 		postbuildcommands
@@ -100,7 +94,7 @@ project "TestGame"
 
 	filter "system:windows"
 		cppdialect "C++17"
-		staticruntime "off"
+		staticruntime "on"
 		systemversion "latest"
 
 		defines
@@ -110,6 +104,8 @@ project "TestGame"
 
 	filter "configurations:Debug"
 		symbols "On"
+		runtime "Debug"
 
 	filter "configurations:Release"
 		optimize "On"
+		runtime "Debug"

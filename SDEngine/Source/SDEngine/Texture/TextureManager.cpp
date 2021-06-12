@@ -51,7 +51,7 @@ ID3D11ShaderResourceView* TextureManager::LoadGetSRV(string fileName)
 	{
 		Resource::CreateShaderResourceViewFromFile(g_pDevice, Str2Wstr(fileName).c_str(), &memSRV);
 		
-		if (int(memSRV) == 0xcccccccc)
+		if (UINT_PTR(memSRV) == 0xcccccccc)
 		{
 			memSRV = nullptr;
 		}

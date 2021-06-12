@@ -1,5 +1,12 @@
 ﻿#pragma once
 
+//Windows SDK system lib do not use premake5 to generate link lib, it will cause warning LNK4006 and LNK4221
+#pragma comment(lib,"Dinput8.lib")
+#pragma comment(lib,"d3d11.lib")
+#pragma comment(lib,"d3dcompiler.lib")
+#pragma comment(lib,"winmm.lib")
+#pragma comment(lib,"comctl32.lib")
+
 
 #include<DirectXMath.h>
 #include<d3dcompiler.h>
