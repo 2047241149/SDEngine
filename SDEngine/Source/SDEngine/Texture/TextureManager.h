@@ -1,11 +1,8 @@
-#pragma once
+﻿#pragma once
 #ifndef _TEXTURE_MANAGER_H
 #define _TEXTURE_MANAGER_H
-#include "../Common/CoreMini.h"
-#include<d3d11_1.h>
-#include<string>
-#include<vector>
-#include<map>
+#include "CoreMinimal.h"
+
 class Texture;
 using std::map;
 using std::vector;

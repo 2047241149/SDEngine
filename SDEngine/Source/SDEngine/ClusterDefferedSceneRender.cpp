@@ -1,4 +1,4 @@
-#include "ClusterDefferedSceneRender.h"
+﻿#include "ClusterDefferedSceneRender.h"
 #include "SkyBox.h"
 #include "Texture/RenderTexture.h"
 #include "WindowInfo.h"
@@ -17,6 +17,7 @@
 #include "Texture/TextureSamplerManager.h"
 #include "Texture/TextureManager.h"
 #include "SceneManager.h"
+#include "Light/LightManager.h"
 
 // 1024/16 = 768/12, squrd tile
 static const int CLUTER_SIZE_X = 16;
@@ -505,8 +506,8 @@ void ClusterDefferedSceneRender::RenderClusterLightCullPass()
 
 	ID3D11UnorderedAccessView* lightGridListUav = GShaderManager->buildClusterCS->GetUav("ClusterList");
 	ID3D11UnorderedAccessView* ClusterActiveListUav = GShaderManager->maskUnvalidClusterCs->GetUav("ClusterActiveList");
-	GShaderManager->clusterLightCullCS->SetStructBuffer("PointLights", pointLights.data(), pointLights.size());
-	GShaderManager->clusterLightCullCS->SetFloat("lightCount", pointLights.size());
+	GShaderManager->clusterLightCullCS->SetStructBuffer("PointLights", pointLights.data(), (int)pointLights.size());
+	GShaderManager->clusterLightCullCS->SetFloat("lightCount", (float)pointLights.size());
 	GShaderManager->clusterLightCullCS->SetFloat("ScreenWidth", GCamera->mScreenWidth);
 	GShaderManager->clusterLightCullCS->SetFloat("ScreenHeight", GCamera->mScreenHeight);
 	GShaderManager->clusterLightCullCS->SetRWStructBuffer("ClusterList", lightGridListUav);
@@ -549,17 +550,17 @@ void ClusterDefferedSceneRender::RenderClusterPointLightPassPs()
 	GShaderManager->clusterDefferedLightShader->SetTexture("SpecularRoughMetalTex", shaderResourceView[2]);
 	GShaderManager->clusterDefferedLightShader->SetTexture("AlbedoTex", shaderResourceView[3]);
 	GShaderManager->clusterDefferedLightShader->SetTexture("DepthTex", mGeometryBuffer->GetGBufferSRV(GBufferType::Depth));
-	GShaderManager->clusterDefferedLightShader->SetFloat("lightCount", pointLights.size());
-	GShaderManager->clusterDefferedLightShader->SetFloat3("cameraPos", GCamera->GetPosition());
-	GShaderManager->clusterDefferedLightShader->SetFloat("ScreenWidth", GWindowInfo->GetScreenWidth());
-	GShaderManager->clusterDefferedLightShader->SetFloat("ScreenHeight", GWindowInfo->GetScreenHeight());
+	GShaderManager->clusterDefferedLightShader->SetFloat("lightCount", (float)pointLights.size());
+	GShaderManager->clusterDefferedLightShader->SetFloat3("cameraPos",  GCamera->GetPosition());
+	GShaderManager->clusterDefferedLightShader->SetFloat("ScreenWidth", (float)GWindowInfo->GetScreenWidth());
+	GShaderManager->clusterDefferedLightShader->SetFloat("ScreenHeight", (float)GWindowInfo->GetScreenHeight());
 	GShaderManager->clusterDefferedLightShader->SetFloat("farPlane", GCamera->mFarPlane);
 	GShaderManager->clusterDefferedLightShader->SetFloat("nearPlane", GCamera->mNearPlane);
 	GShaderManager->clusterDefferedLightShader->SetFloat4("tileSizes", tileSizes);
 	GShaderManager->clusterDefferedLightShader->SetFloat2("cluserFactor", clusterFactor);
 	GShaderManager->clusterDefferedLightShader->SetRWStructBuffer("LightGridList", LightGridListUav);
 	GShaderManager->clusterDefferedLightShader->SetRWStructBuffer("GlobalLightIndexList", GlobalLightIndexListUav);
-	GShaderManager->clusterDefferedLightShader->SetRWStructBufferInData("PointLightList", pointLights.data(), pointLights.size());
+	GShaderManager->clusterDefferedLightShader->SetRWStructBufferInData("PointLightList", pointLights.data(), (int)pointLights.size());
 	GShaderManager->clusterDefferedLightShader->SetTextureSampler("clampLinearSample", GTextureSamplerBilinearClamp);
 	GShaderManager->clusterDefferedLightShader->Apply();
 	mQuad->Render();
@@ -581,7 +582,7 @@ void ClusterDefferedSceneRender::RenderClusterPointLightPassCs()
 	GShaderManager->clusterDefferedLightCS->SetTexture("SpecularRoughMetalTex", mGeometryBuffer->GetGBufferSRV(GBufferType::SpecularRoughMetal));
 	GShaderManager->clusterDefferedLightCS->SetTexture("AlbedoTex", mGeometryBuffer->GetGBufferSRV(GBufferType::Diffuse));
 	GShaderManager->clusterDefferedLightCS->SetTextureSampler("clampLinearSample", GTextureSamplerBilinearClamp);
-	GShaderManager->clusterDefferedLightCS->SetStructBuffer("PointLights", pointLights.data(), pointLights.size());
+	GShaderManager->clusterDefferedLightCS->SetStructBuffer("PointLights", pointLights.data(), (int)pointLights.size());
 	GShaderManager->clusterDefferedLightCS->SetRWStructBuffer("LightGridList", LightGridListUav);
 	GShaderManager->clusterDefferedLightCS->SetRWStructBuffer("GlobalLightIndexList", GlobalLightIndexListUav);
 	GShaderManager->clusterDefferedLightCS->SetRWTexture("OutputTexture", mClusterLightRT->GetUAV());
@@ -592,7 +593,7 @@ void ClusterDefferedSceneRender::RenderClusterPointLightPassCs()
 	GShaderManager->clusterDefferedLightCS->SetFloat3("cameraPos", GCamera->GetPosition());
 	GShaderManager->clusterDefferedLightCS->SetFloat("ScreenWidth", GCamera->mScreenWidth);
 	GShaderManager->clusterDefferedLightCS->SetFloat("ScreenHeight", GCamera->mScreenHeight);
-	GShaderManager->clusterDefferedLightCS->SetFloat("bDebugLightCount", GSceneManager->bDebugLightCount ? 1.0 : 0.0);
+	GShaderManager->clusterDefferedLightCS->SetFloat("bDebugLightCount", (float)GSceneManager->bDebugLightCount ? 1.0f : 0.0f);
 	GShaderManager->clusterDefferedLightCS->SetMatrix("View", GCamera->GetViewMatrix());
 	GShaderManager->clusterDefferedLightCS->SetMatrix("ProjInv", FMath::GetInvense(GCamera->GetProjectionMatrix()));
 	GShaderManager->clusterDefferedLightCS->Dispatch(100, 100, 1);

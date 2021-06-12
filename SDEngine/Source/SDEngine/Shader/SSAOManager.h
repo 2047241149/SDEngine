@@ -1,8 +1,8 @@
-#pragma once
+﻿#pragma once
 #ifndef _SSAO_MANAGER_H
 #define _SSAO_MANAGER_H
 
-#include "../Common/CoreMini.h"
+#include "CoreMinimal.h"
 class RenderTexture;
 class NoiseTexture;
 class Quad;

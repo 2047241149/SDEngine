@@ -1,4 +1,4 @@
-#include "PrefilterCubeMap.h"
+﻿#include "PrefilterCubeMap.h"
 #include "GameObject/GameObject.h"
 #include "GameObject/Mesh.h"
 #include "Shader/ShaderManager.h"
@@ -83,12 +83,12 @@ bool PrefliterCubeMap::Render()
 		envMapRTVDesc.Texture2D.MipSlice = mip;
 		envMapRTVDesc.Texture2DArray.ArraySize = 1;
 
-		int mipWidth = textureWidth * pow(0.5, mip);
-		int mipHeight = textureHeight * pow(0.5, mip);
+		int mipWidth = int(textureWidth * pow(0.5, mip));
+		int mipHeight = int(textureHeight * pow(0.5, mip));
 
 		D3D11_VIEWPORT envMapviewport;
-		envMapviewport.Width = mipWidth;
-		envMapviewport.Height = mipHeight;
+		envMapviewport.Width = (FLOAT)mipWidth;
+		envMapviewport.Height = (FLOAT)mipHeight;
 		envMapviewport.MinDepth = 0.0f;
 		envMapviewport.MaxDepth = 1.0f;
 		envMapviewport.TopLeftX = 0.0f;

@@ -75,7 +75,7 @@ void SDEngine::Run()
 bool SDEngine::Tick()
 {
 	int fps = GFPS->GetFPS();
-	float deltatTime = 1.0 / (float(fps) + 0.001f);
+	float deltatTime = 1.0f / (float(fps) + 0.001f);
 
 	//Logic
 	mGraphicsSystem->Tick(deltatTime);

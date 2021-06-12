@@ -1,10 +1,8 @@
-#pragma once
+Ôªø#pragma once
 #ifndef _GEOMETRY_BUFFER_H
 #define _GEOMETRY_BUFFER_H
 
-#include "../Common/CoreMini.h"
-#include<ctime>
-
+#include "CoreMinimal.h"
 
 enum GBufferType
 {
@@ -22,7 +20,7 @@ const int BUFFER_COUNT = 4;
 //2- pos
 //3- normal
 //4- specular-rough-metal
-//¡ÌÕ‚º”“ª∏ˆdepthBuffer
+//Âè¶Â§ñÂä†‰∏Ä‰∏™depthBuffer
 class GeometryBuffer
 {
 private:

@@ -1,4 +1,4 @@
-#include "RenderTexture.h"
+﻿#include "RenderTexture.h"
 
 RenderTexture::RenderTexture(int nTextureWidth, int nTexureHeight, TextureFormat eTextureFormat):
 	m_nTextureWidth(nTextureWidth),
@@ -53,7 +53,6 @@ bool RenderTexture::Init(int nTextureWidth, int nTexureHeight, TextureFormat eTe
 
 		renderTargetViewDesc.Format = textureDesc.Format;
 		shaderResourceViewDesc.Format = textureDesc.Format;
-		//��һ,���2D�������ݽṹ��,������2D��ȾĿ������
 		textureDesc.Width = nTextureWidth;
 		textureDesc.Height = nTexureHeight;
 		textureDesc.MipLevels = 1;
@@ -65,12 +64,10 @@ bool RenderTexture::Init(int nTextureWidth, int nTexureHeight, TextureFormat eTe
 		textureDesc.MiscFlags = 0;
 		HR(g_pDevice->CreateTexture2D(&textureDesc, NULL, &m_pBackTexture2D));
 
-		//�ڶ��������ȾĿ����ͼ������,�����д���Ŀ����Ⱦ��ͼ
 		renderTargetViewDesc.ViewDimension = D3D11_RTV_DIMENSION_TEXTURE2D;
 		renderTargetViewDesc.Texture2D.MipSlice = 0;
 		HR(g_pDevice->CreateRenderTargetView(m_pBackTexture2D, &renderTargetViewDesc, &m_pRTV));
 
-		//����,������ɫ����Դ��ͼ
 		shaderResourceViewDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
 		shaderResourceViewDesc.Texture2D.MostDetailedMip = 0;
 		shaderResourceViewDesc.Texture2D.MipLevels = 1;
@@ -80,7 +77,6 @@ bool RenderTexture::Init(int nTextureWidth, int nTexureHeight, TextureFormat eTe
 	depthStencilDesc.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
 	depthStencilViewDesc.Format = depthStencilDesc.Format;
 
-	//����,������Ȼ���(ģ�建��)
 	depthStencilDesc.Width = nTextureWidth;
 	depthStencilDesc.Height = nTexureHeight;
 	depthStencilDesc.MipLevels = 1;
@@ -95,17 +91,15 @@ bool RenderTexture::Init(int nTextureWidth, int nTexureHeight, TextureFormat eTe
 		0,
 		&m_pDepthTexture2D));
 
-	//����,������Ȼ���(ģ�建��)��ͼ
 	ZeroMemory(&depthStencilViewDesc, sizeof(depthStencilViewDesc));
 	depthStencilViewDesc.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2D;
 	depthStencilViewDesc.Texture2D.MipSlice = 0;
 
 	HR(g_pDevice->CreateDepthStencilView(
-		m_pDepthTexture2D, //���ǻ��������Ȼ���/©�ְ建�洴��һ����ͼ
+		m_pDepthTexture2D,
 		&depthStencilViewDesc,
-		&m_pDSV));//ָ����Ȼ���/©�ְ���ͼ��ָ��
+		&m_pDSV));
 
-	//����,������Ⱦ���ӿ�
 	m_ViewPort.Width = static_cast<float>(nTextureWidth);
 	m_ViewPort.Height = static_cast<float>(nTexureHeight);
 	m_ViewPort.MinDepth = 0.0f;
@@ -148,13 +142,11 @@ void RenderTexture::SetDepthTarget()
 
 void RenderTexture::ClearDepthBuffer()
 {
-	//�����Ȼ����ģ�建��
 	g_pDeviceContext->ClearDepthStencilView(m_pDSV, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
 }
 
 void RenderTexture::ClearRenderTarget(float red, float green, float blue, float alpha)
 {
-	//�����������Ϊ����ɫ
 	float color[4];
 	color[0] = red;
 	color[1] = green;
@@ -162,7 +154,6 @@ void RenderTexture::ClearRenderTarget(float red, float green, float blue, float 
 	color[3] = alpha;
 
 	g_pDeviceContext->ClearRenderTargetView(m_pRTV, color);
-
 }
 
 ID3D11ShaderResourceView* RenderTexture::GetSRV()

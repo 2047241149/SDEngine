@@ -7,7 +7,7 @@ LayerManager::~LayerManager()
 		layer->OnDetach();
 	}
 
-	layerArray.empty();
+	layerArray.clear();
 }
 
 void LayerManager::PushLayer(shared_ptr<Layer> layer)

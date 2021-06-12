@@ -1,4 +1,4 @@
-#include "NoiseTexture.h"
+﻿#include "NoiseTexture.h"
 #include <time.h>
 NoiseTexture::NoiseTexture(int textureWidth, int textureHeight)
 {
@@ -43,7 +43,6 @@ bool NoiseTexture::Init(int textureWidth, int textureHeight)
 	pInitialData.pSysMem = color;
 	pInitialData.SysMemPitch = textureWidth * sizeof(XMFLOAT3);
 
-	//���2D�������ݽṹ��,������2D��ȾĿ������
 	textureDesc.Width = textureWidth;
 	textureDesc.Height = textureHeight;
 	textureDesc.MipLevels = 1;
@@ -54,13 +53,10 @@ bool NoiseTexture::Init(int textureWidth, int textureHeight)
 	textureDesc.BindFlags =  D3D11_BIND_SHADER_RESOURCE;
 	textureDesc.CPUAccessFlags = 0;
 	textureDesc.MiscFlags = 0;
+
 	HR(g_pDevice->CreateTexture2D(&textureDesc, &pInitialData, &texture2d));
-
-	//������ɫ����Դ��ͼ
 	HR(g_pDevice->CreateShaderResourceView(texture2d, nullptr, &textureSRV));
-
 	ReleaseCOM(texture2d);
-
 	return true;
 }
 

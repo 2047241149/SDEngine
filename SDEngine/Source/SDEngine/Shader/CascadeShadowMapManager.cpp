@@ -1,6 +1,8 @@
-#include "CascadeShadowMapManager.h"
-#include "../GameObject/Camera.h"
+﻿#include "CascadeShadowMapManager.h"
+#include "GameObject/Camera.h"
 #include "CascadeShadowMap.h"
+#include "Light/LightManager.h"
+#include "Light/DirectionLight.h"
 
 CascadedShadowsManager::CascadedShadowsManager(int nShadowMapResolution)
 {

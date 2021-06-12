@@ -1,10 +1,10 @@
-#pragma once
+ï»¿#pragma once
 #ifndef _BITMAP_CLASS_H
 #define _BITMAP_CLASS_H
 
-#include "../Common/CoreMini.h"
+#include "CoreMinimal.h"
 
-/*Ä¬ÈÏÇé¿öÏÂÍ¼Æ¬µÄ´óĞ¡¸ú´«ÈëµÄ´°¿Ú²ÎÊıÕâÃ´´ó£¬²¢ÇÒ×óÉÏ½ÇµÄ×ø±êÊÇÔÚWIN32×ø±êÏµ(0,0)´¦*/
+/*é»˜è®¤æƒ…å†µä¸‹å›¾ç‰‡çš„å¤§å°è·Ÿä¼ å…¥çš„çª—å£å‚æ•°è¿™ä¹ˆå¤§ï¼Œå¹¶ä¸”å·¦ä¸Šè§’çš„åæ ‡æ˜¯åœ¨WIN32åæ ‡ç³»(0,0)å¤„*/
 
 class Quad
 {
@@ -15,8 +15,8 @@ private:
 		XMFLOAT2 texcoord;
 	};
 private:
-	ID3D11Buffer* md3dVertexBuffer; //¶¥µã»º´æ
-	ID3D11Buffer* md3dIndexBuffer;  //Ë÷Òı»º´æ
+	ID3D11Buffer* md3dVertexBuffer; //é¡¶ç‚¹ç¼“å­˜
+	ID3D11Buffer* md3dIndexBuffer;  //ç´¢å¼•ç¼“å­˜
 	int mVertexCount;
 	int mIndexCount;
 
@@ -36,11 +36,11 @@ public:
 	~Quad();
 
 public:
-	//InitializeÊÇ´´½¨ÔªËØ,RenderÊÇÉèÖÃÔªËØ,ShutdownÊÇRelease
+	//Initializeæ˜¯åˆ›å»ºå…ƒç´ ,Renderæ˜¯è®¾ç½®å…ƒç´ ,Shutdownæ˜¯Release
 	void Shutdown();
 	bool Render();
 
-	int GetIndexCount() { return mIndexCount; } //·µ»ØË÷ÒıÖµ DrawIndexed();
+	int GetIndexCount() { return mIndexCount; } //è¿”å›ç´¢å¼•å€¼ DrawIndexed();
 	
 };
 #endif 

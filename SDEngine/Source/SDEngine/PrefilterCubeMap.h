@@ -1,8 +1,8 @@
-#pragma once
+﻿#pragma once
 #ifndef _PREFILTER_CUBE_MAP_H
 #define _PREFILTER_CUBE_MAP_H
 
-#include "Common/CoreMini.h"
+#include "CoreMinimal.h"
 class Texture;
 class GameObject;
 class GeometryBuffer;

@@ -1,4 +1,4 @@
-#include "DirectionLight.h"
+﻿#include "DirectionLight.h"
 #include "../GameObject/Camera.h"
 #include <math.h>
 
@@ -28,7 +28,6 @@ XMFLOAT3 DirectionLight::GetLightDirection()
 	return m_DirLightDiretion;
 }
 
-//�����λ�õ���ƽ�й�Դ��λ��
 XMMATRIX DirectionLight::GetViewMatrix()
 {
 	float fFarPlane = GCamera->mFarPlane;

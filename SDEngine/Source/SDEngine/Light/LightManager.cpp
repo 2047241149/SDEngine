@@ -1,4 +1,4 @@
-#include "LightManager.h"
+﻿#include "LightManager.h"
 
 LightManager::LightManager()
 {
@@ -44,7 +44,7 @@ shared_ptr<DirectionLight> LightManager::GetMainLight()
 
 void LightManager::GetPointLights(vector<PointLightParams>& lightArray)
 {
-	lightArray.empty();
+	lightArray.clear();
 
 	for (auto& it : m_vecPointLight)
 	{

@@ -1,4 +1,4 @@
-#include "SSAOManager.h"
+﻿#include "SSAOManager.h"
 #include "../Texture/RenderTexture.h"
 #include "../Texture/NoiseTexture.h"
 #include <time.h>
@@ -30,9 +30,9 @@ void SSAOManager::Init(int screenWidth, int screenHeight)
 {
 	ssaoRT = shared_ptr<RenderTexture>(new RenderTexture(screenWidth, screenHeight, TextureFormat::R32));
 
-	ssaoDownSampleRT = shared_ptr<RenderTexture>(new RenderTexture((float)screenWidth / 2.0f, (float)screenHeight / 2.0f, TextureFormat::R32));
+	ssaoDownSampleRT = shared_ptr<RenderTexture>(new RenderTexture(int((float)screenWidth / 2.0f), int((float)screenHeight / 2.0f), TextureFormat::R32));
 
-	ssaoDownSampleBlurRT = shared_ptr<RenderTexture>(new RenderTexture(screenWidth / 2.0f, screenHeight / 2.0f, TextureFormat::R32));
+	ssaoDownSampleBlurRT = shared_ptr<RenderTexture>(new RenderTexture(int(screenWidth / 2.0f), int(screenHeight / 2.0f), TextureFormat::R32));
 
 	ssaoUpSampleRT = shared_ptr<RenderTexture>(new RenderTexture(screenWidth, screenHeight, TextureFormat::R32));
 

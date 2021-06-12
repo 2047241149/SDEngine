@@ -1,10 +1,7 @@
-#ifndef _GRUSSIAN_BLUR_CS_H
+﻿#ifndef _GRUSSIAN_BLUR_CS_H
 #define _GRUSSIAN_BLUR_CS_H
 
-#include "../Common/CoreMini.h"
-
-using namespace std;
-using namespace DirectX;
+#include "CoreMinimal.h"
 
 class RWRenderTexture;
 
@@ -25,7 +22,7 @@ protected:
 
 	bool virtual InitShader(WCHAR* csFilenPath);
 
-	//�ͷ�Shader
+	//释放Shader
 	void virtual ShutDown();
 
 private:

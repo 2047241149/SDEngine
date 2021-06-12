@@ -1,16 +1,16 @@
-#pragma once
+ï»¿#pragma once
 #ifndef _RENDER_DEPTH_TO_TEXTURE_H
 #define _RENDER_DEPTH_TO_TEXTURE_H
 
-#include "../Common/CoreMini.h"
+#include "CoreMinimal.h"
 
 class DepthBufferRT
 {
 private:
-	ID3D11ShaderResourceView* mShaderResourceView;  //Shader×ÊÔ´ÊÓÍ¼
+	ID3D11ShaderResourceView* mShaderResourceView;  //Shaderèµ„æºè§†å›¾
 	ID3D11Texture2D* mDepthStencilTexture;
 	ID3D11DepthStencilView* mDepthStencilView; 
-	D3D11_VIEWPORT mViewPort; //ÊÓ¿Ú
+	D3D11_VIEWPORT mViewPort; //è§†å£
 
 public:
 	DepthBufferRT(int TextureWidth, int TextureHeight);

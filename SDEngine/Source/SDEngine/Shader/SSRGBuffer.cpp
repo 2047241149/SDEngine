@@ -1,4 +1,4 @@
-#include "SSRGBuffer.h"
+﻿#include "SSRGBuffer.h"
 
 SSRGBuffer::SSRGBuffer(int TextureWidth, int TexureHeight, float ScreenDepth, float ScreenNear)
 {
@@ -12,7 +12,6 @@ SSRGBuffer::SSRGBuffer(int TextureWidth, int TexureHeight, float ScreenDepth, fl
 
 	Initialize(TextureWidth, TexureHeight, ScreenDepth, ScreenNear);
 }
-
 
 SSRGBuffer::SSRGBuffer(const SSRGBuffer&other)
 {
@@ -28,9 +27,8 @@ SSRGBuffer::~SSRGBuffer()
 bool SSRGBuffer::Initialize(int TextureWidth, int TextureHeight, float ScreenDepth, float ScreenNear)
 {
 
-	//*************************����GBuffer��RenderTargetView****************************************//
-
-	//����GBuffer��texture
+	//*************************GBuffer RenderTargetView****************************************//
+	//GBuffer texture
 	D3D11_TEXTURE2D_DESC gBufferTextureDesc;
 	ZeroMemory(&gBufferTextureDesc, sizeof(gBufferTextureDesc));
 
@@ -38,7 +36,7 @@ bool SSRGBuffer::Initialize(int TextureWidth, int TextureHeight, float ScreenDep
 	gBufferTextureDesc.Height = TextureHeight;
 	gBufferTextureDesc.MipLevels = 1;
 	gBufferTextureDesc.ArraySize = 1;
-	gBufferTextureDesc.Format = DXGI_FORMAT_R32G32B32A32_FLOAT;  //��������Ϊ12���ֽ�
+	gBufferTextureDesc.Format = DXGI_FORMAT_R32G32B32A32_FLOAT;
 	gBufferTextureDesc.SampleDesc.Count = 1;
 	gBufferTextureDesc.SampleDesc.Quality = 0;
 	gBufferTextureDesc.Usage = D3D11_USAGE_DEFAULT;
@@ -53,7 +51,7 @@ bool SSRGBuffer::Initialize(int TextureWidth, int TextureHeight, float ScreenDep
 	}
 
 
-	//����GBuffer��Ӧ��RenderTargetView
+	//GBuffer RenderTargetView
 	D3D11_RENDER_TARGET_VIEW_DESC renderTargetViewDesc;
 
 	renderTargetViewDesc.Format = gBufferTextureDesc.Format;
@@ -64,9 +62,6 @@ bool SSRGBuffer::Initialize(int TextureWidth, int TextureHeight, float ScreenDep
 		HR(g_pDevice->CreateRenderTargetView(mRenderTargetTextureArray[i], &renderTargetViewDesc, &mRenderTargetViewArray[i]));
 	}
 
-
-
-	//����RenderTargetView������Ӧ��GBuffer ShadreView
 	D3D11_SHADER_RESOURCE_VIEW_DESC gBufferShaderResourceViewDesc;
 	gBufferShaderResourceViewDesc.Format = gBufferTextureDesc.Format;
 	gBufferShaderResourceViewDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
@@ -79,17 +74,13 @@ bool SSRGBuffer::Initialize(int TextureWidth, int TextureHeight, float ScreenDep
 			&mGBufferSRV[i]));
 	}
 
-	/*��Ӧ��GBuffer��DepthBuffer���ӿڴ�С*/
-	//������Ⱦ���ӿ�
 	md3dViewport.Width = static_cast<float>(TextureWidth);
 	md3dViewport.Height = static_cast<float>(TextureHeight);
 	md3dViewport.MinDepth = 0.0f;
 	md3dViewport.MaxDepth = 1.0f;
 	md3dViewport.TopLeftX = 0.0f;
 	md3dViewport.TopLeftY = 0.0f;
-
 	return true;
-
 }
 
 
@@ -103,19 +94,12 @@ void SSRGBuffer::ShutDown()
 	}
 }
 
-
-//�ô�ʱ����ͼ����Ⱦ�����Ŀǰ��Ⱦ��λ��
 void SSRGBuffer::SetRenderTarget(ID3D11DepthStencilView* backDSV)
 {
-	//����ȾĿ����ͼ�����ģ����ͼ�������Ⱦ���ߣ���ʱ��Ⱦ���������������
 	g_pDeviceContext->OMSetRenderTargets(SSR_BUFFER_COUNT, mRenderTargetViewArray, backDSV);
-
-	//������Ӧ���ӿ�
 	g_pDeviceContext->RSSetViewports(1, &md3dViewport);
-
 	ClearGBuffer();
 }
-
 
 void SSRGBuffer::ClearGBuffer()
 {
@@ -130,7 +114,6 @@ void SSRGBuffer::ClearGBuffer()
 	value[1] = 0.0f;
 	value[2] = -1.0f;
 	g_pDeviceContext->ClearRenderTargetView(mRenderTargetViewArray[SSRBufferType::VIEW_NORMAL], value);
-
 }
 
 void SSRGBuffer::ClearRenderTarget()

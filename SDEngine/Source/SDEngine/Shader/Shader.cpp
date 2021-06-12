@@ -606,8 +606,8 @@ bool VertexPixelShader::ReflectInputLayout(ID3D11ShaderReflection* vertexShaderR
 		return false;
 
 
-	HR(g_pDevice->CreateInputLayout(&vecInputElementDesc[0], vecInputElementDesc.size(), vertexShaderBlob->GetBufferPointer(),
-		vertexShaderBlob->GetBufferSize(), &inputLayout));
+	HR(g_pDevice->CreateInputLayout(&vecInputElementDesc[0], (UINT)vecInputElementDesc.size(), vertexShaderBlob->GetBufferPointer(),
+		(UINT)vertexShaderBlob->GetBufferSize(), &inputLayout));
 
 	return true;
 }
@@ -718,7 +718,7 @@ bool VertexPixelShader::UpdateRWStructBuffer()
 			uavArray.push_back(It.uav);
 		}
 
-		g_pDeviceContext->OMSetRenderTargetsAndUnorderedAccessViews(D3D11_KEEP_RENDER_TARGETS_AND_DEPTH_STENCIL, nullptr, nullptr, uavParamsArray[0].registerIndex, uavArray.size(), uavArray.data(), nullptr);
+		g_pDeviceContext->OMSetRenderTargetsAndUnorderedAccessViews(D3D11_KEEP_RENDER_TARGETS_AND_DEPTH_STENCIL, nullptr, nullptr, uavParamsArray[0].registerIndex, (UINT)uavArray.size(), uavArray.data(), nullptr);
 	}
 	
 	return true;

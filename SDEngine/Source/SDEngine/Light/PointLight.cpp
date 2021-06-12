@@ -1,4 +1,4 @@
-#include "PointLight.h"
+﻿#include "PointLight.h"
 
 const float SPHERE_MESH_RADIUS = 1.0f;
 const float EDGE_LIGHT_INTENSITY = 0.005f;
@@ -53,8 +53,8 @@ void PointLight::CalculateRadius()
 	float fMaxLightIntensity =
 		FMath::Max(FMath::Max(m_LightColor.x, m_LightColor.y), m_LightColor.z) * m_fLightIntensity;
 
-	float innerNum = m_lightAttenuation.y * m_lightAttenuation.y - 4 * m_lightAttenuation.z * (m_lightAttenuation.x - fMaxLightIntensity * (256.0));
-	m_fRadius = (-m_lightAttenuation.y + std::sqrt(innerNum)) / (2.0 * m_lightAttenuation.z);
+	float innerNum = m_lightAttenuation.y * m_lightAttenuation.y - 4 * m_lightAttenuation.z * (m_lightAttenuation.x - fMaxLightIntensity * (256.0f));
+	m_fRadius = (-m_lightAttenuation.y + (float)std::sqrt(innerNum)) / (2.0f * m_lightAttenuation.z);
 }
 
 void PointLight::SetLightIntensity(float fLightIntensity)

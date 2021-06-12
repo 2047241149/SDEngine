@@ -1,11 +1,10 @@
-#pragma once
+ï»¿#pragma once
 
-/*×¨ÃÅÓÃÓÚÊµÏÖSSRµÄGBuffer*/
+/*ä¸“é—¨ç”¨äºå®ç°SSRçš„GBuffer*/
 #ifndef _SSR_GBUFFER_H
 #define _SSR_GBUFFER_H
 
-#include "../Common/CoreMini.h"
-#include<ctime>
+#include "CoreMinimal.h"
 
 enum SSRBufferType
 {

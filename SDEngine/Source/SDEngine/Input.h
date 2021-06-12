@@ -3,7 +3,6 @@
 #define _INPUT_CLASS_H
 
 #include "CoreMinimal.h"
-#include "Common/CoreMini.h"
 #include "Event/KeyCode.h"
 
 //direct input version

@@ -14,7 +14,7 @@ include "SDEngine/ThirdParty/imgui"
 
 project "SDEngine"
 	location "SDEngine"
-	kind "SharedLib"
+	kind "StaticLib"
 	language "C++"
 
 	targetdir ("bin/" .. outputdir .. "/%{prj.name}")
@@ -55,13 +55,12 @@ project "SDEngine"
 
 		defines
 		{
-			"SD_BUILD_DLL",
+			"_SILENCE_CXX17_STRSTREAM_DEPRECATION_WARNING",
 			"FBXSDK_SHARED"
 		}
 
 		postbuildcommands
 		{
-			("{COPY} %{cfg.buildtarget.relpath} ../bin/" .. outputdir .. "/TestGame"),
 			("{COPY} ThirdParty/fbxsdk/2017.1/lib/x64/debug/libfbxsdk.dll ../bin/" .. outputdir .. "/TestGame"),
 		}
 
@@ -103,6 +102,11 @@ project "TestGame"
 		cppdialect "C++17"
 		staticruntime "off"
 		systemversion "latest"
+
+		defines
+		{
+			"_SILENCE_CXX17_STRSTREAM_DEPRECATION_WARNING",
+		}
 
 	filter "configurations:Debug"
 		symbols "On"

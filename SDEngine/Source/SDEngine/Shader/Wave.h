@@ -1,8 +1,7 @@
-#pragma once
+ï»¿#pragma once
 #ifndef  _WAVE_H
 #define _WAVE_H
-#include "../Common/CoreMini.h"
-#include "../Common/CommomVertexFormat.h"
+#include "CoreMinimal.h"
 
 struct WaveParam
 {
@@ -68,16 +67,16 @@ protected:
 	ID3D11Buffer* mVertexBuffer;
 	ID3D11Buffer* mIndexBuffer;
 	
-	//UVµÄTile³¤¶È£¬´ú±íÃ¿mUVTile¸ñ×ÓÕ¼¾İ1.0µÄUVÖµ
+	//UVçš„Tileé•¿åº¦ï¼Œä»£è¡¨æ¯mUVTileæ ¼å­å æ®1.0çš„UVå€¼
 	int mUVTile;
 
-	//¹¹½¨WaveGridµÄ²ÎÊı
+	//æ„å»ºWaveGridçš„å‚æ•°
 	int mWaveWidth;
 	int mWaveHeight;
 	float mWaveGridSize;
 
 private:
-	//Î»ÖÃ
+	//ä½ç½®
 	XMFLOAT3 mPosition;
 
 private:
@@ -91,16 +90,16 @@ protected:
 
 	virtual float GetWaveVertexHeight(int x, int z, float time) = 0;
 
-	//¼ÆËãÎ»ÖÃ£¨²¨µÄ¼ÆËãÎ»ÖÃ·½Ê½¿ÉÄÜ²»Ò»Ñù£©
+	//è®¡ç®—ä½ç½®ï¼ˆæ³¢çš„è®¡ç®—ä½ç½®æ–¹å¼å¯èƒ½ä¸ä¸€æ ·ï¼‰
 	virtual void CalculateVertexPos(float time);
 
-	//¼ÆËãÇĞÏß
+	//è®¡ç®—åˆ‡çº¿
 	void CalculateVertexTangent();
 
-	//¼ÆËãUV
+	//è®¡ç®—UV
 	void CalculateVertexUV();
 
-	//¼ÆËã·¨Ïß
+	//è®¡ç®—æ³•çº¿
 	void CalculateVertexNormal();
 		
 

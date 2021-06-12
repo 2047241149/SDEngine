@@ -1,4 +1,4 @@
-#include"FPS.h"
+﻿#include"FPS.h"
 
 
 FPS::FPS()
@@ -30,7 +30,7 @@ void FPS::Initialize()
 void FPS::Frame()
 {
 	++mCount;  
-	float currentTime = timeGetTime();
+	unsigned long currentTime = (unsigned long)timeGetTime();
 
 	if (currentTime >= (mStartTime + 1000))
 	{

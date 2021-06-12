@@ -178,8 +178,8 @@ LRESULT CALLBACK GameWindow::MessageHandler(HWND hwnd, UINT message, WPARAM wPar
 
 		case WM_LBUTTONDOWN:
 		{
-			float mouseX = GET_X_LPARAM(lParam);
-			float mouseY = GET_Y_LPARAM(lParam);
+			float mouseX = (float)GET_X_LPARAM(lParam);
+			float mouseY = (float)GET_Y_LPARAM(lParam);
 			MouseKey key = MouseKey::LeftButton;
 			MouseButtonPressedEvent event(key, mouseX, mouseY);
 			eventCallback(event);
@@ -188,8 +188,8 @@ LRESULT CALLBACK GameWindow::MessageHandler(HWND hwnd, UINT message, WPARAM wPar
 
 		case WM_LBUTTONUP:
 		{
-			float mouseX = GET_X_LPARAM(lParam);
-			float mouseY = GET_Y_LPARAM(lParam);
+			float mouseX = (float)GET_X_LPARAM(lParam);
+			float mouseY = (float)GET_Y_LPARAM(lParam);
 			MouseKey key = MouseKey::LeftButton;
 			MouseButtonReleasedEvent event(key);
 			eventCallback(event);
@@ -198,8 +198,8 @@ LRESULT CALLBACK GameWindow::MessageHandler(HWND hwnd, UINT message, WPARAM wPar
 
 		case WM_RBUTTONDOWN:
 		{
-			float mouseX = GET_X_LPARAM(lParam);
-			float mouseY = GET_Y_LPARAM(lParam);
+			float mouseX = (float)GET_X_LPARAM(lParam);
+			float mouseY = (float)GET_Y_LPARAM(lParam);
 			MouseKey key = MouseKey::RightButton;
 			MouseButtonPressedEvent event(key, mouseX, mouseY);
 			eventCallback(event);
@@ -208,8 +208,8 @@ LRESULT CALLBACK GameWindow::MessageHandler(HWND hwnd, UINT message, WPARAM wPar
 
 		case WM_RBUTTONUP:
 		{
-			float mouseX = GET_X_LPARAM(lParam);
-			float mouseY = GET_Y_LPARAM(lParam);
+			float mouseX = (float)GET_X_LPARAM(lParam);
+			float mouseY = (float)GET_Y_LPARAM(lParam);
 			MouseKey key = MouseKey::RightButton;
 			MouseButtonReleasedEvent event(key);
 			eventCallback(event);
@@ -218,8 +218,8 @@ LRESULT CALLBACK GameWindow::MessageHandler(HWND hwnd, UINT message, WPARAM wPar
 
 		case WM_MOUSEMOVE:
 		{
-			float mouseX = GET_X_LPARAM(lParam);
-			float mouseY = GET_Y_LPARAM(lParam);
+			float mouseX = (float)GET_X_LPARAM(lParam);
+			float mouseY = (float)GET_Y_LPARAM(lParam);
 			MouseMovedEvent event(mouseX, mouseY);
 			eventCallback(event);
 			return 0;

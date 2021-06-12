@@ -1,8 +1,8 @@
-#pragma once
+﻿#pragma once
 #ifndef _TEXTURE_SAMPLER_MANAGER_H
 #define _TEXTURE_SAMPLER_MANAGER_H
 
-#include "../Common/CoreMini.h"
+#include "CoreMinimal.h"
 
 enum TextureSampler
 {

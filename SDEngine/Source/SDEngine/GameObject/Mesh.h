@@ -1,10 +1,10 @@
-#pragma once
+ï»¿#pragma once
 #ifndef _MESH_H
 #define _MESH_H
 
-#include "../Common/CoreMini.h"
-#include "../Import/ImportFBX.h"
-#include "../LoadTexture/Resource.h"
+#include "CoreMinimal.h"
+#include "SDEngine/Import/ImportFBX.h"
+#include "SDEngine/LoadTexture/Resource.h"
 
 enum MaterialType
 {
@@ -56,7 +56,7 @@ public:
 	bool bCastShadow;
 	MaterialType m_eMaterialType;
 
-	//µ±´¦ÓÚ´¿É«äÖÈ¾Ä£Ê½ÏÂ£¬»áÊ¹ÓÃµÄÊôĞÔ
+	//å½“å¤„äºçº¯è‰²æ¸²æŸ“æ¨¡å¼ä¸‹ï¼Œä¼šä½¿ç”¨çš„å±æ€§
 	XMFLOAT4 pureColor;  
 	float roughness;
 	float metal;

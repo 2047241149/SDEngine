@@ -1,8 +1,8 @@
-#pragma once
+﻿#pragma once
 #ifndef _SKY_BOX_H
 #define _SKY_BOX_H
 
-#include "Common/CoreMini.h"
+#include "CoreMinimal.h"
 class Texture;
 class GameObject;
 class GeometryBuffer;

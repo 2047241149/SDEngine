@@ -45,7 +45,7 @@ bool DirectxCore::Init(bool vsync, bool fullscreen)
 {
 	IDXGIAdapter* adpter;
 	IDXGIFactory* factory;
-	unsigned int numModes, numerator, denominator, stringLength;
+	unsigned int numModes, numerator, denominator;
 	DXGI_MODE_DESC* displayModeList;
 	DXGI_ADAPTER_DESC adapterDesc;
 	mVsyncEnable = vsync;
@@ -122,19 +122,19 @@ bool DirectxCore::Init(bool vsync, bool fullscreen)
 	sd.Flags = DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH;
 
 	#if defined(_DEBUG)
-	// If the project is in a debug build, enable the debug layer.
-		//sd.Flags = D3D11_CREATE_DEVICE_DEBUG;
+	//If the project is in a debug build, enable the debug layer.
+		sd.Flags |= D3D11_CREATE_DEVICE_DEBUG;
 	#endif
 	
-	//sd.BufferDesc.ScanlineOrdering = DXGI_MODE_SCANLINE_ORDER_UNSPECIFIED;
-	//sd.BufferDesc.Scaling = DXGI_MODE_SCALING_UNSPECIFIED;
+	sd.BufferDesc.ScanlineOrdering = DXGI_MODE_SCANLINE_ORDER_UNSPECIFIED;
+	sd.BufferDesc.Scaling = DXGI_MODE_SCALING_UNSPECIFIED;
 
 	D3D_FEATURE_LEVEL featureLevel;
 	featureLevel = D3D_FEATURE_LEVEL_11_0;
 	HR(D3D11CreateDeviceAndSwapChain(NULL, D3D_DRIVER_TYPE_HARDWARE, NULL, 0, &featureLevel, 1,
 		D3D11_SDK_VERSION, &sd, &md3dSwapChain, &md3dDevice, NULL, &md3dImmediateContext));
 
-	/*#if defined(DEBUG) | defined(_DEBUG)
+	#if defined(DEBUG) | defined(_DEBUG)
 		ID3D11Debug *pD3DDebug = NULL;
 		if (SUCCEEDED(md3dDevice->QueryInterface(__uuidof(ID3D11Debug), reinterpret_cast<VOID**>(&pD3DDebug))))
 		{
@@ -156,7 +156,7 @@ bool DirectxCore::Init(bool vsync, bool fullscreen)
 				d3dInfoQueue->SetBreakOnCategory(D3D11_MESSAGE_CATEGORY_RESOURCE_MANIPULATION, true);
 			}
 		}
-	#endif*/
+	#endif
 
 	ID3D11Texture2D*backBuffer;
 	md3dSwapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), reinterpret_cast<void**>(&backBuffer));

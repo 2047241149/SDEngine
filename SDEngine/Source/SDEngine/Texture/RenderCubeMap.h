@@ -1,9 +1,9 @@
-#pragma once
+﻿#pragma once
 #ifndef _RENDER_CUBEMAP_H
 #define _RENDER_CUBEMAP_H
 
-#include "../Common/CoreMini.h"
-#include "../Common/UtilityEnum.h"
+#include "CoreMinimal.h"
+#include "SDEngine/Common/UtilityEnum.h"
 
 class RenderCubeMap
 {

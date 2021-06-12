@@ -1,4 +1,4 @@
-#include "TiledDefferedSceneRender.h"
+﻿#include "TiledDefferedSceneRender.h"
 #include "SkyBox.h"
 #include "Texture/RenderTexture.h"
 #include "WindowInfo.h"
@@ -17,6 +17,8 @@
 #include "Texture/TextureSamplerManager.h"
 #include "Texture/TextureManager.h"
 #include "SceneManager.h"
+#include "Light/DirectionLight.h"
+#include "Light/LightManager.h"
 
 
 TiledDefferedSceneRender::TiledDefferedSceneRender()
@@ -441,15 +443,15 @@ void TiledDefferedSceneRender::RenderTiledLightPass()
 	GShaderManager->tiledLightShader->SetTexture("SpecularRoughMetalTex", mGeometryBuffer->GetGBufferSRV(GBufferType::SpecularRoughMetal));
 	GShaderManager->tiledLightShader->SetTexture("AlbedoTex", mGeometryBuffer->GetGBufferSRV(GBufferType::Diffuse));
 	GShaderManager->defferedPointLightShader->SetTextureSampler("clampLinearSample", GTextureSamplerBilinearClamp);
-	GShaderManager->tiledLightShader->SetStructBuffer("PointLights", pointLights.data(), pointLights.size());
+	GShaderManager->tiledLightShader->SetStructBuffer("PointLights", pointLights.data(), (int)pointLights.size());
 	GShaderManager->tiledLightShader->SetRWTexture("OutputTexture", mTiledLightRT->GetUAV());
-	GShaderManager->tiledLightShader->SetFloat("lightCount", pointLights.size());
+	GShaderManager->tiledLightShader->SetFloat("lightCount", (float)pointLights.size());
 	GShaderManager->tiledLightShader->SetFloat("farPlane", GCamera->mFarPlane);
 	GShaderManager->tiledLightShader->SetFloat("nearPlane", GCamera->mNearPlane);
 	GShaderManager->tiledLightShader->SetFloat3("cameraPos", GCamera->GetPosition());
 	GShaderManager->tiledLightShader->SetFloat("ScreenWidth", GCamera->mScreenWidth);
 	GShaderManager->tiledLightShader->SetFloat("ScreenHeight", GCamera->mScreenHeight);
-	GShaderManager->tiledLightShader->SetFloat("bDebugLightCount", GSceneManager->bDebugLightCount ? 1.0 : 0.0);
+	GShaderManager->tiledLightShader->SetFloat("bDebugLightCount", GSceneManager->bDebugLightCount ? 1.0f : 0.0f);
 	GShaderManager->tiledLightShader->SetMatrix("View", GCamera->GetViewMatrix());
 	GShaderManager->tiledLightShader->SetMatrix("ProjInv", FMath::GetInvense(GCamera->GetProjectionMatrix()));
 	GShaderManager->tiledLightShader->Dispatch(100, 100, 1);

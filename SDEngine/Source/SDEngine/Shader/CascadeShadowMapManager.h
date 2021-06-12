@@ -1,9 +1,10 @@
-#pragma once
+﻿#pragma once
 #ifndef _CASCADE_SHADOW_MAP_MANAGER_H
 #define _CASCADE_SHADOW_MAP_MANAGER_H
 
-#include "../Common/CoreMini.h"
-#include "../Common/GraphicsConfig.h"
+#include "CoreMinimal.h"
+#include "SDEngine/Common/GraphicsConfig.h"
+
 class CascadeShadowMap;
 
 class CascadedShadowsManager

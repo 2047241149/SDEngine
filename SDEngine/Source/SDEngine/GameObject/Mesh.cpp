@@ -1,4 +1,4 @@
-#include "Mesh.h"
+﻿#include "Mesh.h"
 
 
 Mesh::Mesh(string strFbxFileName):
@@ -66,7 +66,7 @@ void Mesh::InitBuffer()
 
 			D3D11_BUFFER_DESC vertexBufferDesc;
 			vertexBufferDesc.Usage = D3D11_USAGE_DEFAULT;
-			vertexBufferDesc.ByteWidth = sizeof(mMesh.mVertexData[0]) * mMesh.mVertexData.size();
+			vertexBufferDesc.ByteWidth = sizeof(mMesh.mVertexData[0]) * (UINT)mMesh.mVertexData.size();
 			vertexBufferDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
 			vertexBufferDesc.CPUAccessFlags = 0;
 			vertexBufferDesc.MiscFlags = 0;
@@ -81,7 +81,7 @@ void Mesh::InitBuffer()
 			//�ڶ�,���(����)�������ݽṹ�������Դ���ݽṹ��,��������������
 			D3D11_BUFFER_DESC  indexBufferDesc;
 			indexBufferDesc.Usage = D3D11_USAGE_DEFAULT;
-			indexBufferDesc.ByteWidth = sizeof(WORD) * mMesh.mIndexData.size();
+			indexBufferDesc.ByteWidth = sizeof(WORD) * (UINT)mMesh.mIndexData.size();
 			indexBufferDesc.BindFlags = D3D11_BIND_INDEX_BUFFER;
 			indexBufferDesc.CPUAccessFlags = 0;
 			indexBufferDesc.MiscFlags = 0;

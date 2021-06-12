@@ -1,12 +1,9 @@
-#pragma once
+ï»¿#pragma once
 #ifndef _SHADER_H
 #define _SHADER_H
 #endif // !_SHADER_H
 
-
-#include "../Common/CoreMini.h"
-#include <d3dcompiler.h>
-
+#include "CoreMinimal.h"
 
 enum ShaderVariableType
 {
@@ -24,9 +21,9 @@ struct ShaderVariable
 	string name;
 	string constantBufferName;
 	ShaderVariableType variableType;
-	//µ±variablePreÓëvariableCurrentÖ¸ÏòµÄÖµÒ»ÖÂÊ±£¬½«²»½øĞĞ³£Á¿»º´æ¸üĞÂ
-	void* variablePre; 	//variablePre Ö¸ÏòÖ®Ç°±äÁ¿µÄÖµ
-	void* variableCurrent; 	//variableCurrent Ö¸ÏòÄ¿Ç°±äÁ¿µÄÖµ
+	//å½“variablePreä¸variableCurrentæŒ‡å‘çš„å€¼ä¸€è‡´æ—¶ï¼Œå°†ä¸è¿›è¡Œå¸¸é‡ç¼“å­˜æ›´æ–°
+	void* variablePre; 	//variablePre æŒ‡å‘ä¹‹å‰å˜é‡çš„å€¼
+	void* variableCurrent; 	//variableCurrent æŒ‡å‘ç›®å‰å˜é‡çš„å€¼
 };
 
 struct ShaderTexture
@@ -77,7 +74,7 @@ struct ShaderRWStructBuffer
 	ID3D11UnorderedAccessView* uav;
 };
 
-//TODO:²¿·Ö´úÂëÖØ¸´,´ıÖØ¹¹
+//TODO:éƒ¨åˆ†ä»£ç é‡å¤,å¾…é‡æ„
 class Shader
 {
 
@@ -87,7 +84,7 @@ public:
 	virtual ~Shader();
 
 protected:
-	//ÊÍ·ÅShader
+	//é‡Šæ”¾Shader
 	virtual void ShutDown();
 
 public:

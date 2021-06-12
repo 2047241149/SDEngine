@@ -1,4 +1,4 @@
-#include"MathTool.h"
+﻿#include"MathTool.h"
 
 
 //����һ�������������ת��
@@ -40,5 +40,5 @@ float FMath::lerp(float left, float right, float percent)
 
 float FMath::Log2(float num)
 {
-	return log2(num);
+	return (float)log2(num);
 }

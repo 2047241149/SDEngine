@@ -2,7 +2,13 @@
 #ifndef DIRECTX_CORE_H
 #define DIRECTX_CORE_H
 
-#include "../Common/CoreMini.h"
+#include<d3d11.h>
+#include<d3d11_1.h>
+#include<d3d11_2.h>
+#include<d3dcompiler.h>
+#include<DirectXMath.h>
+#include<memory.h>
+#include<iostream>
 #include "DirectxFrame.h"
 
 using namespace std;

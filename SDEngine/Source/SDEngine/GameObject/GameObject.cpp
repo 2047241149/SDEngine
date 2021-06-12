@@ -1,4 +1,4 @@
-#include"GameObject.h"
+﻿#include"GameObject.h"
 #include "../Texture/TextureSamplerManager.h"
 #include "../Common/GraphicsConfig.h"
 #include "../Texture/TextureManager.h"
@@ -223,7 +223,7 @@ void GameObject::Render(RenderMode renderMode)
 			//������������
 			g_pDeviceContext->IASetIndexBuffer(mesh.mIndexBuffer, DXGI_FORMAT_R16_UINT, 0); //WordΪ�����ֽ�																		  //�������˷�ʽ
 
-			g_pDeviceContext->DrawIndexed(mesh.mIndexData.size(), 0, 0);
+			g_pDeviceContext->DrawIndexed((UINT)mesh.mIndexData.size(), 0, 0);
 		}
 	}
 
@@ -256,7 +256,7 @@ void GameObject::RenderMesh()
 			//������������
 			g_pDeviceContext->IASetIndexBuffer(mesh.mIndexBuffer, DXGI_FORMAT_R16_UINT, 0); //WordΪ�����ֽ�																		  //�������˷�ʽ
 
-			g_pDeviceContext->DrawIndexed(mesh.mIndexData.size(), 0, 0);
+			g_pDeviceContext->DrawIndexed((UINT)mesh.mIndexData.size(), 0, 0);
 		}
 	}
 

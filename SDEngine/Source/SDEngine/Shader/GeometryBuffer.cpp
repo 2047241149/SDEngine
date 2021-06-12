@@ -1,4 +1,4 @@
-#include "GeometryBuffer.h"
+﻿#include "GeometryBuffer.h"
 
 GeometryBuffer::GeometryBuffer(int TextureWidth, int TexureHeight, float ScreenDepth, float ScreenNear)
 {
@@ -33,9 +33,8 @@ GeometryBuffer::~GeometryBuffer()
 bool GeometryBuffer::Initialize(int TextureWidth, int TextureHeight, float ScreenDepth, float ScreenNear)
 {
 
-	//*************************����GBuffer��RenderTargetView****************************************//
+	//*************************GBuffer RenderTargetView****************************************//
 
-	//����GBuffer��texture
 	D3D11_TEXTURE2D_DESC gBufferTextureDesc;
 	ZeroMemory(&gBufferTextureDesc, sizeof(gBufferTextureDesc));
 
@@ -43,7 +42,7 @@ bool GeometryBuffer::Initialize(int TextureWidth, int TextureHeight, float Scree
 	gBufferTextureDesc.Height = TextureHeight;
 	gBufferTextureDesc.MipLevels = 1;
 	gBufferTextureDesc.ArraySize = 1;
-	gBufferTextureDesc.Format = DXGI_FORMAT_R32G32B32A32_FLOAT;  //��������Ϊ12���ֽ�
+	gBufferTextureDesc.Format = DXGI_FORMAT_R32G32B32A32_FLOAT;
 	gBufferTextureDesc.SampleDesc.Count = 1;
 	gBufferTextureDesc.SampleDesc.Quality = 0;
 	gBufferTextureDesc.Usage = D3D11_USAGE_DEFAULT;
@@ -58,10 +57,7 @@ bool GeometryBuffer::Initialize(int TextureWidth, int TextureHeight, float Scree
 		HR(g_pDevice->CreateTexture2D(&gBufferTextureDesc, NULL, &mRenderTargetTextureArray[i]));
 	}
 
-
-	//����GBuffer��Ӧ��RenderTargetView
 	D3D11_RENDER_TARGET_VIEW_DESC renderTargetViewDesc;
-
 	renderTargetViewDesc.Format = gBufferTextureDesc.Format;
 	renderTargetViewDesc.ViewDimension = D3D11_RTV_DIMENSION_TEXTURE2D;
 	renderTargetViewDesc.Texture2D.MipSlice = 0;
@@ -70,9 +66,6 @@ bool GeometryBuffer::Initialize(int TextureWidth, int TextureHeight, float Scree
 		HR(g_pDevice->CreateRenderTargetView(mRenderTargetTextureArray[i], &renderTargetViewDesc, &mRenderTargetViewArray[i]));
 	}
 
-
-
-	//����RenderTargetView������Ӧ��GBuffer ShadreView
 	D3D11_SHADER_RESOURCE_VIEW_DESC gBufferShaderResourceViewDesc;
 	gBufferShaderResourceViewDesc.Format = gBufferTextureDesc.Format;
 	gBufferShaderResourceViewDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
@@ -85,26 +78,22 @@ bool GeometryBuffer::Initialize(int TextureWidth, int TextureHeight, float Scree
 			&mGBufferSRV[i]));
 	}
 
-	//*************************����DepthBuffer��DepthStencilView*************************************************//
-
-	//����DepthBuffer��Desc
+	//************************* DepthBuffer DepthStencilView*************************************************//
 	D3D11_TEXTURE2D_DESC depthBufferTextureDesc;
 	ZeroMemory(&depthBufferTextureDesc, sizeof(depthBufferTextureDesc));
 	depthBufferTextureDesc.Width = TextureWidth;
 	depthBufferTextureDesc.Height = TextureHeight;
 	depthBufferTextureDesc.MipLevels = 1;
 	depthBufferTextureDesc.ArraySize = 1;
-	depthBufferTextureDesc.Format = DXGI_FORMAT_R24G8_TYPELESS; //24λ��Ϊ����Ȼ��棬8λ��Ϊ��ģ�建��  
+	depthBufferTextureDesc.Format = DXGI_FORMAT_R24G8_TYPELESS;
 	depthBufferTextureDesc.SampleDesc.Count = 1;
 	depthBufferTextureDesc.SampleDesc.Quality = 0;
 	depthBufferTextureDesc.Usage = D3D11_USAGE_DEFAULT;
-	depthBufferTextureDesc.BindFlags = D3D11_BIND_DEPTH_STENCIL | D3D11_BIND_SHADER_RESOURCE;  //ע����Ȼ���(����)�İ󶨱�־  
+	depthBufferTextureDesc.BindFlags = D3D11_BIND_DEPTH_STENCIL | D3D11_BIND_SHADER_RESOURCE;
 	depthBufferTextureDesc.CPUAccessFlags = 0;
 	depthBufferTextureDesc.MiscFlags = 0;
 	HR(g_pDevice->CreateTexture2D(&depthBufferTextureDesc, NULL, &mDepthStencilTexture));
 
-
-	//����,�����Ȼ�����ͼ���ݽṹ��,������Ȼ���(ģ�建��)��ͼ
 	D3D11_DEPTH_STENCIL_VIEW_DESC depthStencilViewDesc;
 	ZeroMemory(&depthStencilViewDesc, sizeof(depthStencilViewDesc));
 	depthStencilViewDesc.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
@@ -112,10 +101,9 @@ bool GeometryBuffer::Initialize(int TextureWidth, int TextureHeight, float Scree
 	depthStencilViewDesc.Texture2D.MipSlice = 0;
 
 	HR(g_pDevice->CreateDepthStencilView(
-		mDepthStencilTexture, //���ǻ��������Ȼ���/©�ְ建�洴��һ����ͼ
+		mDepthStencilTexture,
 		&depthStencilViewDesc,
-		&mDepthStencilView));//ָ����Ȼ���/©�ְ���ͼ��ָ��
-
+		&mDepthStencilView));
 
 	D3D11_SHADER_RESOURCE_VIEW_DESC depthBufferSRVDesc;
 	depthBufferSRVDesc.Format = DXGI_FORMAT_R24_UNORM_X8_TYPELESS;
@@ -126,15 +114,12 @@ bool GeometryBuffer::Initialize(int TextureWidth, int TextureHeight, float Scree
 	HR(g_pDevice->CreateShaderResourceView(mDepthStencilTexture, &depthBufferSRVDesc,
 		&mDepthBufferSRV));
 
-
-	//����randomRT
 	srand(static_cast<unsigned int>(time(NULL)));
 	unsigned char* rand_data = new unsigned char[TextureWidth * TextureHeight];
 	for (int i = 0; i < TextureHeight; ++i)
 	{
 		for (int j = 0; j < TextureWidth; ++j)
 		{
-			//ȡֵ��ǰ��λ,Ҳ��0��255
 			unsigned char value = static_cast<unsigned char>(rand())&static_cast<unsigned char>(0x00ff);
 			rand_data[i*TextureWidth + j] = value;
 		}
@@ -145,7 +130,7 @@ bool GeometryBuffer::Initialize(int TextureWidth, int TextureHeight, float Scree
 	randomRTDesc.Height = TextureHeight;
 	randomRTDesc.MipLevels = 1;
 	randomRTDesc.ArraySize = 1;
-	randomRTDesc.Format = DXGI_FORMAT_R8_UNORM;  //��������Ϊ12���ֽ�
+	randomRTDesc.Format = DXGI_FORMAT_R8_UNORM;
 	randomRTDesc.SampleDesc.Count = 1;
 	randomRTDesc.SampleDesc.Quality = 0;
 	randomRTDesc.Usage = D3D11_USAGE_DEFAULT;
@@ -160,11 +145,8 @@ bool GeometryBuffer::Initialize(int TextureWidth, int TextureHeight, float Scree
 	tex_data.SysMemSlicePitch = TextureWidth * TextureHeight;
 	g_pDevice->CreateTexture2D(&randomRTDesc, &tex_data, &mRandomTexture);
 	g_pDevice->CreateShaderResourceView(mRandomTexture, NULL, &mRandomSRV);
-
 	delete[] rand_data;
 
-	/*��Ӧ��GBuffer��DepthBuffer���ӿڴ�С*/
-	//������Ⱦ���ӿ�
 	md3dViewport.Width = static_cast<float>(TextureWidth);
 	md3dViewport.Height = static_cast<float>(TextureHeight);
 	md3dViewport.MinDepth = 0.0f;
@@ -173,7 +155,6 @@ bool GeometryBuffer::Initialize(int TextureWidth, int TextureHeight, float Scree
 	md3dViewport.TopLeftY = 0.0f;
 
 	return true;
-
 }
 
 
@@ -194,17 +175,11 @@ void GeometryBuffer::ShutDown()
 }
 
 
-//�ô�ʱ����ͼ����Ⱦ�����Ŀǰ��Ⱦ��λ��
 void GeometryBuffer::SetRenderTarget(XMFLOAT3 backColor)
 {
-	//����ȾĿ����ͼ�����ģ����ͼ�������Ⱦ���ߣ���ʱ��Ⱦ���������������
 	g_pDeviceContext->OMSetRenderTargets(BUFFER_COUNT, mRenderTargetViewArray, mDepthStencilView);
-
-	//������Ӧ���ӿ�
 	g_pDeviceContext->RSSetViewports(1, &md3dViewport);
-
 	ClearGBuffer(backColor);
-
 }
 
 void GeometryBuffer::SetDepthTarget()
@@ -217,16 +192,11 @@ void GeometryBuffer::SetDepthTarget()
 
 void GeometryBuffer::ClearDepthBuffer()
 {
-
-	//�����Ȼ����ģ�建��
 	g_pDeviceContext->ClearDepthStencilView(mDepthStencilView, D3D11_CLEAR_DEPTH|D3D11_CLEAR_STENCIL, 1.0f, 0);
 }
 
-
-
 void GeometryBuffer::ClearGBuffer(XMFLOAT3 backColor)
 {
-	//�����������Ϊ����ɫ
 	float color[4];
 	color[0] = backColor.x;
 	color[1] = backColor.y;
@@ -254,7 +224,6 @@ void GeometryBuffer::ClearGBuffer(XMFLOAT3 backColor)
 	color[1] = 1.0f;
 	color[2] = 1.0f;
 	g_pDeviceContext->ClearRenderTargetView(mRenderTargetViewArray[GBufferType::SpecularRoughMetal], color);
-
 }
 
 void GeometryBuffer::ClearRenderTarget(XMFLOAT3 backColor)
@@ -263,7 +232,7 @@ void GeometryBuffer::ClearRenderTarget(XMFLOAT3 backColor)
 	ClearGBuffer(backColor);
 }
 
-//
+
 ID3D11ShaderResourceView* GeometryBuffer::GetGBufferSRV(GBufferType gBufferType)
 {
 	if (gBufferType == GBufferType::Depth)
@@ -274,7 +243,6 @@ ID3D11ShaderResourceView* GeometryBuffer::GetGBufferSRV(GBufferType gBufferType)
 	{
 		return mGBufferSRV[gBufferType];
 	}
-	
 }
 
 ID3D11ShaderResourceView* GeometryBuffer::GetRandomRTSRV()

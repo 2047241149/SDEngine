@@ -1,4 +1,4 @@
-#include "Texture.h"
+﻿#include "Texture.h"
 #include "TextureManager.h"
 
 
@@ -50,7 +50,8 @@ ID3D11ShaderResourceView* TextureManager::LoadGetSRV(string fileName)
 	if (srvMap.find(fileName) == srvMap.end())
 	{
 		Resource::CreateShaderResourceViewFromFile(g_pDevice, Str2Wstr(fileName).c_str(), &memSRV);
-		if ((int)memSRV == 0xcccccccc)
+		
+		if (int(memSRV) == 0xcccccccc)
 		{
 			memSRV = nullptr;
 		}

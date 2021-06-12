@@ -20,13 +20,13 @@
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
-    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <CharacterSet>Unicode</CharacterSet>
     <PlatformToolset>v141</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
-    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <CharacterSet>Unicode</CharacterSet>
     <PlatformToolset>v141</PlatformToolset>
@@ -42,24 +42,22 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <LinkIncremental>true</LinkIncremental>
     <OutDir>..\bin\Debug-x86_64\SDEngine\</OutDir>
     <IntDir>..\bin-int\Debug-x86_64\SDEngine\</IntDir>
     <TargetName>SDEngine</TargetName>
-    <TargetExt>.dll</TargetExt>
+    <TargetExt>.lib</TargetExt>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <LinkIncremental>false</LinkIncremental>
     <OutDir>..\bin\Release-x86_64\SDEngine\</OutDir>
     <IntDir>..\bin-int\Release-x86_64\SDEngine\</IntDir>
     <TargetName>SDEngine</TargetName>
-    <TargetExt>.dll</TargetExt>
+    <TargetExt>.lib</TargetExt>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
-      <PreprocessorDefinitions>SD_BUILD_DLL;FBXSDK_SHARED;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_SILENCE_CXX17_STRSTREAM_DEPRECATION_WARNING;FBXSDK_SHARED;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>Source;Source\SDEngine;ThirdParty\spdlog\include;ThirdParty\fbxsdk\2017.1\include;ThirdParty\imgui;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
       <Optimization>Disabled</Optimization>
@@ -69,19 +67,19 @@
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>libfbxsdk.lib;Dinput8.lib;d3d11.lib;d3dcompiler.lib;dxguid.lib;winmm.lib;comctl32.lib;dxgi.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <ImportLibrary>..\bin\Debug-x86_64\SDEngine\SDEngine.lib</ImportLibrary>
     </Link>
+    <Lib>
+      <AdditionalDependencies>libfbxsdk.lib;Dinput8.lib;d3d11.lib;d3dcompiler.lib;dxguid.lib;winmm.lib;comctl32.lib;dxgi.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Lib>
     <PostBuildEvent>
-      <Command>IF EXIST ..\bin\Debug-x86_64\SDEngine\SDEngine.dll\ (xcopy /Q /E /Y /I ..\bin\Debug-x86_64\SDEngine\SDEngine.dll ..\bin\Debug-x86_64\TestGame &gt; nul) ELSE (xcopy /Q /Y /I ..\bin\Debug-x86_64\SDEngine\SDEngine.dll ..\bin\Debug-x86_64\TestGame &gt; nul)
-IF EXIST ThirdParty\fbxsdk\2017.1\lib\x64\debug\libfbxsdk.dll\ (xcopy /Q /E /Y /I ThirdParty\fbxsdk\2017.1\lib\x64\debug\libfbxsdk.dll ..\bin\Debug-x86_64\TestGame &gt; nul) ELSE (xcopy /Q /Y /I ThirdParty\fbxsdk\2017.1\lib\x64\debug\libfbxsdk.dll ..\bin\Debug-x86_64\TestGame &gt; nul)</Command>
+      <Command>IF EXIST ThirdParty\fbxsdk\2017.1\lib\x64\debug\libfbxsdk.dll\ (xcopy /Q /E /Y /I ThirdParty\fbxsdk\2017.1\lib\x64\debug\libfbxsdk.dll ..\bin\Debug-x86_64\TestGame &gt; nul) ELSE (xcopy /Q /Y /I ThirdParty\fbxsdk\2017.1\lib\x64\debug\libfbxsdk.dll ..\bin\Debug-x86_64\TestGame &gt; nul)</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
-      <PreprocessorDefinitions>SD_BUILD_DLL;FBXSDK_SHARED;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_SILENCE_CXX17_STRSTREAM_DEPRECATION_WARNING;FBXSDK_SHARED;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>Source;Source\SDEngine;ThirdParty\spdlog\include;ThirdParty\fbxsdk\2017.1\include;ThirdParty\imgui;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <Optimization>Full</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
@@ -95,12 +93,12 @@ IF EXIST ThirdParty\fbxsdk\2017.1\lib\x64\debug\libfbxsdk.dll\ (xcopy /Q /E /Y /
       <SubSystem>Windows</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalDependencies>libfbxsdk.lib;Dinput8.lib;d3d11.lib;d3dcompiler.lib;dxguid.lib;winmm.lib;comctl32.lib;dxgi.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <ImportLibrary>..\bin\Release-x86_64\SDEngine\SDEngine.lib</ImportLibrary>
     </Link>
+    <Lib>
+      <AdditionalDependencies>libfbxsdk.lib;Dinput8.lib;d3d11.lib;d3dcompiler.lib;dxguid.lib;winmm.lib;comctl32.lib;dxgi.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Lib>
     <PostBuildEvent>
-      <Command>IF EXIST ..\bin\Release-x86_64\SDEngine\SDEngine.dll\ (xcopy /Q /E /Y /I ..\bin\Release-x86_64\SDEngine\SDEngine.dll ..\bin\Release-x86_64\TestGame &gt; nul) ELSE (xcopy /Q /Y /I ..\bin\Release-x86_64\SDEngine\SDEngine.dll ..\bin\Release-x86_64\TestGame &gt; nul)
-IF EXIST ThirdParty\fbxsdk\2017.1\lib\x64\debug\libfbxsdk.dll\ (xcopy /Q /E /Y /I ThirdParty\fbxsdk\2017.1\lib\x64\debug\libfbxsdk.dll ..\bin\Release-x86_64\TestGame &gt; nul) ELSE (xcopy /Q /Y /I ThirdParty\fbxsdk\2017.1\lib\x64\debug\libfbxsdk.dll ..\bin\Release-x86_64\TestGame &gt; nul)</Command>
+      <Command>IF EXIST ThirdParty\fbxsdk\2017.1\lib\x64\debug\libfbxsdk.dll\ (xcopy /Q /E /Y /I ThirdParty\fbxsdk\2017.1\lib\x64\debug\libfbxsdk.dll ..\bin\Release-x86_64\TestGame &gt; nul) ELSE (xcopy /Q /Y /I ThirdParty\fbxsdk\2017.1\lib\x64\debug\libfbxsdk.dll ..\bin\Release-x86_64\TestGame &gt; nul)</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -109,7 +107,6 @@ IF EXIST ThirdParty\fbxsdk\2017.1\lib\x64\debug\libfbxsdk.dll\ (xcopy /Q /E /Y /
     <ClInclude Include="Source\SDEngine\ClusterDefferedSceneRender.h" />
     <ClInclude Include="Source\SDEngine\Common\CommomVertexFormat.h" />
     <ClInclude Include="Source\SDEngine\Common\CommonFunction.h" />
-    <ClInclude Include="Source\SDEngine\Common\CoreMini.h" />
     <ClInclude Include="Source\SDEngine\Common\DirectxCore.h" />
     <ClInclude Include="Source\SDEngine\Common\DirectxFrame.h" />
     <ClInclude Include="Source\SDEngine\Common\GraphicsConfig.h" />

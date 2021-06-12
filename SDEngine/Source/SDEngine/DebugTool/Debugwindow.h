@@ -1,8 +1,8 @@
-#pragma once
+ï»¿#pragma once
 #ifndef _DEBUG_WINDOW_H
 #define _DEBUG_WINDOW_H
 
-#include "../Common/CoreMini.h"
+#include "CoreMinimal.h"
 
 class DebugWindow
 {
@@ -13,8 +13,8 @@ private:
 		XMFLOAT2 color;
 	};
 private:
-	ID3D11Buffer* md3dVertexBuffer; //¶¥µã»º´æ
-	ID3D11Buffer* md3dIndexBuffer;  //Ë÷Òı»º´æ
+	ID3D11Buffer* md3dVertexBuffer; //é¡¶ç‚¹ç¼“å­˜
+	ID3D11Buffer* md3dIndexBuffer;  //ç´¢å¼•ç¼“å­˜
 	int mVertexCount;
 	int mIndexCount;
 
@@ -22,7 +22,7 @@ private:
 	int mScrrenWidth, mScrrenHeight;
 	int mBitmapWidth, mBitmapHeight;
 
-	//PostionX ºÍPostionYÎªDX11ÆÁÄ»×ø±ê
+	//PostionX å’ŒPostionYä¸ºDX11å±å¹•åæ ‡
 	int mPreviousPosX, mPreviousPosY;
 
 private:
@@ -39,13 +39,13 @@ public:
 	~DebugWindow();
 
 public:
-	//InitializeÊÇ´´½¨ÔªËØ,RenderÊÇÉèÖÃÔªËØ,ShutdownÊÇRelease
+	//Initializeæ˜¯åˆ›å»ºå…ƒç´ ,Renderæ˜¯è®¾ç½®å…ƒç´ ,Shutdownæ˜¯Release
 	bool Initialize(int ScrrenWidth,int ScrrenHeight,int BitmapWidth,int BitmapHeight);
 	void Shutdown();
 	bool Render(
 		int positionX, int positionY);
 
-	int GetIndexCount() { return mIndexCount; } //·µ»ØË÷ÒıÖµ DrawIndexed();
+	int GetIndexCount() { return mIndexCount; } //è¿”å›ç´¢å¼•å€¼ DrawIndexed();
 	
 };
 #endif 

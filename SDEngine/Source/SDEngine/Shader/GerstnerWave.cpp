@@ -1,4 +1,4 @@
-#include "GerstnerWave.h"
+﻿#include "GerstnerWave.h"
 
 GerstnerWave::GerstnerWave(int waveWidth, int waveHeight, float waveGridSize,
 	const vector<GerstnerWaveParam>& vecGerstnerWaveParam,
@@ -34,7 +34,7 @@ void GerstnerWave::CalculateVertexPos(float time)
 			//pos
 			mWaveVertexData[index].pos.x = fGerstnerX;
 			mWaveVertexData[index].pos.z = fGerstnerZ;
-			mWaveVertexData[index].pos.y = (float)GetWaveVertexHeight((float)fPositionX, (float)fPositionZ, time);
+			mWaveVertexData[index].pos.y = (float)GetWaveVertexHeight((int)fPositionX, (int)fPositionZ, time);
 			++index;
 		}
 	}

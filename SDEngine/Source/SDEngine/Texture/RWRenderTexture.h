@@ -1,16 +1,16 @@
-#pragma once
+ï»¿#pragma once
 #ifndef _RW_RENDER_TEXTURE_H
 #define _RW_RENDER_TEXTURE_H
 
-#include "../Common/CoreMini.h"
+#include "CoreMinimal.h"
 
 const int STANDARD_RES_WIDTH = 1024;
 const int STANDARD_RES_HEIGHT = 768;
 
 
 /*
-*Ò»°ãÓÃÓÚComputeShaderµÄ¸ßË¹Ä£ºıµÈºó´¦Àí£¬Òò´Ë²»´æÔÚrenderTarget
-*Í¨¹ıUAVĞ´ÈëÊı¾İµ½Texture2D,Texture2DÍ¨¹ıSRV¿É×÷ÎªPixelShader,ComputeShaderµÄSRVÊ¹ÓÃ
+*ä¸€èˆ¬ç”¨äºComputeShaderçš„é«˜æ–¯æ¨¡ç³Šç­‰åå¤„ç†ï¼Œå› æ­¤ä¸å­˜åœ¨renderTarget
+*é€šè¿‡UAVå†™å…¥æ•°æ®åˆ°Texture2D,Texture2Dé€šè¿‡SRVå¯ä½œä¸ºPixelShader,ComputeShaderçš„SRVä½¿ç”¨
 */
 class RWRenderTexture
 {

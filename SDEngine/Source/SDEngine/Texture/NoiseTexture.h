@@ -1,7 +1,7 @@
-#pragma once
+﻿#pragma once
 #ifndef NOISE_TEXTURE_H
 #define NOISE_TEXTURE_H
-#include "../Common/CoreMini.h"
+#include "CoreMinimal.h"
 
 class NoiseTexture
 {

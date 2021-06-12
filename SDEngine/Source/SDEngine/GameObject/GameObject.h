@@ -1,15 +1,12 @@
-#pragma once
+ï»¿#pragma once
 #ifndef _GAME_OBJECT_H
 #define _GAME_OBJECT_H
 
-#include "../Texture/Texture.h"
-#include "../Common/CoreMini.h"
-#include <vector>
-#include "../Common/CommomVertexFormat.h"
-#include "../Common/CommonFunction.h"
-#include "../Import/ImportFBX.h"
-#include "../Light/Light.h"
-#include "../Shader/ShaderManager.h"
+#include "CoreMinimal.h"
+#include "SDEngine/Texture/Texture.h"
+#include "Import/ImportFBX.h"
+#include "Light/Light.h"
+#include "Shader/ShaderManager.h"
 #include "Camera.h"
 #include "Mesh.h"
 
@@ -33,7 +30,7 @@ public:
 	~GameObject();
 
 public:
-	//InitializeÊÇ´´½¨ÔªËØ,RenderÊÇÉèÖÃÔªËØ,ShutdownÊÇRelease
+	//Initializeæ˜¯åˆ›å»ºå…ƒç´ ,Renderæ˜¯è®¾ç½®å…ƒç´ ,Shutdownæ˜¯Release
 	bool Init();
 	void Shutdown();
 

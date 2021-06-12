@@ -1,9 +1,9 @@
-#include "Quad.h"
+﻿#include "Quad.h"
 
 Quad::Quad()
 {
-    md3dVertexBuffer=nullptr; //���㻺��
-    md3dIndexBuffer = nullptr;  //��������
+    md3dVertexBuffer = nullptr;
+    md3dIndexBuffer = nullptr;
 	mVertexCount = 0;
 	mIndexCount = 0;
 	Initialize();
@@ -24,9 +24,6 @@ bool Quad::Initialize()
 {
 	bool result;
 
-
-
-	//��ʼ�����㻺�棬��������
 	result = InitializeBuffer();
 	if (!result)
 	{
@@ -45,42 +42,31 @@ void Quad::Shutdown()
 
 bool Quad::Render()
 {
-
-	//���ö��㻺��
-	UINT stride = sizeof(Vertex); //ÿ������Ԫ�صĿ�ȴ�С������˵ÿ������Ԫ�صĴ�С
+	UINT stride = sizeof(Vertex);
 	UINT offset = 0;
 	g_pDeviceContext->IASetVertexBuffers(0, 1, &md3dVertexBuffer, &stride, &offset);
-
-	//������������
-	g_pDeviceContext->IASetIndexBuffer(md3dIndexBuffer, DXGI_FORMAT_R16_UINT, 0); //WordΪ�����ֽ�
-
-																			
+	g_pDeviceContext->IASetIndexBuffer(md3dIndexBuffer, DXGI_FORMAT_R16_UINT, 0); //WordΪ�����ֽ�														
 	g_pDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-
 	g_pDeviceContext->DrawIndexed(mIndexCount, 0, 0);
-
 	return true;
 }
 
 bool Quad::InitializeBuffer()
 {
 	Vertex* vertexs = nullptr;
-	WORD*indices = nullptr;  //һ����Ϊ�����ֽ� 
+	WORD*indices = nullptr;
 
 	mVertexCount = 4;
 	mIndexCount = 6;
 
-	//������������
 	vertexs = new Vertex[mVertexCount];
 	if (!vertexs)
 		return false;
 
-	//������������
 	indices = new WORD[mIndexCount];
 	if (!indices)
 		return false;
 	
-	//��ʼ����������
 	vertexs[0].pos = XMFLOAT3(-1.0f, 1.0f, 0.0f);
 	vertexs[0].texcoord = XMFLOAT2(0.0f, 0.0f);
 	vertexs[1].pos = XMFLOAT3(1.0f, 1.0f, 0.0f);
@@ -90,8 +76,6 @@ bool Quad::InitializeBuffer()
 	vertexs[3].pos = XMFLOAT3(1.0f, -1.0f, 0.0f);
 	vertexs[3].texcoord = XMFLOAT2(1.0f, 1.0f);
 
-	//����������������
-	//ע�������ֶ����ж��ǲ��Ǳ���
 	indices[0] = 0;
 	indices[1] = 1;
 	indices[2] = 2;
@@ -99,8 +83,6 @@ bool Quad::InitializeBuffer()
 	indices[4] = 3;
 	indices[5] = 2;
 
-
-	//��һ,���(����)�������ݽṹ�������Դ���ݽṹ��,���������㻺��(�����õ��Ƕ�̬����)
 	D3D11_BUFFER_DESC vertexBufferDesc;
 	vertexBufferDesc.Usage = D3D11_USAGE_DEFAULT;
 	vertexBufferDesc.ByteWidth = sizeof(Vertex) * mVertexCount;
@@ -115,7 +97,6 @@ bool Quad::InitializeBuffer()
 	vertexData.SysMemSlicePitch = 0;
 	HR(g_pDevice->CreateBuffer(&vertexBufferDesc, &vertexData, &md3dVertexBuffer));
 
-	//�ڶ�,���(����)�������ݽṹ�������Դ���ݽṹ��,��������������
 	D3D11_BUFFER_DESC  indexBufferDesc;
 	indexBufferDesc.Usage = D3D11_USAGE_DEFAULT;
 	indexBufferDesc.ByteWidth = sizeof(WORD) * mIndexCount;
@@ -130,7 +111,6 @@ bool Quad::InitializeBuffer()
 	indexData.SysMemSlicePitch = 0;
     HR(g_pDevice->CreateBuffer(&indexBufferDesc, &indexData, &md3dIndexBuffer));
 
-	//�ͷŶ����������������
 	delete[]vertexs;
 	vertexs = nullptr;
 	delete[]indices;
@@ -141,8 +121,6 @@ bool Quad::InitializeBuffer()
 
 void Quad::ShutdownBuffer()
 {
-	//�ͷŶ��㻺�����������
 	ReleaseCOM(md3dIndexBuffer);
 	ReleaseCOM(md3dVertexBuffer);
-
 }

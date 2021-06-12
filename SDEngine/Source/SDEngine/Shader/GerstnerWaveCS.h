@@ -1,9 +1,9 @@
-#pragma once
+ï»¿#pragma once
 #ifndef _GERSTNER_WAVE_CS_H
 #define _GERSTNER_WAVE_CS_H
 
 
-#include "../Common/CoreMini.h"
+#include "CoreMinimal.h"
 
 struct CBGerstnerWaveUpdate
 {
@@ -11,7 +11,7 @@ struct CBGerstnerWaveUpdate
 	XMFLOAT3 pad;
 };
 
-//ÑÏ¸ñ¶ÔÓ¦ComputerShaderµÄConstantBuffer
+//ä¸¥æ ¼å¯¹åº”ComputerShaderçš„ConstantBuffer
 struct GerstnerParam
 {
 public:
@@ -44,8 +44,8 @@ struct CBGerstnerWaveNoUpdate
 {
 	GerstnerParam gerstnerData[3];
 	float fWaveGridSize;
-	float fGroundCountX; //X·½ÏòÓĞ¼¸¸öÏß³ÌÍÅ   
-	float fGroundCountY; //Y·½ÏòÓĞ¼¸¸öÏß³ÌÍÅ
+	float fGroundCountX; //Xæ–¹å‘æœ‰å‡ ä¸ªçº¿ç¨‹å›¢   
+	float fGroundCountY; //Yæ–¹å‘æœ‰å‡ ä¸ªçº¿ç¨‹å›¢
 	float fUVTile;
 	float fUVMoveSpeed;
 	XMFLOAT3 pad;

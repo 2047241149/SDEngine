@@ -47,9 +47,6 @@
     <ClInclude Include="Source\SDEngine\Common\CommonFunction.h">
       <Filter>SDEngine\Common</Filter>
     </ClInclude>
-    <ClInclude Include="Source\SDEngine\Common\CoreMini.h">
-      <Filter>SDEngine\Common</Filter>
-    </ClInclude>
     <ClInclude Include="Source\SDEngine\Common\DirectxCore.h">
       <Filter>SDEngine\Common</Filter>
     </ClInclude>
@@ -78,6 +75,12 @@
       <Filter>SDEngine\EditorUI</Filter>
     </ClInclude>
     <ClInclude Include="Source\SDEngine\EditorUI\ImGuiLayer.h">
+      <Filter>SDEngine\EditorUI</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\SDEngine\EditorUI\imgui_impl_dx11.h">
+      <Filter>SDEngine\EditorUI</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\SDEngine\EditorUI\imgui_impl_win32.h">
       <Filter>SDEngine\EditorUI</Filter>
     </ClInclude>
     <ClInclude Include="Source\SDEngine\EntryPoint.h">
@@ -261,8 +264,6 @@
       <Filter>SDEngine</Filter>
     </ClInclude>
     <ClInclude Include="Source\pch.h" />
-    <ClInclude Include="Source\SDEngine\EditorUI\imgui_impl_dx11.h" />
-    <ClInclude Include="Source\SDEngine\EditorUI\imgui_impl_win32.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\SDEngine\ClusterDefferedSceneRender.cpp">
@@ -284,6 +285,12 @@
       <Filter>SDEngine\DebugTool</Filter>
     </ClCompile>
     <ClCompile Include="Source\SDEngine\EditorUI\ImGuiLayer.cpp">
+      <Filter>SDEngine\EditorUI</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\SDEngine\EditorUI\imgui_impl_dx11.cpp">
+      <Filter>SDEngine\EditorUI</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\SDEngine\EditorUI\imgui_impl_win32.cpp">
       <Filter>SDEngine\EditorUI</Filter>
     </ClCompile>
     <ClCompile Include="Source\SDEngine\FPS.cpp">
@@ -446,7 +453,5 @@
       <Filter>SDEngine</Filter>
     </ClCompile>
     <ClCompile Include="Source\pch.cpp" />
-    <ClCompile Include="Source\SDEngine\EditorUI\imgui_impl_dx11.cpp" />
-    <ClCompile Include="Source\SDEngine\EditorUI\imgui_impl_win32.cpp" />
   </ItemGroup>
 </Project>

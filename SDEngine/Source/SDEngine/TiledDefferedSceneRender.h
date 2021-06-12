@@ -2,7 +2,7 @@
 #ifndef _TILED_DEFFERED_SCENE_RENDER_H
 #define _TILED_DEFFERED_SCENE_RENDER_H
 
-#include "SceneRender.h"
+
 class SkyBox;
 class RenderTexture;
 class Quad;
@@ -21,14 +21,17 @@ class PrefliterCubeMap;
 class RWRenderTexture;
 class SceneManager;;
 
+#include<iostream>
+#include<memory>
+#include "SceneRender.h"
 #include "Common/DirectxCore.h"
 #include "Common/Macro.h"
-#include"Light/Light.h"
-#include"FPS.h"
-#include<memory>
+#include "Light/Light.h"
+#include "FPS.h"
 #include "Common/GraphicsConfig.h"
 #include "SceneRender.h"
 #include "GameObject/Mesh.h"
+using namespace std;
 
 class TiledDefferedSceneRender : public SceneRender
 {

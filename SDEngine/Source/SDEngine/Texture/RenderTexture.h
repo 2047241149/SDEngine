@@ -1,9 +1,9 @@
-#pragma once
+﻿#pragma once
 #ifndef _RENDER_TEXTURE_H
 #define _RENDER_TEXTURE_H
 
-#include "../Common/CoreMini.h"
-#include "../Common/UtilityEnum.h"
+#include "CoreMinimal.h"
+#include "SDEngine/Common/UtilityEnum.h"
 
 class RenderTexture
 {

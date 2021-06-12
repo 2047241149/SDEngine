@@ -1,4 +1,4 @@
-#include "DirectxFrame.h"
+﻿#include "DirectxFrame.h"
 
 namespace DirectXFrame
 {
@@ -8,12 +8,12 @@ namespace DirectXFrame
 		
 		D3D11_RASTERIZER_DESC rasterDesc;
 		rasterDesc.AntialiasedLineEnable = false;
-		rasterDesc.CullMode = CullMode; //�����޳�
+		rasterDesc.CullMode = CullMode;
 		rasterDesc.DepthBias = 0;
 		rasterDesc.DepthBiasClamp = 0.0f;
-		rasterDesc.DepthClipEnable = bDepthClipEnable; //��Ȳü�����
-		rasterDesc.FillMode = FillMode; //ʵ����Ⱦ
-		rasterDesc.FrontCounterClockwise = false; //˳ʱ��
+		rasterDesc.DepthClipEnable = bDepthClipEnable;
+		rasterDesc.FillMode = FillMode;
+		rasterDesc.FrontCounterClockwise = false;
 		rasterDesc.MultisampleEnable = false;
 		rasterDesc.ScissorEnable = false;
 		rasterDesc.SlopeScaledDepthBias = 0.0f;

@@ -7,6 +7,7 @@
 #include "Input.h"
 #include "WindowInfo.h"
 #include "FPS.h"
+#include "Light/LightManager.h"
 
 SceneManager::SceneManager()
 {
@@ -56,14 +57,14 @@ bool SceneManager::Init()
 			float randFloat1 = (float)rand() / (float)RAND_MAX;
 			float randFloat2 = (float)rand() / (float)RAND_MAX;
 			float randFloat3 = (float)rand() / (float)RAND_MAX;
-			float r = randFloat1 >= 0.5 ? 1.0 : 0.0;
-			float g = randFloat2 >= 0.5 ? 1.0 : 0.0;
-			float b = randFloat3 >= 0.5 ? 1.0 : 0.0;
+			float r = randFloat1 >= 0.5f ? 1.0f : 0.0f;
+			float g = randFloat2 >= 0.5f ? 1.0f : 0.0f;
+			float b = randFloat3 >= 0.5f ? 1.0f : 0.0f;
 			if (r == 0 && g == 0 && b == 0)
-				r = 1.0;
+				r = 1.0f;
 
-			float posx = randFloat1 - 0.5;
-			float posy = randFloat2 - 0.5;
+			float posx = randFloat1 - 0.5f;
+			float posy = randFloat2 - 0.5f;
 			shared_ptr<PointLight> pointLight = shared_ptr<PointLight>(new PointLight());
 			pointLight->SetLightColor(XMFLOAT3(r, g, b));
 			pointLight->SetLightIntensity(6.0f);
