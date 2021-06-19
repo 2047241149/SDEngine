@@ -4,9 +4,9 @@
 
 #include "CoreMinimal.h"
 #include "SDEngine/Texture/Texture.h"
-#include "Import/ImportFBX.h"
-#include "Light/Light.h"
-#include "Shader/ShaderManager.h"
+#include "SDEngine/Import/ImportFBX.h"
+#include "SDEngine/Light/Light.h"
+#include "SDEngine/Shader/ShaderManager.h"
 #include "Camera.h"
 #include "Mesh.h"
 
@@ -30,13 +30,14 @@ public:
 	~GameObject();
 
 public:
-	//Initialize是创建元素,Render是设置元素,Shutdown是Release
 	bool Init();
+	
 	void Shutdown();
-
+	
 	void Render(RenderMode renderMode = RenderMode::Material);
-
+	
 	void RenderMesh();
+
 	XMMATRIX GetWorldMatrix();
 
 	void SetMesh(shared_ptr<Mesh> pMesh);

@@ -1,5 +1,5 @@
 ﻿#include "Shader.h"
-#include<algorithm>
+#include "Log.h"
 
 const int CONSTANT_BUFFER_SIZE = 16;
 const int SHADER_FLOAT_SIZE = 4;
@@ -436,13 +436,15 @@ bool VertexPixelShader::InitShader(WCHAR* VSFileName, WCHAR* PSFileName)
 		//存在错误信息
 		if (pErrorMessage)
 		{
-			//Log::LogShaderCompileInfo(pErrorMessage, VSFileName);
+			Log::LogShaderCompileInfo(pErrorMessage, VSFileName);
 		}
 		//不存在错误信息,也就是没有找到Shader文件
 		else
 		{
 			MessageBox(nullptr, L"can not find VS file", L"error", MB_OK);
 		}
+
+		return false;
 	}
 
 	HR(g_pDevice->CreateVertexShader(pVertexShaderBlob->GetBufferPointer(),
@@ -464,6 +466,8 @@ bool VertexPixelShader::InitShader(WCHAR* VSFileName, WCHAR* PSFileName)
 		{
 			MessageBox(NULL, L"can not find PS file", L"error", MB_OK);
 		}
+
+		return false;
 	}
 
 	HR(g_pDevice->CreatePixelShader(pPixelShaderBlob->GetBufferPointer(), pPixelShaderBlob->GetBufferSize(), nullptr, &pixelShader));

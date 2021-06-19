@@ -14,6 +14,9 @@
 using namespace std;
 using namespace DirectX;
 
+class Event;
+class WindowResizeEvent;
+
 class DirectxCore
 {
 private:
@@ -25,14 +28,13 @@ public:
 	~DirectxCore();
 
 	static shared_ptr<DirectxCore> Get();
-
 	ID3DUserDefinedAnnotation* d3dUserDefinedAnnot;
-
 	bool Init(bool vsync, bool fullscreen);
 
 public:
-	//绘制场景函数
+	void SetBeginSceneColor(XMFLOAT4 sceneInitColor);
 	void BeginScene(float red, float green, float blue, float alpha);
+	void BeginSceneRender();
 	void EndScene();
 
 	//Get函数
@@ -48,6 +50,7 @@ public:
 	//Set函数
 	void SetBackBufferRender();  //设置背后缓存作为渲染目标
 	void SetDefualtViewPort(); //重置该视口
+	void ResizeBackBuffer(UINT width, UINT height);
 
 	//打开和关闭alpha混合函数
 	void TurnOnAlphaBlend();
@@ -126,16 +129,20 @@ private:
 	ID3D11BlendState* md3dDisableBlendState; //关闭alpha的混合状态
 	ID3D11BlendState* m_pLightBlendState;
 	D3D11_VIEWPORT mViewport;
-};
+	XMFLOAT4 sceneInitColor;
 
+public:
+	void OnEvent(Event& event);
+	bool OnReiszeWindow(WindowResizeEvent& event);
+};
 
 
 #define GDirectxCore (DirectxCore::Get())
 #define g_pDeviceContext DirectxCore::Get()->GetDeviceContext()
-#define g_pDevice  DirectxCore::Get()->GetDevice()
+#define g_pDevice DirectxCore::Get()->GetDevice()
 #define g_DXGIOutput DirectxCore::Get()->GetDXGIOutput()
-#define	g_RenderMask  DirectxCore::Get()->d3dUserDefinedAnnot
-
+#define	g_RenderMask DirectxCore::Get()->d3dUserDefinedAnnot
+#define GMainViewRTV (DirectxCore::Get())->GetRTV()
 
 
 #endif 

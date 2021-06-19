@@ -1,7 +1,7 @@
-﻿#include"GameObject.h"
-#include "../Texture/TextureSamplerManager.h"
-#include "../Common/GraphicsConfig.h"
-#include "../Texture/TextureManager.h"
+﻿#include "GameObject.h"
+#include "SDEngine/Texture/TextureSamplerManager.h"
+#include "SDEngine/Common/GraphicsConfig.h"
+#include "SDEngine/Texture/TextureManager.h"
 
 GameObject::GameObject()
 {
@@ -34,7 +34,6 @@ void GameObject::Render(RenderMode renderMode)
 	XMMATRIX worldMatrix = this->GetWorldMatrix();
 	XMFLOAT4 errorShaderColor = XMFLOAT4(1.0f, 0.0f, 0.0f, 1.0f);
 
-	//������ƬԪ
 	g_pDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 	vector<ModelData>& mModelList = m_pMesh->m_pFBXModel->mModelList;
 	for (UINT index = 0; index < mModelList.size(); ++index)
@@ -44,7 +43,6 @@ void GameObject::Render(RenderMode renderMode)
 
 		for (UINT i = 0; i < mMeshList.size(); ++i)
 		{	
-			//���ݲ���Id������Ӧ��VertexShader,PixelShader
 			MeshData& mesh = mMeshList[i];
 
 			MaterialTexFileName& material = mModelData->mMaterialMap[mesh.materialId];
@@ -64,7 +62,7 @@ void GameObject::Render(RenderMode renderMode)
 				GShaderManager->depthShader->SetMatrix("Proj", GCamera->GetProjectionMatrix());
 				GShaderManager->depthShader->Apply();
 			}
-			//����ɫ����ģʽ TODO:�����ظ�,��Ҫ�ع�
+
 			else if (eMaterialType == MaterialType::PURE_COLOR)
 			{
 				GShaderManager->pureColorShader->SetMatrix("World", worldMatrix);
@@ -76,7 +74,7 @@ void GameObject::Render(RenderMode renderMode)
 				GShaderManager->pureColorShader->SetFloat("metal", m_pMesh->metal);
 				GShaderManager->pureColorShader->Apply();
 			}
-			//��������ͼ(������)
+
 			else if (eMaterialType == MaterialType::DIFFUSE)
 			{
 				if (albedoSRV == nullptr|| material.diffuseMapFileName =="")
@@ -105,7 +103,7 @@ void GameObject::Render(RenderMode renderMode)
 					GShaderManager->diffuseShader->Apply();
 				}
 			}
-			//������ + ������ͼ
+
 			else if (eMaterialType == MaterialType::DIFFUSE_NORMAL)
 			{
 				if (albedoSRV && bumpSRV&&material.bumpMapFileName != "")
@@ -134,7 +132,7 @@ void GameObject::Render(RenderMode renderMode)
 					GShaderManager->pureColorShader->Apply();
 				}
 			}
-			//������ + ������ͼ
+
 			else if (eMaterialType == MaterialType::DIFFUSE_SPECULAR)
 			{
 				if (albedoSRV && specSRV&&material.specularMapFileName != "")
@@ -162,7 +160,7 @@ void GameObject::Render(RenderMode renderMode)
 					GShaderManager->pureColorShader->Apply();
 				}
 			}
-			//��������ͼ + ������ͼ + ������ͼ
+
 			else if (eMaterialType == MaterialType::DIFFUSE_NORMAL_SPECULAR)
 			{
 				if (albedoSRV && bumpSRV&&specSRV && material.bumpMapFileName != "" &&  material.specularMapFileName!="")
@@ -192,7 +190,7 @@ void GameObject::Render(RenderMode renderMode)
 					GShaderManager->pureColorShader->Apply();
 				}
 			}
-			//�߿����ģʽ
+
 			else if(eMaterialType == MaterialType::WIRE_FRAME)
 			{
 				GShaderManager->pureColorShader->SetMatrix("World", worldMatrix);
@@ -206,7 +204,6 @@ void GameObject::Render(RenderMode renderMode)
 
 			} 
 
-			//������ȡ��Ȼ���
 			else if (eMaterialType == MaterialType::DEPTH_BUFFER)
 			{
 				GShaderManager->depthGetShader->SetMatrix("World", worldMatrix);
@@ -215,14 +212,10 @@ void GameObject::Render(RenderMode renderMode)
 				GShaderManager->depthGetShader->Apply();
 			}
 
-			//���ö��㻺��
-			UINT stride = sizeof(mesh.mVertexData[0]); //ÿ������Ԫ�صĿ�ȴ�С������˵ÿ������Ԫ�صĴ�С
+			UINT stride = sizeof(mesh.mVertexData[0]);
 			UINT offset = 0;
 			g_pDeviceContext->IASetVertexBuffers(0, 1, &mesh.mVertexBuffer, &stride, &offset);
-
-			//������������
-			g_pDeviceContext->IASetIndexBuffer(mesh.mIndexBuffer, DXGI_FORMAT_R16_UINT, 0); //WordΪ�����ֽ�																		  //�������˷�ʽ
-
+			g_pDeviceContext->IASetIndexBuffer(mesh.mIndexBuffer, DXGI_FORMAT_R16_UINT, 0);																 
 			g_pDeviceContext->DrawIndexed((UINT)mesh.mIndexData.size(), 0, 0);
 		}
 	}
@@ -231,7 +224,6 @@ void GameObject::Render(RenderMode renderMode)
 
 void GameObject::RenderMesh()
 {
-	//������ƬԪ
 	g_pDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
 	vector<ModelData>& mModelList = m_pMesh->m_pFBXModel->mModelList;
@@ -244,22 +236,14 @@ void GameObject::RenderMesh()
 
 		for (UINT i = 0; i < mMeshList.size(); ++i)
 		{
-
-			//���ݲ���Id������Ӧ��VertexShader,PixelShader
 			MeshData& mesh = mMeshList[i];
-
-			//���ö��㻺��
-			UINT stride = sizeof(mesh.mVertexData[0]); //ÿ������Ԫ�صĿ�ȴ�С������˵ÿ������Ԫ�صĴ�С
+			UINT stride = sizeof(mesh.mVertexData[0]);
 			UINT offset = 0;
 			g_pDeviceContext->IASetVertexBuffers(0, 1, &mesh.mVertexBuffer, &stride, &offset);
-
-			//������������
-			g_pDeviceContext->IASetIndexBuffer(mesh.mIndexBuffer, DXGI_FORMAT_R16_UINT, 0); //WordΪ�����ֽ�																		  //�������˷�ʽ
-
+			g_pDeviceContext->IASetIndexBuffer(mesh.mIndexBuffer, DXGI_FORMAT_R16_UINT, 0);																
 			g_pDeviceContext->DrawIndexed((UINT)mesh.mIndexData.size(), 0, 0);
 		}
 	}
-
 }
 
 XMMATRIX GameObject::GetWorldMatrix()

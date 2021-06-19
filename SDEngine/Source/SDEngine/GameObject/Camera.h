@@ -1,36 +1,37 @@
-
+ï»¿
 #pragma once
-#ifndef  _CAMERA_H
+#ifndef _CAMERA_H
 #define _CAMERA_H
-//Õâ¸öÀà·â×°ÁËÏà»úµÄÎ»ÖÃºÍĞı×ªÁ¿
+
 #include<Windows.h>
 #include<DirectXMath.h>
 #include<iostream>
 #include<memory>
 using namespace DirectX;
 using std::shared_ptr;
+
 class Camera
 {
+	//TODO: attri will become private, use getXXX 
 public:
-	//Ïà»úÔÚÊÀ½ç¿Õ¼äµÄÎ»ÖÃºÍ·½ÏòÏòÁ¿
-	XMFLOAT3 mPosition;
-	XMFLOAT3 mRight;
-	XMFLOAT3 mUp;
-	XMFLOAT3 mLook;
+	//View Params
+	XMFLOAT3 position;
+	XMFLOAT3 right;
+	XMFLOAT3 up;
+	XMFLOAT3 look;
 
-	//Proj²ÎÊı
-	float mFovY;
-	float mAspect;
-	float mNearPlane;
-	float mFarPlane;
+	//Proj Params
+	float fovY;
+	float aspect;
+	float nearPlane;
+	float farPlane;
 
-	float mScreenWidth, mScreenHeight;
+	//TODO: remove screenWidth and screenHeight, it is in GGameWindow
+	float screenWidth, screenHeight;
 
-
-	//»º´æÏà»ú±ä»»¾ØÕó
-	XMMATRIX mViewMatrix;
-	XMMATRIX mUIViewMatrix;
-	XMMATRIX mProjMatrix;  //Í¶Ó°¾ØÕó
+	XMMATRIX viewMatrix;
+	XMMATRIX uiViewMatrix;
+	XMMATRIX projMatrix;
 
 public:
 	Camera();
@@ -38,60 +39,45 @@ public:
 	~Camera();
 
 	static shared_ptr<Camera> Get();
+
+private:
+	static shared_ptr<Camera> single;
+
 public:
-	static shared_ptr<Camera> m_pCamera;
-public:
-	//Ïà»úÎ»ÖÃ
 	void SetPosition(float x, float y, float z);
 	void SetPosition(const XMFLOAT3& v);
 	void SetProjParams(float fovY = XM_PIDIV4, float aspect = 1.0f, float nearPlane = 0.1f, float farPlane = 500.0f);
 	void SetUIOrthoParams(float screenWidth, float screenHeight);
 	XMFLOAT3 GetPosition()const;
 	XMVECTOR GetPositionXM()const;
-
-	//»ñÈ¡Ïà»úµÄ»ù´¡ÏòÁ¿(Up,Look,Right)
 	XMFLOAT3 GetUp()const;
 	XMVECTOR GetUpXM()const;
 	XMFLOAT3 GetLook()const;
 	XMVECTOR GetLookXM()const;
 	XMFLOAT3 GetRight()const;
 	XMVECTOR GetRightXM()const;
-
-	//»ñÈ¡Ïà»úµÄÊôĞÔ
 	float GetNearPlane()const;
 	float GetFarPlane()const;
-
-	//Í¨¹ıÏà»úÔÚÊÀ½ç¿Õ¼äµÄÎ»ÖÃ£¬Ä¿±êµã£¬ÒÔ¼°ÉÏÏòÁ¿À´¶¨ÒåÏà»ú±ä»»¾ØÕó
 	void LookAt(FXMVECTOR pos, FXMVECTOR target, FXMVECTOR worldUp);
-	
-	//»ñÈ¡Ïà»ú±ä»»¾ØÕó
 	XMMATRIX GetViewMatrix()const;
-
-	//»ñÈ¡UIÏà»ú±ä»»¾ØÕó
 	XMMATRIX GetUIViewMatrix()const;
-	
-	//»ñÈ¡UIÕı½»Í¶Ó°¾ØÕó
 	XMMATRIX GetUIOrthoMatrix()const;
-
-	//»ñÈ¡Í¸ÊÓÍ¶Ó°¾ØÕó
 	XMMATRIX GetProjectionMatrix()const;
-
-	//¸üĞÂÏà»ú±ä»»¾ØÕó
 	void UpdateViewMatrix();
 
-	//×óÓÒÒÆ¶¯(ÑØ×ÅÓÒÏòÁ¿ÒÆ¶¯)
+	//left right mov
 	void Strafe(float d);
 
-	//Ç°ºóÒÆ¶¯(ÑØ×ÅLookAtÏòÁ¿ÒÆ¶¯)
+	//forward back Move
 	void Walk(float d);
 
-	//ÉÏÏÂÒÆ¶¯(ÑØ×ÅÊÀ½ç¿Õ¼äµÄYÖáÒÆ¶¯)
+	//up down move
 	void UpDown(float d);
 
-	//ÈÆÏà»úµÄÓÒÏòÁ¿Ğı×ª
+	//rotate right vec
 	void Pitch(float angle);
 
-	//ÈÆÊÀ½ç¿Õ¼äµÄYÖá½øĞĞĞı×ª,×¢ÒâĞı×ª½Ç¶ÈÓ¦¸ÃÔÚ³õÊ¼·½ÏòµÄÕı¸º90¶ÈÖ®¼ä,Ğé»ÃËÄÒıÇæ¾ÍÊÇÕâÑùµÄ(-90.0f<=RotateAngle<=90.0f)
+	//row y in wolrdspace (-90.0f<=rotateAngle<=90.0f)
 	void RotateY(float angle);
 };
 #endif 

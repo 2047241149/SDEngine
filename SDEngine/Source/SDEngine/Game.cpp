@@ -6,25 +6,35 @@
 #include "Common/DirectxCore.h"
 #include "FPS.h"
 #include "Input.h"
+#include "GameObject/Camera.h"
+#include "EditorUI/ImGuiLayer.h"
 
 Game::Game()
 {
 	bRunning = true;
 	layerManager = shared_ptr<LayerManager>(new LayerManager());
+	imguiLayer = make_shared<ImGuiLayer>();
 
-	GGameWindow->Init();
 	GGameWindow->SetEventCallback(BIND_EVENT(Game::OnEvent, this));
+	GGameWindow->Init();
+
 	GGameWindow->SetVSync(true);
 	GDirectxCore->Init(GIsVSync, GIsFullScrren);
 	GInput->Init();
+	GCamera->SetProjParams(XM_PI / 3.0f, (float)GWindowWidth / (float)GWindowHeight);
+	GCamera->SetUIOrthoParams((float)GWindowWidth, (float)GWindowHeight);
+	imguiLayer->OnAttach();
 }
 
 Game::~Game()
 {
+	imguiLayer->OnDetach();
 }
 
 void Game::OnEvent(Event& event)
 {
+	GDirectxCore->OnEvent(event);
+
 	EventDispatcher dispatcher(event);
 	dispatcher.Dispath<WindowCloseEvent>(BIND_EVENT(Game::OnClose, this));
 	Log::Info(event);
@@ -50,13 +60,23 @@ void Game::Run()
 
 		GFPS->Frame();
 		GInput->Tick();
-		GDirectxCore->BeginScene(1.0, 0.0, 0.0, 1.0);
+		GDirectxCore->BeginSceneRender();
+
+		imguiLayer->BeginRender();
+		for (auto it = layerManager->Begin(); it != layerManager->End(); ++it)
+		{
+			(*it)->OnImguiRender();
+		}
+
+		OnImguiRender();
+		imguiLayer->EndRender();
 
 		for (auto it = layerManager->Begin(); it != layerManager->End(); ++it)
 		{
 			(*it)->OnUpdate(GFPS->GetDeltaTime());
 		}
 
+		Update();
 		GDirectxCore->EndScene();
 	}
 }

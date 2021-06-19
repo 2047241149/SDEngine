@@ -9,7 +9,7 @@ struct WindowProp
 	int height;
 
 	WindowProp(const string& inTitle = "SDEngine",
-		int inWidth = 1280, int inHeight = 800):
+		int inWidth = 1200, int inHeight = 800):
 		tile(inTitle),
 		width(inWidth),
 		height(inHeight)
@@ -32,6 +32,8 @@ public:
 	//Window attributes
 	int GetWidth() { return data.width; }
 	int GetHeight() { return data.height; }
+	int GetViewportWidth() { return data.viewportWidth; }
+	int GetViewportHeight() { return data.viewportHeight; }
 	HWND GetHwnd() { return hwnd; }
 	HINSTANCE GetWindowHinstance() { return hinstance; }
 	bool IsVSync();
@@ -53,6 +55,7 @@ private:
 	{
 		string title;
 		int width, height;
+		int viewportWidth, viewportHeight;
 		bool bVSync;
 		bool fullScreen;
 	};
@@ -74,6 +77,8 @@ private:
 #define GGameWindow (GameWindow::Get())
 #define GWindowWidth (GGameWindow->GetWidth())
 #define GWindowHeight (GGameWindow->GetHeight())
+#define GViewportWidth (GGameWindow->GetViewportWidth())
+#define GViewportHeight (GGameWindow->GetViewportHeight())
 #define GWindowHwnd (GGameWindow->GetHwnd())
 #define GWindowHinstance (GGameWindow->GetWindowHinstance())
 #define GIsVSync (GGameWindow->IsVSync())

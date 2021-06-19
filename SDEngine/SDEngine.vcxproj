@@ -69,7 +69,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
     <Lib>
-      <AdditionalDependencies>dxguid.lib;dxgi.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>libfbxsdk-mt.lib;dxguid.lib;dxgi.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Lib>
     <PostBuildEvent>
       <Command>IF EXIST ThirdParty\fbxsdk\2017.1\lib\x64\debug\libfbxsdk.dll\ (xcopy /Q /E /Y /I ThirdParty\fbxsdk\2017.1\lib\x64\debug\libfbxsdk.dll ..\bin\Debug-x86_64\TestGame &gt; nul) ELSE (xcopy /Q /Y /I ThirdParty\fbxsdk\2017.1\lib\x64\debug\libfbxsdk.dll ..\bin\Debug-x86_64\TestGame &gt; nul)</Command>
@@ -95,7 +95,7 @@
       <OptimizeReferences>true</OptimizeReferences>
     </Link>
     <Lib>
-      <AdditionalDependencies>dxguid.lib;dxgi.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>libfbxsdk-mt.lib;dxguid.lib;dxgi.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Lib>
     <PostBuildEvent>
       <Command>IF EXIST ThirdParty\fbxsdk\2017.1\lib\x64\debug\libfbxsdk.dll\ (xcopy /Q /E /Y /I ThirdParty\fbxsdk\2017.1\lib\x64\debug\libfbxsdk.dll ..\bin\Release-x86_64\TestGame &gt; nul) ELSE (xcopy /Q /Y /I ThirdParty\fbxsdk\2017.1\lib\x64\debug\libfbxsdk.dll ..\bin\Release-x86_64\TestGame &gt; nul)</Command>

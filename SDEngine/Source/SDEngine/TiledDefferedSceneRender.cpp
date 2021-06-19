@@ -253,8 +253,8 @@ void TiledDefferedSceneRender::RenderDebugWindow()
 		mGeometryBuffer->GetGBufferSRV(GBufferType::Depth));
 	GShaderManager->depthDisplayShader->SetMatrix("UIView", GCamera->GetUIViewMatrix());
 	GShaderManager->depthDisplayShader->SetMatrix("UIOrtho", GCamera->GetUIOrthoMatrix());
-	GShaderManager->depthDisplayShader->SetFloat("farPlane", GCamera->mFarPlane);
-	GShaderManager->depthDisplayShader->SetFloat("nearPlane", GCamera->mNearPlane);
+	GShaderManager->depthDisplayShader->SetFloat("farPlane", GCamera->farPlane);
+	GShaderManager->depthDisplayShader->SetFloat("nearPlane", GCamera->nearPlane);
 	GShaderManager->depthDisplayShader->Apply();
 	mDebugWindow->Render(490, 600);
 
@@ -313,8 +313,8 @@ void TiledDefferedSceneRender::RenderSSRPass()
 			perspectiveValues.y = -projFloat4X4.m[2][2];
 			GShaderManager->ssrShader->SetMatrix("View", GCamera->GetViewMatrix());
 			GShaderManager->ssrShader->SetMatrix("Proj", GCamera->GetProjectionMatrix());
-			GShaderManager->ssrShader->SetFloat("farPlane", GCamera->mFarPlane);
-			GShaderManager->ssrShader->SetFloat("nearPlane", GCamera->mNearPlane);
+			GShaderManager->ssrShader->SetFloat("farPlane", GCamera->farPlane);
+			GShaderManager->ssrShader->SetFloat("nearPlane", GCamera->nearPlane);
 			GShaderManager->ssrShader->SetFloat2("perspectiveValues", perspectiveValues);
 			GShaderManager->ssrShader->SetTexture("DiffuseTex", mSrcRT->GetSRV());
 			GShaderManager->ssrShader->SetTexture("FrontDepthTex", mGeometryBuffer->GetGBufferSRV(GBufferType::Depth));
@@ -446,11 +446,11 @@ void TiledDefferedSceneRender::RenderTiledLightPass()
 	GShaderManager->tiledLightShader->SetStructBuffer("PointLights", pointLights.data(), (int)pointLights.size());
 	GShaderManager->tiledLightShader->SetRWTexture("OutputTexture", mTiledLightRT->GetUAV());
 	GShaderManager->tiledLightShader->SetFloat("lightCount", (float)pointLights.size());
-	GShaderManager->tiledLightShader->SetFloat("farPlane", GCamera->mFarPlane);
-	GShaderManager->tiledLightShader->SetFloat("nearPlane", GCamera->mNearPlane);
+	GShaderManager->tiledLightShader->SetFloat("farPlane", GCamera->farPlane);
+	GShaderManager->tiledLightShader->SetFloat("nearPlane", GCamera->nearPlane);
 	GShaderManager->tiledLightShader->SetFloat3("cameraPos", GCamera->GetPosition());
-	GShaderManager->tiledLightShader->SetFloat("ScreenWidth", GCamera->mScreenWidth);
-	GShaderManager->tiledLightShader->SetFloat("ScreenHeight", GCamera->mScreenHeight);
+	GShaderManager->tiledLightShader->SetFloat("ScreenWidth", GCamera->screenWidth);
+	GShaderManager->tiledLightShader->SetFloat("ScreenHeight", GCamera->screenHeight);
 	GShaderManager->tiledLightShader->SetFloat("bDebugLightCount", GSceneManager->bDebugLightCount ? 1.0f : 0.0f);
 	GShaderManager->tiledLightShader->SetMatrix("View", GCamera->GetViewMatrix());
 	GShaderManager->tiledLightShader->SetMatrix("ProjInv", FMath::GetInvense(GCamera->GetProjectionMatrix()));

@@ -54,6 +54,7 @@ static ID3D11ShaderResourceView*g_pFontTextureView = NULL;
 static ID3D11RasterizerState*   g_pRasterizerState = NULL;
 static ID3D11BlendState*        g_pBlendState = NULL;
 static ID3D11DepthStencilState* g_pDepthStencilState = NULL;
+static ID3D11RenderTargetView*  g_pMainRenderTarget = NULL;
 static int                      g_VertexBufferSize = 5000, g_IndexBufferSize = 10000;
 
 struct VERTEX_CONSTANT_BUFFER
@@ -514,7 +515,7 @@ void    ImGui_ImplDX11_InvalidateDeviceObjects()
     if (g_pVertexShader) { g_pVertexShader->Release(); g_pVertexShader = NULL; }
 }
 
-bool    ImGui_ImplDX11_Init(ID3D11Device* device, ID3D11DeviceContext* device_context)
+bool    ImGui_ImplDX11_Init(ID3D11Device* device, ID3D11DeviceContext* device_context, ID3D11RenderTargetView* rtv)
 {
     // Setup backend capabilities flags
     ImGuiIO& io = ImGui::GetIO();
@@ -534,7 +535,9 @@ bool    ImGui_ImplDX11_Init(ID3D11Device* device, ID3D11DeviceContext* device_co
                 g_pd3dDevice = device;
                 g_pd3dDeviceContext = device_context;
                 g_pFactory = pFactory;
+				g_pMainRenderTarget = rtv;
             }
+
     if (pDXGIDevice) pDXGIDevice->Release();
     if (pDXGIAdapter) pDXGIAdapter->Release();
     g_pd3dDevice->AddRef();
@@ -634,19 +637,20 @@ static void ImGui_ImplDX11_DestroyWindow(ImGuiViewport* viewport)
 static void ImGui_ImplDX11_SetWindowSize(ImGuiViewport* viewport, ImVec2 size)
 {
     ImGuiViewportDataDx11* data = (ImGuiViewportDataDx11*)viewport->RendererUserData;
-    if (data->RTView)
+	if (data->RTView)
     {
         data->RTView->Release();
         data->RTView = NULL;
     }
+
     if (data->SwapChain)
     {
-        ID3D11Texture2D* pBackBuffer = NULL;
-        data->SwapChain->ResizeBuffers(0, (UINT)size.x, (UINT)size.y, DXGI_FORMAT_UNKNOWN, 0);
-        data->SwapChain->GetBuffer(0, IID_PPV_ARGS(&pBackBuffer));
-        if (pBackBuffer == NULL) { fprintf(stderr, "ImGui_ImplDX11_SetWindowSize() failed creating buffers.\n"); return; }
-        g_pd3dDevice->CreateRenderTargetView(pBackBuffer, NULL, &data->RTView);
-        pBackBuffer->Release();
+		ID3D11Texture2D* pBackBuffer = NULL;
+		data->SwapChain->ResizeBuffers(0, (UINT)size.x, (UINT)size.y, DXGI_FORMAT_UNKNOWN, 0);
+		data->SwapChain->GetBuffer(0, IID_PPV_ARGS(&pBackBuffer));
+		if (pBackBuffer == NULL) { fprintf(stderr, "ImGui_ImplDX11_SetWindowSize() failed creating buffers.\n"); return; }
+		g_pd3dDevice->CreateRenderTargetView(pBackBuffer, NULL, &data->RTView);
+		pBackBuffer->Release();
     }
 }
 

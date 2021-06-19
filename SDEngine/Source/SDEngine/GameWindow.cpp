@@ -1,8 +1,8 @@
 ﻿#include "GameWindow.h"
 #include "Common/CommonFunction.h"
 #include "Event/Event.h"
-#include "backends/imgui_impl_dx11.h"
-#include "backends/imgui_impl_win32.h"
+#include "EditorUI/imgui_impl_dx11.h"
+#include "EditorUI/imgui_impl_win32.h"
 
 extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 static GameWindow* gameWindow = nullptr;
@@ -153,6 +153,8 @@ LRESULT CALLBACK GameWindow::MessageHandler(HWND hwnd, UINT message, WPARAM wPar
 		{
 			int newWidth = LOWORD(lParam);
 			int newHeight = HIWORD(lParam);
+			data.viewportWidth = newWidth;
+			data.viewportHeight = newHeight;
 			WindowResizeEvent event(newWidth, newHeight);
 			eventCallback(event);
 			return 0;

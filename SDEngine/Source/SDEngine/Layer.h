@@ -20,6 +20,7 @@ public:
 	virtual void OnDetach() {};
 	virtual void OnUpdate(float deltaTime) {};
 	virtual void OnEvent(Event& event) {};
+	virtual void OnImguiRender() {};
 
 public:
 	string GetLayerName() { return layerName; }

@@ -1,7 +1,8 @@
 ﻿#include "ImguiLayer.h"
 #include "GameWindow.h"
-#include "backends/imgui_impl_dx11.h"
-#include "backends/imgui_impl_win32.h"
+#include "imgui.h"
+#include "imgui_impl_dx11.h"
+#include "imgui_impl_win32.h"
 #include "SDEngine/Common/DirectxCore.h"
 
 ImGuiLayer::ImGuiLayer() :
@@ -37,7 +38,7 @@ void ImGuiLayer::OnAttach()
 	}
 
 	ImGui_ImplWin32_Init(GWindowHwnd);
-	ImGui_ImplDX11_Init(g_pDevice, g_pDeviceContext);
+	ImGui_ImplDX11_Init(g_pDevice, g_pDeviceContext, GMainViewRTV);
 }
 
 void ImGuiLayer::OnDetach()
@@ -48,18 +49,19 @@ void ImGuiLayer::OnDetach()
 	ImGui::DestroyContext();
 }
 
-void ImGuiLayer::OnUpdate(float deltaTime)
+void ImGuiLayer::BeginRender()
 {
 	ImGui_ImplDX11_NewFrame();
 	ImGui_ImplWin32_NewFrame();
 	ImGui::NewFrame();
+}
 
+void ImGuiLayer::EndRender()
+{
 	ImGuiIO& io = ImGui::GetIO();
-	bool bShow = true;
-	ImGui::ShowDemoWindow(&bShow);
 	ImGui::Render();
 	ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
-	
+
 	// Update and Render additional Platform Windows
 	if (io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
 	{
@@ -67,7 +69,6 @@ void ImGuiLayer::OnUpdate(float deltaTime)
 		ImGui::RenderPlatformWindowsDefault();
 	}
 }
-
 /*void ImGuiLayer::OnEvent(Event& event)
 {
 	EventDispatcher eventDispatcher(event);

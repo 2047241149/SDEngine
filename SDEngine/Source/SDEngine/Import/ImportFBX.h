@@ -1,4 +1,4 @@
-#ifndef _IMPORT_FBX_H
+ï»¿#ifndef _IMPORT_FBX_H
 #define _IMPORT_FBX_H
 
 #include<d3d11_1.h>
@@ -8,7 +8,7 @@
 #include<vector>
 #include<memory>
 #include<map>
-#include"../Common/CommomVertexFormat.h"
+#include "SDEngine/Common/CommomVertexFormat.h"
 
 #define CONVERT_SCENE_SCALE
 using namespace std;
@@ -27,22 +27,22 @@ private:
 	FbxManager* mFbxManager = nullptr;
 	string fbxFileNamePre;
 private:
-	//¶ÁÈ¡Ò»¸ö³¡¾°µÄmeshÀàĞÍÊı¾İ
+	//è¯»å–ä¸€ä¸ªåœºæ™¯çš„meshç±»å‹æ•°æ®
 	void ReadSceneMeshData(FbxScene* scene);
 	void ReadMeshNodeData(FbxNode* node);
 	void ProcessMesh(FbxMesh* mesh, MemFBXModelData* fbxModel);
 	void ReadMeshMaterialIndex(FbxMesh* mesh, vector<Triangle>& triangleData);
 	void ChangeModelData(ModelData* destModel,MemFBXModelData* srcMemFBXModel);
 
-	//Èı½Ç»¯mesh
+	//ä¸‰è§’åŒ–mesh
 	void TriangulateRecursive(FbxNode* node);
 
 private:
-	//»ØÊÕ·ÖÅäµÄÊı¾İ
+	//å›æ”¶åˆ†é…çš„æ•°æ®
 	void ClearMemFBXModelData();
 
 private:
-	//¶ÁÈ¡¶¥µãµÄ³£¼û¼¸ºÎÊôĞÔ
+	//è¯»å–é¡¶ç‚¹çš„å¸¸è§å‡ ä½•å±æ€§
 	void ReadVertexPos(FbxMesh* mesh, int ctrlPointIndex,XMFLOAT3* pos);
 	void ReadVertexColor(FbxMesh* mesh, int ctrlPointIndex,int vertexCount,XMFLOAT3* color);
 	void ReadVertexNormal(FbxMesh* mesh, int ctrlPointIndex, int vertexCount, XMFLOAT3* normal);
@@ -50,7 +50,7 @@ private:
 	void ReadVertexUV(FbxMesh* mesh, int ctrlPointIndex, int uvIndex, XMFLOAT2* uv);
 
 private:
-	//¶ÁÈ¡²ÄÖÊÊôĞÔ
+	//è¯»å–æè´¨å±æ€§
 	void LoadMaterial(FbxMesh* mesh, map<int, MaterialTexFileName>& materialMap);
 	void LoadMaterialTexture(FbxSurfaceMaterial* surfaceMaterial, int materialIndex, map<int, MaterialTexFileName>& materialMap);
 	void ReadReletiveTextureFileName(FbxProperty* property, int materialIndex, map<int, MaterialTexFileName>& materialMap);
@@ -69,7 +69,6 @@ public:
 	static ImportFBX* Get();
 	void ClearMem();
 	void ImportFbxFile(string fbxFileName, vector<ModelData>& mFBXModel);
-
 };
 
 #define GImportFBX (ImportFBX::Get())

@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 #ifndef _SHADER_MANAGER_H
 #define _SHADER_MANAGER_H
 #include "Shader.h"
@@ -56,6 +56,5 @@ public:
 	static shared_ptr<ShaderManager> Get();
 };
 #endif 
-
 
 #define GShaderManager (ShaderManager::Get())

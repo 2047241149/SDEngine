@@ -1,4 +1,4 @@
-#include "SkyBox.h"
+﻿#include "SkyBox.h"
 #include "Texture/Texture.h"
 #include "GameObject/GameObject.h"
 #include "GameObject/Mesh.h"
@@ -54,7 +54,7 @@ void SkyBox::Render(GeometryBuffer* geometryBuffer)
 	GDirectxCore->SetDefualtViewPort();
 	GDirectxCore->TurnOnRenderSkyBoxDSS();
 	GDirectxCore->TurnOnCullFront();
-	XMMATRIX worldMatrix = XMMatrixTranslation(GCamera->mPosition.x, GCamera->mPosition.y, GCamera->mPosition.z);
+	XMMATRIX worldMatrix = XMMatrixTranslation(GCamera->position.x, GCamera->position.y, GCamera->position.z);
 	XMMATRIX scaleMatrix = XMMatrixScaling(SKY_BOX_SPHERE_SCALE, SKY_BOX_SPHERE_SCALE, SKY_BOX_SPHERE_SCALE);
 	GShaderManager->skyBoxShader->SetMatrix("World", scaleMatrix * worldMatrix);
 	GShaderManager->skyBoxShader->SetMatrix("View", GCamera->GetViewMatrix());

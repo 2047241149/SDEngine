@@ -38,7 +38,7 @@ project "SDEngine"
 	links
 	{
 		"imgui",
-		-- "libfbxsdk.lib",
+		"libfbxsdk-mt.lib",
 		"dxguid.lib",
 		"dxgi.lib",
 	}
@@ -84,7 +84,9 @@ project "TestGame"
 	{
 		"SDEngine/Source",
 		"SDEngine/SDEngine",
-		"SDEngine/ThirdParty/spdlog/include"
+		"SDEngine/ThirdParty/spdlog/include",
+		"SDEngine/ThirdParty/fbxsdk/2017.1/include",
+		"SDEngine/ThirdParty",
 	}
 
 	links

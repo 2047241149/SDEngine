@@ -6,3 +6,8 @@
 #include "SDEngine/Input.h"
 #include "SDEngine/Game.h"
 #include "SDEngine/EntryPoint.h"
+#include "SDEngine/Common/DirectxCore.h"
+#include "SDEngine/GameObject/Camera.h"
+#include "SDEngine/Shader/Shader.h"
+#include "SDEngine/GameObject/GameObject.h"
+#include "SDEngine/FPS.h"

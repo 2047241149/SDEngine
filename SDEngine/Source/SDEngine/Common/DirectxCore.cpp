@@ -1,7 +1,8 @@
 ﻿#include "DirectxCore.h"
-#include "../GameWindow.h"
+#include "SDEngine/GameWindow.h"
+#include "Event/Event.h"
 
-DirectxCore::DirectxCore():
+DirectxCore::DirectxCore() :
 	md3dDevice(nullptr),
 	md3dImmediateContext(nullptr),
 	md3dSwapChain(nullptr),
@@ -15,7 +16,8 @@ DirectxCore::DirectxCore():
 	md3dDisableBlendState(nullptr),
 	md3dWireFrameRS(nullptr),
 	m_pLightBlendState(nullptr),
-	renderSkyBoxDSS(nullptr)
+	renderSkyBoxDSS(nullptr),
+	sceneInitColor(XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f))
 {
 	
 }
@@ -85,11 +87,8 @@ bool DirectxCore::Init(bool vsync, bool fullscreen)
 	DXGI_SWAP_CHAIN_DESC sd;
 	ZeroMemory(&sd, sizeof(sd));
 
-	sd.BufferDesc.Width = GWindowWidth;
-	sd.BufferDesc.Height = GWindowHeight;
-
-	sd.BufferDesc.Width = 1261;
-	sd.BufferDesc.Height = 783;
+	sd.BufferDesc.Width = GViewportWidth;
+	sd.BufferDesc.Height = GViewportHeight;
 	sd.BufferDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
 
 	if (mVsyncEnable)
@@ -197,14 +196,14 @@ bool DirectxCore::Init(bool vsync, bool fullscreen)
 	DSDESC.BackFace.StencilPassOp = D3D11_STENCIL_OP_KEEP;
 	DSDESC.BackFace.StencilFunc = D3D11_COMPARISON_ALWAYS;
 	HR(md3dDevice->CreateDepthStencilState(&DSDESC, &md3dDepthStencilState));
-	//md3dImmediateContext->OMSetDepthStencilState(md3dDepthStencilState, 0);
+	md3dImmediateContext->OMSetDepthStencilState(md3dDepthStencilState, 0);
 
 	HR(md3dDevice->CreateDepthStencilView(
 		md3dDepthStencilBuffer,
 		0,
 		&md3dDepthStencilView));
 
-	//md3dImmediateContext->OMSetRenderTargets(1, &md3dRenderTargetView, md3dDepthStencilView);
+	md3dImmediateContext->OMSetRenderTargets(1, &md3dRenderTargetView, md3dDepthStencilView);
 
 	HR(DirectXFrame::CreateRasterizerState(md3dDevice, &md3dRasterizerState));
 
@@ -220,7 +219,7 @@ bool DirectxCore::Init(bool vsync, bool fullscreen)
 	mViewport.MaxDepth = 1.0f;
 	mViewport.TopLeftX = 0.0f;
 	mViewport.TopLeftY = 0.0f;
-	//md3dImmediateContext->RSSetViewports(1,&mViewport);
+	md3dImmediateContext->RSSetViewports(1,&mViewport);
 
 	D3D11_DEPTH_STENCIL_DESC DisableDepthDESC;
 	ZeroMemory(&DisableDepthDESC, sizeof(DisableDepthDESC));
@@ -402,6 +401,10 @@ bool DirectxCore::Init(bool vsync, bool fullscreen)
 
 }
 
+void DirectxCore::SetBeginSceneColor(XMFLOAT4 sceneInitColor)
+{
+	this->sceneInitColor = sceneInitColor;
+}
 
 void DirectxCore::BeginScene(float red, float green, float blue, float alpha)
 {
@@ -411,9 +414,14 @@ void DirectxCore::BeginScene(float red, float green, float blue, float alpha)
 	color[2] = blue;
 	color[3] = alpha;
 
-	md3dImmediateContext->OMSetRenderTargets(1, &md3dRenderTargetView, NULL);
 	md3dImmediateContext->ClearRenderTargetView(md3dRenderTargetView, color);
 	md3dImmediateContext->ClearDepthStencilView(md3dDepthStencilView, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
+	md3dImmediateContext->OMSetRenderTargets(1, &md3dRenderTargetView, md3dDepthStencilView);
+}
+
+void DirectxCore::BeginSceneRender()
+{
+	BeginScene(sceneInitColor.x, sceneInitColor.y, sceneInitColor.z, sceneInitColor.w);
 }
 
 void DirectxCore::EndScene()
@@ -471,13 +479,28 @@ void DirectxCore::SetDefualtViewPort()
 	md3dImmediateContext->RSSetViewports(1, &mViewport);
 }
 
+void DirectxCore::ResizeBackBuffer(UINT width, UINT height)
+{
+	if (md3dRenderTargetView)
+	{
+		md3dRenderTargetView->Release();
+		md3dSwapChain->ResizeBuffers(0, width, height, DXGI_FORMAT_UNKNOWN, 0);
+		ID3D11Texture2D* pBackBuffer;
+		md3dSwapChain->GetBuffer(0, IID_PPV_ARGS(&pBackBuffer));
+		md3dDevice->CreateRenderTargetView(pBackBuffer, NULL, &md3dRenderTargetView);
+		pBackBuffer->Release();
+
+		mViewport.Width = static_cast<float>(width);
+		mViewport.Height = static_cast<float>(height);
+	}
+}
+
 void DirectxCore::TurnOnZBuffer()
 {
 	md3dImmediateContext->OMSetDepthStencilState(md3dDepthStencilState, 0);
 }
 void DirectxCore::ShutDown()
 {
-	//���ͷ�����D3D�ӿ�ǰ,ʹ���������봰��ģʽ
 	if (md3dSwapChain)
 	{
 		md3dSwapChain->SetFullscreenState(false, NULL);
@@ -564,9 +587,21 @@ void DirectxCore::TurnOnRenderLightVolumeDSS()
 	md3dImmediateContext->OMSetDepthStencilState(m_pDSSRenderLightVolume, 1);
 }
 
-void DirectxCore::TurnOnRenderSkyBoxDSS()
+void DirectxCore::DirectxCore::TurnOnRenderSkyBoxDSS()
 {
 	md3dImmediateContext->OMSetDepthStencilState(renderSkyBoxDSS, 0);
+}
+
+void DirectxCore::OnEvent(Event& event)
+{
+	EventDispatcher eventDispatcher(event);
+	eventDispatcher.Dispath<WindowResizeEvent>(BIND_EVENT(DirectxCore::OnReiszeWindow, this));
+}
+
+bool DirectxCore::OnReiszeWindow(WindowResizeEvent& event)
+{
+	ResizeBackBuffer(event.GetWidth(), event.GeiHeight());
+	return true;
 }
 
 shared_ptr<DirectxCore> DirectxCore::m_pDirectxCore = nullptr;

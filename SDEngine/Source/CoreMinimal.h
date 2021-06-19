@@ -26,6 +26,7 @@
 #include<Windows.h>
 #include<windowsx.h>
 #include<ctime>
+#include <algorithm>
 
 #include "SDEngine/Common/DirectxCore.h"
 #include "SDEngine/Common/Macro.h"

@@ -281,8 +281,8 @@ void ClusterDefferedSceneRender::RenderDebugWindow()
 		mGeometryBuffer->GetGBufferSRV(GBufferType::Depth));
 	GShaderManager->depthDisplayShader->SetMatrix("UIView", GCamera->GetUIViewMatrix());
 	GShaderManager->depthDisplayShader->SetMatrix("UIOrtho", GCamera->GetUIOrthoMatrix());
-	GShaderManager->depthDisplayShader->SetFloat("farPlane", GCamera->mFarPlane);
-	GShaderManager->depthDisplayShader->SetFloat("nearPlane", GCamera->mNearPlane);
+	GShaderManager->depthDisplayShader->SetFloat("farPlane", GCamera->farPlane);
+	GShaderManager->depthDisplayShader->SetFloat("nearPlane", GCamera->nearPlane);
 	GShaderManager->depthDisplayShader->Apply();
 	mDebugWindow->Render(490, 600);
 
@@ -341,8 +341,8 @@ void ClusterDefferedSceneRender::RenderSSRPass()
 			perspectiveValues.y = -projFloat4X4.m[2][2];
 			GShaderManager->ssrShader->SetMatrix("View", GCamera->GetViewMatrix());
 			GShaderManager->ssrShader->SetMatrix("Proj", GCamera->GetProjectionMatrix());
-			GShaderManager->ssrShader->SetFloat("farPlane", GCamera->mFarPlane);
-			GShaderManager->ssrShader->SetFloat("nearPlane", GCamera->mNearPlane);
+			GShaderManager->ssrShader->SetFloat("farPlane", GCamera->farPlane);
+			GShaderManager->ssrShader->SetFloat("nearPlane", GCamera->nearPlane);
 			GShaderManager->ssrShader->SetFloat2("perspectiveValues", perspectiveValues);
 			GShaderManager->ssrShader->SetTexture("DiffuseTex", mSrcRT->GetSRV());
 			GShaderManager->ssrShader->SetTexture("FrontDepthTex", mGeometryBuffer->GetGBufferSRV(GBufferType::Depth));
@@ -508,8 +508,8 @@ void ClusterDefferedSceneRender::RenderClusterLightCullPass()
 	ID3D11UnorderedAccessView* ClusterActiveListUav = GShaderManager->maskUnvalidClusterCs->GetUav("ClusterActiveList");
 	GShaderManager->clusterLightCullCS->SetStructBuffer("PointLights", pointLights.data(), (int)pointLights.size());
 	GShaderManager->clusterLightCullCS->SetFloat("lightCount", (float)pointLights.size());
-	GShaderManager->clusterLightCullCS->SetFloat("ScreenWidth", GCamera->mScreenWidth);
-	GShaderManager->clusterLightCullCS->SetFloat("ScreenHeight", GCamera->mScreenHeight);
+	GShaderManager->clusterLightCullCS->SetFloat("ScreenWidth", GCamera->screenWidth);
+	GShaderManager->clusterLightCullCS->SetFloat("ScreenHeight", GCamera->screenHeight);
 	GShaderManager->clusterLightCullCS->SetRWStructBuffer("ClusterList", lightGridListUav);
 	GShaderManager->clusterLightCullCS->SetRWStructBuffer("ClusterActiveList", ClusterActiveListUav);
 	GShaderManager->clusterLightCullCS->SetRWStructBufferInData("LightGridList", nullptr, CLUTER_SIZE_NUM);
@@ -554,8 +554,8 @@ void ClusterDefferedSceneRender::RenderClusterPointLightPassPs()
 	GShaderManager->clusterDefferedLightShader->SetFloat3("cameraPos",  GCamera->GetPosition());
 	GShaderManager->clusterDefferedLightShader->SetFloat("ScreenWidth", (float)GWindowInfo->GetScreenWidth());
 	GShaderManager->clusterDefferedLightShader->SetFloat("ScreenHeight", (float)GWindowInfo->GetScreenHeight());
-	GShaderManager->clusterDefferedLightShader->SetFloat("farPlane", GCamera->mFarPlane);
-	GShaderManager->clusterDefferedLightShader->SetFloat("nearPlane", GCamera->mNearPlane);
+	GShaderManager->clusterDefferedLightShader->SetFloat("farPlane", GCamera->farPlane);
+	GShaderManager->clusterDefferedLightShader->SetFloat("nearPlane", GCamera->nearPlane);
 	GShaderManager->clusterDefferedLightShader->SetFloat4("tileSizes", tileSizes);
 	GShaderManager->clusterDefferedLightShader->SetFloat2("cluserFactor", clusterFactor);
 	GShaderManager->clusterDefferedLightShader->SetRWStructBuffer("LightGridList", LightGridListUav);
@@ -588,11 +588,11 @@ void ClusterDefferedSceneRender::RenderClusterPointLightPassCs()
 	GShaderManager->clusterDefferedLightCS->SetRWTexture("OutputTexture", mClusterLightRT->GetUAV());
 	GShaderManager->clusterDefferedLightCS->SetFloat4("tileSizes", tileSizes);
 	GShaderManager->clusterDefferedLightCS->SetFloat2("cluserFactor", clusterFactor);
-	GShaderManager->clusterDefferedLightCS->SetFloat("farPlane", GCamera->mFarPlane);
-	GShaderManager->clusterDefferedLightCS->SetFloat("nearPlane", GCamera->mNearPlane);
+	GShaderManager->clusterDefferedLightCS->SetFloat("farPlane", GCamera->farPlane);
+	GShaderManager->clusterDefferedLightCS->SetFloat("nearPlane", GCamera->nearPlane);
 	GShaderManager->clusterDefferedLightCS->SetFloat3("cameraPos", GCamera->GetPosition());
-	GShaderManager->clusterDefferedLightCS->SetFloat("ScreenWidth", GCamera->mScreenWidth);
-	GShaderManager->clusterDefferedLightCS->SetFloat("ScreenHeight", GCamera->mScreenHeight);
+	GShaderManager->clusterDefferedLightCS->SetFloat("ScreenWidth", GCamera->screenWidth);
+	GShaderManager->clusterDefferedLightCS->SetFloat("ScreenHeight", GCamera->screenHeight);
 	GShaderManager->clusterDefferedLightCS->SetFloat("bDebugLightCount", (float)GSceneManager->bDebugLightCount ? 1.0f : 0.0f);
 	GShaderManager->clusterDefferedLightCS->SetMatrix("View", GCamera->GetViewMatrix());
 	GShaderManager->clusterDefferedLightCS->SetMatrix("ProjInv", FMath::GetInvense(GCamera->GetProjectionMatrix()));
@@ -696,7 +696,6 @@ void ClusterDefferedSceneRender::RenderShadowMapPass()
 		}
 	}
 
-	//��Ⱦ�õ���Ӱ
 	mGrayShadowMap->SetRenderTarget();
 	GDirectxCore->TurnOffZBuffer();
 	GShaderManager->shadowMapShader->SetTexture("WorldPosTex", mGeometryBuffer->GetGBufferSRV(GBufferType::Pos));
@@ -746,10 +745,10 @@ void ClusterDefferedSceneRender::RenderPreZPass()
 
 void ClusterDefferedSceneRender::PreBuildCluster()
 {
-	GShaderManager->buildClusterCS->SetFloat("farPlane", GCamera->mFarPlane);
-	GShaderManager->buildClusterCS->SetFloat("nearPlane", GCamera->mNearPlane);
-	GShaderManager->buildClusterCS->SetFloat("ScreenWidth", GCamera->mScreenWidth);
-	GShaderManager->buildClusterCS->SetFloat("ScreenHeight", GCamera->mScreenHeight);
+	GShaderManager->buildClusterCS->SetFloat("farPlane", GCamera->farPlane);
+	GShaderManager->buildClusterCS->SetFloat("nearPlane", GCamera->nearPlane);
+	GShaderManager->buildClusterCS->SetFloat("ScreenWidth", GCamera->screenWidth);
+	GShaderManager->buildClusterCS->SetFloat("ScreenHeight", GCamera->screenHeight);
 	GShaderManager->buildClusterCS->SetFloat4("tileSizes", tileSizes);
 	GShaderManager->buildClusterCS->SetRWStructBufferInData("ClusterList", nullptr, CLUTER_SIZE_X * CLUTER_SIZE_Y * CLUTER_SIZE_Z);
 	GShaderManager->buildClusterCS->SetMatrix("View", GCamera->GetViewMatrix());
@@ -764,9 +763,9 @@ void ClusterDefferedSceneRender::RenderCullUnvalidClusterPass()
 	GShaderManager->maskUnvalidClusterCs->SetRWStructBufferInData("ClusterActiveList", nullptr, CLUTER_SIZE_NUM);
 	GShaderManager->maskUnvalidClusterCs->SetFloat4("tileSizes", tileSizes);
 	GShaderManager->maskUnvalidClusterCs->SetFloat2("cluserFactor", clusterFactor);
-	GShaderManager->maskUnvalidClusterCs->SetFloat("farPlane", GCamera->mFarPlane);
-	GShaderManager->maskUnvalidClusterCs->SetFloat("nearPlane", GCamera->mNearPlane);
-	GShaderManager->maskUnvalidClusterCs->SetFloat("ScreenWidth", GCamera->mScreenWidth);
-	GShaderManager->maskUnvalidClusterCs->SetFloat("ScreenHeight", GCamera->mScreenHeight);
+	GShaderManager->maskUnvalidClusterCs->SetFloat("farPlane", GCamera->farPlane);
+	GShaderManager->maskUnvalidClusterCs->SetFloat("nearPlane", GCamera->nearPlane);
+	GShaderManager->maskUnvalidClusterCs->SetFloat("ScreenWidth", GCamera->screenWidth);
+	GShaderManager->maskUnvalidClusterCs->SetFloat("ScreenHeight", GCamera->screenHeight);
 	GShaderManager->maskUnvalidClusterCs->Dispatch(100, 100, 1);
 }

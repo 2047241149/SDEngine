@@ -28,8 +28,8 @@ void CascadedShadowsManager::InitShadowMap(int nShadowMapResolution)
 
 void CascadedShadowsManager::Update()
 {
-	float fFov = GCamera->mFovY;
-	float fAspect = GCamera->mAspect;
+	float fFov = GCamera->fovY;
+	float fAspect = GCamera->aspect;
 	const int FRUSTUN_VERTEX_NUM = 8;
 	XMVECTOR frustumPoint[FRUSTUN_VERTEX_NUM];
 	shared_ptr<DirectionLight> mMainDirLight = GLightManager->GetMainLight();
@@ -39,7 +39,7 @@ void CascadedShadowsManager::Update()
 	{
 
 		float fNearPlane = 0;
-		float fFarPlane = GCamera->mFarPlane * CASCADE_PERCENT[nCascadeindex + 1];
+		float fFarPlane = GCamera->farPlane * CASCADE_PERCENT[nCascadeindex + 1];
 		mfCameraZ[nCascadeindex] = fFarPlane;
 		float fFarY = tan(fFov / 2.0f) * fFarPlane;
 		float fFarX = fFarY / fAspect;
@@ -60,13 +60,11 @@ void CascadedShadowsManager::Update()
 		XMVECTOR lightVsSceneAABBMin = XMVectorSet(FLT_MAX, FLT_MAX, FLT_MAX, FLT_MAX);
 		XMVECTOR tempFrustumPoint;
 
-		// ��������ӽ���İ˸������������ռ�任������ռ�
 		for (int nFrustumindex = 0; nFrustumindex < FRUSTUN_VERTEX_NUM; ++nFrustumindex)
 		{
 			frustumPoint[nFrustumindex] = XMVector3TransformCoord(frustumPoint[nFrustumindex], invenseViewMatrix);
 		}
 
-		// ��������ӽ���İ˸�����任����Դ����ռ�
 		for (int nFrustumindex = 0; nFrustumindex < FRUSTUN_VERTEX_NUM; ++nFrustumindex)
 		{
 			tempFrustumPoint = XMVector3TransformCoord(frustumPoint[nFrustumindex], lightViewMatrix);
@@ -90,15 +88,14 @@ void CascadedShadowsManager::Update()
 		lightVsSceneAABBMin -= vBorderoffset;
 
 
-		//����lightVsSceneAABBMax��lightVsSceneAABBMin�Ĵ�С����ӦShadowMap��
-		//(1)����ռ��OrthoViewFrustum��СӦ��ShadowMap��С��������
-		//fWorldUnitPerTexel -->OrthoViewFrustum ÿ��ShadowMap���ض�Ӧ���ٸ����絥λ
+		//lightVsSceneAABBMax lightVsSceneAABBMin
+		//(1)OrthoViewFrustum ShadowMap
+		//fWorldUnitPerTexel -->OrthoViewFrustum ShadowMap
 		float fWorldUnitPerTexel = fCascadeDiagonal / (float)SHADOW_MAP_SIZE;
 		XMVECTOR vWorldUnitPerTexel = XMVectorSet(fWorldUnitPerTexel, fWorldUnitPerTexel, 0, 0);
 
-		//(2)lightVsSceneAABBMax��lightVsSceneAABBMin��Ӧ��������fWorldUnitPerTexel��λ
-		//����(1)(2)ightVsSceneAABBMax��lightVsSceneAABBMin�Ϳ��Զ�Ӧ������ShadowMap������,
-		//��������֮ǰ��������ShadowMap������ɵ���˸����
+		//(2)lightVsSceneAABBMax lightVsSceneAABBMin fWorldUnitPerTexel
+		//(1)(2)ightVsSceneAABBMax lightVsSceneAABBMin
 		lightVsSceneAABBMin /= vWorldUnitPerTexel;
 		lightVsSceneAABBMin = XMVectorFloor(lightVsSceneAABBMin);
 		lightVsSceneAABBMin *= vWorldUnitPerTexel;
@@ -113,13 +110,13 @@ void CascadedShadowsManager::Update()
 		XMStoreFloat3(&f3LightVsSceneAABBMax, lightVsSceneAABBMax);
 		XMStoreFloat3(&f3LightVsSceneAABBMin, lightVsSceneAABBMin);
 
-		//����ZԶ������ʡ������������AABB��Χ�е���(������Ϊ����)��ֱ�ӻ���GCamera->mFarPlane * 0.5f
-		//ǰ��GCamera->mFarPlane * 0.15����OthrhoԶ��ZBuffer 1.0��ͻ
+		//GCamera->mFarPlane * 0.5f
+		//GCamera->mFarPlane * 0.15 Othrho ZBuffer 1.0
 		mArrayLightOrthoMatrix[nCascadeindex] = XMMatrixOrthographicOffCenterLH
 		(
 			f3LightVsSceneAABBMin.x, f3LightVsSceneAABBMax.x,
 			f3LightVsSceneAABBMin.y, f3LightVsSceneAABBMax.y,
-			fLightVsSceneAABBMinZ - GCamera->mFarPlane * 0.5f, fLightVsSceneAABBMaxZ + GCamera->mFarPlane * 0.15f
+			fLightVsSceneAABBMinZ - GCamera->farPlane * 0.5f, fLightVsSceneAABBMaxZ + GCamera->farPlane * 0.15f
 		);
 	}	
 }

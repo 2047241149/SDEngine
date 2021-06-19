@@ -1,5 +1,5 @@
 ﻿#include"ImportFBX.h"
-
+#include "SDEngine/Log.h"
 
 ImportFBX::ImportFBX()
 {
@@ -52,9 +52,10 @@ void ImportFBX::ImportFbxFile(string fbxFileName, vector<ModelData>& mFBXModel)
 	FbxImporter* fbxImport = FbxImporter::Create(mFbxManager, "");
 	if (!fbxImport->Initialize(fbxFileName.c_str(), -1, mFbxManager->GetIOSettings()))
 	{
-		printf("Call to FbxImporter::Initialize() failed.\n");
-		printf("Error returned: %s\n\n", fbxImport->GetStatus().GetErrorString());
-		exit(-1);
+		Log::Warn("can not import {0}\n", fbxFileName);
+		Log::Warn("Call to FbxImporter::Initialize() failed.\n");
+		Log::Warn("Error returned: {0}\n\n", fbxImport->GetStatus().GetErrorString());
+		return;
 	}
 
 	 mScene = FbxScene::Create(mFbxManager, "scene");

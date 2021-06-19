@@ -5,6 +5,7 @@ class Event;
 class GameWindow;
 class Layer;
 class LayerManager;
+class ImGuiLayer;
 
 class SD_API Game
 {
@@ -21,10 +22,12 @@ public:
 	void PushLayer(shared_ptr<Layer> layer);
 	void PopLayer(shared_ptr<Layer> layer);
 	virtual void Update() {};
+	virtual void OnImguiRender() {};
 
 private:
 	shared_ptr<GameWindow> window;
 	shared_ptr<LayerManager> layerManager;
+	shared_ptr<ImGuiLayer> imguiLayer;
 	bool bRunning = false;
 };
 
