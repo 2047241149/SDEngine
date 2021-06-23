@@ -1,7 +1,7 @@
 ﻿#pragma once
+
 #ifndef _SHADER_H
 #define _SHADER_H
-#endif // !_SHADER_H
 
 #include "CoreMinimal.h"
 
@@ -84,7 +84,6 @@ public:
 	virtual ~Shader();
 
 protected:
-	//释放Shader
 	virtual void ShutDown();
 
 public:
@@ -101,6 +100,7 @@ public:
 
 	//uint
 	bool SetUint4(const string& variableName, UINT8 value[4]);
+
 	void SetRWStructBufferInData(const string& bufferName, void* data, int num);
 	bool SetRWStructBuffer(const string& bufferName, ID3D11UnorderedAccessView* uav);
 	virtual bool SetTexture(const string& variableName, ID3D11ShaderResourceView* texture) = 0;
@@ -134,7 +134,7 @@ class VertexPixelShader : public Shader
 {
 
 public:
-	VertexPixelShader(WCHAR* vsFilenPath, WCHAR* psFilenPath);
+	VertexPixelShader(const string& shaderFile);
 	VertexPixelShader(const VertexPixelShader& other);
 	~VertexPixelShader();
 
@@ -144,8 +144,8 @@ public:
 	virtual bool SetTextureSampler(const string& variableName, ID3D11SamplerState* sampler) override;
 
 private:
-	bool Init(WCHAR* vsFilenPath, WCHAR* psFilenPath);
-	bool InitShader(WCHAR* vsFilenPath, WCHAR* psFilenPath);
+	bool Init(const string& shaderFile);
+	bool InitShader(const string& shaderFile);
 	virtual void SetShaderParam() override;
 	bool ReflectInputLayout(ID3D11ShaderReflection* vertexShaderReflection, ID3D10Blob* vertexShaderBlob);
 	virtual bool UpdateConstantBuffer() override;
@@ -155,12 +155,15 @@ private:
 	ID3D11VertexShader* vertexShader;
 	ID3D11PixelShader* pixelShader;
 	ID3D11InputLayout* inputLayout;
+
+public:
+	friend class Material;
 };
 
 class ComputeShader : public Shader
 {
 public:
-	ComputeShader(WCHAR* csFilenPath);
+	ComputeShader(const string& shaderFile);
 	ComputeShader(const ComputeShader& other);
 	~ComputeShader();
 
@@ -179,7 +182,7 @@ private:
 	virtual bool UpdateRWStructBuffer() override;
 	bool UpdateSutrctBuffer();
 	void SetShaderParam();
-	bool InitShader(WCHAR* csFilenPath);
+	bool InitShader(const string& shaderFile);
 	virtual void Apply() override;
 
 private:
@@ -189,3 +192,5 @@ private:
 	map<string, shared_ptr<ShaderTexture>> mapRWShaderTexture;
 	map<string, shared_ptr<ShaderStructBuffer>> mapShaderStructBuffer;
 };
+
+#endif

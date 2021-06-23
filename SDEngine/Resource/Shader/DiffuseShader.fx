@@ -1,4 +1,4 @@
-Texture2D AlbedoTexture:register(t0);  //ÎÆÀí×ÊÔ´
+Texture2D AlbedoTexture:register(t0);
 Texture2D SpecularTexture:register(t1);
 Texture2D RoughnessTexture:register(t2);
 Texture2D MetalTexture:register(t3);

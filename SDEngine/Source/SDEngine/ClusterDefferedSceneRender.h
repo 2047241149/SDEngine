@@ -109,4 +109,4 @@ public:
 	virtual void Render() override;
 };
 
-#endif // !_CLUTER_DEFFERED_SCENE_RENDER_H
+#endif

@@ -8,6 +8,7 @@
 #include "Input.h"
 #include "GameObject/Camera.h"
 #include "EditorUI/ImGuiLayer.h"
+#include "Texture/TextureManager.h"
 
 Game::Game()
 {

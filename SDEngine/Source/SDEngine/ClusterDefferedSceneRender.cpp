@@ -71,7 +71,7 @@ bool ClusterDefferedSceneRender::Init()
 		SSRGBuffer(GScreenWidth, GScreenHeight, SCREEN_FAR, SCREEN_NEAR));
 
 	ssaoManager = shared_ptr<SSAOManager>(new SSAOManager(GScreenWidth, GScreenHeight));
-	WCHAR* cubeMapResPath = L"Resource/Texture/night.dds";
+	string cubeMapResPath = "Resource/Texture/night.dds";
 	skyBox = shared_ptr<SkyBox>(new SkyBox(cubeMapResPath));
 	radianceCubeMap = shared_ptr<IrradianceCubeMap>(new IrradianceCubeMap(cubeMapResPath));
 
@@ -611,7 +611,7 @@ void ClusterDefferedSceneRender::RenderDirLightPass()
 	shaderResourceView[5] = mGeometryBuffer->GetGBufferSRV(GBufferType::Diffuse);
 	GDirectxCore->TurnOffZBuffer();
 
-	//TODO: ֻ����һ��IradianceMap��Ⱦ?
+	//TODO: ֻPre IradianceMap
 	for (int index = 0; index < (int)GLightManager->m_vecDirLight.size(); ++index)
 	{
 		shared_ptr<DirectionLight> pDirLight = GLightManager->m_vecDirLight[index];
@@ -640,7 +640,7 @@ void ClusterDefferedSceneRender::RenderDirLightPass()
 		}
 		else
 		{
-			memSSAORT = GWhiteTexture;
+			memSSAORT = GWhiteTextureSrv;
 		}
 		GShaderManager->defferedDirLightShader->SetTexture("SSAORT", memSSAORT);
 		GShaderManager->defferedDirLightShader->Apply();

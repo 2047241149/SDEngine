@@ -13,7 +13,7 @@ class RenderCubeMap;
 class IrradianceCubeMap
 {
 public:
-	IrradianceCubeMap(WCHAR* hdrCubeMapFile, int textureWidth = 64, int textureHeight = 64);
+	IrradianceCubeMap(const string& file, int textureWidth = 64, int textureHeight = 64);
 	IrradianceCubeMap(const IrradianceCubeMap& other);
 	~IrradianceCubeMap();
 
@@ -23,7 +23,7 @@ public:
 	ID3D11ShaderResourceView* GetCubeMapSrv();
 
 private:
-	bool Init(WCHAR* cubeMapFileName, int textureWidth = 64, int textureHeight = 64);
+	bool Init(const string& file, int textureWidth = 64, int textureHeight = 64);
 	void ShutDown();
 
 private:
@@ -33,4 +33,4 @@ private:
 	shared_ptr<CubeCamera> cubeCamera;
 
 };
-#endif // !_SKY_BOX_H
+#endif

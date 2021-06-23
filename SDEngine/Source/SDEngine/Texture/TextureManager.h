@@ -33,6 +33,7 @@ public:
 };
 
 #define GTextureManager TextureManager::Get()
-#define GWhiteTexture GTextureManager->whiteTexture->GetTexture()
+#define GWhiteTexture GTextureManager->whiteTexture
+#define GWhiteTextureSrv GTextureManager->whiteTexture->GetTexture()
 #define LoadTexture GTextureManager->LoadGetSRV
 #endif

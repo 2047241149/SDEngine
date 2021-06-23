@@ -9,9 +9,9 @@
 
 const float SKY_BOX_SPHERE_SCALE = 10.0f;
 
-SkyBox::SkyBox(WCHAR* cubeMapFileName)
+SkyBox::SkyBox(const string& file)
 {
-	Init(cubeMapFileName);
+	Init(file);
 }
 
 SkyBox::SkyBox(const SkyBox& other)
@@ -28,9 +28,9 @@ SkyBox::~SkyBox()
 {
 }
 
-bool SkyBox::Init(WCHAR* cubeMapFileName)
+bool SkyBox::Init(const string& file)
 {
-	skyBoxTexture = shared_ptr<Texture>(new Texture(cubeMapFileName));
+	skyBoxTexture = shared_ptr<Texture>(new Texture(file));
 	skyBoxGameObject = shared_ptr<GameObject>(new GameObject());
 	shared_ptr<Mesh> cubeMesh = shared_ptr<Mesh>(new Mesh("Resource\\FBXModel\\Engine\\cube.fbx"));
 	skyBoxGameObject->SetMesh(cubeMesh);

@@ -11,3 +11,7 @@
 #include "SDEngine/Shader/Shader.h"
 #include "SDEngine/GameObject/GameObject.h"
 #include "SDEngine/FPS.h"
+#include "SDEngine/Texture/Texture.h"
+#include "SDEngine/Texture/TextureSamplerManager.h"
+#include "SDEngine/Shader/Material.h"
+#include "SDEngine/Shader/ShaderLibrary.h"

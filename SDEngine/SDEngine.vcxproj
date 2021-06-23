@@ -57,7 +57,7 @@
     <ClCompile>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
-      <PreprocessorDefinitions>_SILENCE_CXX17_STRSTREAM_DEPRECATION_WARNING;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_SILENCE_CXX17_STRSTREAM_DEPRECATION_WARNING;_DISABLE_EXTENDED_ALIGNED_STORAGE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>Source;Source\SDEngine;ThirdParty\spdlog\include;ThirdParty\fbxsdk\2017.1\include;ThirdParty\imgui;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
       <Optimization>Disabled</Optimization>
@@ -79,7 +79,7 @@
     <ClCompile>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
-      <PreprocessorDefinitions>_SILENCE_CXX17_STRSTREAM_DEPRECATION_WARNING;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_SILENCE_CXX17_STRSTREAM_DEPRECATION_WARNING;_DISABLE_EXTENDED_ALIGNED_STORAGE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>Source;Source\SDEngine;ThirdParty\spdlog\include;ThirdParty\fbxsdk\2017.1\include;ThirdParty\imgui;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <Optimization>Full</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
@@ -162,6 +162,8 @@
     <ClInclude Include="Source\SDEngine\Shader\GerstnerWave.h" />
     <ClInclude Include="Source\SDEngine\Shader\GerstnerWaveCS.h" />
     <ClInclude Include="Source\SDEngine\Shader\GrussianBlurCS.h" />
+    <ClInclude Include="Source\SDEngine\Shader\Material.h" />
+    <ClInclude Include="Source\SDEngine\Shader\ShaderLibrary.h" />
     <ClInclude Include="Source\SDEngine\Shader\SSAOManager.h" />
     <ClInclude Include="Source\SDEngine\Shader\SSRGBuffer.h" />
     <ClInclude Include="Source\SDEngine\Shader\Shader.h" />
@@ -226,6 +228,8 @@
     <ClCompile Include="Source\SDEngine\Shader\GerstnerWave.cpp" />
     <ClCompile Include="Source\SDEngine\Shader\GerstnerWaveCS.cpp" />
     <ClCompile Include="Source\SDEngine\Shader\GrussianBlurCS.cpp" />
+    <ClCompile Include="Source\SDEngine\Shader\Material.cpp" />
+    <ClCompile Include="Source\SDEngine\Shader\ShaderLibrary.cpp" />
     <ClCompile Include="Source\SDEngine\Shader\SSAOManager.cpp" />
     <ClCompile Include="Source\SDEngine\Shader\SSRGBuffer.cpp" />
     <ClCompile Include="Source\SDEngine\Shader\Shader.cpp" />

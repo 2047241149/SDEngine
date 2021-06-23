@@ -9,9 +9,9 @@
 #include "Texture/RenderCubeMap.h"
 
 
-IrradianceCubeMap::IrradianceCubeMap(WCHAR* cubeMapFileName, int textureWidth, int textureHeight)
+IrradianceCubeMap::IrradianceCubeMap(const string& file, int textureWidth, int textureHeight)
 {
-	Init(cubeMapFileName, textureWidth, textureHeight);
+	Init(file, textureWidth, textureHeight);
 }
 
 IrradianceCubeMap::IrradianceCubeMap(const IrradianceCubeMap& other)
@@ -23,9 +23,9 @@ IrradianceCubeMap::~IrradianceCubeMap()
 {
 }
 
-bool IrradianceCubeMap::Init(WCHAR* cubeMapFileName, int textureWidth, int textureHeight)
+bool IrradianceCubeMap::Init(const string& file, int textureWidth, int textureHeight)
 {
-	hdrCubeMap = shared_ptr<Texture>(new Texture(cubeMapFileName));
+	hdrCubeMap = shared_ptr<Texture>(new Texture(file));
 	cubeGameObject = shared_ptr<GameObject>(new GameObject());
 	shared_ptr<Mesh> cubeMesh = shared_ptr<Mesh>(new Mesh("Resource\\FBXModel\\sphere\\sphere.fbx"));
 	cubeGameObject->SetMesh(cubeMesh);
@@ -58,7 +58,7 @@ void IrradianceCubeMap::Render()
 		cubeGameObject->RenderMesh();
 	}
 
-	//�Ѿ���Ⱦ��MipMap���ϵ�Top�ȼ�,����GenerateMips�Զ��������µ�Mip�ȼ�
+	//Gen MipMap
 	GDirectxCore->GenerateMips(renderCubeMap->GetSRV());
 	GDirectxCore->RecoverDefaultDSS();
 	GDirectxCore->RecoverDefualtRS();

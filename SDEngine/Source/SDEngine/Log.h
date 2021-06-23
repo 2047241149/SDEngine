@@ -17,7 +17,7 @@ public:
 	~Log();
 
 public:
-	static void LogShaderCompileInfo(ID3D10Blob* errorMessage, WCHAR* shaderFilename);
+	static void LogShaderCompileInfo(ID3D10Blob* errorMessage, const string& shaderFile);
 
 public:
 	static shared_ptr<Log> Get();

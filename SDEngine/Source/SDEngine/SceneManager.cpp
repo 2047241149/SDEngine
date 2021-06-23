@@ -142,8 +142,8 @@ bool SceneManager::Init()
 	GGameObjectManager->Add(mTransSphereObject);
 
 	//SkyBox
-	WCHAR* cubeMapResPath = L"Resource/Texture/night.dds";
-	skyBox = shared_ptr<SkyBox>(new SkyBox(cubeMapResPath));
+	string cubeMapFile = "Resource/Texture/night.dds";
+	skyBox = shared_ptr<SkyBox>(new SkyBox(cubeMapFile));
 
 	return true;
 }

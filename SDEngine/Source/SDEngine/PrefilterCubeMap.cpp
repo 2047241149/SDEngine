@@ -8,9 +8,9 @@
 #include "Texture/HdrTexture.h"
 
 
-PrefliterCubeMap::PrefliterCubeMap(WCHAR* cubeMapFileName, int textureWidth, int textureHeight)
+PrefliterCubeMap::PrefliterCubeMap(const string& file, int textureWidth, int textureHeight)
 {
-	Init(cubeMapFileName, textureWidth, textureHeight);
+	Init(file, textureWidth, textureHeight);
 }
 
 PrefliterCubeMap::PrefliterCubeMap(const PrefliterCubeMap& other)
@@ -22,9 +22,9 @@ PrefliterCubeMap::~PrefliterCubeMap()
 {
 }
 
-bool PrefliterCubeMap::Init(WCHAR* cubeMapFileName, int inTextureWidth, int inTextureHeight)
+bool PrefliterCubeMap::Init(const string& file, int inTextureWidth, int inTextureHeight)
 {
-	hdrCubeMap = shared_ptr<Texture>(new Texture(cubeMapFileName));
+	hdrCubeMap = shared_ptr<Texture>(new Texture(file));
 	cubeGameObject = shared_ptr<GameObject>(new GameObject());
 	shared_ptr<Mesh> cubeMesh = shared_ptr<Mesh>(new Mesh("Resource\\FBXModel\\sphere\\sphere.fbx"));
 	cubeGameObject->SetMesh(cubeMesh);
@@ -46,7 +46,6 @@ bool PrefliterCubeMap::Render()
 	ID3D11RenderTargetView* rtvs[MaxCubeMapFaces];
 	const float color[4] = { 0.0, 0.0, 0.0, 1.0f };
 	XMMATRIX projMatrix = cubeCamera->GetProjMatrix();
-	//��һ,���2D�������ݽṹ��,������2D��ȾĿ������
 
 	//Texture2D
 	D3D11_TEXTURE2D_DESC cubeMapTextureDesc;

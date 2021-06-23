@@ -212,6 +212,9 @@
     <ClInclude Include="Source\SDEngine\Shader\GrussianBlurCS.h">
       <Filter>SDEngine\Shader</Filter>
     </ClInclude>
+    <ClInclude Include="Source\SDEngine\Shader\Material.h">
+      <Filter>SDEngine\Shader</Filter>
+    </ClInclude>
     <ClInclude Include="Source\SDEngine\Shader\SSAOManager.h">
       <Filter>SDEngine\Shader</Filter>
     </ClInclude>
@@ -264,6 +267,7 @@
       <Filter>SDEngine</Filter>
     </ClInclude>
     <ClInclude Include="Source\pch.h" />
+    <ClInclude Include="Source\SDEngine\Shader\ShaderLibrary.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\SDEngine\ClusterDefferedSceneRender.cpp">
@@ -398,6 +402,9 @@
     <ClCompile Include="Source\SDEngine\Shader\GrussianBlurCS.cpp">
       <Filter>SDEngine\Shader</Filter>
     </ClCompile>
+    <ClCompile Include="Source\SDEngine\Shader\Material.cpp">
+      <Filter>SDEngine\Shader</Filter>
+    </ClCompile>
     <ClCompile Include="Source\SDEngine\Shader\SSAOManager.cpp">
       <Filter>SDEngine\Shader</Filter>
     </ClCompile>
@@ -453,5 +460,6 @@
       <Filter>SDEngine</Filter>
     </ClCompile>
     <ClCompile Include="Source\pch.cpp" />
+    <ClCompile Include="Source\SDEngine\Shader\ShaderLibrary.cpp" />
   </ItemGroup>
 </Project>

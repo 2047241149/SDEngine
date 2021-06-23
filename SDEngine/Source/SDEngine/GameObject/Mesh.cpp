@@ -1,5 +1,5 @@
 ﻿#include "Mesh.h"
-
+#include "SDEngine/Shader/Material.h"
 
 Mesh::Mesh(string strFbxFileName):
 	pureColor(XMFLOAT4(1.0f,1.0f,1.0f,1.0f)),
@@ -178,4 +178,14 @@ void Mesh::SetTexture(string fileName, TextureType textureType)
 			}
 		}
 	}
+}
+
+void Mesh::SetMaterial(shared_ptr<Material> material)
+{
+	this->material = material;
+}
+
+shared_ptr<Material> Mesh::GetMaterial()
+{
+	return this->material;
 }

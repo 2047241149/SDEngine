@@ -65,7 +65,7 @@ bool TiledDefferedSceneRender::Init()
 		SSRGBuffer(GScreenWidth, GScreenHeight, SCREEN_FAR, SCREEN_NEAR));
 
 	ssaoManager = shared_ptr<SSAOManager>(new SSAOManager(GScreenWidth, GScreenHeight));
-	WCHAR* cubeMapResPath = L"Resource/Texture/night.dds";
+	string cubeMapResPath = "Resource/Texture/night.dds";
 	skyBox = shared_ptr<SkyBox>(new SkyBox(cubeMapResPath));
 	radianceCubeMap = shared_ptr<IrradianceCubeMap>(new IrradianceCubeMap(cubeMapResPath));
 
@@ -291,7 +291,7 @@ void TiledDefferedSceneRender::RenderSSRPass()
 {
 	//mSSRRT->SetRenderTarget();
 	ID3D11RenderTargetView* backRTV = GDirectxCore->GetRTV();
-	//��ģ�徏��ֵ���Д�
+
 	g_pDeviceContext->OMSetRenderTargets(1, &backRTV, nullptr);
 	GDirectxCore->SetDefualtViewPort();
 	GDirectxCore->TurnOnAlphaBlend();
@@ -349,7 +349,6 @@ void TiledDefferedSceneRender::RenderOpacity()
 	g_RenderMask->EndEvent();
 }
 
-//����͸�������Ϊ����͸��
 void TiledDefferedSceneRender::RenderTransparency()
 {
 	RenderGeneralTransparency();
@@ -525,7 +524,7 @@ void TiledDefferedSceneRender::RenderDirLightPass()
 	GDirectxCore->TurnOffZBuffer();
 	GDirectxCore->TurnOnLightBlend();
 
-	//TODO: ֻ����һ��IradianceMap��Ⱦ?
+	//TODO: ֻPre IradianceMap
 	for (int index = 0; index < (int)GLightManager->m_vecDirLight.size(); ++index)
 	{
 		shared_ptr<DirectionLight> pDirLight = GLightManager->m_vecDirLight[index];
@@ -554,7 +553,7 @@ void TiledDefferedSceneRender::RenderDirLightPass()
 		}
 		else
 		{
-			memSSAORT = GWhiteTexture;
+			memSSAORT = GWhiteTextureSrv;
 		}
 		GShaderManager->defferedDirLightShader->SetTexture("SSAORT", memSSAORT);
 		GShaderManager->defferedDirLightShader->Apply();
@@ -587,8 +586,7 @@ void TiledDefferedSceneRender::RenderShadowMapPass()
 
 	XMMATRIX lightViewMatrix = GLightManager->GetMainLight()->GetViewMatrix();
 
-	//��Ⱦ��ҪͶ����Ӱ�����嵽RT��
-	//������Կ�����GeometryShader����DrawCall
+	//GeometryShader DrawCall
 	mCascadeShadowsManager->ClearDepthBuffer();
 	for (int nCascadeIndex = 0; nCascadeIndex < CASCADE_SHADOW_MAP_NUM; ++nCascadeIndex)
 	{
@@ -632,7 +630,6 @@ void TiledDefferedSceneRender::RenderShadowMapPass()
 
 void TiledDefferedSceneRender::RenderSSAOPass()
 {
-	//��Ⱦ�õ�SSAORT
 	ssaoManager->Render(mGeometryBuffer.get());
 }
 
@@ -655,6 +652,5 @@ void TiledDefferedSceneRender::RenderPreZPass()
 		}
 	}
 
-	//�ָ�Ĭ�ϵ�RS
 	GDirectxCore->RecoverDefualtRS();
 }

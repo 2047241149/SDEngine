@@ -6,6 +6,8 @@
 #include "SDEngine/Import/ImportFBX.h"
 #include "SDEngine/LoadTexture/Resource.h"
 
+
+class Material;
 enum MaterialType
 {
 	PURE_COLOR,
@@ -46,6 +48,8 @@ public:
 	void SetSpecularTexture(string fileName);
 	void SetRoughnessTexture(string fileName);
 	void SetMetalTexture(string fileName);
+	void SetMaterial(shared_ptr<Material> material);
+	shared_ptr<Material> GetMaterial();
 
 public:
 	shared_ptr<FBXModelData> m_pFBXModel;
@@ -56,9 +60,11 @@ public:
 	bool bCastShadow;
 	MaterialType m_eMaterialType;
 
-	//当处于纯色渲染模式下，会使用的属性
 	XMFLOAT4 pureColor;  
 	float roughness;
 	float metal;
+
+private:
+	shared_ptr<Material> material;
 };
-#endif // !_MESH_H
+#endif

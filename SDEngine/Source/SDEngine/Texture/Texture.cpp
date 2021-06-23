@@ -1,9 +1,10 @@
 #include "Texture.h"
+#include "SDEngine/Common/CommonFunction.h"
 
-Texture::Texture(WCHAR* TextureFilename):
+Texture::Texture(const string& textureFile):
 	m_pSRV(nullptr)
 {
-	Init(TextureFilename);
+	Init(textureFile);
 }
 
 Texture::Texture(const Texture&other)
@@ -16,10 +17,11 @@ Texture::~Texture()
 	ShutDown();
 }
 
-bool Texture::Init(WCHAR* TextureFilename)
+bool Texture::Init(const string& textureFile)
 {
-	
-	HR(Resource::CreateShaderResourceViewFromFile(g_pDevice, TextureFilename, &m_pSRV));
+	file = textureFile;
+	wstring wFile = Str2Wstr(textureFile);
+	HR(Resource::CreateShaderResourceViewFromFile(g_pDevice, wFile.c_str(), &m_pSRV));
 	return true;
 }
 

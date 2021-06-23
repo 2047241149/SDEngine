@@ -30,7 +30,7 @@ bool Log::Init()
 	return true;
 }
 
-void Log::LogShaderCompileInfo(ID3D10Blob* errorMessage, WCHAR* shaderFilename)
+void Log::LogShaderCompileInfo(ID3D10Blob* errorMessage, const string& shaderFile)
 {
 	char* compileErrors;
 	unsigned long bufferSize, i;
@@ -50,7 +50,7 @@ void Log::LogShaderCompileInfo(ID3D10Blob* errorMessage, WCHAR* shaderFilename)
 	errorMessage->Release();
 	errorMessage = 0;
 
-	MessageBox(NULL, L"Error compiling shader.  Check shader-error.txt for message.", shaderFilename, MB_OK);
+	Log::Error("Error compiling shader.  Check shader-error.txt for message {0}", shaderFile);
 }
 
 shared_ptr<Log> Log::single = nullptr;

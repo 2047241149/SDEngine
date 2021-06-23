@@ -2,6 +2,8 @@
 #include "SDEngine/Texture/TextureSamplerManager.h"
 #include "SDEngine/Common/GraphicsConfig.h"
 #include "SDEngine/Texture/TextureManager.h"
+#include "SDEngine/Shader/Material.h"
+#include "Log.h"
 
 GameObject::GameObject()
 {
@@ -52,8 +54,8 @@ void GameObject::Render(RenderMode renderMode)
 			ID3D11ShaderResourceView* alphaSRV = LoadTexture(material.alphaMapFileName);
 			ID3D11ShaderResourceView* roughnessSRV = LoadTexture(material.roughnessMapFileName);
 			ID3D11ShaderResourceView* metalSRV = LoadTexture(material.metalMapFileName);
-			roughnessSRV = (roughnessSRV == nullptr ? GWhiteTexture : roughnessSRV);
-			metalSRV = (metalSRV == nullptr ? GWhiteTexture : metalSRV);
+			roughnessSRV = (roughnessSRV == nullptr ? GWhiteTextureSrv : roughnessSRV);
+			metalSRV = (metalSRV == nullptr ? GWhiteTextureSrv : metalSRV);
 
 			if (renderMode == RenderMode::Simple)
 			{
@@ -90,13 +92,13 @@ void GameObject::Render(RenderMode renderMode)
 				}
 				else if (albedoSRV)
 				{
-					//����ViewMatrix,ProjMatrix,UIOrthoMatrix��Ϊȫ��CB,�Լ�ȫ��SamplerState????
+					//ViewMatrix,ProjMatrix,UIOrthoMatrix
 					GShaderManager->diffuseShader->SetMatrix("World", worldMatrix);
 					GShaderManager->diffuseShader->SetMatrix("View", GCamera->GetViewMatrix());
 					GShaderManager->diffuseShader->SetMatrix("Proj", GCamera->GetProjectionMatrix());
 					GShaderManager->diffuseShader->SetMatrix("WorldInvTranspose", FMath::GetInvenseTranspose(worldMatrix));
 					GShaderManager->diffuseShader->SetTexture("AlbedoTexture", albedoSRV);
-					GShaderManager->diffuseShader->SetTexture("SpecularTexture", GWhiteTexture);
+					GShaderManager->diffuseShader->SetTexture("SpecularTexture", GWhiteTextureSrv);
 					GShaderManager->diffuseShader->SetTexture("RoughnessTexture", roughnessSRV);
 					GShaderManager->diffuseShader->SetTexture("MetalTexture", metalSRV);
 					GShaderManager->diffuseShader->SetTextureSampler("SampleWrapLinear", GTextureSamplerBilinearWrap);
@@ -114,7 +116,7 @@ void GameObject::Render(RenderMode renderMode)
 					GShaderManager->diffuseNormalShader->SetMatrix("WorldInvTranspose", FMath::GetInvenseTranspose(worldMatrix));
 					GShaderManager->diffuseNormalShader->SetTexture("AlbedoTexture", albedoSRV);
 					GShaderManager->diffuseNormalShader->SetTexture("NormalTexture", bumpSRV);
-					GShaderManager->diffuseNormalShader->SetTexture("SpecularTexture", GWhiteTexture);
+					GShaderManager->diffuseNormalShader->SetTexture("SpecularTexture", GWhiteTextureSrv);
 					GShaderManager->diffuseNormalShader->SetTexture("RoughnessTexture", roughnessSRV);
 					GShaderManager->diffuseNormalShader->SetTexture("MetalTexture", metalSRV);
 					GShaderManager->diffuseNormalShader->SetTextureSampler("SampleWrapLinear", GTextureSamplerBilinearWrap);
@@ -225,13 +227,11 @@ void GameObject::Render(RenderMode renderMode)
 void GameObject::RenderMesh()
 {
 	g_pDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-
 	vector<ModelData>& mModelList = m_pMesh->m_pFBXModel->mModelList;
+
 	for (UINT index = 0; index < mModelList.size(); ++index)
 	{
-
 		ModelData* mModelData = &mModelList[index];
-
 		vector<MeshData>& mMeshList = mModelData->mMeshList;
 
 		for (UINT i = 0; i < mMeshList.size(); ++i)
@@ -261,6 +261,21 @@ XMMATRIX GameObject::GetWorldMatrix()
 	XMMATRIX worldMatrix = scale * rotation * translation;
 
 	return worldMatrix;
+}
+
+void GameObject::DrawMesh()
+{
+	shared_ptr<Material> material = m_pMesh->GetMaterial();
+	if (!material)
+	{
+		Log::Warn("material is nullptr");
+	}
+
+	material->SetMatrix("World", GetWorldMatrix());
+	material->SetMatrix("View", GCamera->GetViewMatrix());
+	material->SetMatrix("Proj", GCamera->GetProjectionMatrix());
+	material->Apply();
+	RenderMesh();
 }
 
 void GameObject::SetMesh(shared_ptr<Mesh> pMesh)

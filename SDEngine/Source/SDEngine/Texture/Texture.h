@@ -1,29 +1,29 @@
 #pragma once
-#ifndef _TEXTURE_CLASS_H
-#define _TEXTURE_CLASS_H
+#ifndef _TEXTURE_H
+#define _TEXTURE_H
 
-#include "../Common/Macro.h"
-#include "../Common/DirectxCore.h"
-#include "../LoadTexture/Resource.h"
-//#include "DXUT.h"
-//#include "SDKmisc.h"
+#include "SDEngine/Common/Macro.h"
+#include "SDEngine/Common/DirectxCore.h"
+#include "SDEngine/LoadTexture/Resource.h"
 using namespace DirectX;
 
 class Texture
 {
 private:
 	ID3D11ShaderResourceView* m_pSRV;
+	string file;
 
 private:
-	bool Init(WCHAR* TextureFilename);
+	bool Init(const string& textureFile);
 
 public:
-	Texture(WCHAR* TextureFilename);
+	Texture(const string& textureFile);
 	Texture(const Texture& other);
 	~Texture();
 
 public:
 	void ShutDown();
 	ID3D11ShaderResourceView* GetTexture();
+	string GetFile() { return file; }
 };
-#endif // !_TEX_CLASS_H
+#endif

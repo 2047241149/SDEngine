@@ -10,7 +10,7 @@ class GeometryBuffer;
 class SkyBox
 {
 public:
-	SkyBox(WCHAR* cubeMapFileName);
+	SkyBox(const string& file);
 	SkyBox(ID3D11ShaderResourceView* inSrv);
 	SkyBox(const SkyBox& other);
 	~SkyBox();
@@ -20,7 +20,7 @@ public:
 	void SetTexture(ID3D11ShaderResourceView* inSrv);
 
 private:
-	bool Init(WCHAR* cubeMapFileName);
+	bool Init(const string& file);
 	void ShutDown();
 
 private:
@@ -28,4 +28,4 @@ private:
 	shared_ptr<GameObject> skyBoxGameObject;
 	ID3D11ShaderResourceView* cubeSrv = nullptr;
 };
-#endif // !_SKY_BOX_H
+#endif

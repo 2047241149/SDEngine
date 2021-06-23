@@ -12,7 +12,7 @@ class CubeCamera;
 class PrefliterCubeMap
 {
 public:
-	PrefliterCubeMap(WCHAR* hdrCubeMapFile, int textureWidth = 64, int textureHeight = 64);
+	PrefliterCubeMap(const string& file, int textureWidth = 64, int textureHeight = 64);
 	PrefliterCubeMap(const PrefliterCubeMap& other);
 	~PrefliterCubeMap();
 
@@ -22,7 +22,7 @@ public:
 	ID3D11ShaderResourceView* GetCubeMapSrv();
 
 private:
-	bool Init(WCHAR* cubeMapFileName, int textureWidth = 64, int textureHeight = 64);
+	bool Init(const string& file, int textureWidth = 64, int textureHeight = 64);
 	void ShutDown();
 
 private:

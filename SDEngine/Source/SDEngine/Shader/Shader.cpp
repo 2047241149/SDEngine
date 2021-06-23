@@ -1,5 +1,6 @@
 ﻿#include "Shader.h"
 #include "Log.h"
+#include "Common/CommonFunction.h"
 
 const int CONSTANT_BUFFER_SIZE = 16;
 const int SHADER_FLOAT_SIZE = 4;
@@ -382,13 +383,13 @@ bool Shader::SetRWStructBuffer(const string& bufferName, ID3D11UnorderedAccessVi
 //----------------------------------------------------------------
 //-------------------------VertexPixelShader----------------------
 //----------------------------------------------------------------
-VertexPixelShader::VertexPixelShader(WCHAR* vsFilenPath, WCHAR* psFilenPath):
+VertexPixelShader::VertexPixelShader(const string& shaderFile):
 	Shader(),
 	vertexShader(nullptr),
 	pixelShader(nullptr),
 	inputLayout(nullptr)
 {
-	Init(vsFilenPath, psFilenPath);
+	Init(shaderFile);
 }
 
 VertexPixelShader::VertexPixelShader(const VertexPixelShader& other)
@@ -401,47 +402,45 @@ VertexPixelShader::~VertexPixelShader()
 }
 
 
-bool VertexPixelShader::Init(WCHAR* vsFilenPath, WCHAR* psFilenPath)
+bool VertexPixelShader::Init(const string& shaderFile)
 {
 
 	bool result;
-	result = InitShader(vsFilenPath, psFilenPath);
+	result = InitShader(shaderFile);
 	if (!result)
 		return false;
 
 	return true;
 }
 
-bool VertexPixelShader::InitShader(WCHAR* VSFileName, WCHAR* PSFileName)
+bool VertexPixelShader::InitShader(const string& shaderFile)
 {
 	HRESULT result;
 	ID3D10Blob* pErrorMessage;
 	ID3D10Blob* pVertexShaderBlob;
 	ID3D10Blob* pPixelShaderBlob;
 
-	//初始化参数
 	pErrorMessage = nullptr;
 	pVertexShaderBlob = nullptr;
 	pPixelShaderBlob = nullptr;
 	DWORD flag = D3DCOMPILE_ENABLE_STRICTNESS;
+	wstring wShaderFile = Str2Wstr(shaderFile);
 
 #if _DEBUG
 	flag |= D3DCOMPILE_DEBUG | D3DCOMPILE_SKIP_OPTIMIZATION;
 #endif
 
-	//编译VertexShader代码,并创建VertexShader
-	result = D3DCompileFromFile(VSFileName, nullptr, D3D_COMPILE_STANDARD_FILE_INCLUDE, "VS", "vs_5_0", flag, 0, &pVertexShaderBlob, &pErrorMessage);
+	//compile vertexShaer
+	result = D3DCompileFromFile(wShaderFile.c_str(), nullptr, D3D_COMPILE_STANDARD_FILE_INCLUDE, "VS", "vs_5_0", flag, 0, &pVertexShaderBlob, &pErrorMessage);
 	if (FAILED(result))
 	{
-		//存在错误信息
 		if (pErrorMessage)
 		{
-			Log::LogShaderCompileInfo(pErrorMessage, VSFileName);
+			Log::LogShaderCompileInfo(pErrorMessage, shaderFile);
 		}
-		//不存在错误信息,也就是没有找到Shader文件
 		else
 		{
-			MessageBox(nullptr, L"can not find VS file", L"error", MB_OK);
+			Log::Error("can not find VS file {0} ", shaderFile);
 		}
 
 		return false;
@@ -450,21 +449,19 @@ bool VertexPixelShader::InitShader(WCHAR* VSFileName, WCHAR* PSFileName)
 	HR(g_pDevice->CreateVertexShader(pVertexShaderBlob->GetBufferPointer(),
 		pVertexShaderBlob->GetBufferSize(), nullptr, &vertexShader));
 
-	//编译PixelShader,并创建PixelShader
-	result = D3DCompileFromFile(PSFileName, nullptr, D3D_COMPILE_STANDARD_FILE_INCLUDE, "PS", "ps_5_0", flag, 0,
+	//compile pixelShaer
+	result = D3DCompileFromFile(wShaderFile.c_str(), nullptr, D3D_COMPILE_STANDARD_FILE_INCLUDE, "PS", "ps_5_0", flag, 0,
 		&pPixelShaderBlob, &pErrorMessage);
 
 	if (FAILED(result))
 	{
-		//存在错误信息
 		if (pErrorMessage)
 		{
-			//Log::LogShaderCompileInfo(pErrorMessage, PSFileName);
+			Log::LogShaderCompileInfo(pErrorMessage, shaderFile);
 		}
-		//不存在错误信息,也就是没有找到Shader文件
 		else
 		{
-			MessageBox(NULL, L"can not find PS file", L"error", MB_OK);
+			Log::Error("can not find PS file {0} ", shaderFile);
 		}
 
 		return false;
@@ -504,10 +501,7 @@ void VertexPixelShader::Apply()
 
 void VertexPixelShader::SetShaderParam()
 {
-	//设置顶点输入布局
 	g_pDeviceContext->IASetInputLayout(inputLayout);
-
-	//设置VertexShader和PixelShader
 	g_pDeviceContext->VSSetShader(vertexShader, nullptr, 0);
 	g_pDeviceContext->PSSetShader(pixelShader, nullptr, 0);
 }
@@ -760,9 +754,9 @@ bool VertexPixelShader::SetTextureSampler(const string& variableName, ID3D11Samp
 //----------------------------------------------------------------
 //-------------------------VertexPixelShader----------------------
 //----------------------------------------------------------------
-ComputeShader::ComputeShader(WCHAR* csFilenPath)
+ComputeShader::ComputeShader(const string& shaderFile)
 {
-	InitShader(csFilenPath);
+	InitShader(shaderFile);
 }
 
 ComputeShader::ComputeShader(const ComputeShader& other)
@@ -788,28 +782,31 @@ void ComputeShader::Apply()
 	SetShaderParam();;
 }
 
-bool ComputeShader::InitShader(WCHAR* csFilenPath)
+bool ComputeShader::InitShader(const string& shaderFile)
 {
 	HRESULT result;
 	ID3D10Blob* errorMessage = nullptr;
 	ID3D10Blob* csBlob = nullptr;
 	DWORD flag = D3DCOMPILE_ENABLE_STRICTNESS;
+	wstring wShaderFile = Str2Wstr(shaderFile);
 
 #if _DEBUG
 	flag |= D3DCOMPILE_DEBUG | D3DCOMPILE_SKIP_OPTIMIZATION;
 #endif
 
-	result = D3DCompileFromFile(csFilenPath, NULL, D3D_COMPILE_STANDARD_FILE_INCLUDE, "CS", "cs_5_0", flag, 0, &csBlob, &errorMessage);
+	result = D3DCompileFromFile(wShaderFile.c_str(), NULL, D3D_COMPILE_STANDARD_FILE_INCLUDE, "CS", "cs_5_0", flag, 0, &csBlob, &errorMessage);
 	if (FAILED(result))
 	{
 		if (errorMessage)
 		{
-			//Log::LogShaderCompileInfo(errorMessage, csFilenPath);
+			Log::LogShaderCompileInfo(errorMessage, shaderFile);
 		}
 		else
 		{
-			MessageBox(NULL, L"can not find CS file", L"error", MB_OK);
+			Log::Error("can not find CS file {0} ", shaderFile);
 		}
+
+		return false;
 	}
 
 	g_pDevice->CreateComputeShader(csBlob->GetBufferPointer(), csBlob->GetBufferSize(),

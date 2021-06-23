@@ -12,7 +12,7 @@
 
 enum RenderMode
 {
-	Material,
+	UseMaterial,
 	Simple,
 };
 using namespace std;
@@ -34,9 +34,11 @@ public:
 	
 	void Shutdown();
 	
-	void Render(RenderMode renderMode = RenderMode::Material);
+	void Render(RenderMode renderMode = RenderMode::UseMaterial);
 	
 	void RenderMesh();
+
+	void DrawMesh();
 
 	XMMATRIX GetWorldMatrix();
 

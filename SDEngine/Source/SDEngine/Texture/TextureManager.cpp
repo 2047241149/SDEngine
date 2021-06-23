@@ -29,7 +29,7 @@ shared_ptr<TextureManager> TextureManager::Get()
 
 bool TextureManager::Init()
 {
-	whiteTexture = shared_ptr<Texture>(new Texture(L"Resource/Texture/white.png"));
+	whiteTexture = shared_ptr<Texture>(new Texture("Resource/white.png"));
 	return true;
 }
 

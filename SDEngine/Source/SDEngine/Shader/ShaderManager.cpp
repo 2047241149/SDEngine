@@ -18,97 +18,69 @@ ShaderManager::ShaderManager(const ShaderManager& other)
 
 bool ShaderManager::Init()
 {
- 	diffuseNormalShader = shared_ptr<VertexPixelShader>(new
-		VertexPixelShader(L"Resource/Shader/DiffuseNormalShader.fx", L"Resource/Shader/DiffuseNormalShader.fx"));
+ 	diffuseNormalShader = make_shared<VertexPixelShader>("Resource/Shader/DiffuseNormalShader.fx");
 
-	diffuseNormalSpecShader = shared_ptr<VertexPixelShader>(new
-		VertexPixelShader(L"Resource/Shader/DiffuseNormalSpecularShader.fx", L"Resource/Shader/DiffuseNormalSpecularShader.fx"));
+	diffuseNormalSpecShader = make_shared<VertexPixelShader>("Resource/Shader/DiffuseNormalSpecularShader.fx");
 
-	diffuseSpecShader = shared_ptr<VertexPixelShader>(new
-		VertexPixelShader(L"Resource/Shader/DiffuseSpecularShader.fx", L"Resource/Shader/DiffuseSpecularShader.fx"));
+	diffuseSpecShader = make_shared<VertexPixelShader>("Resource/Shader/DiffuseSpecularShader.fx");
 
-	diffuseShader = shared_ptr<VertexPixelShader>(new
-		VertexPixelShader(L"Resource/Shader/DiffuseShader.fx", L"Resource/Shader/DiffuseShader.fx"));
+	diffuseShader = make_shared<VertexPixelShader>("Resource/Shader/DiffuseShader.fx");
 
-	defferedDirLightShader = shared_ptr<VertexPixelShader>(new
-		VertexPixelShader(L"Resource/Shader/DefferedDirLightShader.fx",
-			L"Resource/Shader/DefferedDirLightShader.fx"));
+	defferedDirLightShader = make_shared<VertexPixelShader>("Resource/Shader/DefferedDirLightShader.fx");
 
-	defferedPointLightShader = shared_ptr<VertexPixelShader>(new
-		VertexPixelShader(L"Resource/Shader/DefferedPointLightShader.fx", L"Resource/Shader/DefferedPointLightShader.fx"));
+	defferedPointLightShader = make_shared<VertexPixelShader>("Resource/Shader/DefferedPointLightShader.fx");
 
-	defferedFinalShader = shared_ptr<VertexPixelShader>(new
-		VertexPixelShader(L"Resource/Shader/DefferedFinalShader.fx", L"Resource/Shader/DefferedFinalShader.fx"));
+	defferedFinalShader = make_shared<VertexPixelShader>("Resource/Shader/DefferedFinalShader.fx");
 
-	depthDisplayShader = shared_ptr<VertexPixelShader>(new
-		VertexPixelShader(L"Resource/Shader/DepthDisplayShader.fx", L"Resource/Shader/DepthDisplayShader.fx"));
+	depthDisplayShader = make_shared<VertexPixelShader>("Resource/Shader/DepthDisplayShader.fx");
 
-	pureColorShader = shared_ptr<VertexPixelShader>(new
-		VertexPixelShader(L"Resource/Shader/PureColorShader.fx", L"Resource/Shader/PureColorShader.fx"));
+	pureColorShader = make_shared<VertexPixelShader>("Resource/Shader/PureColorShader.fx");
 
-	uiShader = shared_ptr<VertexPixelShader>(new
-		VertexPixelShader(L"Resource/Shader/UIShader.fx", L"Resource/Shader/UIShader.fx"));
+	uiShader = make_shared<VertexPixelShader>("Resource/Shader/UIShader.fx");
 
-	graphicsBlitShader = shared_ptr<VertexPixelShader>(new
-		VertexPixelShader(L"Resource/Shader/GraphicsBlitShader.fx", L"Resource/Shader/GraphicsBlitShader.fx"));
+	graphicsBlitShader = make_shared<VertexPixelShader>("Resource/Shader/GraphicsBlitShader.fx");
 	
-	ssrShader = shared_ptr<VertexPixelShader>(new
-		VertexPixelShader(L"Resource/Shader/ScreenSpaceReflectShader.fx", L"Resource/Shader/ScreenSpaceReflectShader.fx"));
+	ssrShader = make_shared<VertexPixelShader>("Resource/Shader/ScreenSpaceReflectShader.fx");
 
-	forwardPureColorShader = shared_ptr<VertexPixelShader>(new
-		VertexPixelShader(L"Resource/Shader/ForwardPureColorShader.fx",
-			L"Resource/Shader/ForwardPureColorShader.fx"));
+	forwardPureColorShader = make_shared<VertexPixelShader>("Resource/Shader/ForwardPureColorShader.fx");
 
-	depthGetShader = shared_ptr<VertexPixelShader>(new VertexPixelShader(L"Resource/Shader/DepthGetShader.fx",
-		L"Resource/Shader/DepthGetShader.fx"));
+	depthGetShader = make_shared<VertexPixelShader>("Resource/Shader/DepthGetShader.fx");
 
-	ssrGBufferShader = shared_ptr<VertexPixelShader>(new VertexPixelShader(L"Resource/Shader/SSRGBuffer.fx",
-		L"Resource/Shader/SSRGBuffer.fx"));
+	ssrGBufferShader = make_shared<VertexPixelShader>("Resource/Shader/SSRGBuffer.fx");
 
-	waveShader = shared_ptr<VertexPixelShader>(new
-		VertexPixelShader(L"Resource/Shader/WaveShader.fx", L"Resource/Shader/WaveShader.fx"));
+	waveShader = make_shared<VertexPixelShader>("Resource/Shader/WaveShader.fx");
 
-	fxaaShader = shared_ptr<VertexPixelShader>(new
-		VertexPixelShader(L"Resource/Shader/FxaaShader.fx", L"Resource/Shader/FxaaShader.fx"));
+	fxaaShader = make_shared<VertexPixelShader>("Resource/Shader/FxaaShader.fx");
 
-	depthShader = shared_ptr<VertexPixelShader>(new
-		VertexPixelShader(L"Resource/Shader/LightDepthMap.fx", L"Resource/Shader/LightDepthMap.fx"));
+	depthShader = make_shared<VertexPixelShader>("Resource/Shader/LightDepthMap.fx");
 
-	shadowMapShader = shared_ptr<VertexPixelShader>(new
-		VertexPixelShader(L"Resource/Shader/DirShadowMapShader.fx", L"Resource/Shader/DirShadowMapShader.fx"));
+	shadowMapShader = make_shared<VertexPixelShader>("Resource/Shader/DirShadowMapShader.fx");
 	
-	ssaoShader = shared_ptr<VertexPixelShader>(new
-		VertexPixelShader(L"Resource/Shader/SSAOShader.hlsl", L"Resource/Shader/SSAOShader.hlsl"));
+	ssaoShader = make_shared<VertexPixelShader>("Resource/Shader/SSAOShader.hlsl");
 
-	ssaoBlurShader = shared_ptr<VertexPixelShader>(new
-		VertexPixelShader(L"Resource/Shader/SSAOBlurShader.hlsl", L"Resource/Shader/SSAOBlurShader.hlsl"));
+	ssaoBlurShader = make_shared<VertexPixelShader>("Resource/Shader/SSAOBlurShader.hlsl");
 
-	skyBoxShader = shared_ptr<VertexPixelShader>(new
-		VertexPixelShader(L"Resource/Shader/SkyBoxShader.hlsl", L"Resource/Shader/SkyBoxShader.hlsl"));
+	skyBoxShader = make_shared<VertexPixelShader>("Resource/Shader/SkyBoxShader.hlsl");
 
-	equirectangularMapShader = shared_ptr<VertexPixelShader>(new
-		VertexPixelShader(L"Resource/Shader/equirectangularMapShader.fx", L"Resource/Shader/equirectangularMapShader.fx"));
+	equirectangularMapShader = make_shared<VertexPixelShader>("Resource/Shader/equirectangularMapShader.fx");
 
-	cubeMapToIrradianceShader = shared_ptr<VertexPixelShader>(new VertexPixelShader(L"Resource/Shader/CubeMalpToIradiance.fx",
-		L"Resource/Shader/CubeMalpToIradiance.fx"));
+	cubeMapToIrradianceShader = make_shared<VertexPixelShader>("Resource/Shader/CubeMalpToIradiance.fx");
 
-	prefilterCubeMapShader = shared_ptr<VertexPixelShader>(new VertexPixelShader(L"Resource/Shader/PreFilterHdrCubeMap.fx",
-		L"Resource/Shader/PreFilterHdrCubeMap.fx"));
+	prefilterCubeMapShader = make_shared<VertexPixelShader>("Resource/Shader/PreFilterHdrCubeMap.fx");
 
-	convolutedBRDFShader = shared_ptr<VertexPixelShader>(new VertexPixelShader(L"Resource/Shader/ConvolutedBRDFShader.fx",
-		L"Resource/Shader/ConvolutedBRDFShader.fx"));
+	convolutedBRDFShader = make_shared<VertexPixelShader>("Resource/Shader/ConvolutedBRDFShader.fx");
 
-	tiledLightShader = shared_ptr<ComputeShader>(new ComputeShader(L"Resource/Shader/TiledLightDefferedShader.fx"));
+	tiledLightShader = make_shared<ComputeShader>("Resource/Shader/TiledLightDefferedShader.fx");
 	
-	buildClusterCS = shared_ptr<ComputeShader>(new ComputeShader(L"Resource/Shader/BuildClusterCS.fx"));
+	buildClusterCS = make_shared<ComputeShader>("Resource/Shader/BuildClusterCS.fx");
 	
-	clusterLightCullCS = shared_ptr<ComputeShader>(new ComputeShader(L"Resource/Shader/ClusterLightCull.fx"));
+	clusterLightCullCS = make_shared<ComputeShader>("Resource/Shader/ClusterLightCull.fx");
 	
-	clusterDefferedLightShader = shared_ptr<VertexPixelShader>(new VertexPixelShader(L"Resource/Shader/ClusterDefferedLightPixelShader.fx", L"Resource/Shader/ClusterDefferedLightPixelShader.fx"));
+	clusterDefferedLightShader = make_shared<VertexPixelShader>("Resource/Shader/ClusterDefferedLightPixelShader.fx");
 
-	clusterDefferedLightCS = shared_ptr<ComputeShader>(new ComputeShader(L"Resource/Shader/ClusterLightDefferedShader.fx"));
+	clusterDefferedLightCS = make_shared<ComputeShader>("Resource/Shader/ClusterLightDefferedShader.fx");
 	
-	maskUnvalidClusterCs = shared_ptr<ComputeShader>(new ComputeShader(L"Resource/Shader/MaskUnvalidClusterCs.fx"));
+	maskUnvalidClusterCs = make_shared<ComputeShader>("Resource/Shader/MaskUnvalidClusterCs.fx");
 	return true;
 }
 
