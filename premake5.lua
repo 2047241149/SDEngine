@@ -51,6 +51,7 @@ project "SDEngine"
 		defines
 		{
 			"_SILENCE_CXX17_STRSTREAM_DEPRECATION_WARNING",
+			"_DISABLE_EXTENDED_ALIGNED_STORAGE",
 		}
 
 		postbuildcommands
@@ -102,6 +103,7 @@ project "TestGame"
 		defines
 		{
 			"_SILENCE_CXX17_STRSTREAM_DEPRECATION_WARNING",
+			"_DISABLE_EXTENDED_ALIGNED_STORAGE",
 		}
 
 	filter "configurations:Debug"

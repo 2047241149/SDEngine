@@ -9,20 +9,27 @@ private:
 	float cameraRotateSpeed = 0.5f;
 	shared_ptr<VertexPixelShader> pureColorShader;
 	shared_ptr<GameObject> cube;
+	shared_ptr<Texture> baseDiffuse;
+	shared_ptr<Material> material;
 	float surfaceColor[4] = {1.0f, 1.0f, 1.0f, 1.0f};
 
 public:
 	ExmPlayer() :
 		Layer("ExmPlayer")
 	{
-		pureColorShader = shared_ptr<VertexPixelShader>(new
-			VertexPixelShader(L"Resource/PureColorShader.fx", L"Resource/PureColorShader.fx"));
-		
-		cube = shared_ptr<GameObject>(new GameObject());
-		shared_ptr<Mesh> sphereMesh = shared_ptr<Mesh>(new Mesh("Resource\\sphere.FBX"));
+		pureColorShader = ShaderLibrary::LoadGetShader("Resource/PureColorShader.fx");
+		baseDiffuse = make_shared<Texture>("Resource/rustediron2_basecolor.png");
+		material = make_shared<Material>(pureColorShader);
+		material->SetTexture("BaseTexture", baseDiffuse);
+		material->SetTextureSampler("SampleWrapLinear", TextureSampler::BilinearFliterClamp);
+
+		cube = make_shared<GameObject>();
+		shared_ptr<Mesh> sphereMesh = make_shared<Mesh>("Resource\\sphere.FBX");
+		sphereMesh->SetMaterial(material);
 		cube->SetMesh(sphereMesh);
 		cube->m_pTransform->localPosition = XMFLOAT3(0.0f, 1.0f, 0.0f);
 		cube->m_pTransform->localScale = XMFLOAT3(2.0, 2.0, 2.0);
+		
 	}
 
 private:
@@ -89,12 +96,9 @@ public:
 		UpdateCamera(deltaTime);
 		GDirectxCore->SetBackBufferRender();
 		GDirectxCore->RecoverDefaultDSS();
-		pureColorShader->SetMatrix("World", cube->GetWorldMatrix());
-		pureColorShader->SetMatrix("View", GCamera->GetViewMatrix());
-		pureColorShader->SetMatrix("Proj", GCamera->GetProjectionMatrix());
-		pureColorShader->SetFloat4("surfaceColor", XMFLOAT4(surfaceColor[0], surfaceColor[1], surfaceColor[2], surfaceColor[3]));
-		pureColorShader->Apply();
-		cube->RenderMesh();
+		GDirectxCore->RecoverDefualtRS();
+		material->SetFloat4("surfaceColor", XMFLOAT4(surfaceColor[0], surfaceColor[1], surfaceColor[2], surfaceColor[3]));
+		cube->DrawMesh();
 	};
 
 	void OnImguiRender() override 

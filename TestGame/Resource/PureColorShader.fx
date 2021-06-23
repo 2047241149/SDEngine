@@ -1,3 +1,5 @@
+Texture2D BaseTexture:register(t0);
+SamplerState SampleWrapLinear:register(s0);
 
 cbuffer CBMatrix:register(b0)
 {
@@ -24,11 +26,7 @@ struct VertexIn
 struct VertexOut
 {
 	float4 Pos:SV_POSITION;
-};
-
-struct PixelOut
-{
-	float4 diffuse:SV_Target1;
+	float2 Tex:TEXCOORD0;
 };
 
 VertexOut VS(VertexIn ina)
@@ -37,11 +35,13 @@ VertexOut VS(VertexIn ina)
 	outa.Pos = mul(float4(ina.Pos, 1.0f), World);
 	outa.Pos = mul(outa.Pos, View);
 	outa.Pos = mul(outa.Pos, Proj);
+
+	outa.Tex = ina.Tex;
 	return outa;
 }
 
-
 float4 PS(VertexOut outa) : SV_Target
 {
-	return surfaceColor;
+	float4 diffuse = BaseTexture.Sample(SampleWrapLinear, outa.Tex);
+	return surfaceColor * diffuse;
 }
