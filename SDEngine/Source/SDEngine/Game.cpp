@@ -63,6 +63,13 @@ void Game::Run()
 		GInput->Tick();
 		GDirectxCore->BeginSceneRender();
 
+		for (auto it = layerManager->Begin(); it != layerManager->End(); ++it)
+		{
+			(*it)->OnUpdate(GFPS->GetDeltaTime());
+		}
+
+		Update();
+
 		imguiLayer->BeginRender();
 		for (auto it = layerManager->Begin(); it != layerManager->End(); ++it)
 		{
@@ -72,13 +79,13 @@ void Game::Run()
 		OnImguiRender();
 		imguiLayer->EndRender();
 
+
+		GDirectxCore->EndScene();
+
 		for (auto it = layerManager->Begin(); it != layerManager->End(); ++it)
 		{
-			(*it)->OnUpdate(GFPS->GetDeltaTime());
+			(*it)->End();
 		}
-
-		Update();
-		GDirectxCore->EndScene();
 	}
 }
 

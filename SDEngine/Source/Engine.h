@@ -15,3 +15,4 @@
 #include "SDEngine/Texture/TextureSamplerManager.h"
 #include "SDEngine/Shader/Material.h"
 #include "SDEngine/Shader/ShaderLibrary.h"
+#include "SDEngine/Time/Profile.h" 

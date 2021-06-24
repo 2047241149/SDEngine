@@ -180,6 +180,7 @@
     <ClInclude Include="Source\SDEngine\Texture\TextureSamplerManager.h" />
     <ClInclude Include="Source\SDEngine\Texture\stb_image.h" />
     <ClInclude Include="Source\SDEngine\TiledDefferedSceneRender.h" />
+    <ClInclude Include="Source\SDEngine\Time\Profile.h" />
     <ClInclude Include="Source\SDEngine\WindowInfo.h" />
     <ClInclude Include="Source\pch.h" />
   </ItemGroup>
@@ -246,6 +247,7 @@
     <ClCompile Include="Source\SDEngine\Texture\TextureSamplerManager.cpp" />
     <ClCompile Include="Source\SDEngine\Texture\stb_image.cpp" />
     <ClCompile Include="Source\SDEngine\TiledDefferedSceneRender.cpp" />
+    <ClCompile Include="Source\SDEngine\Time\Profile.cpp" />
     <ClCompile Include="Source\SDEngine\WindowInfo.cpp" />
     <ClCompile Include="Source\SDEngine\源.cpp" />
     <ClCompile Include="Source\pch.cpp" />

@@ -29,12 +29,12 @@ public:
 		cube->SetMesh(sphereMesh);
 		cube->m_pTransform->localPosition = XMFLOAT3(0.0f, 1.0f, 0.0f);
 		cube->m_pTransform->localScale = XMFLOAT3(2.0, 2.0, 2.0);
-		
 	}
 
 private:
 	void UpdateCamera(float deltaTime)
 	{
+		PROFILE_FUNC();
 		int mouseXOffset, mouseYOffset;
 		static float rotateY = 0.0f;
 		int fps = GFPS->GetFPS();
@@ -93,27 +93,44 @@ public:
 
 	void OnUpdate(float deltaTime) override 
 	{
+		PROFILE_FUNC();
 		UpdateCamera(deltaTime);
 		GDirectxCore->SetBackBufferRender();
 		GDirectxCore->RecoverDefaultDSS();
 		GDirectxCore->RecoverDefualtRS();
 		material->SetFloat4("surfaceColor", XMFLOAT4(surfaceColor[0], surfaceColor[1], surfaceColor[2], surfaceColor[3]));
-		cube->DrawMesh();
+		
+		{
+			PROFILE_SCOPE("draw");
+			cube->DrawMesh();
+		}
 	};
 
 	void OnImguiRender() override 
 	{
-		//bool bShow = true;
-		//ImGui::ShowDemoWindow(&bShow);
-
+		bool bShow = true;
+		ImGui::ShowDemoWindow(&bShow);
 		ImGui::ColorEdit4("Pick", surfaceColor);
 		ImGui::Begin("Profile");
 		ImGui::Text("FPS: %d  ", FPS::Get()->GetFPS());
+
+		const vector<ProfileResult>& profiles = Profile::GetProfileResults();
+		for (auto& it : profiles)
+		{
+			ImGui::Text("%s: %0.4fms", it.name.c_str(), it.time);
+		}
+
 		ImGui::End();
 	}
 
 	void OnEvent(Event& event) override 
 	{
+
+	}
+
+	void End() override
+	{
+		Profile::ClearData();
 	}
 };
 

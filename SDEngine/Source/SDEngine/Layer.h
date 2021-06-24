@@ -21,8 +21,8 @@ public:
 	virtual void OnUpdate(float deltaTime) {};
 	virtual void OnEvent(Event& event) {};
 	virtual void OnImguiRender() {};
+	virtual void End() {};
 
 public:
 	string GetLayerName() { return layerName; }
-
 };
