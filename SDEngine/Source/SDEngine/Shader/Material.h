@@ -22,6 +22,8 @@ struct MaterialVariable
 	MaterialVariableValue value;
 };
 
+
+//TODO: Material System is bad performance now, need to refactor
 class Material
 {
 private:

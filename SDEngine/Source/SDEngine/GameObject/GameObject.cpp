@@ -218,7 +218,7 @@ void GameObject::Render(RenderMode renderMode)
 			UINT offset = 0;
 			g_pDeviceContext->IASetVertexBuffers(0, 1, &mesh.mVertexBuffer, &stride, &offset);
 			g_pDeviceContext->IASetIndexBuffer(mesh.mIndexBuffer, DXGI_FORMAT_R16_UINT, 0);																 
-			g_pDeviceContext->DrawIndexed((UINT)mesh.mIndexData.size(), 0, 0);
+			GDirectxCore->DrawIndexed((UINT)mesh.mIndexData.size(), 0, 0);
 		}
 	}
 
@@ -241,7 +241,7 @@ void GameObject::RenderMesh()
 			UINT offset = 0;
 			g_pDeviceContext->IASetVertexBuffers(0, 1, &mesh.mVertexBuffer, &stride, &offset);
 			g_pDeviceContext->IASetIndexBuffer(mesh.mIndexBuffer, DXGI_FORMAT_R16_UINT, 0);																
-			g_pDeviceContext->DrawIndexed((UINT)mesh.mIndexData.size(), 0, 0);
+			GDirectxCore->DrawIndexed((UINT)mesh.mIndexData.size(), 0, 0);
 		}
 	}
 }

@@ -17,6 +17,18 @@ using namespace DirectX;
 class Event;
 class WindowResizeEvent;
 
+struct RenderStatistics
+{
+	int drawCount = 0;
+	int triCount = 0;
+
+	void Reset()
+	{
+		drawCount = 0;
+		triCount = 0;
+	}
+};
+
 class DirectxCore
 {
 private:
@@ -96,10 +108,17 @@ public:
 		md3dImmediateContext->GenerateMips(srv);
 	}
 
+	void End();
+
+	const RenderStatistics& GetStatistics() { return statistics; }
+public:
+	void DrawIndexed(UINT indexCount, UINT startIndexLocation, int baseVertexLocation);
+
 private:
 	bool mVsyncEnable;  //是否限帧渲染
 	int mVideoCardMemory; //显卡内存
 	char mVideoCardDescription[128]; //显卡名字
+	RenderStatistics statistics;
 
 private:
 	static shared_ptr<DirectxCore> m_pDirectxCore;

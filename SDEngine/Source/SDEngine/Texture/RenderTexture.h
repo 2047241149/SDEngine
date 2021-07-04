@@ -8,7 +8,6 @@
 class RenderTexture
 {
 private:
-
 	ID3D11Texture2D* m_pBackTexture2D;
 	ID3D11RenderTargetView* m_pRTV;
 	ID3D11ShaderResourceView* m_pSRV;

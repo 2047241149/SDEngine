@@ -121,6 +121,12 @@ public:
 		}
 
 		ImGui::End();
+
+		ImGui::Begin("statistics");
+		const RenderStatistics& statistics = GDirectxCore->GetStatistics();
+		ImGui::Text("DrawCall: %d  ", statistics.drawCount);
+		ImGui::Text("TriCount: %d  ", statistics.triCount);
+		ImGui::End();
 	}
 
 	void OnEvent(Event& event) override 
@@ -131,6 +137,7 @@ public:
 	void End() override
 	{
 		Profile::ClearData();
+		GDirectxCore->End();
 	}
 };
 

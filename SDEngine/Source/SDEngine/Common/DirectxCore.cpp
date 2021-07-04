@@ -587,6 +587,18 @@ void DirectxCore::TurnOnRenderLightVolumeDSS()
 	md3dImmediateContext->OMSetDepthStencilState(m_pDSSRenderLightVolume, 1);
 }
 
+void DirectxCore::End()
+{
+	statistics.Reset();
+}
+
+void DirectxCore::DrawIndexed(UINT indexCount, UINT startIndexLocation, int baseVertexLocation)
+{
+	statistics.drawCount += 1;
+	statistics.triCount += indexCount / 3;
+	md3dImmediateContext->DrawIndexed(indexCount, startIndexLocation, baseVertexLocation);
+}
+
 void DirectxCore::DirectxCore::TurnOnRenderSkyBoxDSS()
 {
 	md3dImmediateContext->OMSetDepthStencilState(renderSkyBoxDSS, 0);

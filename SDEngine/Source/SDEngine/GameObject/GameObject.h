@@ -10,20 +10,21 @@
 #include "Camera.h"
 #include "Mesh.h"
 
+using namespace std;
+using namespace DirectX;
+
 enum RenderMode
 {
 	UseMaterial,
 	Simple,
 };
-using namespace std;
-using namespace DirectX;
 
 class GameObject
 {
 public:
 	shared_ptr<Transform> m_pTransform;
 	shared_ptr<Mesh> m_pMesh;
-
+	
 public:
 	GameObject();
 	GameObject(const GameObject&);
