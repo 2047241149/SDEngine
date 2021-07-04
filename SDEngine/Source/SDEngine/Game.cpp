@@ -10,6 +10,8 @@
 #include "EditorUI/ImGuiLayer.h"
 #include "Texture/TextureManager.h"
 
+Game* Game::single = nullptr;
+
 Game::Game()
 {
 	bRunning = true;
@@ -97,4 +99,9 @@ void Game::PushLayer(shared_ptr<Layer> layer)
 void Game::PopLayer(shared_ptr<Layer> layer)
 {
 	layerManager->PopLayer(layer);
+}
+
+void Game::Close()
+{
+	bRunning = false;
 }
