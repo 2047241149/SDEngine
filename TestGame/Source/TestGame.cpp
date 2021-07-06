@@ -12,6 +12,7 @@ private:
 	shared_ptr<Texture> baseDiffuse;
 	shared_ptr<Material> material;
 	float surfaceColor[4] = {1.0f, 1.0f, 1.0f, 1.0f};
+	shared_ptr<RenderTexture> rt;
 
 public:
 	ExmPlayer() :
@@ -29,6 +30,7 @@ public:
 		cube->SetMesh(sphereMesh);
 		cube->m_pTransform->localPosition = XMFLOAT3(0.0f, 1.0f, 0.0f);
 		cube->m_pTransform->localScale = XMFLOAT3(2.0, 2.0, 2.0);
+		rt = make_shared<RenderTexture>(GViewportWidth, GViewportHeight);
 	}
 
 private:
@@ -95,7 +97,7 @@ public:
 	{
 		PROFILE_FUNC();
 		UpdateCamera(deltaTime);
-		GDirectxCore->SetBackBufferRender();
+		rt->SetRenderTarget(1.0f, 1.0f, 0.0f, 1.0f);
 		GDirectxCore->RecoverDefaultDSS();
 		GDirectxCore->RecoverDefualtRS();
 		material->SetFloat4("surfaceColor", XMFLOAT4(surfaceColor[0], surfaceColor[1], surfaceColor[2], surfaceColor[3]));
@@ -195,7 +197,7 @@ public:
 		const RenderStatistics& statistics = GDirectxCore->GetStatistics();
 		ImGui::Text("DrawCall: %d  ", statistics.drawCount);
 		ImGui::Text("TriCount: %d  ", statistics.triCount);
-		ImGui::Image(baseDiffuse->GetTexture(), ImVec2(100.0f, 100.0f));
+		ImGui::Image(rt->GetSRV(), ImVec2(GViewportWidth / 1.5f, GViewportHeight / 1.5f));
 		ImGui::End();
 	}
 

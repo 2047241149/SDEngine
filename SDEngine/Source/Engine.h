@@ -16,3 +16,5 @@
 #include "SDEngine/Shader/Material.h"
 #include "SDEngine/Shader/ShaderLibrary.h"
 #include "SDEngine/Time/Profile.h" 
+#include "SDEngine/Texture/RenderTexture.h"
+#include "SDEngine/GameWindow.h"

@@ -87,7 +87,7 @@ bool RenderTexture::Init(int nTextureWidth, int nTexureHeight, TextureFormat eTe
 	depthStencilDesc.BindFlags = D3D11_BIND_DEPTH_STENCIL;
 	depthStencilDesc.CPUAccessFlags = 0;
 	depthStencilDesc.MiscFlags = 0;
-	HR(g_pDevice->CreateTexture2D(&depthStencilDesc,//Ҫ����������������
+	HR(g_pDevice->CreateTexture2D(&depthStencilDesc,
 		0,
 		&m_pDepthTexture2D));
 
@@ -120,10 +120,10 @@ void RenderTexture::ShutDown()
 
 void RenderTexture::SetRenderTarget(float fRed, float fGreen, float fBlue, float fAlpha)
 {
-	g_pDeviceContext->OMSetRenderTargets(1, &m_pRTV, m_pDSV);
-	g_pDeviceContext->RSSetViewports(1, &m_ViewPort);
 	ClearRenderTarget(fRed, fGreen, fBlue, fAlpha);
 	ClearDepthBuffer();
+	g_pDeviceContext->OMSetRenderTargets(1, &m_pRTV, m_pDSV);
+	g_pDeviceContext->RSSetViewports(1, &m_ViewPort);
 }
 
 void RenderTexture::SetRenderTargetNoClear()
