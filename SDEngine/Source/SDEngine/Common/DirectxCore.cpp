@@ -157,27 +157,8 @@ bool DirectxCore::Init(bool vsync, bool fullscreen)
 		}
 	#endif
 
-	ID3D11Texture2D*backBuffer;
-	md3dSwapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), reinterpret_cast<void**>(&backBuffer));
-	md3dDevice->CreateRenderTargetView(backBuffer, 0, &md3dRenderTargetView);
-	ReleaseCOM(backBuffer);
-
-	D3D11_TEXTURE2D_DESC depthStencilDesc;
-	ZeroMemory(&depthStencilDesc, sizeof(depthStencilDesc));
-	depthStencilDesc.Width = GWindowWidth;
-	depthStencilDesc.Height = GWindowHeight;
-	depthStencilDesc.MipLevels = 1;
-	depthStencilDesc.ArraySize = 1;
-	depthStencilDesc.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
-	depthStencilDesc.SampleDesc.Count = 1;
-	depthStencilDesc.SampleDesc.Quality = 0;
-	depthStencilDesc.Usage = D3D11_USAGE_DEFAULT;
-	depthStencilDesc.BindFlags = D3D11_BIND_DEPTH_STENCIL;
-	depthStencilDesc.CPUAccessFlags = 0;
-	depthStencilDesc.MiscFlags = 0;
-	HR(md3dDevice->CreateTexture2D(&depthStencilDesc,
-		0,
-		&md3dDepthStencilBuffer));
+	ResizeMainRenderTargetView(GViewportWidth, GViewportHeight);
+	ResizeMainDepthStencilView(GViewportWidth, GViewportHeight);
 
 	D3D11_DEPTH_STENCIL_DESC DSDESC;
 	ZeroMemory(&DSDESC, sizeof(DSDESC));
@@ -198,13 +179,6 @@ bool DirectxCore::Init(bool vsync, bool fullscreen)
 	HR(md3dDevice->CreateDepthStencilState(&DSDESC, &md3dDepthStencilState));
 	md3dImmediateContext->OMSetDepthStencilState(md3dDepthStencilState, 0);
 
-	HR(md3dDevice->CreateDepthStencilView(
-		md3dDepthStencilBuffer,
-		0,
-		&md3dDepthStencilView));
-
-	md3dImmediateContext->OMSetRenderTargets(1, &md3dRenderTargetView, md3dDepthStencilView);
-
 	HR(DirectXFrame::CreateRasterizerState(md3dDevice, &md3dRasterizerState));
 
 	HR(DirectXFrame::CreateRasterizerState(md3dDevice, &md3dCullFrontRS, D3D11_CULL_FRONT));
@@ -213,13 +187,6 @@ bool DirectxCore::Init(bool vsync, bool fullscreen)
 
 	HR(DirectXFrame::CreateRasterizerState(md3dDevice, &m_pTurnOffCullBackRS, D3D11_CULL_NONE));
 
-	mViewport.Width = static_cast<float>(GWindowWidth);
-	mViewport.Height = static_cast<float>(GWindowHeight);
-	mViewport.MinDepth = 0.0f;
-	mViewport.MaxDepth = 1.0f;
-	mViewport.TopLeftX = 0.0f;
-	mViewport.TopLeftY = 0.0f;
-	md3dImmediateContext->RSSetViewports(1,&mViewport);
 
 	D3D11_DEPTH_STENCIL_DESC DisableDepthDESC;
 	ZeroMemory(&DisableDepthDESC, sizeof(DisableDepthDESC));
@@ -472,6 +439,7 @@ void DirectxCore::TurnOffZBuffer()
 void DirectxCore::SetBackBufferRender()
 {
 	md3dImmediateContext->OMSetRenderTargets(1, &md3dRenderTargetView, md3dDepthStencilView);
+	SetDefualtViewPort();
 }
 
 void DirectxCore::SetDefualtViewPort()
@@ -479,20 +447,75 @@ void DirectxCore::SetDefualtViewPort()
 	md3dImmediateContext->RSSetViewports(1, &mViewport);
 }
 
+//Resize RTV and DSV
 void DirectxCore::ResizeBackBuffer(UINT width, UINT height)
 {
+	ResizeMainRenderTargetView(width, height);
+	ResizeMainDepthStencilView(width, height);
+}
+
+bool DirectxCore::ResizeMainDepthStencilView(UINT newWidth, UINT newHeight)
+{
+	ReleaseCOM(md3dDepthStencilBuffer);
+	ReleaseCOM(md3dDepthStencilView);
+
+	if (md3dDevice)
+	{
+		D3D11_TEXTURE2D_DESC depthStencilDesc;
+		ZeroMemory(&depthStencilDesc, sizeof(depthStencilDesc));
+		depthStencilDesc.Width = newWidth;
+		depthStencilDesc.Height = newHeight;
+		depthStencilDesc.MipLevels = 1;
+		depthStencilDesc.ArraySize = 1;
+		depthStencilDesc.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
+		depthStencilDesc.SampleDesc.Count = 1;
+		depthStencilDesc.SampleDesc.Quality = 0;
+		depthStencilDesc.Usage = D3D11_USAGE_DEFAULT;
+		depthStencilDesc.BindFlags = D3D11_BIND_DEPTH_STENCIL;
+		depthStencilDesc.CPUAccessFlags = 0;
+		depthStencilDesc.MiscFlags = 0;
+		HR(md3dDevice->CreateTexture2D(&depthStencilDesc,
+			0,
+			&md3dDepthStencilBuffer));
+
+		HR(md3dDevice->CreateDepthStencilView(
+			md3dDepthStencilBuffer,
+			0,
+			&md3dDepthStencilView));
+
+		ReleaseCOM(md3dDepthStencilBuffer);
+	}
+
+	return true;
+}
+
+
+bool DirectxCore::ResizeMainRenderTargetView(UINT newWidth, UINT newHeight)
+{
+	if (nullptr == md3dSwapChain || nullptr == md3dDevice)
+		return false;
+	
+	ID3D11Texture2D* pBackBuffer = nullptr;
 	if (md3dRenderTargetView)
 	{
 		md3dRenderTargetView->Release();
-		md3dSwapChain->ResizeBuffers(0, width, height, DXGI_FORMAT_UNKNOWN, 0);
-		ID3D11Texture2D* pBackBuffer;
-		md3dSwapChain->GetBuffer(0, IID_PPV_ARGS(&pBackBuffer));
-		md3dDevice->CreateRenderTargetView(pBackBuffer, NULL, &md3dRenderTargetView);
-		pBackBuffer->Release();
-
-		mViewport.Width = static_cast<float>(width);
-		mViewport.Height = static_cast<float>(height);
+		md3dSwapChain->ResizeBuffers(0, newWidth, newHeight, DXGI_FORMAT_UNKNOWN, 0);
 	}
+
+	//rtv for backbuffer
+	md3dSwapChain->GetBuffer(0, IID_PPV_ARGS(&pBackBuffer));
+	md3dDevice->CreateRenderTargetView(pBackBuffer, NULL, &md3dRenderTargetView);
+	pBackBuffer->Release();
+
+	//viewport
+	mViewport.Width = static_cast<float>(newWidth);
+	mViewport.Height = static_cast<float>(newHeight);
+	mViewport.MinDepth = 0.0f;
+	mViewport.MaxDepth = 1.0f;
+	mViewport.TopLeftX = 0.0f;
+	mViewport.TopLeftY = 0.0f;
+
+	return true;
 }
 
 void DirectxCore::TurnOnZBuffer()
@@ -508,7 +531,6 @@ void DirectxCore::ShutDown()
 
 	ReleaseCOM(md3dRenderTargetView);
 	ReleaseCOM(md3dDepthStencilView);
-	ReleaseCOM(md3dDepthStencilBuffer);
 	ReleaseCOM(md3dDepthStencilState);
 	ReleaseCOM(mEqualDepthStencilState);
 	ReleaseCOM(md3dDisableDepthStencilState);

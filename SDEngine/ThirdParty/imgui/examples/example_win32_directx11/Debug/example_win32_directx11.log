@@ -1,0 +1,13 @@
+﻿  imgui_impl_dx11.cpp
+  imgui_impl_win32.cpp
+  imgui.cpp
+  imgui_demo.cpp
+  imgui_draw.cpp
+  imgui_tables.cpp
+  imgui_widgets.cpp
+  main.cpp
+g:\sdengine\sdengine\thirdparty\imgui\examples\example_win32_directx11\main.cpp(94): warning C4189: 'show_another_window': local variable is initialized but not referenced
+g:\sdengine\sdengine\thirdparty\imgui\examples\example_win32_directx11\main.cpp(236): warning C4189: 'B': local variable is initialized but not referenced
+g:\sdengine\sdengine\thirdparty\imgui\examples\example_win32_directx11\main.cpp(235): warning C4189: 'a': local variable is initialized but not referenced
+  Generating Code...
+  example_win32_directx11.vcxproj -> G:\SDEngine\SDEngine\ThirdParty\imgui\examples\example_win32_directx11\Debug\example_win32_directx11.exe

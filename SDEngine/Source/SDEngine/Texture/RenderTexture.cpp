@@ -1,8 +1,6 @@
 ﻿#include "RenderTexture.h"
 
 RenderTexture::RenderTexture(int nTextureWidth, int nTexureHeight, TextureFormat eTextureFormat):
-	m_nTextureWidth(nTextureWidth),
-	m_nTextureHeight(nTexureHeight),
 	m_pRTV(nullptr),
 	m_pDSV(nullptr),
 	m_pDepthTexture2D(nullptr),
@@ -25,6 +23,9 @@ RenderTexture::~RenderTexture()
 
 bool RenderTexture::Init(int nTextureWidth, int nTexureHeight, TextureFormat eTextureFormat)
 {
+	textureWidth = nTextureWidth,
+	textureHeight = nTexureHeight,
+	ShutDown();
 
 	D3D11_TEXTURE2D_DESC depthStencilDesc;
 	D3D11_DEPTH_STENCIL_VIEW_DESC depthStencilViewDesc;
@@ -106,15 +107,16 @@ bool RenderTexture::Init(int nTextureWidth, int nTexureHeight, TextureFormat eTe
 	m_ViewPort.MaxDepth = 1.0f;
 	m_ViewPort.TopLeftX = 0.0f;
 	m_ViewPort.TopLeftY = 0.0f;
+
+	ReleaseCOM(m_pBackTexture2D);
+	ReleaseCOM(m_pDepthTexture2D);
 	return true;
 }
 
 void RenderTexture::ShutDown()
 {
 	ReleaseCOM(m_pSRV);
-	ReleaseCOM(m_pBackTexture2D);
 	ReleaseCOM(m_pRTV);
-	ReleaseCOM(m_pDepthTexture2D);
 	ReleaseCOM(m_pDSV);
 }
 
@@ -169,4 +171,9 @@ ID3D11RenderTargetView* RenderTexture::GetRenderTargetView()
 ID3D11DepthStencilView* RenderTexture::GetDSV()
 {
 	return m_pDSV;
+}
+
+void RenderTexture::Resize(int newWidth, int newHeight)
+{
+	Init(newWidth, newHeight);
 }

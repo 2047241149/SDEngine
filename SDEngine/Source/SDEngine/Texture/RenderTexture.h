@@ -17,8 +17,9 @@ private:
 	ID3D11DepthStencilView* m_pDSV;
 	D3D11_VIEWPORT m_ViewPort;
 
+
 public:
-	int m_nTextureWidth, m_nTextureHeight;
+	int textureWidth, textureHeight;
 
 public:
 	RenderTexture(int nTextureWidth, int nTexureHeight, TextureFormat eTextureFormat = TextureFormat::R32G32B32A32);
@@ -34,6 +35,9 @@ public:
 	void SetDepthTarget();
 	void ClearDepthBuffer();
 	void ClearRenderTarget(float fRed, float fGreen,float fBlue, float fAlpha);
+	void Resize(int newWidth, int newHeight);
+	int GetWidth() { return textureWidth; }
+	int GetHeight() { return textureHeight; }
 
 	ID3D11ShaderResourceView* GetSRV();
 	ID3D11DepthStencilView* GetDSV();

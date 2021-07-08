@@ -56,7 +56,8 @@ public:
 	ID3D11RenderTargetView* GetRTV() { return md3dRenderTargetView; }
 	ID3D11DepthStencilView* GetDSV() { return md3dDepthStencilView; }
 	D3D11_VIEWPORT GetViewPort() { return mViewport; }
-
+	bool ResizeMainDepthStencilView(UINT newWidth, UINT newHeight);
+	bool ResizeMainRenderTargetView(UINT newWidth, UINT newHeight);
 	void GetVideoCardInfo(char*, int&);
 
 	//Set函数
@@ -111,6 +112,8 @@ public:
 	void End();
 
 	const RenderStatistics& GetStatistics() { return statistics; }
+
+
 public:
 	void DrawIndexed(UINT indexCount, UINT startIndexLocation, int baseVertexLocation);
 

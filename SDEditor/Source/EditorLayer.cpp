@@ -164,10 +164,7 @@ void EditorLayer::OnImguiRender()
 
 	ImGui::End();
 
-	// Profile
-	//bool bShow = true;
-	//ImGui::ShowDemoWindow(&bShow);
-	ImGui::ColorEdit4("Pick", surfaceColor);
+	// Profile && render statistics
 	ImGui::Begin("Profile");
 	ImGui::Text("FPS: %d  ", FPS::Get()->GetFPS());
 
@@ -177,14 +174,24 @@ void EditorLayer::OnImguiRender()
 		ImGui::Text("%s: %0.4fms", it.name.c_str(), it.time);
 	}
 
-	ImGui::End();
-
-	// render statistics
-	ImGui::Begin("statistics");
 	const RenderStatistics& statistics = GDirectxCore->GetStatistics();
 	ImGui::Text("DrawCall: %d  ", statistics.drawCount);
 	ImGui::Text("TriCount: %d  ", statistics.triCount);
-	ImGui::Image(rt->GetSRV(), ImVec2(GViewportWidth / 1.5f, GViewportHeight / 1.5f));
+	ImGui::ColorEdit4("Pick", surfaceColor);
+	ImGui::End();
+
+	ImGui::Begin("viewport");
+	ImVec2 viewportSize = ImGui::GetContentRegionAvail();
+	int rtWidth = rt->GetWidth();
+	int rtHeight = rt->GetHeight();
+	if (rtWidth != viewportSize.x || rtHeight != viewportSize.y)
+	{
+		rt->Resize(viewportSize.x, viewportSize.y);
+	}
+
+	Log::Error("size = {0}, {1}", viewportSize.x, viewportSize.y);
+	Log::Error("size = {0}, {1}", GViewportWidth, GViewportHeight);
+	ImGui::Image(rt->GetSRV(), ImVec2(rtWidth, rtHeight));
 	ImGui::End();
 }
 
