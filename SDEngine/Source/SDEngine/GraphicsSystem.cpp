@@ -29,9 +29,6 @@ bool GraphicsSystem::Init()
 	//Init Console Debug Windows
 	InitDebugConsole();
 
-	//Init Input
-	GInput->Init();
-
 	//Init SceneManager
 	GSceneManager->Init();
 
@@ -45,7 +42,7 @@ bool GraphicsSystem::Init()
 
 bool GraphicsSystem::Tick(float deltaTime)
 {
-	if (GInput->IsKeyDown(EKey::KEY_7))
+	if (Input::IsKeyDown(EKey::KEY_7))
 	{
 		bSSAO = false;
 	}

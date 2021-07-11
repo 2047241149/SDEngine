@@ -24,6 +24,7 @@ public:
 	virtual void Update() {};
 	virtual void OnImguiRender() {};
 	void Close();
+	void SetEventBlock(bool block);
 
 public:
 	static Game* Get() { return single; }

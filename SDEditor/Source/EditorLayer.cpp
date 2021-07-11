@@ -22,36 +22,39 @@ EditorLayer::EditorLayer():
 void EditorLayer::UpdateCamera(float deltaTime)
 {
 	PROFILE_FUNC();
+	if (!bViewportFouces && !bViewportHover)
+		return;
+
 	int mouseXOffset, mouseYOffset;
 	static float rotateY = 0.0f;
 	int fps = GFPS->GetFPS();
-	GInput->GetMousePositionOffset(mouseXOffset, mouseYOffset);
+	Input::GetMousePositionOffset(mouseXOffset, mouseYOffset);
 
-	if (GInput->IsMouseButtuonPressed(EMouse::Right) && fps >= 5 && fps <= 1000000)
+	if (Input::IsMouseButtuonPressed(EMouse::Right) && fps >= 5 && fps <= 1000000)
 	{
-		if (GInput->IsKeyDown(EKey::W))
+		if (Input::IsKeyDown(EKey::W))
 		{
 			GCamera->Walk(deltaTime * cameraMoveSpeed);
 		}
-		else if (GInput->IsKeyDown(EKey::S))
+		else if (Input::IsKeyDown(EKey::S))
 		{
 			GCamera->Walk(-deltaTime * cameraMoveSpeed);
 		}
 
-		if (GInput->IsKeyDown(EKey::A))
+		if (Input::IsKeyDown(EKey::A))
 		{
 			GCamera->Strafe(-deltaTime * cameraMoveSpeed);
 		}
-		else if (GInput->IsKeyDown(EKey::D))
+		else if (Input::IsKeyDown(EKey::D))
 		{
 			GCamera->Strafe(deltaTime*cameraMoveSpeed);
 		}
 
-		if (GInput->IsKeyDown(EKey::Q))
+		if (Input::IsKeyDown(EKey::Q))
 		{
 			GCamera->UpDown(-deltaTime * cameraMoveSpeed);
 		}
-		else if (GInput->IsKeyDown(EKey::E))
+		else if (Input::IsKeyDown(EKey::E))
 		{
 			GCamera->UpDown(deltaTime*cameraMoveSpeed);
 		}
@@ -180,24 +183,28 @@ void EditorLayer::OnImguiRender()
 	ImGui::ColorEdit4("Pick", surfaceColor);
 	ImGui::End();
 
+	ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 0));
 	ImGui::Begin("viewport");
+
+	bViewportFouces = ImGui::IsWindowFocused();
+	bViewportHover = ImGui::IsWindowHovered();
+	GGame->SetEventBlock(!bViewportFouces && !bViewportHover);
 	ImVec2 viewportSize = ImGui::GetContentRegionAvail();
 	int rtWidth = rt->GetWidth();
 	int rtHeight = rt->GetHeight();
+
 	if (rtWidth != viewportSize.x || rtHeight != viewportSize.y)
 	{
 		rt->Resize(viewportSize.x, viewportSize.y);
 	}
-
-	Log::Error("size = {0}, {1}", viewportSize.x, viewportSize.y);
-	Log::Error("size = {0}, {1}", GViewportWidth, GViewportHeight);
 	ImGui::Image(rt->GetSRV(), ImVec2(rtWidth, rtHeight));
 	ImGui::End();
+	ImGui::PopStyleVar();
 }
 
 void EditorLayer::OnEvent(Event& event)
 {
-
+	Log::Info(event);
 }
 
 void EditorLayer::End()

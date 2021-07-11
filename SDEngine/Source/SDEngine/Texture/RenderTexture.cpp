@@ -23,6 +23,12 @@ RenderTexture::~RenderTexture()
 
 bool RenderTexture::Init(int nTextureWidth, int nTexureHeight, TextureFormat eTextureFormat)
 {
+	if (nTextureWidth <= 0 || nTexureHeight <= 0)
+	{
+		Log::Error("RenderTexture Init Size Error, textureWidth = {0}, texureHeight = {1}", nTextureWidth, nTexureHeight);
+		return false;
+	}
+
 	textureWidth = nTextureWidth,
 	textureHeight = nTexureHeight,
 	ShutDown();

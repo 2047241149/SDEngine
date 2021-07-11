@@ -10,7 +10,7 @@ public:
 public:
 	virtual void OnAttach() override;
 	virtual void OnDetach() override;
-	//virtual void OnEvent(Event& event) override;
+	virtual void OnEvent(Event& event) override;
 	void BeginRender();
 	void EndRender();
 
@@ -29,6 +29,11 @@ public:
 	bool OnMouseButtonReleasedEvent(MouseButtonReleasedEvent& event);
 	bool OnMouseMovedEvent(MouseMovedEvent& event);
 	bool OnMouseScrollEvent(MouseScrollEvent& event);
-
 	bool OnKillWindowFocus(KillFocusEvent& event);
+
+public:
+	void SetEventBlock(bool block);
+
+private:
+	bool bBlockEvent = false;
 };

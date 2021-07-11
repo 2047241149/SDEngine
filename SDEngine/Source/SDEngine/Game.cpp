@@ -23,7 +23,7 @@ Game::Game()
 
 	GGameWindow->SetVSync(true);
 	GDirectxCore->Init(GIsVSync, GIsFullScrren);
-	GInput->Init();
+
 	GCamera->SetProjParams(XM_PI / 3.0f, (float)GWindowWidth / (float)GWindowHeight);
 	GCamera->SetUIOrthoParams((float)GWindowWidth, (float)GWindowHeight);
 	imguiLayer->OnAttach();
@@ -36,15 +36,17 @@ Game::~Game()
 
 void Game::OnEvent(Event& event)
 {
+	imguiLayer->OnEvent(event);
 	GDirectxCore->OnEvent(event);
-
 	EventDispatcher dispatcher(event);
 	dispatcher.Dispath<WindowCloseEvent>(BIND_EVENT(Game::OnClose, this));
-	Log::Info(event);
 
-	for (auto it = layerManager->Begin(); it != layerManager->End(); ++it)
+	if (!event.bHandled)
 	{
-		(*it)->OnEvent(event);
+		for (auto it = layerManager->Begin(); it != layerManager->End(); ++it)
+		{
+			(*it)->OnEvent(event);
+		}
 	}
 }
 
@@ -62,7 +64,7 @@ void Game::Run()
 			continue;
 
 		GFPS->Frame();
-		GInput->Tick();
+		Input::Tick();
 
 		// 3D scene render
 		GDirectxCore->BeginSceneRender();
@@ -105,4 +107,12 @@ void Game::PopLayer(shared_ptr<Layer> layer)
 void Game::Close()
 {
 	bRunning = false;
+}
+
+void Game::SetEventBlock(bool block)
+{
+	if (imguiLayer)
+	{
+		imguiLayer->SetEventBlock(block);
+	}
 }

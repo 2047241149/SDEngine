@@ -69,19 +69,24 @@ void ImGuiLayer::EndRender()
 		ImGui::RenderPlatformWindowsDefault();
 	}
 }
-/*void ImGuiLayer::OnEvent(Event& event)
-{
-	EventDispatcher eventDispatcher(event);
-	eventDispatcher.Dispath<KeyPressedEvent>(BIND_EVENT(ImGuiLayer::OnKeyPressedEvent, this));
-	eventDispatcher.Dispath<KeyReleasedEvent>(BIND_EVENT(ImGuiLayer::OnKeyReleasedEvent, this));
-	eventDispatcher.Dispath<CharEvent>(BIND_EVENT(ImGuiLayer::OnCharEvent, this));
 
-	eventDispatcher.Dispath<MouseButtonPressedEvent>(BIND_EVENT(ImGuiLayer::OnMouseButtonPressedEvent, this));
-	eventDispatcher.Dispath<MouseButtonReleasedEvent>(BIND_EVENT(ImGuiLayer::OnMouseButtonReleasedEvent, this));
-	eventDispatcher.Dispath<MouseMovedEvent>(BIND_EVENT(ImGuiLayer::OnMouseMovedEvent, this));
-	eventDispatcher.Dispath<MouseScrollEvent>(BIND_EVENT(ImGuiLayer::OnMouseScrollEvent, this));
-	eventDispatcher.Dispath<KillFocusEvent>(BIND_EVENT(ImGuiLayer::OnKillWindowFocus, this));
-}*/
+void ImGuiLayer::OnEvent(Event& event)
+{
+	if (bBlockEvent)
+	{
+		if (ImGui::GetCurrentContext() != NULL)
+		{
+			ImGuiIO& io = ImGui::GetIO();
+			event.bHandled |= event.IsInCategory(EventCategoryMouse) & io.WantCaptureMouse;
+			event.bHandled |= event.IsInCategory(EventCategoryKeybord) & io.WantCaptureKeyboard;
+		}
+	}
+	else
+	{
+		event.bHandled = false;
+	}
+
+}
 
 void ImGuiLayer::SetImguiKeyCode(UINT keyCode, int taregetValue)
 {
@@ -206,4 +211,9 @@ bool ImGuiLayer::OnKillWindowFocus(KillFocusEvent& event)
 	ImGuiIO& io = ImGui::GetIO();
 	memset(io.KeysDown, 0, sizeof(io.KeysDown));
 	return true;
+}
+
+void ImGuiLayer::SetEventBlock(bool block)
+{
+	bBlockEvent = block;
 }

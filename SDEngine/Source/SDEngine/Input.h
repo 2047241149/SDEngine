@@ -32,6 +32,7 @@ private:
 	bool ReadKeyboard();
 	bool ReadMouse();
 	void ProcessInput();
+	bool Init();
 
 public:
 	Input();
@@ -41,15 +42,13 @@ public:
 	static shared_ptr<Input> Get();
 
 public:
-	bool Init();
 	void ShutDown();
-	bool Tick();
+	static bool Tick();
 
-	bool IsMouseButtuonPressed(EMouse keyCode);
-	bool IsKeyDown(EKey keyCode);
-	void GetMousePosition(int& MouseX, int &MouseY);
-	void GetMousePositionOffset(int& MouseXOffset, int &MouseYOffset);
+	static bool IsMouseButtuonPressed(EMouse keyCode);
+	static bool IsKeyDown(EKey keyCode);
+	static void GetMousePosition(int& MouseX, int &MouseY);
+	static void GetMousePositionOffset(int& MouseXOffset, int &MouseYOffset);
 };
 
-#define GInput Input::Get()
 #endif 

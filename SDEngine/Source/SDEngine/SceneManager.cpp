@@ -155,7 +155,7 @@ void SceneManager::Tick(float deltaTime)
 	static float rotateY = 0.0f;
 
 	//Tick Input
-	result = GInput->Tick();
+	result = Input::Tick();
 	if (!result)
 	{
 		return;
@@ -163,34 +163,34 @@ void SceneManager::Tick(float deltaTime)
 
 	GFPS->Frame();
 	float currentTime = GFPS->GetTime();
-	GInput->GetMousePositionOffset(mouseXOffset, mouseYOffset);
+	Input::GetMousePositionOffset(mouseXOffset, mouseYOffset);
 	int fps = GFPS->GetFPS();
 
-	if (GInput->IsMouseButtuonPressed(EMouse::Right) && fps >= 5 && fps <= 1000000)
+	if (Input::IsMouseButtuonPressed(EMouse::Right) && fps >= 5 && fps <= 1000000)
 	{
-		if (GInput->IsKeyDown(EKey::W))
+		if (Input::IsKeyDown(EKey::W))
 		{
 			GCamera->Walk(deltaTime*CAMERA_SPEED);
 		}
-		else if (GInput->IsKeyDown(EKey::S))
+		else if (Input::IsKeyDown(EKey::S))
 		{
 			GCamera->Walk(-deltaTime * CAMERA_SPEED);
 		}
 
-		if (GInput->IsKeyDown(EKey::A))
+		if (Input::IsKeyDown(EKey::A))
 		{
 			GCamera->Strafe(-deltaTime * CAMERA_SPEED);
 		}
-		else if (GInput->IsKeyDown(EKey::D))
+		else if (Input::IsKeyDown(EKey::D))
 		{
 			GCamera->Strafe(deltaTime*CAMERA_SPEED);
 		}
 
-		if (GInput->IsKeyDown(EKey::Q))
+		if (Input::IsKeyDown(EKey::Q))
 		{
 			GCamera->UpDown(-deltaTime * CAMERA_SPEED);
 		}
-		else if (GInput->IsKeyDown(EKey::E))
+		else if (Input::IsKeyDown(EKey::E))
 		{
 			GCamera->UpDown(deltaTime*CAMERA_SPEED);
 		}
@@ -207,17 +207,17 @@ void SceneManager::Tick(float deltaTime)
 	GCamera->UpdateViewMatrix();
 
 	//TODO:refactor to imgui control
-	if (GInput->IsKeyDown(EKey::KEY_1))
+	if (Input::IsKeyDown(EKey::KEY_1))
 	{
 		GDirectxCore->RecoverDefualtRS();
 	}
 
-	if (GInput->IsKeyDown(EKey::KEY_2))
+	if (Input::IsKeyDown(EKey::KEY_2))
 	{
 		GDirectxCore->TurnOnWireFrameRender();
 	}
 
-	if (GInput->IsKeyDown(EKey::KEY_0))
+	if (Input::IsKeyDown(EKey::KEY_0))
 	{
 		bDebugLightCount = true;
 	}
@@ -226,7 +226,7 @@ void SceneManager::Tick(float deltaTime)
 		bDebugLightCount = false;
 	}
 
-	if (GInput->IsKeyDown(EKey::ESCAPE))
+	if (Input::IsKeyDown(EKey::ESCAPE))
 	{
 		DestroyWindow(GHwnd);
 	}

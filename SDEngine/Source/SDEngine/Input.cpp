@@ -4,6 +4,7 @@
 
 Input::Input()
 {
+	Init();
 }
 
 Input::Input(const Input& inputclass)
@@ -32,7 +33,6 @@ bool Input::Init()
 	directInputKeyboard->Acquire();
 	directInputMouse->Acquire();
 	return TRUE;
-
 }
 
 void Input::ShutDown()
@@ -44,21 +44,23 @@ void Input::ShutDown()
 
 bool Input::Tick()
 {
+	shared_ptr<Input> input = Get();
+
 	bool result;
 
-	result = ReadKeyboard();
+	result = input->ReadKeyboard();
 	if (!result)
 	{
 		return false;
 	}
 
-	result = ReadMouse();
+	result = input->ReadMouse();
 	if (!result)
 	{
 		return false;
 	}
 
-	ProcessInput();
+	input->ProcessInput();
 	return true;
 }
 
@@ -141,7 +143,9 @@ void Input::ProcessInput()
 
 bool Input::IsKeyDown(EKey keyCode)
 {
-	if (keyboardState[int(keyCode)] & 0x80)
+	shared_ptr<Input> input = Get();
+
+	if (input->keyboardState[int(keyCode)] & 0x80)
 	{
 		return true;
 	}
@@ -151,7 +155,9 @@ bool Input::IsKeyDown(EKey keyCode)
 
 bool Input::IsMouseButtuonPressed(EMouse keyCode)
 {
-	if (mouseState.rgbButtons[int(keyCode)] & 0x80)
+	shared_ptr<Input> input = Get();
+
+	if (input->mouseState.rgbButtons[int(keyCode)] & 0x80)
 	{
 		return true;
 	}
@@ -161,14 +167,16 @@ bool Input::IsMouseButtuonPressed(EMouse keyCode)
 
 void Input::GetMousePosition(int& MouseX, int& MouseY)
 {
-	MouseX = mousePosX;
-	MouseY = mousePosY;
+	shared_ptr<Input> input = Get();
+	MouseX = input->mousePosX;
+	MouseY = input->mousePosY;
 }
 
 void Input::GetMousePositionOffset(int& MouseXOffset, int &MouseYOffset)
 {
-	MouseXOffset = mousePosXOffset;
-	MouseYOffset = mousePosYOffset;
+	shared_ptr<Input> input = Get();
+	MouseXOffset = input->mousePosXOffset;
+	MouseYOffset = input->mousePosYOffset;
 }
 
 shared_ptr<Input> Input::Get()

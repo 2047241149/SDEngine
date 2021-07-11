@@ -20,6 +20,8 @@ public:
 
 private:
 	void UpdateCamera(float deltaTime);
+	bool bViewportFouces = true;
+	bool bViewportHover = true;
 
 public:
 	void OnAttach() override;
