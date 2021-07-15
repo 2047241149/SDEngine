@@ -278,7 +278,7 @@ void GameObject::DrawMesh()
 	RenderMesh();
 }
 
-void GameObject::SetMesh(shared_ptr<Mesh> pMesh)
+void GameObject::SetMesh(shared_ptr<MeshComponent> pMesh)
 {
 	m_pMesh = pMesh;
 }

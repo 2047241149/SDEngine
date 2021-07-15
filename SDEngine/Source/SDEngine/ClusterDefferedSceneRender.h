@@ -28,7 +28,7 @@ class SceneManager;
 #include<memory>
 #include "Common/GraphicsConfig.h"
 #include "SceneRender.h"
-#include "GameObject/Mesh.h"
+#include "Scene/MeshComponent.h"
 
 
 class ClusterDefferedSceneRender : public SceneRender

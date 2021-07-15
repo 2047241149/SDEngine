@@ -1,7 +1,7 @@
 ﻿#include "SkyBox.h"
 #include "Texture/Texture.h"
 #include "GameObject/GameObject.h"
-#include "GameObject/Mesh.h"
+#include "Scene/MeshComponent.h"
 #include "Shader/ShaderManager.h"
 #include "Texture/TextureSamplerManager.h"
 #include "Shader/GeometryBuffer.h"
@@ -30,9 +30,9 @@ SkyBox::~SkyBox()
 
 bool SkyBox::Init(const string& file)
 {
-	skyBoxTexture = shared_ptr<Texture>(new Texture(file));
-	skyBoxGameObject = shared_ptr<GameObject>(new GameObject());
-	shared_ptr<Mesh> cubeMesh = shared_ptr<Mesh>(new Mesh("Resource\\FBXModel\\Engine\\cube.fbx"));
+	skyBoxTexture = make_shared<Texture>(file);
+	skyBoxGameObject = make_shared<GameObject>();
+	shared_ptr<MeshComponent> cubeMesh = make_shared<MeshComponent>("Resource\\FBXModel\\Engine\\cube.fbx");
 	skyBoxGameObject->SetMesh(cubeMesh);
 
 	return true;

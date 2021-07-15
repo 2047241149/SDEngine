@@ -13,7 +13,7 @@ class SceneRender;
 #include"FPS.h"
 #include<memory>
 #include "Common/GraphicsConfig.h"
-#include "GameObject/Mesh.h"
+#include "Scene/MeshComponent.h"
 
 class GraphicsSystem
 {

@@ -1,8 +1,8 @@
-﻿#include "Mesh.h"
+#include "MeshComponent.h"
 #include "SDEngine/Shader/Material.h"
 
-Mesh::Mesh(string strFbxFileName):
-	pureColor(XMFLOAT4(1.0f,1.0f,1.0f,1.0f)),
+MeshComponent::MeshComponent(string strFbxFileName) :
+	pureColor(XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f)),
 	roughness(1.0f),
 	metal(1.0f),
 	bTransparent(false),
@@ -10,21 +10,21 @@ Mesh::Mesh(string strFbxFileName):
 	bCastShadow(true)
 {
 
-	LoadFBXModel(strFbxFileName);	
+	LoadFBXModel(strFbxFileName);
 	InitBuffer();
 }
 
-Mesh::Mesh(const Mesh& other)
+MeshComponent::MeshComponent(const MeshComponent& other)
 {
 
 }
 
-Mesh::~Mesh()
+MeshComponent::~MeshComponent()
 {
 
 }
 
-bool Mesh::LoadFBXModel(string strFbxFileName)
+bool MeshComponent::LoadFBXModel(string strFbxFileName)
 {
 	if (GImportFBX->m_mapFBXModel.find(strFbxFileName) == GImportFBX->m_mapFBXModel.end())
 	{
@@ -44,11 +44,11 @@ bool Mesh::LoadFBXModel(string strFbxFileName)
 	return true;
 }
 
-void Mesh::ShutDown()
+void MeshComponent::ShutDown()
 {
 }
 
-void Mesh::InitBuffer()
+void MeshComponent::InitBuffer()
 {
 	if (nullptr == m_pFBXModel)
 		return;
@@ -96,7 +96,7 @@ void Mesh::InitBuffer()
 
 }
 
-void Mesh::ShutDownBuffer()
+void MeshComponent::ShutDownBuffer()
 {
 	vector<ModelData>& mModelList = m_pFBXModel->mModelList;
 	for (UINT index = 0; index < mModelList.size(); ++index)
@@ -111,32 +111,32 @@ void Mesh::ShutDownBuffer()
 	}
 }
 
-void Mesh::SetAlbedoTexture(string fileName)
+void MeshComponent::SetAlbedoTexture(string fileName)
 {
 	SetTexture(fileName, AlbedoMap);
 }
 
-void Mesh::SetNormalTexture(string fileName)
+void MeshComponent::SetNormalTexture(string fileName)
 {
 	SetTexture(fileName, NormalMap);
 }
 
-void Mesh::SetSpecularTexture(string fileName)
+void MeshComponent::SetSpecularTexture(string fileName)
 {
 	SetTexture(fileName, SpecularMap);
 }
 
-void Mesh::SetRoughnessTexture(string fileName)
+void MeshComponent::SetRoughnessTexture(string fileName)
 {
 	SetTexture(fileName, RoughnessMap);
 }
 
-void Mesh::SetMetalTexture(string fileName)
+void MeshComponent::SetMetalTexture(string fileName)
 {
 	SetTexture(fileName, MetalMap);
 }
 
-void Mesh::SetTexture(string fileName, TextureType textureType)
+void MeshComponent::SetTexture(string fileName, TextureType textureType)
 {
 	if (nullptr == m_pFBXModel)
 		return;
@@ -178,12 +178,17 @@ void Mesh::SetTexture(string fileName, TextureType textureType)
 	}
 }
 
-void Mesh::SetMaterial(shared_ptr<Material> material)
+void MeshComponent::SetMaterial(shared_ptr<Material> material)
 {
 	this->material = material;
 }
 
-shared_ptr<Material> Mesh::GetMaterial()
+shared_ptr<Material> MeshComponent::GetMaterial()
+{
+	return this->material;
+}
+
+shared_ptr<Material> MeshComponent::GetMaterial() const
 {
 	return this->material;
 }

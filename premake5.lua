@@ -33,6 +33,7 @@ project "SDEngine"
 		"%{prj.name}/ThirdParty/spdlog/include",
 		"%{prj.name}/ThirdParty/fbxsdk/2017.1/include",
 		"%{prj.name}/ThirdParty/imgui",
+		"%{prj.name}/ThirdParty/entt",
 	}
 
 	links
@@ -87,6 +88,7 @@ project "SDEditor"
 		"SDEngine/ThirdParty/spdlog/include",
 		"SDEngine/ThirdParty/fbxsdk/2017.1/include",
 		"SDEngine/ThirdParty",
+		"SDEngine/ThirdParty/entt",
 	}
 
 	links

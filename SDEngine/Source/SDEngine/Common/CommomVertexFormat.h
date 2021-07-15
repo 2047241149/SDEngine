@@ -71,8 +71,7 @@ struct FBXModelData
 	vector<ModelData> mModelList;
 };
 
-
-
+//todo: delete the code, it will be TransformComponent
 struct Transform
 {
 	XMFLOAT3 localPosition = XMFLOAT3(1.0f,1.0f,1.0f);

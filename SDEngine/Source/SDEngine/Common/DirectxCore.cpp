@@ -459,7 +459,7 @@ bool DirectxCore::ResizeMainDepthStencilView(UINT newWidth, UINT newHeight)
 	ReleaseCOM(md3dDepthStencilBuffer);
 	ReleaseCOM(md3dDepthStencilView);
 
-	if (md3dDevice)
+ 	if (md3dDevice)
 	{
 		D3D11_TEXTURE2D_DESC depthStencilDesc;
 		ZeroMemory(&depthStencilDesc, sizeof(depthStencilDesc));

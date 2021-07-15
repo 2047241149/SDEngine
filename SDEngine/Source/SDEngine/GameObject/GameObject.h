@@ -8,7 +8,7 @@
 #include "SDEngine/Light/Light.h"
 #include "SDEngine/Shader/ShaderManager.h"
 #include "Camera.h"
-#include "Mesh.h"
+#include "SDEngine/Scene/MeshComponent.h"
 
 using namespace std;
 using namespace DirectX;
@@ -23,7 +23,7 @@ class GameObject
 {
 public:
 	shared_ptr<Transform> m_pTransform;
-	shared_ptr<Mesh> m_pMesh;
+	shared_ptr<MeshComponent> m_pMesh;
 	
 public:
 	GameObject();
@@ -43,6 +43,6 @@ public:
 
 	XMMATRIX GetWorldMatrix();
 
-	void SetMesh(shared_ptr<Mesh> pMesh);
+ 	void SetMesh(shared_ptr<MeshComponent> pMesh);
 };
 #endif 

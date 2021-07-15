@@ -30,7 +30,7 @@ class SceneManager;;
 #include "FPS.h"
 #include "Common/GraphicsConfig.h"
 #include "SceneRender.h"
-#include "GameObject/Mesh.h"
+#include "Scene/MeshComponent.h"
 using namespace std;
 
 class TiledDefferedSceneRender : public SceneRender

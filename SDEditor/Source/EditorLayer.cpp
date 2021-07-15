@@ -3,20 +3,26 @@
 EditorLayer::EditorLayer():
 	Layer("ExmPlayer")
 {
+
+}
+
+void EditorLayer::OnAttach()
+{
+	rt = make_shared<RenderTexture>(GViewportWidth, GViewportHeight);
+	scene = make_shared<Scene>();
+
 	pureColorShader = ShaderLibrary::LoadGetShader("Resource/PureColorShader.fx");
 	baseDiffuse = make_shared<Texture>("Resource/rustediron2_basecolor.png");
 	material = make_shared<Material>(pureColorShader);
 	material->SetTexture("BaseTexture", baseDiffuse);
 	material->SetTextureSampler("SampleWrapLinear", TextureSampler::BilinearFliterClamp);
 
-	cube = make_shared<GameObject>();
-	shared_ptr<Mesh> sphereMesh = make_shared<Mesh>("Resource\\sphere.FBX");
-	sphereMesh->SetMaterial(material);
-	cube->SetMesh(sphereMesh);
-	cube->m_pTransform->localPosition = XMFLOAT3(0.0f, 1.0f, 0.0f);
-	cube->m_pTransform->localScale = XMFLOAT3(2.0, 2.0, 2.0);
-	rt = make_shared<RenderTexture>(GViewportWidth, GViewportHeight);
-}
+	auto cubeActor = scene->CreateActor();
+	MeshComponent& meshCpt = cubeActor.AddComponent<MeshComponent>("Resource\\sphere.FBX");
+	meshCpt.SetMaterial(material);
+
+	GDirectxCore->SetBeginSceneColor(XMFLOAT4(1.0f, 1.0f, 0.0f, 1.0f));
+};
 
 
 void EditorLayer::UpdateCamera(float deltaTime)
@@ -71,12 +77,6 @@ void EditorLayer::UpdateCamera(float deltaTime)
 		GCamera->UpdateViewMatrix();
 	}
 
-
-void EditorLayer::OnAttach()
-{
-	GDirectxCore->SetBeginSceneColor(XMFLOAT4(1.0f, 1.0f, 0.0f, 1.0f));
-};
-
 void EditorLayer::OnDetach()
 {
 
@@ -86,6 +86,7 @@ void EditorLayer::OnUpdate(float deltaTime)
 {
 	PROFILE_FUNC();
 	UpdateCamera(deltaTime);
+
 	rt->SetRenderTarget(1.0f, 1.0f, 0.0f, 1.0f);
 	GDirectxCore->RecoverDefaultDSS();
 	GDirectxCore->RecoverDefualtRS();
@@ -93,7 +94,7 @@ void EditorLayer::OnUpdate(float deltaTime)
 
 	{
 		PROFILE_SCOPE("draw");
-		cube->DrawMesh();
+		scene->OnUpdate();
 	}
 };
 
@@ -195,9 +196,9 @@ void EditorLayer::OnImguiRender()
 
 	if (rtWidth != viewportSize.x || rtHeight != viewportSize.y)
 	{
-		rt->Resize(viewportSize.x, viewportSize.y);
+		rt->Resize((int)viewportSize.x, (int)viewportSize.y);
 	}
-	ImGui::Image(rt->GetSRV(), ImVec2(rtWidth, rtHeight));
+	ImGui::Image(rt->GetSRV(), ImVec2((float)rtWidth, (float)rtHeight));
 	ImGui::End();
 	ImGui::PopStyleVar();
 }

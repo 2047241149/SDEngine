@@ -1,13 +1,12 @@
-﻿#pragma once
-#ifndef _MESH_H
-#define _MESH_H
+#pragma once
 
+#pragma once
 #include "CoreMinimal.h"
 #include "SDEngine/Import/ImportFBX.h"
 #include "SDEngine/LoadTexture/Resource.h"
 
-
 class Material;
+
 enum MaterialType
 {
 	PURE_COLOR,
@@ -28,12 +27,13 @@ enum TextureType
 	MetalMap,
 };
 
-class Mesh
+class MeshComponent
 {
 public:
-	Mesh(string strFbxFileName);
-	Mesh(const Mesh& other);
-	~Mesh();
+	MeshComponent() = default;
+	MeshComponent(string strFbxFileName);
+	MeshComponent(const MeshComponent& other);
+	~MeshComponent();
 
 private:
 	void ShutDownBuffer();
@@ -50,6 +50,7 @@ public:
 	void SetMetalTexture(string fileName);
 	void SetMaterial(shared_ptr<Material> material);
 	shared_ptr<Material> GetMaterial();
+	shared_ptr<Material> GetMaterial() const;
 
 public:
 	shared_ptr<FBXModelData> m_pFBXModel;
@@ -60,11 +61,10 @@ public:
 	bool bCastShadow;
 	MaterialType m_eMaterialType;
 
-	XMFLOAT4 pureColor;  
+	XMFLOAT4 pureColor;
 	float roughness;
 	float metal;
 
 private:
 	shared_ptr<Material> material;
 };
-#endif

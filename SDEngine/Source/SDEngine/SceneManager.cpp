@@ -74,25 +74,25 @@ bool SceneManager::Init()
 	}
 
 	//Mesh Object
-	shared_ptr<Mesh> pHeadMesh = shared_ptr<Mesh>(new Mesh("Resource\\FBXModel\\head\\head.FBX"));
+	shared_ptr<MeshComponent> pHeadMesh = make_shared<MeshComponent>("Resource\\FBXModel\\head\\head.FBX");
 	pHeadMesh->m_eMaterialType = MaterialType::DIFFUSE;
 	pHeadMesh->bCastShadow = true;
 
-	shared_ptr<Mesh> pPointLightVolume = shared_ptr<Mesh>(new Mesh("Resource\\FBXModel\\sphere\\sphere.FBX"));
+	shared_ptr<MeshComponent> pPointLightVolume = make_shared<MeshComponent>("Resource\\FBXModel\\sphere\\sphere.FBX");
 	pPointLightVolume->m_eMaterialType = MaterialType::PURE_COLOR;
 	pPointLightVolume->pureColor = XMFLOAT4(1.0f, 0.0f, 0.0f, 1.0f);
 
-	shared_ptr<Mesh> pTransparentSphereMesh = shared_ptr<Mesh>(new Mesh("Resource\\FBXModel\\sphere\\sphere.FBX"));
+	shared_ptr<MeshComponent> pTransparentSphereMesh = make_shared<MeshComponent>("Resource\\FBXModel\\sphere\\sphere.FBX");
 	pTransparentSphereMesh->m_eMaterialType = MaterialType::PURE_COLOR;
 	pTransparentSphereMesh->bTransparent = true;
 	pTransparentSphereMesh->pureColor = XMFLOAT4(0.0f, 0.0f, 1.0f, 1.0f);
 
-	shared_ptr<Mesh> pSponzaBottom = shared_ptr<Mesh>(new Mesh("Resource\\FBXModel\\sponza\\sponza_bottom.FBX"));
+	shared_ptr<MeshComponent> pSponzaBottom = make_shared<MeshComponent>("Resource\\FBXModel\\sponza\\sponza_bottom.FB");
 	pSponzaBottom->m_eMaterialType = MaterialType::DIFFUSE;
 	pSponzaBottom->bReflect = true;
 	pSponzaBottom->bTransparent = false;
 
-	shared_ptr<Mesh> pSponzaNoBottom = shared_ptr<Mesh>(new Mesh("Resource\\FBXModel\\sponza\\sponza_no_bottom.FBX"));
+	shared_ptr<MeshComponent> pSponzaNoBottom = make_shared<MeshComponent>("Resource\\FBXModel\\sponza\\sponza_no_bottom.FBX");
 	pSponzaNoBottom->m_eMaterialType = MaterialType::DIFFUSE;
 
 	mHeadObject = shared_ptr<GameObject>(new GameObject());
@@ -106,7 +106,7 @@ bool SceneManager::Init()
 	{
 		for (int y = 0; y < 11; ++y)
 		{
-			shared_ptr<Mesh> pOpacitySphereMesh = shared_ptr<Mesh>(new Mesh("Resource\\FBXModel\\sphere\\sphere.FBX"));
+			shared_ptr<MeshComponent> pOpacitySphereMesh = make_shared<MeshComponent>("Resource\\FBXModel\\sphere\\sphere.FBX");
 			pOpacitySphereMesh->m_eMaterialType = MaterialType::DIFFUSE;
 			pOpacitySphereMesh->pureColor = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
 			pOpacitySphereMesh->bCastShadow = false;

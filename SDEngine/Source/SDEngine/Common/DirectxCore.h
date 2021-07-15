@@ -29,6 +29,8 @@ struct RenderStatistics
 	}
 };
 
+
+// TODO:"DirectxCore" rename "RenderContext"
 class DirectxCore
 {
 private:
@@ -69,40 +71,54 @@ public:
 	void TurnOnAlphaBlend();
 	void TurnOffAlphaBlend();
 
+	//TODO:remove from DirectCore
 	//打开和关闭ZTest
 	void TurnOnZBuffer();
 	void TurnOffZBuffer();
 	
+	//TODO:remove from DirectCore
 	//打开Solid渲染和线框渲染
 	void RecoverDefualtRS();
 	void TurnOnWireFrameRender();
 
+	//TODO:remove from DirectCore
 	//打开标记反射面的DSS
 	void TurnOnMaskReflectDSS();
 
+	//TODO:remove from DirectCore
 	//打开进行反射的DSS
 	void TurnOnEnableReflectDSS();
 
+	//TODO:remove from DirectCore
 	void TurnOnRenderSkyBoxDSS();
 
+	//TODO:remove from DirectCore
 	//剔除前面
 	void TurnOnCullFront();
 
+	//TODO:remove from DirectCore
 	//恢复默认的
 	void RecoverDefaultDSS();
 
+	//TODO:remove from DirectCore
 	void TurnOnPreDepthDSS();
 
+	//TODO:remove from DirectCore
 	//关掉ZBuffer写
 	void TurnOnDisbleZWriteDSS();
 
+	//TODO:remove from DirectCore
 	void TurnOnLightBlend();
 
+	//TODO:remove from DirectCore
 	void TurnOffFaceCull();
 
+	//TODO:remove from DirectCore
 	void TurnOnMaskLightVolumeDSS();
 
+	//TODO:remove from DirectCore
 	void TurnOnRenderLightVolumeDSS();
+
 
 	void GenerateMips(ID3D11ShaderResourceView* srv)
 	{
@@ -112,7 +128,6 @@ public:
 	void End();
 
 	const RenderStatistics& GetStatistics() { return statistics; }
-
 
 public:
 	void DrawIndexed(UINT indexCount, UINT startIndexLocation, int baseVertexLocation);
@@ -135,21 +150,21 @@ private:
 	ID3D11DepthStencilView* md3dDepthStencilView; //D3D11深度(模板)视图
 	ID3D11Texture2D* md3dDepthStencilBuffer; //D3D11的“DepthStencil缓存”
 	ID3D11DepthStencilState* md3dDepthStencilState; //深度(模板)缓存状态
-	ID3D11DepthStencilState* md3dDisableDepthStencilState; //深度测试失效的缓存状态
-	ID3D11DepthStencilState* mEqualDepthStencilState; //深度(模板)缓存状态
-	ID3D11DepthStencilState* md3dDisableZWriteDSS; //深度写无效的缓存状态
-	ID3D11DepthStencilState* md3dDSSMaskReflect;  //标记反射面
-	ID3D11DepthStencilState* md3dDSSEnableReflect; //进行反射面
-	ID3D11DepthStencilState* m_pDSSAddLightVolumeStencil; //标记像素在光源体积内的DSS
-	ID3D11DepthStencilState* m_pDSSRenderLightVolume; //渲染光源体积的DSS
-	ID3D11DepthStencilState* renderSkyBoxDSS;
-	ID3D11RasterizerState* md3dRasterizerState; //D3D的光栅化状态
-	ID3D11RasterizerState* md3dWireFrameRS; //D3D的光栅化状态
-	ID3D11RasterizerState* md3dCullFrontRS; //剔除前面
-	ID3D11RasterizerState* m_pTurnOffCullBackRS; //剔除前面
-	ID3D11BlendState* md3dEnableBlendState; //开启alpha的混合状态
-	ID3D11BlendState* md3dDisableBlendState; //关闭alpha的混合状态
-	ID3D11BlendState* m_pLightBlendState;
+	ID3D11DepthStencilState* md3dDisableDepthStencilState; //深度测试失效的缓存状态 TODO:remove from DirectCore
+	ID3D11DepthStencilState* mEqualDepthStencilState; //深度(模板)缓存状态 TODO:remove from DirectCore
+	ID3D11DepthStencilState* md3dDisableZWriteDSS; //深度写无效的缓存状态 TODO:remove from DirectCore
+	ID3D11DepthStencilState* md3dDSSMaskReflect;  //标记反射面 TODO:remove from DirectCore
+	ID3D11DepthStencilState* md3dDSSEnableReflect; //进行反射面 TODO:remove from DirectCore
+	ID3D11DepthStencilState* m_pDSSAddLightVolumeStencil; //标记像素在光源体积内的DSS TODO:remove from DirectCore
+	ID3D11DepthStencilState* m_pDSSRenderLightVolume; //渲染光源体积的DSS TODO:remove from DirectCore
+	ID3D11DepthStencilState* renderSkyBoxDSS; //TODO:remove from DirectCore
+	ID3D11RasterizerState* md3dRasterizerState; //D3D的光栅化状态 
+	ID3D11RasterizerState* md3dWireFrameRS; //D3D的光栅化状态 TODO:remove from DirectCore
+	ID3D11RasterizerState* md3dCullFrontRS; //剔除前面 TODO:remove from DirectCore
+	ID3D11RasterizerState* m_pTurnOffCullBackRS; //剔除前面 TODO:remove from DirectCore
+	ID3D11BlendState* md3dEnableBlendState; //开启alpha的混合状态 TODO:remove from DirectCore
+	ID3D11BlendState* md3dDisableBlendState; //关闭alpha的混合状态 TODO:remove from DirectCore
+	ID3D11BlendState* m_pLightBlendState; //TODO:remove from DirectCore
 	D3D11_VIEWPORT mViewport;
 	XMFLOAT4 sceneInitColor;
 

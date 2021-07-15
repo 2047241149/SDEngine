@@ -1,6 +1,6 @@
 ﻿#include "PrefilterCubeMap.h"
 #include "GameObject/GameObject.h"
-#include "GameObject/Mesh.h"
+#include "Scene/MeshComponent.h"
 #include "Shader/ShaderManager.h"
 #include "Texture/TextureSamplerManager.h"
 #include "GameObject/Camera.h"
@@ -24,9 +24,9 @@ PrefliterCubeMap::~PrefliterCubeMap()
 
 bool PrefliterCubeMap::Init(const string& file, int inTextureWidth, int inTextureHeight)
 {
-	hdrCubeMap = shared_ptr<Texture>(new Texture(file));
-	cubeGameObject = shared_ptr<GameObject>(new GameObject());
-	shared_ptr<Mesh> cubeMesh = shared_ptr<Mesh>(new Mesh("Resource\\FBXModel\\sphere\\sphere.fbx"));
+	hdrCubeMap = make_shared<Texture>(file);
+	cubeGameObject = make_shared<GameObject>();
+	shared_ptr<MeshComponent> cubeMesh = make_shared<MeshComponent>("Resource\\FBXModel\\sphere\\sphere.fbx");
 	cubeGameObject->SetMesh(cubeMesh);
 	textureWidth = inTextureWidth;
 	textureHeight = inTextureHeight;

@@ -2,7 +2,7 @@
 #ifndef _SCENE_MANAGER_H
 #define _SCENE_MANAGER_H
 
-#include "GameObject/Mesh.h"
+#include "Scene/MeshComponent.h"
 class GameObject;
 class SkyBox;
 class Input;
