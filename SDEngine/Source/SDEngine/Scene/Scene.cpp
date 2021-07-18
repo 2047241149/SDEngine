@@ -5,6 +5,7 @@
 #include "MeshComponent.h"
 #include "TagComponent.h"
 #include "CameraComponent.h"
+#include "ScriptComponent.h"
 
 Scene::Scene()
 {
@@ -15,18 +16,42 @@ Scene::~Scene()
 {
 }
 
-void Scene::OnUpdate()
+void Scene::OnTick(float deltaTime)
 {
+	OnUpdateScript(deltaTime);
 	OnUpdateCamera();
 	OnRender();
+}
+
+void Scene::OnUpdateScript(float deltaTime)
+{
+	auto& group = coreRegistry.view<ScriptComponent>();
+	for (auto entity : group)
+	{
+		auto& scriptCpt = group.get<ScriptComponent>(entity);
+		if (nullptr == scriptCpt.instance)
+		{
+			if (scriptCpt.CreateInstanceFunc)
+			{
+				scriptCpt.instance = scriptCpt.CreateInstanceFunc();
+				scriptCpt.instance->SetActor(Actor(entity, this));
+				scriptCpt.instance->BeginPlay();
+			}
+		}
+
+		if (nullptr != scriptCpt.instance && scriptCpt.bCanTick)
+		{
+			scriptCpt.Tick(deltaTime);
+		}
+	}
 }
 
 void Scene::OnUpdateCamera()
 {
 	auto group = coreRegistry.view<TransformComponent, CameraComponent>();
-	for (auto actor : group)
+	for (auto entity : group)
 	{
-		auto& [transform, camera] = group.get<TransformComponent, CameraComponent>(actor);
+		auto& [transform, camera] = group.get<TransformComponent, CameraComponent>(entity);
 
 		if (camera.bPrimary)
 		{
@@ -42,9 +67,9 @@ void Scene::OnRender()
 	{
 		GDirectxCore->UpdateRenderParams(mainCamera);
 		auto group = coreRegistry.group<TransformComponent>(entt::get<MeshComponent>);
-		for (auto& actor : group)
+		for (auto& entity : group)
 		{
-			auto&[transform, mesh] = group.get<TransformComponent, MeshComponent>(actor);
+			auto&[transform, mesh] = group.get<TransformComponent, MeshComponent>(entity);
 			RendererContext::DrawMesh(&mesh, &transform);
 		}
 	}

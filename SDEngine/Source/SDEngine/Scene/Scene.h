@@ -12,11 +12,12 @@ public:
 	Scene();
 	~Scene();
 
-	void OnUpdate();
+	void OnTick(float deltaTime);
 	entt::registry& GetResgtry();
 	Actor CreateActor(const string& actorName = "");
 
 private:
+	void OnUpdateScript(float deltaTime);
 	void OnUpdateCamera();
 	void OnRender();
 	CameraObject* mainCamera;

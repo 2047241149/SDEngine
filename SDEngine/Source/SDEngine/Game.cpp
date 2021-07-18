@@ -71,7 +71,7 @@ void Game::Run()
 
 		for (auto it = layerManager->Begin(); it != layerManager->End(); ++it)
 		{
-			(*it)->OnUpdate(GFPS->GetDeltaTime());
+			(*it)->OnTick(GFPS->GetDeltaTime());
 		}
 		Update();
 

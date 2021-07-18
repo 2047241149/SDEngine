@@ -1,5 +1,7 @@
 #pragma once
 #include "CameraObject.h"
+#include "SDEngine/Scene/ScriptableLogic.h"
+
 
 struct EditorCameraHelper
 {
@@ -17,4 +19,11 @@ struct EditorCameraHelper
 
 	//row y in wolrdspace (-90.0f<=rotateAngle<=90.0f)
 	static void RotateY(CameraObject& camera, float angle);
+};
+
+class EditorCameraLogic : public ScriptableLogic
+{
+public:
+	virtual void BeginPlay() override;
+	virtual void Tick(float deltaTime) override;
 };

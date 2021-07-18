@@ -22,7 +22,9 @@
 //actor-component
 #include "SDEngine/Scene/Scene.h"
 #include "SDEngine/Scene/Actor.h"
+#include "SDEngine/Scene/ScriptableLogic.h"
 #include "SDEngine/Scene/MeshComponent.h"
 #include "SDEngine/Scene/TransformComponent.h"
 #include "SDEngine/Scene/TagComponent.h"
 #include "SDEngine/Scene/CameraComponent.h"
+#include "SDEngine/Scene/ScriptComponent.h"

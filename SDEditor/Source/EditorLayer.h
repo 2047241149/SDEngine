@@ -37,7 +37,7 @@ private:
 public:
 	void OnAttach() override;
 	void OnDetach() override;
-	void OnUpdate(float deltaTime) override;
+	void OnTick(float deltaTime) override;
 	void OnImguiRender() override;
 	void OnEvent(Event& event) override;
 	void End() override;

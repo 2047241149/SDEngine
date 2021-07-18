@@ -1,5 +1,6 @@
 #include "EditorLayer.h"
 #include "ImguiUtil.h"
+#include "TestScript.h"
 
 EditorLayer::EditorLayer():
 	Layer("ExmPlayer"),
@@ -20,81 +21,38 @@ void EditorLayer::OnAttach()
 
 	meshActor = scene->CreateActor();
 	auto& meshCpt = meshActor.AddComponent<MeshComponent>("Resource\\sphere.FBX");
+	meshActor.AddComponent<ScriptComponent>("TestScript").Bind<TestScript>();
 	meshCpt.SetMaterial(material);
-	GDirectxCore->SetBeginSceneColor(XMFLOAT4(1.0f, 1.0f, 0.0f, 1.0f));
 
 	editorCameraActor = scene->CreateActor();
 	auto& editorCameraCpt = editorCameraActor.AddComponent<CameraComponent>();
+	editorCameraActor.AddComponent<ScriptComponent>("EditorCameraLogic").Bind<EditorCameraLogic>();
 	editorCameraCpt.bPrimary = bUseEditorCamera;
 
 	secondCameraActor = scene->CreateActor();
 	auto& secondCameraCpt = secondCameraActor.AddComponent<CameraComponent>();
 	secondCameraCpt.bPrimary = !bUseEditorCamera;
+
+	GDirectxCore->SetBeginSceneColor(XMFLOAT4(1.0f, 1.0f, 0.0f, 1.0f));
 };
 
 
 void EditorLayer::UpdateEditorCamera(float deltaTime)
 {
 	PROFILE_FUNC();
-	if (!bViewportFouces && !bViewportHover && !bUseEditorCamera)
-		return;
-
-	int mouseXOffset, mouseYOffset;
-	static float rotateY = 0.0f;
-	int fps = GFPS->GetFPS();
-	Input::GetMousePositionOffset(mouseXOffset, mouseYOffset);
-
-	//Update Editor Camera Pos
-	auto& cameraCpt = editorCameraActor.GetComponent<CameraComponent>();
-	auto& transformCpt = editorCameraActor.GetComponent<TransformComponent>();
-	CameraObject& camera = cameraCpt.camera;
-
-	if (Input::IsMouseButtuonPressed(EMouse::Right) && fps >= 5 && fps <= 1000000)
-	{
-		if (Input::IsKeyDown(EKey::W))
-		{
-			EditorCameraHelper::Walk(camera, deltaTime * cameraMoveSpeed);
-		}
-		else if (Input::IsKeyDown(EKey::S))
-		{
-			EditorCameraHelper::Walk(camera, -deltaTime * cameraMoveSpeed);
-		}
-
-		if (Input::IsKeyDown(EKey::A))
-		{
-			EditorCameraHelper::Strafe(camera, -deltaTime * cameraMoveSpeed);
-		}
-		else if (Input::IsKeyDown(EKey::D))
-		{
-			EditorCameraHelper::Strafe(camera, deltaTime*cameraMoveSpeed);
-		}
-
-		if (Input::IsKeyDown(EKey::Q))
-		{
-			EditorCameraHelper::UpDown(camera, -deltaTime * cameraMoveSpeed);
-		}
-		else if (Input::IsKeyDown(EKey::E))
-		{
-			EditorCameraHelper::UpDown(camera, deltaTime * cameraMoveSpeed);
-		}
-
-		if (rotateY <= 90.0f && rotateY >= -90.0f)
-		{
-			EditorCameraHelper::Pitch(camera, (float)mouseYOffset * deltaTime* cameraRotateSpeed);
-		}
-
-			EditorCameraHelper::RotateY(camera, (float)-mouseXOffset * deltaTime* cameraRotateSpeed);
-		}
-
-		transformCpt.position = camera.GetPosition();
-		camera.UpdateViewMatrix();
-	}
+	auto& editorCameraScript = editorCameraActor.GetComponent<ScriptComponent>();
+	editorCameraScript.bCanTick = bViewportFouces && bViewportHover && bUseEditorCamera;
+	Log::Info("bViewportFouces {0}", bViewportFouces);
+	Log::Info("bViewportHover {0}", bViewportHover);
+	Log::Info("bUseEditorCamera {0}", bUseEditorCamera);
+	Log::Info("editorCameraScript.bCanTick {0}", editorCameraScript.bCanTick);
+}
 
 void EditorLayer::OnDetach()
 {
 }
 
-void EditorLayer::OnUpdate(float deltaTime)
+void EditorLayer::OnTick(float deltaTime)
 {
 	PROFILE_FUNC();
 	UpdateEditorCamera(deltaTime);
@@ -106,7 +64,7 @@ void EditorLayer::OnUpdate(float deltaTime)
 
 	{
 		PROFILE_SCOPE("draw");
-		scene->OnUpdate();
+		scene->OnTick(deltaTime);
 	}
 };
 
