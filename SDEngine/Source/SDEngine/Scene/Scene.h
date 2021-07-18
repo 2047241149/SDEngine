@@ -1,9 +1,10 @@
 #pragma once
 #include "entt.hpp"
-#include<string>
+#include <string>
 
 using std::string;
 class Actor;
+class CameraObject;
 
 class Scene
 {
@@ -16,7 +17,9 @@ public:
 	Actor CreateActor(const string& actorName = "");
 
 private:
+	void OnUpdateCamera();
 	void OnRender();
+	CameraObject* mainCamera;
 
 private:
 	entt::registry coreRegistry;

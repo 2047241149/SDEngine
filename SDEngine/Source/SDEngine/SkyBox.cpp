@@ -14,14 +14,9 @@ SkyBox::SkyBox(const string& file)
 	Init(file);
 }
 
-SkyBox::SkyBox(const SkyBox& other)
-{
-}
-
 SkyBox::SkyBox(ID3D11ShaderResourceView* inSrv):
 	cubeSrv(inSrv)
 {
-
 }
 
 SkyBox::~SkyBox()
@@ -54,11 +49,11 @@ void SkyBox::Render(GeometryBuffer* geometryBuffer)
 	GDirectxCore->SetDefualtViewPort();
 	GDirectxCore->TurnOnRenderSkyBoxDSS();
 	GDirectxCore->TurnOnCullFront();
-	XMMATRIX worldMatrix = XMMatrixTranslation(GCamera->position.x, GCamera->position.y, GCamera->position.z);
+	XMMATRIX worldMatrix = XMMatrixTranslation(GCamera_deprecated->position.x, GCamera_deprecated->position.y, GCamera_deprecated->position.z);
 	XMMATRIX scaleMatrix = XMMatrixScaling(SKY_BOX_SPHERE_SCALE, SKY_BOX_SPHERE_SCALE, SKY_BOX_SPHERE_SCALE);
 	GShaderManager->skyBoxShader->SetMatrix("World", scaleMatrix * worldMatrix);
-	GShaderManager->skyBoxShader->SetMatrix("View", GCamera->GetViewMatrix());
-	GShaderManager->skyBoxShader->SetMatrix("Proj", GCamera->GetProjectionMatrix());
+	GShaderManager->skyBoxShader->SetMatrix("View", GCamera_deprecated->GetViewMatrix());
+	GShaderManager->skyBoxShader->SetMatrix("Proj", GCamera_deprecated->GetProjectionMatrix());
 	ID3D11ShaderResourceView* srv = (nullptr != cubeSrv ? cubeSrv : skyBoxTexture->GetTexture());
 	GShaderManager->skyBoxShader->SetTexture("CubeMap", srv);
 	GShaderManager->skyBoxShader->SetTextureSampler("ClampLinear", GTextureSamplerBilinearClamp);

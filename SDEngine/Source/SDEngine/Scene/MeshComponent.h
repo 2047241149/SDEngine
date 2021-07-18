@@ -32,7 +32,7 @@ class MeshComponent
 public:
 	MeshComponent() = default;
 	MeshComponent(string strFbxFileName);
-	MeshComponent(const MeshComponent& other);
+	MeshComponent(const MeshComponent& other) = default;
 	~MeshComponent();
 
 private:

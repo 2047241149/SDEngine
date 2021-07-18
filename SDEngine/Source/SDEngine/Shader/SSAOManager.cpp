@@ -16,14 +16,8 @@ SSAOManager::SSAOManager(int screenWidth, int screenHeight)
 	Init(screenWidth, screenHeight);
 }
 
-SSAOManager::SSAOManager(const SSAOManager& other)
-{
-
-}
-
 SSAOManager::~SSAOManager()
 {
-
 }
 
 void SSAOManager::Init(int screenWidth, int screenHeight)
@@ -62,7 +56,6 @@ void SSAOManager::Init(int screenWidth, int screenHeight)
 
 void SSAOManager::ShutDown()
 {
-
 }
 
 void SSAOManager::Render(GeometryBuffer* geometryBuffer)
@@ -70,15 +63,14 @@ void SSAOManager::Render(GeometryBuffer* geometryBuffer)
 	if (nullptr == geometryBuffer)
 		return;
 
-	//��Ⱦ�õ�SSAORT
 	ssaoRT->SetRenderTarget(1.0f, 1.0f, 1.0f, 1.0f);
 	GDirectxCore->TurnOffZBuffer();
 	GShaderManager->ssaoShader->SetTexture("WorldPosTex", geometryBuffer->GetGBufferSRV(GBufferType::Pos));
 	GShaderManager->ssaoShader->SetTexture("WorldNormalTex", geometryBuffer->GetGBufferSRV(GBufferType::Normal));
 	GShaderManager->ssaoShader->SetTexture("SSaoNoiseTexture", ssaoNoiseTexture->GetSRV());
-	GShaderManager->ssaoShader->SetMatrix("View", GCamera->GetViewMatrix());
-	GShaderManager->ssaoShader->SetMatrix("Proj", GCamera->GetProjectionMatrix());
-	GShaderManager->ssaoShader->SetMatrix("ViewInvTranspose", FMath::GetInvenseTranspose(GCamera->GetViewMatrix()));
+	GShaderManager->ssaoShader->SetMatrix("View", GCamera_deprecated->GetViewMatrix());
+	GShaderManager->ssaoShader->SetMatrix("Proj", GCamera_deprecated->GetProjectionMatrix());
+	GShaderManager->ssaoShader->SetMatrix("ViewInvTranspose", FMath::GetInvenseTranspose(GCamera_deprecated->GetViewMatrix()));
 	for (int index = 0; index < SSAO_VEC_SCALE_NUM; ++index)
 	{
 		GShaderManager->ssaoShader->SetFloat3ArrayElement("ssaoSamples", vecSSAOSample[index], index);
@@ -89,7 +81,7 @@ void SSAOManager::Render(GeometryBuffer* geometryBuffer)
 	quad->Render();
 	GDirectxCore->TurnOnZBuffer();
 
-	//�������õ�SSAODownSampleRT
+	//SSAODownSampleRT
 	ssaoDownSampleRT->SetRenderTarget();
 	GDirectxCore->TurnOffZBuffer();
 	GShaderManager->graphicsBlitShader->SetTexture("ScreenRT", ssaoRT->GetSRV());
@@ -107,7 +99,7 @@ void SSAOManager::Render(GeometryBuffer* geometryBuffer)
 	quad->Render();
 	GDirectxCore->TurnOnZBuffer();
 
-	//��SSAODownSampleBlurRT������
+	//SSAODownSampleBlurRT
 	ssaoUpSampleRT->SetRenderTarget();
 	GDirectxCore->TurnOffZBuffer();
 	GShaderManager->graphicsBlitShader->SetTexture("ScreenRT", ssaoDownSampleBlurRT->GetSRV());

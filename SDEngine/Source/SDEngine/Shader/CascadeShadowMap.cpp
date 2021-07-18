@@ -12,12 +12,6 @@ CascadeShadowMap::CascadeShadowMap(int nTextureWidth, int nTexureHeight, int nCa
 	Init(nTextureWidth, nTexureHeight, nCascadeNum);
 }
 
-
-CascadeShadowMap::CascadeShadowMap(const CascadeShadowMap&other)
-{
-
-}
-
 CascadeShadowMap::~CascadeShadowMap()
 {
 	ShutDown();

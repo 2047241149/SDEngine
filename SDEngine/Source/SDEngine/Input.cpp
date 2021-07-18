@@ -7,10 +7,6 @@ Input::Input()
 	Init();
 }
 
-Input::Input(const Input& inputclass)
-{
-}
-
 Input::~Input()
 {
 }

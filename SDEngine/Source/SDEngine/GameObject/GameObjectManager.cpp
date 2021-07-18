@@ -5,11 +5,6 @@ GameObjectManager::GameObjectManager()
 
 }
 
-GameObjectManager::GameObjectManager(const GameObjectManager& other)
-{
-
-}
-
 GameObjectManager::~GameObjectManager()
 {
 

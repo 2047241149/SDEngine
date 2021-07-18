@@ -8,7 +8,6 @@ class GameObjectManager
 {
 public:
 	GameObjectManager();
-	GameObjectManager(const GameObjectManager& other);
 	~GameObjectManager();
 
 public:

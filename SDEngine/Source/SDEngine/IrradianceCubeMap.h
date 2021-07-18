@@ -14,7 +14,6 @@ class IrradianceCubeMap
 {
 public:
 	IrradianceCubeMap(const string& file, int textureWidth = 64, int textureHeight = 64);
-	IrradianceCubeMap(const IrradianceCubeMap& other);
 	~IrradianceCubeMap();
 
 public:

@@ -6,18 +6,10 @@ GrussianBlurCS::GrussianBlurCS(WCHAR* csFilenPath)
 	Init(csFilenPath);
 }
 
-
-GrussianBlurCS::GrussianBlurCS(const GrussianBlurCS& other)
-{
-
-}
-
-
 GrussianBlurCS::~GrussianBlurCS()
 {
 	ShutDown();
 }
-
 
 bool GrussianBlurCS::Init(WCHAR* csFilenPath)
 {
@@ -30,16 +22,12 @@ bool GrussianBlurCS::Init(WCHAR* csFilenPath)
 }
 
 
-
 bool GrussianBlurCS::InitShader(WCHAR* csFilePath)
 {
 	HRESULT result;
 	ID3D10Blob* errorMessage;
 	ID3D10Blob* CSBlobHorizontal;
 	ID3D10Blob* CSBlobVertical;
-
-
-	//��ʼ������
 	errorMessage = NULL;
 	CSBlobHorizontal = NULL;
 	CSBlobVertical = NULL;
@@ -67,7 +55,7 @@ bool GrussianBlurCS::InitShader(WCHAR* csFilePath)
 		CSBlobHorizontal->GetBufferSize(), nullptr, &m_pCSGrussianBlurHorizontal));
 
 
-	//����ComputeShaderVertical
+	//ComputeShaderVertical
 	result = D3DCompileFromFile(csFilePath, nullptr, nullptr, "CS_VerticalBlur", "cs_5_0", flag, 0, &CSBlobVertical, &errorMessage);
 	if (FAILED(result))
 	{

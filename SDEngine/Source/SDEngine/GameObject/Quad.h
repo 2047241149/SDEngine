@@ -32,7 +32,6 @@ private:
 
 public:
 	Quad();
-	Quad(const Quad&);
 	~Quad();
 
 public:

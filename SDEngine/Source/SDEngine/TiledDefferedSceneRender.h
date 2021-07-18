@@ -66,7 +66,6 @@ private:
 
 public:
 	TiledDefferedSceneRender();
-	TiledDefferedSceneRender(const TiledDefferedSceneRender&);
 	~TiledDefferedSceneRender();
 
 private:

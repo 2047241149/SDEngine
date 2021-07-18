@@ -21,25 +21,12 @@ GerstnerWaveCS::GerstnerWaveCS(UINT iWaveWidth, UINT iWaveHeight, WCHAR* csWaveP
 	Initlize(csWavePosPath, csWaveNormalPath);
 }
 
-
-GerstnerWaveCS::GerstnerWaveCS(const GerstnerWaveCS& other)
-{
-
-}
-
-
 GerstnerWaveCS::~GerstnerWaveCS()
 {
-
 }
-
 
 void GerstnerWaveCS::UpdateWaveCB(float fCurrentTime)
 {
-
-
-	//���±任�����������ֵ
-	//������ת��,�ڴ��볣������ǰ����ת��,��ΪGPU�Ծ������ݻ��Զ�����һ��ת��
 	D3D11_MAPPED_SUBRESOURCE mappedSubresource;
 	g_pDeviceContext->Map(m_pCBWaveUpdate, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedSubresource);
 	auto pCBCommon = (CBGerstnerWaveUpdate*)(mappedSubresource.pData);
@@ -51,10 +38,7 @@ void GerstnerWaveCS::UpdateWaveCB(float fCurrentTime)
 void GerstnerWaveCS::Render()
 {
 	CalculateWaveData();
-
 	CreateAndCopyToDebugBuf();
-
-	//������ƬԪ
 	g_pDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
 	//VertexBuffetr

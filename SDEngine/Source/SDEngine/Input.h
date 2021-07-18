@@ -36,7 +36,6 @@ private:
 
 public:
 	Input();
-	Input(const Input&);
 	~Input();
 
 	static shared_ptr<Input> Get();

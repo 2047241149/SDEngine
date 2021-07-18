@@ -39,7 +39,6 @@ private:
 
 public:
 	Material(shared_ptr<VertexPixelShader> shader);
-	Material(const Material& other);
 	virtual ~Material();
 
 public:

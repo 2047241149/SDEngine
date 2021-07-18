@@ -16,6 +16,7 @@ using namespace DirectX;
 
 class Event;
 class WindowResizeEvent;
+class CameraObject;
 
 struct RenderStatistics
 {
@@ -29,6 +30,14 @@ struct RenderStatistics
 	}
 };
 
+struct ViewParams
+{
+	XMFLOAT3 cameraWorldPos;
+	XMMATRIX viewMatrix;
+	XMMATRIX projMatrix;
+	float nearPlane;
+	float farPlane;
+};
 
 // TODO:"DirectxCore" rename "RenderContext"
 class DirectxCore
@@ -38,7 +47,6 @@ private:
 
 public:
 	DirectxCore();
-	DirectxCore(const DirectxCore&);
 	~DirectxCore();
 
 	static shared_ptr<DirectxCore> Get();
@@ -49,6 +57,7 @@ public:
 	void SetBeginSceneColor(XMFLOAT4 sceneInitColor);
 	void BeginScene(float red, float green, float blue, float alpha);
 	void BeginSceneRender();
+	void UpdateRenderParams(CameraObject* camera);
 	void EndScene();
 
 	//Get函数
@@ -131,6 +140,9 @@ public:
 
 public:
 	void DrawIndexed(UINT indexCount, UINT startIndexLocation, int baseVertexLocation);
+
+public:
+	shared_ptr<ViewParams> viewParams;
 
 private:
 	bool mVsyncEnable;  //是否限帧渲染

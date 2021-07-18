@@ -4,47 +4,33 @@ Wave::Wave(int waveWidth, int waveHeight, float waveGridSize,int uvTile):
 	mWaveGridSize(waveGridSize),mUVTile(uvTile)
 {
 	mPosition = XMFLOAT3(0.0f, 0.0f, 0.0f);
-	//waveWidth waveHeight ��� 2 ��ż����
+	//waveWidth waveHeight
 	mWaveWidth = (waveWidth % 2) ? (waveWidth + 1) : (waveWidth);
 	mWaveHeight = (waveHeight % 2) ? (waveHeight + 1) : (waveHeight);
 	
-	//��������(������Ż�ΪTriangleStrip)
+	//TriangleStrip
 	mWaveVertexData.resize((mWaveWidth + 1)* (mWaveHeight + 1));
-
-	//��������
 	mWaveIndexData.resize(mWaveWidth * mWaveHeight * 6);
-	
 	Init();
 	
 }
-
 
 Wave::Wave(int waveWidth, int waveHeight, float waveGridSize)
 {
 	mPosition = XMFLOAT3(0.0f, 0.0f, 0.0f);
-	//waveWidth waveHeight ��� 2 ��ż����
+	//waveWidth waveHeight
 	mWaveWidth = (waveWidth % 2) ? (waveWidth + 1) : (waveWidth);
 	mWaveHeight = (waveHeight % 2) ? (waveHeight + 1) : (waveHeight);
 
-	//��������(������Ż�ΪTriangleStrip)
+	//TriangleStrip
 	mWaveVertexData.resize((mWaveWidth + 1)* (mWaveHeight + 1));
-
-	//��������
 	mWaveIndexData.resize(mWaveWidth* mWaveHeight * 6);
-
 	Init();
-}
-
-Wave::Wave(const Wave& other)
-{
-
 }
 
 Wave::~Wave()
 {
-
 }
-
 
 void Wave::Init()
 {
@@ -74,12 +60,10 @@ void Wave::Init()
 	{
 		for (int widthIndex = 0; widthIndex < mWaveWidth; ++widthIndex)
 		{
-			//��һ��������
 			//vertex1
 			WORD vertexIndex = heightIndex * (mWaveWidth + 1) + widthIndex;	
 			mWaveIndexData[waveIndex] = vertexIndex;
 			++waveIndex;
-
 
 			//vertex3
 			vertexIndex = (heightIndex + 1) * (mWaveWidth + 1) + widthIndex + 1;
@@ -91,15 +75,10 @@ void Wave::Init()
 			mWaveIndexData[waveIndex] = vertexIndex;
 			++waveIndex;
 
-
-
-			//�ڶ���������
 			//vertex1
 			vertexIndex = heightIndex * (mWaveWidth + 1) + widthIndex;
 			mWaveIndexData[waveIndex] = vertexIndex;
 			++waveIndex;
-
-
 
 			//vertex4
 			vertexIndex = (heightIndex + 1) * (mWaveWidth + 1) + widthIndex;
@@ -110,8 +89,6 @@ void Wave::Init()
 			vertexIndex = (heightIndex + 1) * (mWaveWidth + 1) + widthIndex + 1;
 			mWaveIndexData[waveIndex] = vertexIndex;
 			++waveIndex;
-
-
 		}
 	}
 
@@ -130,9 +107,7 @@ void Wave::Init()
 	indexData.SysMemPitch = 0;
 	indexData.SysMemSlicePitch = 0;
 	g_pDevice->CreateBuffer(&indexBufferDesc, &indexData, &mIndexBuffer);
-
 }
-
 
 void Wave::Render()
 {
@@ -145,7 +120,6 @@ void Wave::Render()
 	g_pDeviceContext->IASetIndexBuffer(mIndexBuffer, DXGI_FORMAT_R16_UINT, 0);
 	g_pDeviceContext->DrawIndexed((UINT)mWaveIndexData.size(), 0, 0);
 }
-
 
 void Wave::CalculateVertexNormal()
 {
@@ -245,6 +219,7 @@ void Wave::CalculateVertexNormal()
 
 	}
 }
+
 void Wave::CalculateVertexPos(float time)
 {
 	UINT index = 0;
@@ -276,7 +251,6 @@ XMFLOAT3 Wave::CrossNormal(const XMFLOAT3& vertex1, const XMFLOAT3& vertex2, con
 	return normal;
 }
 
-
 void Wave::NormalizeFloat3(XMFLOAT3& normal)
 {
 	float length = sqrt(normal.x * normal.x + normal.y * normal.y + normal.z * normal.z);
@@ -289,7 +263,6 @@ void Wave::SetWaveParam(int uvTile)
 {
 	mUVTile = uvTile;
 }
-
 
 void Wave::CalculateVertexUV()
 {

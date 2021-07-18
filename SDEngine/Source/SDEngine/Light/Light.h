@@ -22,7 +22,7 @@ protected:
 
 public:
 	Light();
-	Light(const Light&other);
+	Light(const Light&other) = default;
 	~Light();
 
 

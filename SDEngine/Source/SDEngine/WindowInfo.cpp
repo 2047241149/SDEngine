@@ -4,11 +4,6 @@ WindowInfo::WindowInfo()
 {
 }
 
-WindowInfo::WindowInfo(const WindowInfo&other)
-{
-}
-
-
 WindowInfo::~WindowInfo()
 {
 }

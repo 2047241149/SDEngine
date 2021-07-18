@@ -14,11 +14,6 @@ IrradianceCubeMap::IrradianceCubeMap(const string& file, int textureWidth, int t
 	Init(file, textureWidth, textureHeight);
 }
 
-IrradianceCubeMap::IrradianceCubeMap(const IrradianceCubeMap& other)
-{
-}
-
-
 IrradianceCubeMap::~IrradianceCubeMap()
 {
 }

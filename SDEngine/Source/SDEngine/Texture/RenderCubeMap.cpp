@@ -16,17 +16,10 @@ RenderCubeMap::RenderCubeMap(int inTextureWidth, int inTextureHeight):
 	Init(inTextureWidth, inTextureHeight);
 }
 
-
-RenderCubeMap::RenderCubeMap(const RenderCubeMap&other)
-{
-
-}
-
 RenderCubeMap::~RenderCubeMap()
 {
 	ShutDown();
 }
-
 
 bool RenderCubeMap::Init(int nTextureWidth, int nTexureHeight)
 {
@@ -108,7 +101,6 @@ bool RenderCubeMap::Init(int nTextureWidth, int nTexureHeight)
 	return true;
  }
 
-
 void RenderCubeMap::ShutDown()
 {
 	ReleaseCOM(srv);
@@ -122,7 +114,6 @@ void RenderCubeMap::ShutDown()
 	ReleaseCOM(depthTexture);
 	ReleaseCOM(dsv);
 }
-
 
 //让此时所有图形渲染到这个目前渲染的位置
 void RenderCubeMap::SetRenderTarget(int targetViewSlot)
@@ -140,8 +131,6 @@ void RenderCubeMap::ClearDepthBuffer()
 	//清除深度缓存和模板缓存
 	g_pDeviceContext->ClearDepthStencilView(dsv, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
 }
-
-
 
 void RenderCubeMap::ClearRenderTarget(float red, float green, float blue, float alpha)
 {

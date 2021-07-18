@@ -40,9 +40,6 @@ public:
 	/*构造函数*/
 	SDEngine();
 
-	/*拷贝构造函数*/
-	SDEngine(const SDEngine&);
-
 	/*析构函数*/
 	~SDEngine();
 

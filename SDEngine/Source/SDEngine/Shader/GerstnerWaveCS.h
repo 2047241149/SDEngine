@@ -55,7 +55,6 @@ class GerstnerWaveCS
 {
 public:
 	GerstnerWaveCS(UINT iWaveWidth,UINT iWaveHeight, WCHAR* csWavePosPath, WCHAR* csWaveNormalPath, const CBGerstnerWaveNoUpdate& stWaveNoUpdate);
-	GerstnerWaveCS(const GerstnerWaveCS& other);
 	~GerstnerWaveCS();
 	void UpdateWaveCB(float  fCurrentTime);
 	void Render();

@@ -14,7 +14,6 @@ private:
 
 public:
 	DepthBufferRT(int TextureWidth, int TextureHeight);
-	DepthBufferRT(const DepthBufferRT&other);
 	~DepthBufferRT();
 	bool Initialize(int TextureWidth, int TextureHeight);
 	void ShutDown();

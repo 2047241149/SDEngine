@@ -9,27 +9,19 @@ CascadedShadowsManager::CascadedShadowsManager(int nShadowMapResolution)
 	InitShadowMap(nShadowMapResolution);
 }
 
-
-CascadedShadowsManager::CascadedShadowsManager(const CascadedShadowsManager& other)
-{
-
-}
 CascadedShadowsManager::~CascadedShadowsManager()
 {
-
 }
 
 void CascadedShadowsManager::InitShadowMap(int nShadowMapResolution)
 {
-
 	mCascadeShadowMap = shared_ptr<CascadeShadowMap>(new CascadeShadowMap(nShadowMapResolution, nShadowMapResolution, CASCADE_SHADOW_MAP_NUM));
-	
 }
 
 void CascadedShadowsManager::Update()
 {
-	float fFov = GCamera->fovY;
-	float fAspect = GCamera->aspect;
+	float fFov = GCamera_deprecated->fovY;
+	float fAspect = GCamera_deprecated->aspect;
 	const int FRUSTUN_VERTEX_NUM = 8;
 	XMVECTOR frustumPoint[FRUSTUN_VERTEX_NUM];
 	shared_ptr<DirectionLight> mMainDirLight = GLightManager->GetMainLight();
@@ -39,7 +31,7 @@ void CascadedShadowsManager::Update()
 	{
 
 		float fNearPlane = 0;
-		float fFarPlane = GCamera->farPlane * CASCADE_PERCENT[nCascadeindex + 1];
+		float fFarPlane = GCamera_deprecated->farPlane * CASCADE_PERCENT[nCascadeindex + 1];
 		mfCameraZ[nCascadeindex] = fFarPlane;
 		float fFarY = tan(fFov / 2.0f) * fFarPlane;
 		float fFarX = fFarY / fAspect;
@@ -54,7 +46,7 @@ void CascadedShadowsManager::Update()
 		frustumPoint[7] = XMVectorSet(-fFarX, -fFarY, fFarPlane, 1.0f); //Զƽ�����½�
 
 
-		XMMATRIX viewMatrix = GCamera->GetViewMatrix();
+		XMMATRIX viewMatrix = GCamera_deprecated->GetViewMatrix();
 		XMMATRIX invenseViewMatrix = XMMatrixInverse(nullptr, viewMatrix);
 		XMVECTOR lightVsSceneAABBMax = XMVectorSet(FLT_MIN, FLT_MIN, FLT_MIN, FLT_MIN);
 		XMVECTOR lightVsSceneAABBMin = XMVectorSet(FLT_MAX, FLT_MAX, FLT_MAX, FLT_MAX);
@@ -75,14 +67,11 @@ void CascadedShadowsManager::Update()
 		float fLightVsSceneAABBMinZ = XMVectorGetZ(lightVsSceneAABBMin);
 		float fLightVsSceneAABBMaxZ = XMVectorGetZ(lightVsSceneAABBMax);
 
-		//��XY��Χ�ϣ�����һ�㣬lightVsSceneAABBMax��lightVsSceneAABBMin�����α�ԭ�򲢲�һ����Χ�����ӽ��巶Χ�����ǵ�����lightVsSceneAABB�ķ�Χ
-		//lightVsSceneAABB�ķ�ΧӦ��������ռ�İ�Χ��ΧΪ׼����˺˶�����ռ�����ζԽ��ߴ�С
 		XMVECTOR vDiagonal = frustumPoint[0] - frustumPoint[7];
 		vDiagonal = XMVector3Length(vDiagonal);
 		float fCascadeDiagonal = XMVectorGetX(vDiagonal);
 		XMVECTOR vBorderoffset = (vDiagonal - (lightVsSceneAABBMax - lightVsSceneAABBMin)) * XMVectorSet(0.5f, 0.5f, 0.0, 0.0f);
 
-		//��ֹvBorderoffset��X��YΪ����������£����ܲ���lightVsSceneAABBMin > lightVsSceneAABBMax�Ľ��
 		//XMVECTOR vZero = XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f);
 		lightVsSceneAABBMax += vBorderoffset;
 		lightVsSceneAABBMin -= vBorderoffset;
@@ -116,7 +105,7 @@ void CascadedShadowsManager::Update()
 		(
 			f3LightVsSceneAABBMin.x, f3LightVsSceneAABBMax.x,
 			f3LightVsSceneAABBMin.y, f3LightVsSceneAABBMax.y,
-			fLightVsSceneAABBMinZ - GCamera->farPlane * 0.5f, fLightVsSceneAABBMaxZ + GCamera->farPlane * 0.15f
+			fLightVsSceneAABBMinZ - GCamera_deprecated->farPlane * 0.5f, fLightVsSceneAABBMaxZ + GCamera_deprecated->farPlane * 0.15f
 		);
 	}	
 }

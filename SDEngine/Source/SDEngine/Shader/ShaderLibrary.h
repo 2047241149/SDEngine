@@ -18,7 +18,6 @@ private:
 public:
 	ShaderLibrary();
 	~ShaderLibrary();
-	ShaderLibrary(const ShaderLibrary&);
 
 	static shared_ptr<VertexPixelShader> GetShader(const string& shaderName);
 	static shared_ptr<VertexPixelShader> LoadGetShader(const string& shaderFile);

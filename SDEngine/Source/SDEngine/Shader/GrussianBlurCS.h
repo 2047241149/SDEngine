@@ -10,7 +10,6 @@ class GrussianBlurCS
 
 public:
 	GrussianBlurCS(WCHAR* csFilenPath);
-	GrussianBlurCS(const GrussianBlurCS& other);
 	virtual ~GrussianBlurCS();
 
 public:

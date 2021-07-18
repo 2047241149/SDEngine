@@ -9,8 +9,3 @@ SceneRender::SceneRender()
 SceneRender::~SceneRender()
 {
 }
-
-SceneRender::SceneRender(const SceneRender&other)
-{
-
-}

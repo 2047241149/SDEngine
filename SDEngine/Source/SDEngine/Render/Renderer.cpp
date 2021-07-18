@@ -14,8 +14,8 @@ void RendererContext::DrawMesh(MeshComponent* mesh, TransformComponent* transfor
 	}
 
 	material->SetMatrix("World", transform->GetWorldMatrix());
-	material->SetMatrix("View", GCamera->GetViewMatrix());
-	material->SetMatrix("Proj", GCamera->GetProjectionMatrix());
+	material->SetMatrix("View", GDirectxCore->viewParams->viewMatrix);
+	material->SetMatrix("Proj", GDirectxCore->viewParams->projMatrix);
 	material->Apply();
 
 	g_pDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);

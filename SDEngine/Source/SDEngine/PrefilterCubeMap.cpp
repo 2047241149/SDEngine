@@ -13,11 +13,6 @@ PrefliterCubeMap::PrefliterCubeMap(const string& file, int textureWidth, int tex
 	Init(file, textureWidth, textureHeight);
 }
 
-PrefliterCubeMap::PrefliterCubeMap(const PrefliterCubeMap& other)
-{
-}
-
-
 PrefliterCubeMap::~PrefliterCubeMap()
 {
 }

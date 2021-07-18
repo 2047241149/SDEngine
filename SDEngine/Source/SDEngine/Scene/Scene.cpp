@@ -1,40 +1,52 @@
 #include "Scene.h"
+#include "Actor.h"
+#include "Render/Renderer.h"
 #include "TransformComponent.h"
 #include "MeshComponent.h"
-#include "Render/Renderer.h"
-#include "Actor.h"
 #include "TagComponent.h"
+#include "CameraComponent.h"
 
 Scene::Scene()
 {
-	/*entt::entity entity = coreRegistry.create();
-	coreRegistry.emplace<TestComponent>(entity);
-	TestComponent& test = coreRegistry.get<TestComponent>(entity);
-
-	auto view = coreRegistry.view<TestComponent>();
-	for (auto entity : view)
-	{
-		TestComponent& intest = coreRegistry.get<TestComponent>(entity);
-	}*/
+	mainCamera = nullptr;
 }
 
 Scene::~Scene()
 {
-
 }
 
 void Scene::OnUpdate()
 {
+	OnUpdateCamera();
 	OnRender();
+}
+
+void Scene::OnUpdateCamera()
+{
+	auto group = coreRegistry.view<TransformComponent, CameraComponent>();
+	for (auto actor : group)
+	{
+		auto& [transform, camera] = group.get<TransformComponent, CameraComponent>(actor);
+
+		if (camera.bPrimary)
+		{
+			mainCamera = &camera.camera;
+			break;
+		}
+	}
 }
 
 void Scene::OnRender()
 {
-	auto group = coreRegistry.group<TransformComponent>(entt::get<MeshComponent>);
-	for(auto actor : group)
+	if (nullptr != mainCamera)
 	{
-		auto& [transform, mesh] = group.get<TransformComponent, MeshComponent>(actor);
-		RendererContext::DrawMesh(&mesh, &transform);
+		GDirectxCore->UpdateRenderParams(mainCamera);
+		auto group = coreRegistry.group<TransformComponent>(entt::get<MeshComponent>);
+		for (auto& actor : group)
+		{
+			auto&[transform, mesh] = group.get<TransformComponent, MeshComponent>(actor);
+			RendererContext::DrawMesh(&mesh, &transform);
+		}
 	}
 }
 

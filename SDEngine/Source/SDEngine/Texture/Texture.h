@@ -18,7 +18,6 @@ private:
 
 public:
 	Texture(const string& textureFile);
-	Texture(const Texture& other);
 	~Texture();
 
 public:

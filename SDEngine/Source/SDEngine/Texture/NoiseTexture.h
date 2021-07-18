@@ -7,7 +7,6 @@ class NoiseTexture
 {
 public:
 	NoiseTexture(int textureWidth, int textureHeight);
-	NoiseTexture(const NoiseTexture& other);
 	~NoiseTexture();
 
 private:

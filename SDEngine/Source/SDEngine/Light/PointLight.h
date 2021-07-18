@@ -16,7 +16,6 @@ class PointLight : public Light
 {
 public:
 	PointLight();
-	PointLight(const PointLight& other);
 	~PointLight();
 
 public:

@@ -5,11 +5,6 @@ NoiseTexture::NoiseTexture(int textureWidth, int textureHeight)
 	Init(textureWidth, textureHeight);
 }
 
-NoiseTexture::NoiseTexture(const NoiseTexture& other)
-{
-
-}
-
 NoiseTexture::~NoiseTexture()
 {
 

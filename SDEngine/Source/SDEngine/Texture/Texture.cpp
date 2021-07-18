@@ -7,11 +7,6 @@ Texture::Texture(const string& textureFile):
 	Init(textureFile);
 }
 
-Texture::Texture(const Texture&other)
-{
-
-}
-
 Texture::~Texture()
 {
 	ShutDown();

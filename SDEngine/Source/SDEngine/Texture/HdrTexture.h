@@ -19,7 +19,6 @@ private:
 
 public:
 	HdrTexture(char* TextureFilename);
-	HdrTexture(const HdrTexture& other);
 	~HdrTexture();
 
 public:

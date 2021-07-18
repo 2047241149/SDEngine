@@ -4,23 +4,12 @@ DirectionWave::DirectionWave(int waveWidth, int waveHeight, float waveGridSize,
 	const vector<DirectionSineWaveParam>& vecDirWaveParam,
 	int mUVTile):Wave(waveWidth, waveHeight, waveGridSize,mUVTile),m_vecDirWaveParam(vecDirWaveParam)
 {
-
 }
-
-
-DirectionWave::DirectionWave(const DirectionWave& other):Wave(other)
-{
-
-}
-
 
 DirectionWave::~DirectionWave()
 {
-
 }
 
-
-//����λ��
 void DirectionWave::CalculateVertexPos(float time)
 {
 	Wave::CalculateVertexPos(time);

@@ -23,9 +23,7 @@ public:
 
 public:
 	RenderCubeMap(int nTextureWidth, int nTexureHeight);
-	RenderCubeMap(const RenderCubeMap&other);
 	~RenderCubeMap();
-
 
 public:
 	bool Init(int inTextureWidth, int inTextureHeight);

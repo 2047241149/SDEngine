@@ -50,7 +50,6 @@ private:
 public:
 	ShaderManager();
 	~ShaderManager();
-	ShaderManager(const ShaderManager&);
 
 	bool Init();
 	static shared_ptr<ShaderManager> Get();

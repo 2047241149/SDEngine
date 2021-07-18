@@ -7,7 +7,6 @@ class SceneRender
 {
 public:
 	SceneRender();
-	SceneRender(const SceneRender&);
 	~SceneRender();
 
 public:

@@ -8,12 +8,6 @@ ShaderLibrary::ShaderLibrary()
 
 ShaderLibrary::~ShaderLibrary()
 {
-
-}
-
-ShaderLibrary::ShaderLibrary(const ShaderLibrary& other)
-{
-
 }
 
 shared_ptr<ShaderLibrary> ShaderLibrary::Get()

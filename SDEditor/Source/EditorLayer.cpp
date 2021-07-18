@@ -1,9 +1,10 @@
 #include "EditorLayer.h"
+#include "ImguiUtil.h"
 
 EditorLayer::EditorLayer():
-	Layer("ExmPlayer")
+	Layer("ExmPlayer"),
+	bUseEditorCamera(true)
 {
-
 }
 
 void EditorLayer::OnAttach()
@@ -17,18 +18,25 @@ void EditorLayer::OnAttach()
 	material->SetTexture("BaseTexture", baseDiffuse);
 	material->SetTextureSampler("SampleWrapLinear", TextureSampler::BilinearFliterClamp);
 
-	auto cubeActor = scene->CreateActor();
-	MeshComponent& meshCpt = cubeActor.AddComponent<MeshComponent>("Resource\\sphere.FBX");
+	meshActor = scene->CreateActor();
+	auto& meshCpt = meshActor.AddComponent<MeshComponent>("Resource\\sphere.FBX");
 	meshCpt.SetMaterial(material);
-
 	GDirectxCore->SetBeginSceneColor(XMFLOAT4(1.0f, 1.0f, 0.0f, 1.0f));
+
+	editorCameraActor = scene->CreateActor();
+	auto& editorCameraCpt = editorCameraActor.AddComponent<CameraComponent>();
+	editorCameraCpt.bPrimary = bUseEditorCamera;
+
+	secondCameraActor = scene->CreateActor();
+	auto& secondCameraCpt = secondCameraActor.AddComponent<CameraComponent>();
+	secondCameraCpt.bPrimary = !bUseEditorCamera;
 };
 
 
-void EditorLayer::UpdateCamera(float deltaTime)
+void EditorLayer::UpdateEditorCamera(float deltaTime)
 {
 	PROFILE_FUNC();
-	if (!bViewportFouces && !bViewportHover)
+	if (!bViewportFouces && !bViewportHover && !bUseEditorCamera)
 		return;
 
 	int mouseXOffset, mouseYOffset;
@@ -36,56 +44,60 @@ void EditorLayer::UpdateCamera(float deltaTime)
 	int fps = GFPS->GetFPS();
 	Input::GetMousePositionOffset(mouseXOffset, mouseYOffset);
 
+	//Update Editor Camera Pos
+	auto& cameraCpt = editorCameraActor.GetComponent<CameraComponent>();
+	auto& transformCpt = editorCameraActor.GetComponent<TransformComponent>();
+	CameraObject& camera = cameraCpt.camera;
+
 	if (Input::IsMouseButtuonPressed(EMouse::Right) && fps >= 5 && fps <= 1000000)
 	{
 		if (Input::IsKeyDown(EKey::W))
 		{
-			GCamera->Walk(deltaTime * cameraMoveSpeed);
+			EditorCameraHelper::Walk(camera, deltaTime * cameraMoveSpeed);
 		}
 		else if (Input::IsKeyDown(EKey::S))
 		{
-			GCamera->Walk(-deltaTime * cameraMoveSpeed);
+			EditorCameraHelper::Walk(camera, -deltaTime * cameraMoveSpeed);
 		}
 
 		if (Input::IsKeyDown(EKey::A))
 		{
-			GCamera->Strafe(-deltaTime * cameraMoveSpeed);
+			EditorCameraHelper::Strafe(camera, -deltaTime * cameraMoveSpeed);
 		}
 		else if (Input::IsKeyDown(EKey::D))
 		{
-			GCamera->Strafe(deltaTime*cameraMoveSpeed);
+			EditorCameraHelper::Strafe(camera, deltaTime*cameraMoveSpeed);
 		}
 
 		if (Input::IsKeyDown(EKey::Q))
 		{
-			GCamera->UpDown(-deltaTime * cameraMoveSpeed);
+			EditorCameraHelper::UpDown(camera, -deltaTime * cameraMoveSpeed);
 		}
 		else if (Input::IsKeyDown(EKey::E))
 		{
-			GCamera->UpDown(deltaTime*cameraMoveSpeed);
+			EditorCameraHelper::UpDown(camera, deltaTime * cameraMoveSpeed);
 		}
 
 		if (rotateY <= 90.0f && rotateY >= -90.0f)
 		{
-			rotateY = (float)mouseYOffset*deltaTime;
-			GCamera->Pitch((float)mouseYOffset * deltaTime* cameraRotateSpeed);
+			EditorCameraHelper::Pitch(camera, (float)mouseYOffset * deltaTime* cameraRotateSpeed);
 		}
 
-		GCamera->RotateY((float)-mouseXOffset * deltaTime* cameraRotateSpeed);
+			EditorCameraHelper::RotateY(camera, (float)-mouseXOffset * deltaTime* cameraRotateSpeed);
 		}
 
-		GCamera->UpdateViewMatrix();
+		transformCpt.position = camera.GetPosition();
+		camera.UpdateViewMatrix();
 	}
 
 void EditorLayer::OnDetach()
 {
-
 }
 
 void EditorLayer::OnUpdate(float deltaTime)
 {
 	PROFILE_FUNC();
-	UpdateCamera(deltaTime);
+	UpdateEditorCamera(deltaTime);
 
 	rt->SetRenderTarget(1.0f, 1.0f, 0.0f, 1.0f);
 	GDirectxCore->RecoverDefaultDSS();
@@ -99,6 +111,14 @@ void EditorLayer::OnUpdate(float deltaTime)
 };
 
 void EditorLayer::OnImguiRender() 
+{
+	OnDockSpaceUI();
+	OnMenuUI();
+	OnRenderStatisticsUI();
+	OnGameWindowUI();
+}
+
+void EditorLayer::OnDockSpaceUI()
 {
 	//dock space
 	static bool dockSpaceOpen = true;;
@@ -137,7 +157,7 @@ void EditorLayer::OnImguiRender()
 	// any change of dockspace/settings would lead to windows being stuck in limbo and never being visible.
 	if (!opt_padding)
 		ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0.0f, 0.0f));
-		ImGui::Begin("DockSpace Demo", &dockSpaceOpen, window_flags);
+	ImGui::Begin("DockSpace Demo", &dockSpaceOpen, window_flags);
 
 	if (!opt_padding)
 		ImGui::PopStyleVar();
@@ -152,7 +172,21 @@ void EditorLayer::OnImguiRender()
 		ImGuiID dockspace_id = ImGui::GetID("MyDockSpace");
 		ImGui::DockSpace(dockspace_id, ImVec2(0.0f, 0.0f), dockspace_flags);
 	}
+}
 
+void EditorLayer::OnEvent(Event& event)
+{
+	Log::Info(event);
+}
+
+void EditorLayer::End()
+{
+	Profile::ClearData();
+	GDirectxCore->End();
+}
+
+void EditorLayer::OnMenuUI()
+{
 	if (ImGui::BeginMenuBar())
 	{
 		if (ImGui::BeginMenu("Options"))
@@ -167,7 +201,10 @@ void EditorLayer::OnImguiRender()
 	}
 
 	ImGui::End();
+}
 
+void EditorLayer::OnRenderStatisticsUI()
+{
 	// Profile && render statistics
 	ImGui::Begin("Profile");
 	ImGui::Text("FPS: %d  ", FPS::Get()->GetFPS());
@@ -182,8 +219,24 @@ void EditorLayer::OnImguiRender()
 	ImGui::Text("DrawCall: %d  ", statistics.drawCount);
 	ImGui::Text("TriCount: %d  ", statistics.triCount);
 	ImGui::ColorEdit4("Pick", surfaceColor);
-	ImGui::End();
 
+	//Update Second Camera
+	auto& cameraTransoformCpt = secondCameraActor.GetComponent<TransformComponent>();
+	ImGui::DragXMFloat3("Camera Pos", &cameraTransoformCpt.position);
+	auto& cameraCpt = secondCameraActor.GetComponent<CameraComponent>();
+	cameraCpt.camera.SetPosition(cameraTransoformCpt.position);
+
+	if (ImGui::Checkbox("Use Editor Camera", &bUseEditorCamera))
+	{
+		editorCameraActor.GetComponent<CameraComponent>().bPrimary = bUseEditorCamera;
+		secondCameraActor.GetComponent<CameraComponent>().bPrimary = !bUseEditorCamera;
+	}
+
+	ImGui::End();
+}
+
+void EditorLayer::OnGameWindowUI()
+{
 	ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 0));
 	ImGui::Begin("viewport");
 
@@ -198,18 +251,8 @@ void EditorLayer::OnImguiRender()
 	{
 		rt->Resize((int)viewportSize.x, (int)viewportSize.y);
 	}
+
 	ImGui::Image(rt->GetSRV(), ImVec2((float)rtWidth, (float)rtHeight));
 	ImGui::End();
 	ImGui::PopStyleVar();
-}
-
-void EditorLayer::OnEvent(Event& event)
-{
-	Log::Info(event);
-}
-
-void EditorLayer::End()
-{
-	Profile::ClearData();
-	GDirectxCore->End();
 }

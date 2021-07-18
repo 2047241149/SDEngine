@@ -19,7 +19,6 @@ public:
 
 public:
 	CascadeShadowMap(int nTextureWidth, int nTexureHeight, int nCascadeNum);
-	CascadeShadowMap(const CascadeShadowMap&other);
 	~CascadeShadowMap();
 
 public:

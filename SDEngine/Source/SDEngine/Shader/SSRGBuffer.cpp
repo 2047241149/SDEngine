@@ -13,16 +13,9 @@ SSRGBuffer::SSRGBuffer(int TextureWidth, int TexureHeight, float ScreenDepth, fl
 	Initialize(TextureWidth, TexureHeight, ScreenDepth, ScreenNear);
 }
 
-SSRGBuffer::SSRGBuffer(const SSRGBuffer&other)
-{
-
-}
-
 SSRGBuffer::~SSRGBuffer()
 {
-
 }
-
 
 bool SSRGBuffer::Initialize(int TextureWidth, int TextureHeight, float ScreenDepth, float ScreenNear)
 {

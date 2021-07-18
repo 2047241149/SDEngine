@@ -10,10 +10,6 @@ GameObject::GameObject()
 	Init();
 }
 
-GameObject::GameObject(const GameObject& other)
-{
-}
-
 GameObject::~GameObject()
 {
 	Shutdown();
@@ -60,16 +56,16 @@ void GameObject::Render(RenderMode renderMode)
 			if (renderMode == RenderMode::Simple)
 			{
 				GShaderManager->depthShader->SetMatrix("World", worldMatrix);
-				GShaderManager->depthShader->SetMatrix("View", GCamera->GetViewMatrix());
-				GShaderManager->depthShader->SetMatrix("Proj", GCamera->GetProjectionMatrix());
+				GShaderManager->depthShader->SetMatrix("View", GCamera_deprecated->GetViewMatrix());
+				GShaderManager->depthShader->SetMatrix("Proj", GCamera_deprecated->GetProjectionMatrix());
 				GShaderManager->depthShader->Apply();
 			}
 
 			else if (eMaterialType == MaterialType::PURE_COLOR)
 			{
 				GShaderManager->pureColorShader->SetMatrix("World", worldMatrix);
-				GShaderManager->pureColorShader->SetMatrix("View", GCamera->GetViewMatrix());
-				GShaderManager->pureColorShader->SetMatrix("Proj", GCamera->GetProjectionMatrix());
+				GShaderManager->pureColorShader->SetMatrix("View", GCamera_deprecated->GetViewMatrix());
+				GShaderManager->pureColorShader->SetMatrix("Proj", GCamera_deprecated->GetProjectionMatrix());
 				GShaderManager->pureColorShader->SetMatrix("WorldInvTranspose", FMath::GetInvenseTranspose(worldMatrix));
 				GShaderManager->pureColorShader->SetFloat4("surfaceColor", m_pMesh->pureColor);
 				GShaderManager->pureColorShader->SetFloat("roughness", m_pMesh->roughness);
@@ -82,8 +78,8 @@ void GameObject::Render(RenderMode renderMode)
 				if (albedoSRV == nullptr|| material.diffuseMapFileName =="")
 				{
 					GShaderManager->pureColorShader->SetMatrix("World", worldMatrix);
-					GShaderManager->pureColorShader->SetMatrix("View", GCamera->GetViewMatrix());
-					GShaderManager->pureColorShader->SetMatrix("Proj", GCamera->GetProjectionMatrix());
+					GShaderManager->pureColorShader->SetMatrix("View", GCamera_deprecated->GetViewMatrix());
+					GShaderManager->pureColorShader->SetMatrix("Proj", GCamera_deprecated->GetProjectionMatrix());
 					GShaderManager->pureColorShader->SetMatrix("WorldInvTranspose", FMath::GetInvenseTranspose(worldMatrix));
 					GShaderManager->pureColorShader->SetFloat4("surfaceColor", m_pMesh->pureColor);
 					GShaderManager->pureColorShader->SetFloat("roughness", m_pMesh->roughness);
@@ -94,8 +90,8 @@ void GameObject::Render(RenderMode renderMode)
 				{
 					//ViewMatrix,ProjMatrix,UIOrthoMatrix
 					GShaderManager->diffuseShader->SetMatrix("World", worldMatrix);
-					GShaderManager->diffuseShader->SetMatrix("View", GCamera->GetViewMatrix());
-					GShaderManager->diffuseShader->SetMatrix("Proj", GCamera->GetProjectionMatrix());
+					GShaderManager->diffuseShader->SetMatrix("View", GCamera_deprecated->GetViewMatrix());
+					GShaderManager->diffuseShader->SetMatrix("Proj", GCamera_deprecated->GetProjectionMatrix());
 					GShaderManager->diffuseShader->SetMatrix("WorldInvTranspose", FMath::GetInvenseTranspose(worldMatrix));
 					GShaderManager->diffuseShader->SetTexture("AlbedoTexture", albedoSRV);
 					GShaderManager->diffuseShader->SetTexture("SpecularTexture", GWhiteTextureSrv);
@@ -111,8 +107,8 @@ void GameObject::Render(RenderMode renderMode)
 				if (albedoSRV && bumpSRV&&material.bumpMapFileName != "")
 				{
 					GShaderManager->diffuseNormalShader->SetMatrix("World", worldMatrix);
-					GShaderManager->diffuseNormalShader->SetMatrix("View", GCamera->GetViewMatrix());
-					GShaderManager->diffuseNormalShader->SetMatrix("Proj", GCamera->GetProjectionMatrix());
+					GShaderManager->diffuseNormalShader->SetMatrix("View", GCamera_deprecated->GetViewMatrix());
+					GShaderManager->diffuseNormalShader->SetMatrix("Proj", GCamera_deprecated->GetProjectionMatrix());
 					GShaderManager->diffuseNormalShader->SetMatrix("WorldInvTranspose", FMath::GetInvenseTranspose(worldMatrix));
 					GShaderManager->diffuseNormalShader->SetTexture("AlbedoTexture", albedoSRV);
 					GShaderManager->diffuseNormalShader->SetTexture("NormalTexture", bumpSRV);
@@ -125,8 +121,8 @@ void GameObject::Render(RenderMode renderMode)
 				else
 				{
 					GShaderManager->pureColorShader->SetMatrix("World", worldMatrix);
-					GShaderManager->pureColorShader->SetMatrix("View", GCamera->GetViewMatrix());
-					GShaderManager->pureColorShader->SetMatrix("Proj", GCamera->GetProjectionMatrix());
+					GShaderManager->pureColorShader->SetMatrix("View", GCamera_deprecated->GetViewMatrix());
+					GShaderManager->pureColorShader->SetMatrix("Proj", GCamera_deprecated->GetProjectionMatrix());
 					GShaderManager->pureColorShader->SetMatrix("WorldInvTranspose", FMath::GetInvenseTranspose(worldMatrix));
 					GShaderManager->pureColorShader->SetFloat4("surfaceColor", errorShaderColor);
 					GShaderManager->pureColorShader->SetFloat("roughness", m_pMesh->roughness);
@@ -140,8 +136,8 @@ void GameObject::Render(RenderMode renderMode)
 				if (albedoSRV && specSRV&&material.specularMapFileName != "")
 				{
 					GShaderManager->diffuseSpecShader->SetMatrix("World", worldMatrix);
-					GShaderManager->diffuseSpecShader->SetMatrix("View", GCamera->GetViewMatrix());
-					GShaderManager->diffuseSpecShader->SetMatrix("Proj", GCamera->GetProjectionMatrix());
+					GShaderManager->diffuseSpecShader->SetMatrix("View", GCamera_deprecated->GetViewMatrix());
+					GShaderManager->diffuseSpecShader->SetMatrix("Proj", GCamera_deprecated->GetProjectionMatrix());
 					GShaderManager->diffuseSpecShader->SetMatrix("WorldInvTranspose", FMath::GetInvenseTranspose(worldMatrix));
 					GShaderManager->diffuseSpecShader->SetTexture("AlbedoTexture", albedoSRV);
 					GShaderManager->diffuseSpecShader->SetTexture("SpecularTexture", specSRV);
@@ -153,8 +149,8 @@ void GameObject::Render(RenderMode renderMode)
 				else
 				{
 					GShaderManager->pureColorShader->SetMatrix("World", worldMatrix);
-					GShaderManager->pureColorShader->SetMatrix("View", GCamera->GetViewMatrix());
-					GShaderManager->pureColorShader->SetMatrix("Proj", GCamera->GetProjectionMatrix());
+					GShaderManager->pureColorShader->SetMatrix("View", GCamera_deprecated->GetViewMatrix());
+					GShaderManager->pureColorShader->SetMatrix("Proj", GCamera_deprecated->GetProjectionMatrix());
 					GShaderManager->pureColorShader->SetMatrix("WorldInvTranspose", FMath::GetInvenseTranspose(worldMatrix));
 					GShaderManager->pureColorShader->SetFloat4("surfaceColor", errorShaderColor);
 					GShaderManager->pureColorShader->SetFloat("roughness", m_pMesh->roughness);
@@ -168,8 +164,8 @@ void GameObject::Render(RenderMode renderMode)
 				if (albedoSRV && bumpSRV&&specSRV && material.bumpMapFileName != "" &&  material.specularMapFileName!="")
 				{
 					GShaderManager->diffuseNormalSpecShader->SetMatrix("World", worldMatrix);
-					GShaderManager->diffuseNormalSpecShader->SetMatrix("View", GCamera->GetViewMatrix());
-					GShaderManager->diffuseNormalSpecShader->SetMatrix("Proj", GCamera->GetProjectionMatrix());
+					GShaderManager->diffuseNormalSpecShader->SetMatrix("View", GCamera_deprecated->GetViewMatrix());
+					GShaderManager->diffuseNormalSpecShader->SetMatrix("Proj", GCamera_deprecated->GetProjectionMatrix());
 					GShaderManager->diffuseNormalSpecShader->SetMatrix("WorldInvTranspose", FMath::GetInvenseTranspose(worldMatrix));
 					GShaderManager->diffuseNormalSpecShader->SetTexture("AlbedoTexture", albedoSRV);
 					GShaderManager->diffuseNormalSpecShader->SetTexture("NormalTexture", bumpSRV);
@@ -183,8 +179,8 @@ void GameObject::Render(RenderMode renderMode)
 				else
 				{
 					GShaderManager->pureColorShader->SetMatrix("World", worldMatrix);
-					GShaderManager->pureColorShader->SetMatrix("View", GCamera->GetViewMatrix());
-					GShaderManager->pureColorShader->SetMatrix("Proj", GCamera->GetProjectionMatrix());
+					GShaderManager->pureColorShader->SetMatrix("View", GCamera_deprecated->GetViewMatrix());
+					GShaderManager->pureColorShader->SetMatrix("Proj", GCamera_deprecated->GetProjectionMatrix());
 					GShaderManager->pureColorShader->SetMatrix("WorldInvTranspose", FMath::GetInvenseTranspose(worldMatrix));
 					GShaderManager->pureColorShader->SetFloat4("surfaceColor", errorShaderColor);
 					GShaderManager->pureColorShader->SetFloat("roughness", m_pMesh->roughness);
@@ -196,8 +192,8 @@ void GameObject::Render(RenderMode renderMode)
 			else if(eMaterialType == MaterialType::WIRE_FRAME)
 			{
 				GShaderManager->pureColorShader->SetMatrix("World", worldMatrix);
-				GShaderManager->pureColorShader->SetMatrix("View", GCamera->GetViewMatrix());
-				GShaderManager->pureColorShader->SetMatrix("Proj", GCamera->GetProjectionMatrix());
+				GShaderManager->pureColorShader->SetMatrix("View", GCamera_deprecated->GetViewMatrix());
+				GShaderManager->pureColorShader->SetMatrix("Proj", GCamera_deprecated->GetProjectionMatrix());
 				GShaderManager->pureColorShader->SetMatrix("WorldInvTranspose", FMath::GetInvenseTranspose(worldMatrix));
 				GShaderManager->pureColorShader->SetFloat4("surfaceColor", XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f));
 				GShaderManager->pureColorShader->SetFloat("roughness", m_pMesh->roughness);
@@ -209,8 +205,8 @@ void GameObject::Render(RenderMode renderMode)
 			else if (eMaterialType == MaterialType::DEPTH_BUFFER)
 			{
 				GShaderManager->depthGetShader->SetMatrix("World", worldMatrix);
-				GShaderManager->depthGetShader->SetMatrix("View", GCamera->GetViewMatrix());
-				GShaderManager->depthGetShader->SetMatrix("Proj", GCamera->GetProjectionMatrix());
+				GShaderManager->depthGetShader->SetMatrix("View", GCamera_deprecated->GetViewMatrix());
+				GShaderManager->depthGetShader->SetMatrix("Proj", GCamera_deprecated->GetProjectionMatrix());
 				GShaderManager->depthGetShader->Apply();
 			}
 
@@ -272,8 +268,8 @@ void GameObject::DrawMesh()
 	}
 
 	material->SetMatrix("World", GetWorldMatrix());
-	material->SetMatrix("View", GCamera->GetViewMatrix());
-	material->SetMatrix("Proj", GCamera->GetProjectionMatrix());
+	material->SetMatrix("View", GCamera_deprecated->GetViewMatrix());
+	material->SetMatrix("Proj", GCamera_deprecated->GetProjectionMatrix());
 	material->Apply();
 	RenderMesh();
 }

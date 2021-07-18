@@ -42,7 +42,6 @@ private:
 
 public:
 	GeometryBuffer(int TextureWidth, int TexureHeight, float ScreenDepth, float ScreenNear);
-	GeometryBuffer(const GeometryBuffer&other);
 	~GeometryBuffer();
 	bool Initialize(int TextureWidth, int TexureHeight, float ScreenDepth, float ScreenNear);
 	void ShutDown();

@@ -30,7 +30,6 @@ private:
 
 public:
 	SSRGBuffer(int TextureWidth, int TexureHeight, float ScreenDepth, float ScreenNear);
-	SSRGBuffer(const SSRGBuffer&other);
 	~SSRGBuffer();
 	bool Initialize(int TextureWidth, int TexureHeight, float ScreenDepth, float ScreenNear);
 	void ShutDown();

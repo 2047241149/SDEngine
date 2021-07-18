@@ -7,11 +7,6 @@ TextureManager::TextureManager()
 	Init();
 }
 
-TextureManager::TextureManager(const TextureManager& other)
-{
-
-}
-
 TextureManager::~TextureManager()
 {
 	Release();

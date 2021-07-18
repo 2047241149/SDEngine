@@ -9,11 +9,6 @@ Light::Light():
 
 }
 
-Light::Light(const Light&other)
-{
-
-}
-
 Light::~Light()
 {
 

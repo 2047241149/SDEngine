@@ -16,7 +16,6 @@ private:
 
 public:
 	WindowInfo();
-	WindowInfo(const WindowInfo&);
 	~WindowInfo();
 
 public:

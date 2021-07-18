@@ -25,7 +25,6 @@ public:
 		const vector<GerstnerWaveParam>& vecGerstnerWaveParam,
 		int mUVTile = 20);
 
-	GerstnerWave(const GerstnerWave& other);
 	~GerstnerWave();
 
 	virtual void UpdateWaveData(float time) override;

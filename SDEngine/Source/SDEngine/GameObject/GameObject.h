@@ -27,7 +27,7 @@ public:
 	
 public:
 	GameObject();
-	GameObject(const GameObject&);
+	GameObject(const GameObject&) = default;
 	~GameObject();
 
 public:

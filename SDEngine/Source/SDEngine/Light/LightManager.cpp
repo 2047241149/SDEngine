@@ -6,18 +6,10 @@ LightManager::LightManager()
 	m_vecDirLight.clear();
 }
 
-
-LightManager::LightManager(const LightManager&other)
-{
-
-}
-
-
 LightManager::~LightManager()
 {
 
 }
-
 
 void LightManager::Add(shared_ptr<PointLight> spPointLight)
 {

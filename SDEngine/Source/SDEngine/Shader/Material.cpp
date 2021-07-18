@@ -9,15 +9,10 @@ Material::Material(shared_ptr<VertexPixelShader> shader)
 	InitMaterialFromShader(shader);
 }
 
-Material::Material(const Material& other)
-{
-}
-
 Material::~Material()
 {
 	ShutDown();
 }
-
 
 void Material::ShutDown()
 {

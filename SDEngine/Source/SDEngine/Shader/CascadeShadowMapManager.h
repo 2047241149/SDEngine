@@ -11,7 +11,6 @@ class CascadedShadowsManager
 {
 public:
 	CascadedShadowsManager(int nShadowMapResolution);
-	CascadedShadowsManager(const CascadedShadowsManager& other);
 	~CascadedShadowsManager();
 	
 public:

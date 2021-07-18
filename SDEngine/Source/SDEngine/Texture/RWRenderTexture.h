@@ -16,7 +16,6 @@ class RWRenderTexture
 {
 public:
 	RWRenderTexture(int nTextureWidth = STANDARD_RES_WIDTH, int nTextureHeight = STANDARD_RES_HEIGHT);
-	RWRenderTexture(const RWRenderTexture& other);
 	~RWRenderTexture();
 	void ShutDown();
 	ID3D11ShaderResourceView* GetSRV();

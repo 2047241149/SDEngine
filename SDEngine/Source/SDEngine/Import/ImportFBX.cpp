@@ -9,10 +9,7 @@ ImportFBX::ImportFBX()
 	}
 
 }
-ImportFBX::ImportFBX(const ImportFBX& other)
-{
 
-}
 ImportFBX::~ImportFBX()
 {
 	this->ClearMem();

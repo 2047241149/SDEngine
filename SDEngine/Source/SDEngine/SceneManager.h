@@ -32,7 +32,6 @@ private:
 
 public:
 	SceneManager();
-	SceneManager(const SceneManager&);
 	~SceneManager();
 	static shared_ptr<SceneManager> Get();
 

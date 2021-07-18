@@ -19,7 +19,6 @@ public:
 		const vector<DirectionSineWaveParam>& vecDirWaveParam,
 		 int mUVTile = 20);
 
-	DirectionWave(const DirectionWave& other);
 	~DirectionWave();
 
 	virtual void UpdateWaveData(float time) override;

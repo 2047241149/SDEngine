@@ -9,12 +9,6 @@ Quad::Quad()
 	Initialize();
 }
 
-
-Quad::Quad(const Quad& other)
-{
-
-}
-
 Quad::~Quad()
 {
 	Shutdown();

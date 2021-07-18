@@ -1,6 +1,7 @@
 ﻿#include "DirectxCore.h"
 #include "SDEngine/GameWindow.h"
 #include "Event/Event.h"
+#include "GameObject/CameraObject.h"
 
 DirectxCore::DirectxCore() :
 	md3dDevice(nullptr),
@@ -19,16 +20,15 @@ DirectxCore::DirectxCore() :
 	renderSkyBoxDSS(nullptr),
 	sceneInitColor(XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f))
 {
-	
+	viewParams = make_shared<ViewParams>();
+	viewParams->cameraWorldPos = XMFLOAT3(0.0f, 0.0f, 0.0f);
+	viewParams->farPlane = 0.0f;
+	viewParams->nearPlane = 0.0f;
+	viewParams->viewMatrix = XMMatrixIdentity();
+	viewParams->projMatrix = XMMatrixIdentity();
 }
 
 DirectxCore::~DirectxCore()
-{
-	ShutDown();
-}
-
-
-DirectxCore::DirectxCore(const DirectxCore& other)
 {
 	ShutDown();
 }
@@ -39,6 +39,7 @@ shared_ptr<DirectxCore> DirectxCore::Get()
 	{
 		m_pDirectxCore = shared_ptr<DirectxCore>(new DirectxCore());
 	}
+
 	return m_pDirectxCore;
 }
 
@@ -389,6 +390,21 @@ void DirectxCore::BeginScene(float red, float green, float blue, float alpha)
 void DirectxCore::BeginSceneRender()
 {
 	BeginScene(sceneInitColor.x, sceneInitColor.y, sceneInitColor.z, sceneInitColor.w);
+}
+
+void DirectxCore::UpdateRenderParams(CameraObject* camera)
+{
+	if (nullptr == camera)
+	{
+		Log::Error("BeginSceneRender camera is nullptr, please check");
+		return;
+	}
+
+	viewParams->cameraWorldPos = camera->GetPosition();
+	viewParams->farPlane = camera->farPlane;
+	viewParams->nearPlane = camera->nearPlane;
+	viewParams->viewMatrix = camera->GetViewMatrix();
+	viewParams->projMatrix = camera->GetProjectionMatrix();
 }
 
 void DirectxCore::EndScene()

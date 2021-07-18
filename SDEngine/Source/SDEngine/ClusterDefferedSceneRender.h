@@ -69,7 +69,6 @@ private:
 	
 public:
 	ClusterDefferedSceneRender();
-	ClusterDefferedSceneRender(const ClusterDefferedSceneRender&);
 	~ClusterDefferedSceneRender();
 
 private:

@@ -12,12 +12,6 @@ PointLight::PointLight() :Light(),
 	CalculateRadius();
 }
 
-PointLight::PointLight(const PointLight& other) :
-	Light(other)
-{
-
-}
-
 PointLight::~PointLight()
 {
 

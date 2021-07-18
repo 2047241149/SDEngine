@@ -24,8 +24,8 @@ Game::Game()
 	GGameWindow->SetVSync(true);
 	GDirectxCore->Init(GIsVSync, GIsFullScrren);
 
-	GCamera->SetProjParams(XM_PI / 3.0f, (float)GWindowWidth / (float)GWindowHeight);
-	GCamera->SetUIOrthoParams((float)GWindowWidth, (float)GWindowHeight);
+	GCamera_deprecated->SetProjParams(XM_PI / 3.0f, (float)GWindowWidth / (float)GWindowHeight);
+	GCamera_deprecated->SetUIOrthoParams((float)GWindowWidth, (float)GWindowHeight);
 	imguiLayer->OnAttach();
 }
 

@@ -102,22 +102,16 @@ protected:
 	//计算法线
 	void CalculateVertexNormal();
 		
-
 public:
-	
-	virtual void UpdateWaveData(float time);
-	void Render();
 
 	Wave(int waveWidth, int waveHeight,float waveGridSize,int mUVTile = 20);
-
 	Wave(int waveWidth, int waveHeight, float waveGridSize);
-
-	Wave(const Wave& other);
 	~Wave();
 
+public:
+	virtual void UpdateWaveData(float time);
+	void Render();
 	void SetWaveParam(int uvTile);
-
 	XMMATRIX GetWorldMatrix();
-
 };
 #endif // ! _WAVE_H

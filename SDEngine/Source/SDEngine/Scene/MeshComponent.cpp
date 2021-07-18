@@ -14,11 +14,6 @@ MeshComponent::MeshComponent(string strFbxFileName) :
 	InitBuffer();
 }
 
-MeshComponent::MeshComponent(const MeshComponent& other)
-{
-
-}
-
 MeshComponent::~MeshComponent()
 {
 

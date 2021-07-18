@@ -5,19 +5,11 @@ CircleWave::CircleWave(int waveWidth, int waveHeight, float waveGridSize,
 	 int uvTile):Wave(waveWidth, waveHeight, waveGridSize, uvTile),
 	m_vecCircleWaveParam(vecCircleWaveParam)
 {
-
-}
-
-CircleWave::CircleWave(const CircleWave& other) :Wave(other)
-{
-
 }
 
 CircleWave::~CircleWave()
 {
-
 }
-
 
 void CircleWave::CalculateVertexPos(float time)
 {

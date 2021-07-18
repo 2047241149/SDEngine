@@ -11,7 +11,6 @@ class TextureManager
 {
 public:
 	TextureManager();
-	TextureManager(const TextureManager& other);
 	~TextureManager();
 
 public:

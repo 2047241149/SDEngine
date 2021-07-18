@@ -62,7 +62,6 @@ public:
 	static shared_ptr<ImportFBX> m_pImportFBX;
 public:
 	ImportFBX();
-	ImportFBX(const ImportFBX& other);
 	~ImportFBX();
 
 public:

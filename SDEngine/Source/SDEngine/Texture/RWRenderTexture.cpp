@@ -7,12 +7,6 @@ RWRenderTexture::RWRenderTexture(int nTextureWidth, int nTextureHeight):
 	Init(nTextureWidth, nTextureHeight);
 }
 
-RWRenderTexture::RWRenderTexture(const RWRenderTexture& other)
-{
-
-}
-
-
 RWRenderTexture::~RWRenderTexture()
 {
 	ShutDown();

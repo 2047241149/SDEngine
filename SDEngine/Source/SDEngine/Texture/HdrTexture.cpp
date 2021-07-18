@@ -7,11 +7,6 @@ HdrTexture::HdrTexture(char* TextureFilename):
 	Init(TextureFilename);
 }
 
-HdrTexture::HdrTexture(const HdrTexture&other)
-{
-
-}
-
 HdrTexture::~HdrTexture()
 {
 	ShutDown();

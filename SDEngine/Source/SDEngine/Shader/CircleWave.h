@@ -17,7 +17,6 @@ protected:
 public:
 	CircleWave(int waveWidth, int waveHeight, float waveGridSize,
 		const vector<CircleSineWaveParam>& vecCircleWaveParam,int mUVTile = 20);
-	CircleWave(const CircleWave& other);
 	~CircleWave();
 
 	virtual void UpdateWaveData(float time) override;

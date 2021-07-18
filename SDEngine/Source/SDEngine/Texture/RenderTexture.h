@@ -23,7 +23,6 @@ public:
 
 public:
 	RenderTexture(int nTextureWidth, int nTexureHeight, TextureFormat eTextureFormat = TextureFormat::R32G32B32A32);
-	RenderTexture(const RenderTexture&other);
 	~RenderTexture();
 
 public:

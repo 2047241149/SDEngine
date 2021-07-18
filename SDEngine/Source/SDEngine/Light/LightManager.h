@@ -10,7 +10,6 @@ class LightManager
 
 public:
 	LightManager();
-	LightManager(const LightManager&other);
 	~LightManager();
 
 	static shared_ptr<LightManager> Get();

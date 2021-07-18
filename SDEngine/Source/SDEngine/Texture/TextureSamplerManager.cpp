@@ -1,16 +1,9 @@
 #include "TextureSamplerManager.h"
 
-
 TextureSamplerManager::TextureSamplerManager()
 {
 	Init();
 }
-
-TextureSamplerManager::TextureSamplerManager(const TextureSamplerManager& other)
-{
-
-}
-
 
 TextureSamplerManager::~TextureSamplerManager()
 {
@@ -48,18 +41,15 @@ bool TextureSamplerManager::Init()
 	HR(g_pDevice->CreateSamplerState(&samplerDesc, &samplerState));
 	mapTextureSampler.insert(pair<TextureSampler, ID3D11SamplerState*>(PointClamp, samplerState));
 
-
 	//(2)BilinearFliterClamp
 	samplerDesc.Filter = D3D11_FILTER_MIN_MAG_LINEAR_MIP_POINT;
 	HR(g_pDevice->CreateSamplerState(&samplerDesc, &samplerState));
 	mapTextureSampler.insert(pair<TextureSampler, ID3D11SamplerState*>(BilinearFliterClamp, samplerState));
 
-
 	//(3)TrilinearFliterClamp
 	samplerDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
 	HR(g_pDevice->CreateSamplerState(&samplerDesc, &samplerState));
 	mapTextureSampler.insert(pair<TextureSampler, ID3D11SamplerState*>(TrilinearFliterClamp, samplerState));
-
 
 	//(4)PointWrap
 	samplerDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_POINT;
@@ -78,7 +68,6 @@ bool TextureSamplerManager::Init()
 	samplerDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
 	HR(g_pDevice->CreateSamplerState(&samplerDesc, &samplerState));
 	mapTextureSampler.insert(pair<TextureSampler, ID3D11SamplerState*>(TrilinearFliterWrap, samplerState));
-
 
 	//(7)
 	samplerDesc.Filter = D3D11_FILTER_ANISOTROPIC;
@@ -100,7 +89,6 @@ bool TextureSamplerManager::Init()
 	return true;
 }
 
-
 void TextureSamplerManager::Release()
 {
 	for (auto iterator = mapTextureSampler.begin(); iterator != mapTextureSampler.end(); ++iterator)
@@ -111,7 +99,6 @@ void TextureSamplerManager::Release()
 		}
 	}
 }
-
 
 ID3D11SamplerState* TextureSamplerManager::GetTextureSampler(TextureSampler textureSampler)
 {

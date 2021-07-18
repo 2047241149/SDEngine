@@ -80,7 +80,6 @@ class Shader
 
 public:
 	Shader();
-	Shader(const Shader& other);
 	virtual ~Shader();
 
 protected:

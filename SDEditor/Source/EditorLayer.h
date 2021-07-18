@@ -14,13 +14,23 @@ private:
 	float surfaceColor[4] = { 1.0f, 1.0f, 1.0f, 1.0f };
 	shared_ptr<RenderTexture> rt;
 	shared_ptr<Scene> scene;
-	entt::entity actor;
+	Actor meshActor;
+	Actor meshActor1;
+	Actor editorCameraActor;
+	Actor secondCameraActor;
+	bool bUseEditorCamera;
 
 public:
 	EditorLayer();
 
 private:
-	void UpdateCamera(float deltaTime);
+	void OnMenuUI();
+	void OnDockSpaceUI();
+	void OnRenderStatisticsUI();
+	void OnGameWindowUI();
+
+private:
+	void UpdateEditorCamera(float deltaTime);
 	bool bViewportFouces = true;
 	bool bViewportHover = true;
 

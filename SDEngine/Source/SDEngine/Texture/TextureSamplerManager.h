@@ -19,7 +19,6 @@ class TextureSamplerManager
 {
 public:
 	TextureSamplerManager();
-	TextureSamplerManager(const TextureSamplerManager& other);
 	~TextureSamplerManager();
 
 public:

@@ -11,11 +11,6 @@ RenderTexture::RenderTexture(int nTextureWidth, int nTexureHeight, TextureFormat
 	Init(nTextureWidth, nTexureHeight);
 }
 
-RenderTexture::RenderTexture(const RenderTexture&other)
-{
-
-}
-
 RenderTexture::~RenderTexture()
 {
 	ShutDown();

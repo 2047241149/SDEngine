@@ -11,11 +11,6 @@ SDEngine::SDEngine()
 	Init();
 }
 
-SDEngine::SDEngine(const SDEngine& sys)
-{
-
-}
-
 SDEngine::~SDEngine()
 {
 	ShutDown();

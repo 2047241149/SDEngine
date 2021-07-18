@@ -5,6 +5,8 @@
 class Actor
 {
 public:
+	Actor() = default;
+	Actor(Actor& other) = default;
 	Actor(entt::entity inHandle, Scene* inScene);
 
 	template<typename T>
@@ -36,6 +38,10 @@ public:
 		return handle != entt::null;
 	}
 
+	bool IsValid()
+	{
+		return scene == nullptr || scene->GetResgtry().valid(handle);
+	}
 
 
 private:

@@ -7,21 +7,14 @@ GerstnerWave::GerstnerWave(int waveWidth, int waveHeight, float waveGridSize,
 {
 }
 
-GerstnerWave::GerstnerWave(const GerstnerWave& other) :Wave(other)
-{
-}
-
 GerstnerWave::~GerstnerWave()
 {
-
 }
 
-//����λ��
 void GerstnerWave::CalculateVertexPos(float time)
 {
 	UINT index = 0;
 
-	//�����ң����µ���
 	for (int posZ = -mWaveHeight / 2; posZ <= mWaveHeight / 2; ++posZ)
 	{
 		for (int posX = -mWaveWidth / 2; posX <= mWaveWidth / 2; ++posX)

@@ -35,7 +35,7 @@ public:
 
 public:
 	Camera();
-	Camera(const Camera& other);
+	Camera(const Camera& other) = default;
 	~Camera();
 
 	static shared_ptr<Camera> Get();
@@ -82,4 +82,4 @@ public:
 };
 #endif 
 
-#define	GCamera (Camera::Get())
+#define	GCamera_deprecated (Camera::Get())

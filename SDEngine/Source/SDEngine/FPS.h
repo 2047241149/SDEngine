@@ -24,7 +24,6 @@ private:
 
 public:
 	FPS();
-	FPS(const FPS&);
 	~FPS();
 
 	static shared_ptr<FPS> Get();

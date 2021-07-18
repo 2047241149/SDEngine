@@ -12,11 +12,6 @@ const int SHADER_MATRIX_SIZE = SHADER_FLOAT_SIZE * 16;
 
 Shader::Shader()
 {
-
-}
-
-Shader::Shader(const Shader& other)
-{
 }
 
 Shader::~Shader()
@@ -26,7 +21,6 @@ Shader::~Shader()
 
 void Shader::ShutDown()
 {
-
 }
 
 bool Shader::ReflectShaderConstantBuffer(ID3D11ShaderReflection* reflection)

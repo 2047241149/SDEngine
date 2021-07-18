@@ -13,7 +13,6 @@ class PrefliterCubeMap
 {
 public:
 	PrefliterCubeMap(const string& file, int textureWidth = 64, int textureHeight = 64);
-	PrefliterCubeMap(const PrefliterCubeMap& other);
 	~PrefliterCubeMap();
 
 public:

@@ -8,12 +8,6 @@ ShaderManager::ShaderManager()
 
 ShaderManager::~ShaderManager()
 {
-
-}
-
-ShaderManager::ShaderManager(const ShaderManager& other)
-{
-
 }
 
 bool ShaderManager::Init()

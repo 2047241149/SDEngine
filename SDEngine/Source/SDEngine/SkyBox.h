@@ -12,7 +12,6 @@ class SkyBox
 public:
 	SkyBox(const string& file);
 	SkyBox(ID3D11ShaderResourceView* inSrv);
-	SkyBox(const SkyBox& other);
 	~SkyBox();
 
 public:

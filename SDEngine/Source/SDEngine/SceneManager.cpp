@@ -15,12 +15,6 @@ SceneManager::SceneManager()
 
 SceneManager::~SceneManager()
 {
-
-}
-
-SceneManager::SceneManager(const SceneManager&other)
-{
-
 }
 
 shared_ptr<SceneManager> SceneManager::Get()
@@ -39,8 +33,8 @@ bool SceneManager::Init()
 	GTextureManager->Init();
 
 	//Camera
-	GCamera->SetProjParams(XM_PI / 3.0f, (float)GScreenWidth / (float)GScreenHeight, SCREEN_NEAR, SCREEN_FAR);
-	GCamera->SetUIOrthoParams((float)GScreenWidth, (float)GScreenHeight);
+	GCamera_deprecated->SetProjParams(XM_PI / 3.0f, (float)GScreenWidth / (float)GScreenHeight, SCREEN_NEAR, SCREEN_FAR);
+	GCamera_deprecated->SetUIOrthoParams((float)GScreenWidth, (float)GScreenHeight);
 	
 	//DirectionLight
 	shared_ptr<DirectionLight> spDirLight = shared_ptr<DirectionLight>(new DirectionLight());
@@ -170,41 +164,41 @@ void SceneManager::Tick(float deltaTime)
 	{
 		if (Input::IsKeyDown(EKey::W))
 		{
-			GCamera->Walk(deltaTime*CAMERA_SPEED);
+			GCamera_deprecated->Walk(deltaTime*CAMERA_SPEED);
 		}
 		else if (Input::IsKeyDown(EKey::S))
 		{
-			GCamera->Walk(-deltaTime * CAMERA_SPEED);
+			GCamera_deprecated->Walk(-deltaTime * CAMERA_SPEED);
 		}
 
 		if (Input::IsKeyDown(EKey::A))
 		{
-			GCamera->Strafe(-deltaTime * CAMERA_SPEED);
+			GCamera_deprecated->Strafe(-deltaTime * CAMERA_SPEED);
 		}
 		else if (Input::IsKeyDown(EKey::D))
 		{
-			GCamera->Strafe(deltaTime*CAMERA_SPEED);
+			GCamera_deprecated->Strafe(deltaTime*CAMERA_SPEED);
 		}
 
 		if (Input::IsKeyDown(EKey::Q))
 		{
-			GCamera->UpDown(-deltaTime * CAMERA_SPEED);
+			GCamera_deprecated->UpDown(-deltaTime * CAMERA_SPEED);
 		}
 		else if (Input::IsKeyDown(EKey::E))
 		{
-			GCamera->UpDown(deltaTime*CAMERA_SPEED);
+			GCamera_deprecated->UpDown(deltaTime*CAMERA_SPEED);
 		}
 
 		if (rotateY <= 90.0f && rotateY >= -90.0f)
 		{
 			rotateY += (float)mouseYOffset*deltaTime;
-			GCamera->Pitch((float)mouseYOffset*deltaTime*2.0f);
+			GCamera_deprecated->Pitch((float)mouseYOffset*deltaTime*2.0f);
 		}
 
-		GCamera->RotateY((float)mouseXOffset*deltaTime*2.0f);
+		GCamera_deprecated->RotateY((float)mouseXOffset*deltaTime*2.0f);
 	}
 
-	GCamera->UpdateViewMatrix();
+	GCamera_deprecated->UpdateViewMatrix();
 
 	//TODO:refactor to imgui control
 	if (Input::IsKeyDown(EKey::KEY_1))

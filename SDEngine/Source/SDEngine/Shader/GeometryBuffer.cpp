@@ -18,17 +18,9 @@ GeometryBuffer::GeometryBuffer(int TextureWidth, int TexureHeight, float ScreenD
 	Initialize(TextureWidth, TexureHeight, ScreenDepth, ScreenNear);
 }
 
-
-GeometryBuffer::GeometryBuffer(const GeometryBuffer&other)
-{
-
-}
-
 GeometryBuffer::~GeometryBuffer()
 {
-
 }
-
 
 bool GeometryBuffer::Initialize(int TextureWidth, int TextureHeight, float ScreenDepth, float ScreenNear)
 {
@@ -231,7 +223,6 @@ void GeometryBuffer::ClearRenderTarget(XMFLOAT3 backColor)
 	ClearDepthBuffer();
 	ClearGBuffer(backColor);
 }
-
 
 ID3D11ShaderResourceView* GeometryBuffer::GetGBufferSRV(GBufferType gBufferType)
 {

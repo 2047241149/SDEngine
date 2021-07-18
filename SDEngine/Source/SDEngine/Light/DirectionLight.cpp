@@ -30,7 +30,7 @@ XMFLOAT3 DirectionLight::GetLightDirection()
 
 XMMATRIX DirectionLight::GetViewMatrix()
 {
-	float fFarPlane = GCamera->farPlane;
+	float fFarPlane = GCamera_deprecated->farPlane;
 	XMFLOAT3 eyePos = m_LightPosition;
 	XMVECTOR eyePosVec = XMVectorSet(eyePos.x, eyePos.y, eyePos.z, 1.0f);
 	XMVECTOR normalizeLightDir = XMVector3Normalize(XMLoadFloat3(&m_DirLightDiretion));

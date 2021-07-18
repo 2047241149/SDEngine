@@ -11,16 +11,16 @@ class SSAOManager
 {
 public:
 	SSAOManager(int screenWidth, int screenHeight);
-	SSAOManager(const SSAOManager& other);
 	~SSAOManager();
+
 public:
 	void Init(int screenWidth, int screenHeight);
 	void ShutDown();
 	void Render(class GeometryBuffer* geometryBuffer);
 	ID3D11ShaderResourceView* GetSsaoSRV();
+
 private:
 	vector<XMFLOAT3> vecSSAOSample;
-	//XMFLOAT3 ssaoSampleArray[SSAO_VEC_SCALE_NUM];
 	shared_ptr<RenderTexture> ssaoRT;
 	shared_ptr<RenderTexture> ssaoDownSampleRT;
 	shared_ptr<RenderTexture> ssaoDownSampleBlurRT;

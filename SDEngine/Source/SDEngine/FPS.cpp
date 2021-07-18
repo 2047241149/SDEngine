@@ -6,16 +6,8 @@ FPS::FPS()
 	Initialize();
 }
 
-
-FPS::FPS(const FPS&other)
-{
-
-}
-
-
 FPS::~FPS()
 {
-
 }
 
 void FPS::Initialize()

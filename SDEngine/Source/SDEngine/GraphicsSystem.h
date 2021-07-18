@@ -30,7 +30,6 @@ private:
 
 public:
 	GraphicsSystem();
-	GraphicsSystem(const GraphicsSystem&);
 	~GraphicsSystem();
 
 public:

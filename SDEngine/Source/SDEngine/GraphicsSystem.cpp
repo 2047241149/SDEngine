@@ -16,11 +16,6 @@ GraphicsSystem::~GraphicsSystem()
 	CloseDebugConsole();
 }
 
-GraphicsSystem::GraphicsSystem(const GraphicsSystem&other)
-{
-
-}
-
 bool GraphicsSystem::Init()
 {
 	//Init D3d11 Core Object

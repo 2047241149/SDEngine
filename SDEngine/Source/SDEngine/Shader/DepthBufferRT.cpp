@@ -9,17 +9,10 @@ DepthBufferRT::DepthBufferRT(int TextureWidth, int TextureHeight)
 	Initialize(TextureWidth, TextureHeight);
 }
 
-
-DepthBufferRT::DepthBufferRT(const DepthBufferRT&other)
-{
-
-}
-
 DepthBufferRT::~DepthBufferRT()
 {
 	ShutDown();
 }
-
 
 bool DepthBufferRT::Initialize(int TextureWidth, int TextureHeight)
 {

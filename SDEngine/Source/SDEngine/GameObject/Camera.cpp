@@ -8,11 +8,6 @@ Camera::Camera()
     look= XMFLOAT3(0.0f, 0.0f, -1.0f);
 }
 
-Camera::Camera(const Camera&other)
-{
-
-}
-
 Camera::~Camera()
 {
 
@@ -118,14 +113,9 @@ void Camera::Strafe(float d)
 
 void Camera::UpDown(float d)
 {
-
-	//mPosition+=d*up
-	//XMVectorReplicate���ص���XMVECTOR(d,d,d,d)
 	XMVECTOR s = XMVectorReplicate(d);
 	XMVECTOR up = XMVectorSet(0.0f, 1.0f, 0.0f,0.0f);
 	XMVECTOR p = XMLoadFloat3(&position);
-
-	//XMVectorMultiplyAdd(v1,v2,v3)=v1*v2+v3
 	XMStoreFloat3(&position, XMVectorMultiplyAdd(s, up, p));
 }
 
