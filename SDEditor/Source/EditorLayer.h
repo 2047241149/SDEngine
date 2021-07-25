@@ -2,6 +2,8 @@
 
 #include "Engine.h"
 #include "imgui/imgui.h"
+#include "LevelEditor/SceneHierarchyPanel.h"
+#include "SDEngine/GameObject/EditorCamera.h"
 
 class EditorLayer : public Layer
 {
@@ -16,12 +18,16 @@ private:
 	shared_ptr<Scene> scene;
 	Actor meshActor;
 	Actor meshActor1;
-	Actor editorCameraActor;
 	Actor secondCameraActor;
-	bool bUseEditorCamera;
+	EditorCamera editorCamera;
+	bool bUseEditorMode;
+
+private:
+	SceneHierarchyPanel scenePanel;
 
 public:
 	EditorLayer();
+
 
 private:
 	void OnMenuUI();
@@ -30,7 +36,6 @@ private:
 	void OnGameWindowUI();
 
 private:
-	void UpdateEditorCamera(float deltaTime);
 	bool bViewportFouces = true;
 	bool bViewportHover = true;
 

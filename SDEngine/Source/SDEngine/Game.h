@@ -1,6 +1,7 @@
 ﻿#pragma once
 
 #include "CoreMinimal.h"
+#include "Log.h"
 class Event;
 class GameWindow;
 class Layer;

@@ -5,7 +5,7 @@
 class Actor
 {
 public:
-	Actor() = default;
+	Actor();
 	Actor(Actor& other) = default;
 	Actor(entt::entity inHandle, Scene* inScene);
 
@@ -40,9 +40,20 @@ public:
 
 	bool IsValid()
 	{
-		return scene == nullptr || scene->GetResgtry().valid(handle);
+		return scene != nullptr && scene->GetResgtry().valid(handle);
 	}
 
+	bool operator == (const Actor& other) const
+	{
+		return handle == other.handle && scene == other.scene;
+	}
+
+	bool operator != (const Actor& other) const
+	{
+		return !(*this == other);
+	}
+
+	entt::entity GetEntity() { return handle; }
 
 private:
 	entt::entity handle = entt::null;

@@ -16,7 +16,7 @@ public:
 	virtual void BeginPlay() {};
 	virtual void End() {};
 	virtual void Tick(float detalTime) {};
-	void SetActor(Actor actor) { this->actor = actor; };
+	void SetActor(Actor inActor) { this->actor = inActor; };
 
 protected:
 	Actor actor;

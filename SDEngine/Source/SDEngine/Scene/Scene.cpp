@@ -16,7 +16,13 @@ Scene::~Scene()
 {
 }
 
-void Scene::OnTick(float deltaTime)
+void Scene::OnTickEditor(float deltaTime, CameraObject* camera)
+{
+	mainCamera = camera;
+	OnRender();
+}
+
+void Scene::OnTickRuntime(float deltaTime)
 {
 	OnUpdateScript(deltaTime);
 	OnUpdateCamera();
@@ -49,6 +55,7 @@ void Scene::OnUpdateScript(float deltaTime)
 void Scene::OnUpdateCamera()
 {
 	auto group = coreRegistry.view<TransformComponent, CameraComponent>();
+
 	for (auto entity : group)
 	{
 		auto& [transform, camera] = group.get<TransformComponent, CameraComponent>(entity);

@@ -4,7 +4,7 @@
 
 EditorLayer::EditorLayer():
 	Layer("ExmPlayer"),
-	bUseEditorCamera(true)
+	bUseEditorMode(true)
 {
 }
 
@@ -19,34 +19,18 @@ void EditorLayer::OnAttach()
 	material->SetTexture("BaseTexture", baseDiffuse);
 	material->SetTextureSampler("SampleWrapLinear", TextureSampler::BilinearFliterClamp);
 
-	meshActor = scene->CreateActor();
+	meshActor = scene->CreateActor("meshActor");
 	auto& meshCpt = meshActor.AddComponent<MeshComponent>("Resource\\sphere.FBX");
 	meshActor.AddComponent<ScriptComponent>("TestScript").Bind<TestScript>();
 	meshCpt.SetMaterial(material);
 
-	editorCameraActor = scene->CreateActor();
-	auto& editorCameraCpt = editorCameraActor.AddComponent<CameraComponent>();
-	editorCameraActor.AddComponent<ScriptComponent>("EditorCameraLogic").Bind<EditorCameraLogic>();
-	editorCameraCpt.bPrimary = bUseEditorCamera;
-
-	secondCameraActor = scene->CreateActor();
+	secondCameraActor = scene->CreateActor("secondCamera");
 	auto& secondCameraCpt = secondCameraActor.AddComponent<CameraComponent>();
-	secondCameraCpt.bPrimary = !bUseEditorCamera;
-
+	secondCameraCpt.bPrimary = !bUseEditorMode;
+	
+	scenePanel.SetScene(scene);
 	GDirectxCore->SetBeginSceneColor(XMFLOAT4(1.0f, 1.0f, 0.0f, 1.0f));
 };
-
-
-void EditorLayer::UpdateEditorCamera(float deltaTime)
-{
-	PROFILE_FUNC();
-	auto& editorCameraScript = editorCameraActor.GetComponent<ScriptComponent>();
-	editorCameraScript.bCanTick = bViewportFouces && bViewportHover && bUseEditorCamera;
-	Log::Info("bViewportFouces {0}", bViewportFouces);
-	Log::Info("bViewportHover {0}", bViewportHover);
-	Log::Info("bUseEditorCamera {0}", bUseEditorCamera);
-	Log::Info("editorCameraScript.bCanTick {0}", editorCameraScript.bCanTick);
-}
 
 void EditorLayer::OnDetach()
 {
@@ -55,16 +39,27 @@ void EditorLayer::OnDetach()
 void EditorLayer::OnTick(float deltaTime)
 {
 	PROFILE_FUNC();
-	UpdateEditorCamera(deltaTime);
+
+	if (bViewportFouces && bViewportHover && bUseEditorMode)
+	{
+		editorCamera.Tick(deltaTime);
+	}
 
 	rt->SetRenderTarget(1.0f, 1.0f, 0.0f, 1.0f);
 	GDirectxCore->RecoverDefaultDSS();
 	GDirectxCore->RecoverDefualtRS();
-	material->SetFloat4("surfaceColor", XMFLOAT4(surfaceColor[0], surfaceColor[1], surfaceColor[2], surfaceColor[3]));
 
 	{
 		PROFILE_SCOPE("draw");
-		scene->OnTick(deltaTime);
+		if (bUseEditorMode)
+		{
+			scene->OnTickEditor(deltaTime, &editorCamera);
+		}
+		else
+		{
+			scene->OnTickRuntime(deltaTime);
+		}
+
 	}
 };
 
@@ -74,6 +69,7 @@ void EditorLayer::OnImguiRender()
 	OnMenuUI();
 	OnRenderStatisticsUI();
 	OnGameWindowUI();
+	scenePanel.OnImguiRender();
 }
 
 void EditorLayer::OnDockSpaceUI()
@@ -176,18 +172,10 @@ void EditorLayer::OnRenderStatisticsUI()
 	const RenderStatistics& statistics = GDirectxCore->GetStatistics();
 	ImGui::Text("DrawCall: %d  ", statistics.drawCount);
 	ImGui::Text("TriCount: %d  ", statistics.triCount);
-	ImGui::ColorEdit4("Pick", surfaceColor);
 
-	//Update Second Camera
-	auto& cameraTransoformCpt = secondCameraActor.GetComponent<TransformComponent>();
-	ImGui::DragXMFloat3("Camera Pos", &cameraTransoformCpt.position);
-	auto& cameraCpt = secondCameraActor.GetComponent<CameraComponent>();
-	cameraCpt.camera.SetPosition(cameraTransoformCpt.position);
-
-	if (ImGui::Checkbox("Use Editor Camera", &bUseEditorCamera))
+	if (ImGui::Checkbox("IsEditorMode", &bUseEditorMode))
 	{
-		editorCameraActor.GetComponent<CameraComponent>().bPrimary = bUseEditorCamera;
-		secondCameraActor.GetComponent<CameraComponent>().bPrimary = !bUseEditorCamera;
+		secondCameraActor.GetComponent<CameraComponent>().bPrimary = !bUseEditorMode;
 	}
 
 	ImGui::End();

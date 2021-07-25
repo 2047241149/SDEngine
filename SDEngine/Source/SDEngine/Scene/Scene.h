@@ -12,7 +12,8 @@ public:
 	Scene();
 	~Scene();
 
-	void OnTick(float deltaTime);
+	void OnTickEditor(float deltaTime, CameraObject* camera);
+	void OnTickRuntime(float deltaTime);
 	entt::registry& GetResgtry();
 	Actor CreateActor(const string& actorName = "");
 
@@ -24,4 +25,5 @@ private:
 
 private:
 	entt::registry coreRegistry;
+	friend class SceneHierarchyPanel;
 };

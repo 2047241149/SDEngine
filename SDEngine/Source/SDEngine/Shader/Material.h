@@ -26,7 +26,7 @@ struct MaterialVariable
 //TODO: Material System is bad performance now, need to refactor
 class Material
 {
-private:
+public:
 	//TODO: support StructBuffer And RWStructBuffer
 	shared_ptr<VertexPixelShader> shader;
 	map<string, shared_ptr<MaterialVariable>> materialValues;
