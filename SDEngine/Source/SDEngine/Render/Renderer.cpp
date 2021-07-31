@@ -3,7 +3,7 @@
 #include "Scene/TransformComponent.h"
 #include "Shader/Material.h"
 #include "GameObject/Camera.h"
-
+#include "Log.h"
 
 void RendererContext::DrawMesh(MeshComponent* mesh, TransformComponent* transform)
 {
@@ -11,6 +11,7 @@ void RendererContext::DrawMesh(MeshComponent* mesh, TransformComponent* transfor
 	if (!material)
 	{
 		Log::Warn("material is nullptr");
+		return;
 	}
 
 	material->SetMatrix("World", transform->GetWorldMatrix());
@@ -19,8 +20,13 @@ void RendererContext::DrawMesh(MeshComponent* mesh, TransformComponent* transfor
 	material->Apply();
 
 	g_pDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-	vector<ModelData>& mModelList = mesh->m_pFBXModel->mModelList;
+	if (!mesh->m_pFBXModel)
+	{
+		Log::Error("FBXModel is NULL");
+		return;
+	}
 
+	vector<ModelData>& mModelList = mesh->m_pFBXModel->mModelList;
 	for (UINT index = 0; index < mModelList.size(); ++index)
 	{
 		ModelData* mModelData = &mModelList[index];

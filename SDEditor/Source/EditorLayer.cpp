@@ -1,6 +1,7 @@
 #include "EditorLayer.h"
 #include "ImguiUtil.h"
 #include "TestScript.h"
+#include "EditorStyle/EditorStyle.h"
 
 EditorLayer::EditorLayer():
 	Layer("ExmPlayer"),
@@ -13,14 +14,14 @@ void EditorLayer::OnAttach()
 	rt = make_shared<RenderTexture>(GViewportWidth, GViewportHeight);
 	scene = make_shared<Scene>();
 
-	pureColorShader = ShaderLibrary::LoadGetShader("Resource/PureColorShader.fx");
-	baseDiffuse = make_shared<Texture>("Resource/rustediron2_basecolor.png");
+	pureColorShader = ShaderLibrary::LoadGetShader("Content/PureColorShader.fx");
+	baseDiffuse = make_shared<Texture>("Content/rustediron2_basecolor.png");
 	material = make_shared<Material>(pureColorShader);
 	material->SetTexture("BaseTexture", baseDiffuse);
 	material->SetTextureSampler("SampleWrapLinear", TextureSampler::BilinearFliterClamp);
 
 	meshActor = scene->CreateActor("meshActor");
-	auto& meshCpt = meshActor.AddComponent<MeshComponent>("Resource\\sphere.FBX");
+	auto& meshCpt = meshActor.AddComponent<MeshComponent>("Content\\sphere.FBX");
 	meshActor.AddComponent<ScriptComponent>("TestScript").Bind<TestScript>();
 	meshCpt.SetMaterial(material);
 
@@ -30,6 +31,7 @@ void EditorLayer::OnAttach()
 	
 	scenePanel.SetScene(scene);
 	GDirectxCore->SetBeginSceneColor(XMFLOAT4(1.0f, 1.0f, 0.0f, 1.0f));
+	GEditorStyle->Init();
 };
 
 void EditorLayer::OnDetach()
@@ -121,11 +123,16 @@ void EditorLayer::OnDockSpaceUI()
 
 	// DockSpace
 	ImGuiIO& io = ImGui::GetIO();
+	ImGuiStyle& style = ImGui::GetStyle();
+	float minWindowSize = style.WindowMinSize.x;
+	style.WindowMinSize.x = 200.0f;
 	if (io.ConfigFlags & ImGuiConfigFlags_DockingEnable)
 	{
 		ImGuiID dockspace_id = ImGui::GetID("MyDockSpace");
 		ImGui::DockSpace(dockspace_id, ImVec2(0.0f, 0.0f), dockspace_flags);
 	}
+
+	style.WindowMinSize.x = minWindowSize;
 }
 
 void EditorLayer::OnEvent(Event& event)

@@ -27,15 +27,15 @@ void ImGuiLayer::OnAttach()
 	io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
 	io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;
 
-	// Setup Dear ImGui style
-	ImGui::StyleColorsDark();
-
 	ImGuiStyle& style = ImGui::GetStyle();
 	if (io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
 	{
 		style.WindowRounding = 0.0f;
 		style.Colors[ImGuiCol_WindowBg].w = 1.0f;
 	}
+
+	// Setup Dear ImGui style
+	ImGui::StyleColorsDark();
 
 	ImGui_ImplWin32_Init(GWindowHwnd);
 	ImGui_ImplDX11_Init(g_pDevice, g_pDeviceContext, GMainViewRTV);

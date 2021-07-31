@@ -53,6 +53,14 @@ public:
 		return !(*this == other);
 	}
 
+	operator entt::entity() {
+		return handle;
+	}
+
+	operator uint32_t() const {
+		return (uint32_t)handle;
+	}
+
 	entt::entity GetEntity() { return handle; }
 
 private:

@@ -1,11 +1,11 @@
 #include "Scene.h"
-#include "Actor.h"
 #include "Render/Renderer.h"
 #include "TransformComponent.h"
 #include "MeshComponent.h"
 #include "TagComponent.h"
 #include "CameraComponent.h"
 #include "ScriptComponent.h"
+#include "Actor.h"
 
 Scene::Scene()
 {
@@ -95,4 +95,9 @@ Actor Scene::CreateActor(const string& actorName)
 	actor.AddComponent<TagComponent>(tagName);
 	actor.AddComponent<TransformComponent>(XMFLOAT3(0.0f, 0.0f, 0.0f));
 	return actor;
+}
+
+void Scene::Destroy(Actor actor)
+{
+	coreRegistry.destroy(actor);
 }

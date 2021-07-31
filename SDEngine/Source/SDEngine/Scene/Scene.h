@@ -3,8 +3,8 @@
 #include <string>
 
 using std::string;
-class Actor;
 class CameraObject;
+class Actor;
 
 class Scene
 {
@@ -16,6 +16,7 @@ public:
 	void OnTickRuntime(float deltaTime);
 	entt::registry& GetResgtry();
 	Actor CreateActor(const string& actorName = "");
+	void Destroy(Actor actor);
 
 private:
 	void OnUpdateScript(float deltaTime);
