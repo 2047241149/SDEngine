@@ -17,6 +17,7 @@ SceneHierarchyPanel::SceneHierarchyPanel(shared_ptr<Scene> inScene)
 void SceneHierarchyPanel::SetScene(shared_ptr<Scene> inScene)
 {
 	scene = inScene;
+	selectActor = {};
 }
 
 void SceneHierarchyPanel::OnImguiRender()
@@ -152,10 +153,7 @@ void SceneHierarchyPanel::DrawActorDeail(Actor actor)
 
 		if (ImGui::MenuItem("Mesh") && !selectActor.HasComponent<MeshComponent>())
 		{
-			auto& meshCpt = selectActor.AddComponent<MeshComponent>("Content\\sphere.FBX");
-			shared_ptr<VertexPixelShader> defaultShader = ShaderLibrary::LoadGetShader("Content/DefaultShader.fx");
-			shared_ptr<Material> material = make_shared<Material>(defaultShader);
-			meshCpt.SetMaterial(material);
+			selectActor.AddComponent<MeshComponent>("Content\\sphere.FBX");
 		}
 
 		ImGui::EndPopup();

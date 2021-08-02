@@ -28,7 +28,6 @@ private:
 public:
 	EditorLayer();
 
-
 private:
 	void OnMenuUI();
 	void OnDockSpaceUI();
@@ -46,4 +45,9 @@ public:
 	void OnImguiRender() override;
 	void OnEvent(Event& event) override;
 	void End() override;
+
+private:
+	bool OnKeyPress(KeyPressedEvent& event);
+	void CreateNewScene();
+	void SaveScene();
 };

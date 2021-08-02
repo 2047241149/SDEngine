@@ -9,4 +9,14 @@ class RendererContext
 {
 public:
 	static void DrawMesh(MeshComponent* mesh, TransformComponent* transform);
+
+public:
+	static RendererContext* Get();
+	void Init();
+
+private:
+	static shared_ptr<RendererContext> instance;
+	
+private:
+	shared_ptr<Material> nullMaterial;
 };

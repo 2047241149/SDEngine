@@ -10,8 +10,7 @@ void RendererContext::DrawMesh(MeshComponent* mesh, TransformComponent* transfor
 	shared_ptr<Material> material = mesh->GetMaterial();
 	if (!material)
 	{
-		Log::Warn("material is nullptr");
-		return;
+		material = Get()->nullMaterial;
 	}
 
 	material->SetMatrix("World", transform->GetWorldMatrix());
@@ -43,3 +42,22 @@ void RendererContext::DrawMesh(MeshComponent* mesh, TransformComponent* transfor
 		}
 	}
 }
+
+RendererContext* RendererContext::Get()
+{
+	if (nullptr == instance)
+	{
+		instance = make_shared<RendererContext>();
+		instance->Init();
+	}
+
+	return instance.get();
+}
+
+void RendererContext::Init()
+{
+	shared_ptr<VertexPixelShader> nullShader = make_shared<VertexPixelShader>("Content/NullShader.fx");
+	nullMaterial = make_shared<Material>(nullShader);
+}
+
+shared_ptr<RendererContext> RendererContext::instance = nullptr;

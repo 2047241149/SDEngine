@@ -13,22 +13,6 @@ void EditorLayer::OnAttach()
 {
 	rt = make_shared<RenderTexture>(GViewportWidth, GViewportHeight);
 	scene = make_shared<Scene>();
-
-	pureColorShader = ShaderLibrary::LoadGetShader("Content/PureColorShader.fx");
-	baseDiffuse = make_shared<Texture>("Content/rustediron2_basecolor.png");
-	material = make_shared<Material>(pureColorShader);
-	material->SetTexture("BaseTexture", baseDiffuse);
-	material->SetTextureSampler("SampleWrapLinear", TextureSampler::BilinearFliterClamp);
-
-	meshActor = scene->CreateActor("meshActor");
-	auto& meshCpt = meshActor.AddComponent<MeshComponent>("Content\\sphere.FBX");
-	meshActor.AddComponent<ScriptComponent>("TestScript").Bind<TestScript>();
-	meshCpt.SetMaterial(material);
-
-	secondCameraActor = scene->CreateActor("secondCamera");
-	auto& secondCameraCpt = secondCameraActor.AddComponent<CameraComponent>();
-	secondCameraCpt.bPrimary = !bUseEditorMode;
-	
 	scenePanel.SetScene(scene);
 	GDirectxCore->SetBeginSceneColor(XMFLOAT4(1.0f, 1.0f, 0.0f, 1.0f));
 	GEditorStyle->Init();
@@ -137,7 +121,32 @@ void EditorLayer::OnDockSpaceUI()
 
 void EditorLayer::OnEvent(Event& event)
 {
-	Log::Info(event);
+	EventDispatcher eventDispatch(event);
+	eventDispatch.Dispath<KeyPressedEvent>(BIND_EVENT(EditorLayer::OnKeyPress, this));
+}
+
+bool EditorLayer::OnKeyPress(KeyPressedEvent& event)
+{
+	if (Input::IsKeyDown(EKey::LCONTROL))
+	{
+		switch (event.GetKeyCode())
+		{
+		case 'n':
+		case 'N':
+			CreateNewScene();
+			break;
+
+		case 's':
+		case 'S':
+			SaveScene();
+			break;
+
+		default:
+			break;
+		}
+	}
+
+	return true;
 }
 
 void EditorLayer::End()
@@ -154,6 +163,37 @@ void EditorLayer::OnMenuUI()
 		{
 			if (ImGui::MenuItem("Exit"))
 				GGame->Close();
+
+			ImGui::EndMenu();
+		}
+
+		if (ImGui::BeginMenu("Menu"))
+		{
+			//TODO: SwitchMap Destroy Actor????
+			if (ImGui::MenuItem("NewMap", "Ctrl+N"))
+			{
+				CreateNewScene();
+			}
+
+			//TODO: like to UnrealEngine, Double Click .map file
+			if (ImGui::MenuItem("OpenMap"))
+			{
+				const string& fileName = FileDialog::OpenFile(L"umap(*.umap)\0*.umap\0");
+
+				if (!fileName.empty())
+				{
+					scene = make_shared<Scene>();
+					scenePanel.SetScene(scene);
+
+					SceneSerializer ser(scene.get());
+					ser.Deserialize(fileName);
+				}
+			}
+
+			if (ImGui::MenuItem("SaveMap", "Ctrl+S"))
+			{
+				SaveScene();
+			}
 
 			ImGui::EndMenu();
 		}
@@ -208,4 +248,20 @@ void EditorLayer::OnGameWindowUI()
 	ImGui::Image(rt->GetSRV(), ImVec2((float)rtWidth, (float)rtHeight));
 	ImGui::End();
 	ImGui::PopStyleVar();
+}
+
+void EditorLayer::CreateNewScene()
+{
+	scene = make_shared<Scene>();
+	scenePanel.SetScene(scene);
+}
+
+void EditorLayer::SaveScene()
+{
+	string fileName = FileDialog::SaveFile(L"umap (*.umap)\0*.umap\0");
+	if (!fileName.empty())
+	{
+		SceneSerializer ser(scene.get());
+		ser.Serialize(fileName);
+	}
 }

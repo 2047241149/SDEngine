@@ -11,6 +11,7 @@ using namespace std;
 
 
 wstring Str2Wstr(string);
+string Wstr2Str(wstring);
 
 void int2str(const int &, string &);
 

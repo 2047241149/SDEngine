@@ -10,7 +10,7 @@ public:
 	Actor(entt::entity inHandle, Scene* inScene);
 
 	template<typename T>
-	bool HasComponent()
+	bool HasComponent() const
 	{
 		return scene->GetResgtry().all_of<T>(handle);
 	}
@@ -25,6 +25,15 @@ public:
 	T& GetComponent()
 	{
 		return scene->GetResgtry().get<T>(handle);
+	}
+
+	template<typename T>
+	T& GetOrAddComponent()
+	{
+		if (HasComponent<T>())
+			return GetComponent<T>();
+
+		return AddComponent<T>();
 	}
 
 	template<typename T>

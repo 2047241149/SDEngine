@@ -9,10 +9,9 @@ MeshComponent::MeshComponent(string strFbxFileName) :
 	bReflect(false),
 	bCastShadow(true)
 {
-
-	LoadFBXModel(strFbxFileName);
-	InitBuffer();
+	SetMesh(strFbxFileName);
 }
+
 
 MeshComponent::~MeshComponent()
 {
@@ -37,6 +36,13 @@ bool MeshComponent::LoadFBXModel(string strFbxFileName)
 
 	}
 	return true;
+}
+
+void MeshComponent::SetMesh(const string& meshFile)
+{
+	this->meshFileName = meshFile;
+	LoadFBXModel(meshFile);
+	InitBuffer();
 }
 
 void MeshComponent::ShutDown()

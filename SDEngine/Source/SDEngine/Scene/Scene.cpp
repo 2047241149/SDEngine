@@ -14,6 +14,7 @@ Scene::Scene()
 
 Scene::~Scene()
 {
+	coreRegistry.clear();
 }
 
 void Scene::OnTickEditor(float deltaTime, CameraObject* camera)

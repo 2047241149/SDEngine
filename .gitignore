@@ -292,3 +292,5 @@ __pycache__/
 
 *.vcxproj
 *.vcxproj.filters
+/SDEngine/libfbxsdk-mt.lib
+/.gitattributes

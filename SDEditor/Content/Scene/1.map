@@ -1,0 +1,18 @@
+Map: Untitled
+Actor:
+  - Actor: Untitled
+    TagComponent:
+      Tag: secondCamera
+    TransformComponent:
+      Position: [0, 0, 0]
+      Rotation: [0, 0, 0]
+      Scale: [1, 1, 1]
+  - Actor: Untitled
+    TagComponent:
+      Tag: meshActor
+    TransformComponent:
+      Position: [2.79999995, 1.5, -5]
+      Rotation: [0, -39.7000008, 0]
+      Scale: [2, 2, 2]
+    MeshComponent:
+      MeshFile: Content\sphere.FBX

@@ -1,0 +1,11 @@
+Map: Untitled
+Actor:
+  - Actor: Untitled
+    TagComponent:
+      Tag: actor
+    TransformComponent:
+      Position: [0, 0.100000001, 0]
+      Rotation: [0, 0, 0]
+      Scale: [1, 1, 1]
+    MeshComponent:
+      MeshFile: Content\sphere.FBX

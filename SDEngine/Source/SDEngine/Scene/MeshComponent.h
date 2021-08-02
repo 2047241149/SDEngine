@@ -42,6 +42,7 @@ private:
 	void InitBuffer();
 
 public:
+	void SetMesh(const string& meshFile);
 	void SetTexture(string fileName, TextureType textureType);
 	void SetAlbedoTexture(string fileName);
 	void SetNormalTexture(string fileName);
@@ -67,4 +68,7 @@ public:
 
 private:
 	shared_ptr<Material> material;
+	string meshFileName;
+
+	friend class SceneSerializer;
 };

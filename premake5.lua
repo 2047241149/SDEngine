@@ -11,6 +11,7 @@
 outputdir = "%{cfg.buildcfg}-%{cfg.architecture}"
 
 include "SDEngine/ThirdParty/imgui"
+include "SDEngine/ThirdParty/yaml-cpp"
 
 project "SDEngine"
 	location "SDEngine"
@@ -34,6 +35,7 @@ project "SDEngine"
 		"%{prj.name}/ThirdParty/fbxsdk/2017.1/include",
 		"%{prj.name}/ThirdParty/imgui",
 		"%{prj.name}/ThirdParty/entt",
+		"%{prj.name}/ThirdParty/yaml-cpp/include",
 	}
 
 	links
@@ -42,6 +44,7 @@ project "SDEngine"
 		"libfbxsdk-mt.lib",
 		"dxguid.lib",
 		"dxgi.lib",
+		"yaml-cpp",
 	}
 
 	filter "system:windows"
@@ -89,6 +92,7 @@ project "SDEditor"
 		"SDEngine/ThirdParty/fbxsdk/2017.1/include",
 		"SDEngine/ThirdParty",
 		"SDEngine/ThirdParty/entt",
+		"SDEngine/ThirdParty/yaml-cpp/include",
 	}
 
 	links

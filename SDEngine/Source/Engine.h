@@ -28,3 +28,7 @@
 #include "SDEngine/Scene/TagComponent.h"
 #include "SDEngine/Scene/CameraComponent.h"
 #include "SDEngine/Scene/ScriptComponent.h"
+#include "SDEngine/Scene/SceneSerializer.h"
+
+//file
+#include "SDEngine/File/PlatformUtil.h"

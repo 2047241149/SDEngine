@@ -12,9 +12,20 @@ wstring Str2Wstr(string str)
 	return r;
 }
 
+string Wstr2Str(wstring str)
+{
+	unsigned len = str.size() * 4;
+	setlocale(LC_CTYPE, "");
+	char *p = new char[len];
+	wcstombs(p, str.c_str(), len);
+	std::string str1(p);
+	delete[] p;
+	return str1;
+}
+
 void int2str(const int &int_temp, string &string_temp)
 {
 	stringstream stream;
 	stream << int_temp;
-	string_temp = stream.str();   //�˴�Ҳ������ stream>>string_temp  
+	string_temp = stream.str();
 }

@@ -2,6 +2,7 @@
 
 #include "EventBase.h"
 
+//TODO: refactor, VK_XXX should map to EkeyCode, use EkeyCode uniformly
 class KeyEvent : public Event
 {
 protected:
