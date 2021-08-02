@@ -4,6 +4,3 @@
 [submodule "SDEngine/ThirdParty/imgui"]
 	path = SDEngine/ThirdParty/imgui
 	url = https://github.com/ocornut/imgui.git
-[submodule "SDEngine/ThirdParty/yaml-cpp"]
-	path = SDEngine/ThirdParty/yaml-cpp
-	url = git@github.com:jbeder/yaml-cpp.git
