@@ -4,6 +4,7 @@
 #include "imgui_impl_dx11.h"
 #include "imgui_impl_win32.h"
 #include "SDEngine/Common/DirectxCore.h"
+#include "ImGuizmo.h"
 
 ImGuiLayer::ImGuiLayer() :
 	Layer("ImGuiLayer")
@@ -54,6 +55,7 @@ void ImGuiLayer::BeginRender()
 	ImGui_ImplDX11_NewFrame();
 	ImGui_ImplWin32_NewFrame();
 	ImGui::NewFrame();
+	ImGuizmo::BeginFrame();
 }
 
 void ImGuiLayer::EndRender()

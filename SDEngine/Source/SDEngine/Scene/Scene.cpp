@@ -102,3 +102,13 @@ void Scene::Destroy(Actor actor)
 {
 	coreRegistry.destroy(actor);
 }
+
+XMMATRIX Scene::GetMainViewMatrix()
+{
+	return mainCamera == nullptr ? XMMatrixIdentity() : mainCamera->GetViewMatrix();
+}
+
+XMMATRIX Scene::GetMainProjectMatrix()
+{
+	return mainCamera == nullptr ? XMMatrixIdentity() : mainCamera->GetProjectionMatrix();
+}

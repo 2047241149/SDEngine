@@ -24,7 +24,9 @@ project "SDEngine"
 	files
 	{
 		"%{prj.name}/Source/**.h",
-		"%{prj.name}/Source/**.cpp"
+		"%{prj.name}/Source/**.cpp",
+		"%{prj.name}/ThirdParty/ImGuizmo/ImGuizmo.h",
+		"%{prj.name}/ThirdParty/ImGuizmo/ImGuizmo.cpp",
 	}
 
 	includedirs
@@ -36,6 +38,7 @@ project "SDEngine"
 		"%{prj.name}/ThirdParty/imgui",
 		"%{prj.name}/ThirdParty/entt",
 		"%{prj.name}/ThirdParty/yaml-cpp/include",
+		"%{prj.name}/ThirdParty/ImGuizmo",
 	}
 
 	links
@@ -46,6 +49,8 @@ project "SDEngine"
 		"dxgi.lib",
 		"yaml-cpp",
 	}
+
+	filter "files:ThirdParty/ImGuizmo/**.CPP"
 
 	filter "system:windows"
 		cppdialect "C++17"
@@ -58,10 +63,10 @@ project "SDEngine"
 			"_DISABLE_EXTENDED_ALIGNED_STORAGE",
 		}
 
-		postbuildcommands
-		{
-			("{COPY} ThirdParty/fbxsdk/2017.1/lib/x64/debug/libfbxsdk.dll ../bin/" .. outputdir .. "/TestGame"),
-		}
+		--postbuildcommands
+		--{
+		--	("{COPY} ThirdParty/fbxsdk/2017.1/lib/x64/debug/libfbxsdk.dll ../bin/" .. outputdir .. "/TestGame"),
+		--}
 
 	filter "configurations:Debug"
 		symbols "On"
@@ -81,7 +86,7 @@ project "SDEditor"
 	files
 	{
 		"%{prj.name}/Source/**.h",
-		"%{prj.name}/Source/**.cpp"
+		"%{prj.name}/Source/**.cpp",
 	}
 
 	includedirs
@@ -93,6 +98,7 @@ project "SDEditor"
 		"SDEngine/ThirdParty",
 		"SDEngine/ThirdParty/entt",
 		"SDEngine/ThirdParty/yaml-cpp/include",
+		"SDEngine/ThirdParty/ImGuizmo",
 	}
 
 	links

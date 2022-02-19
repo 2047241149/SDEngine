@@ -44,10 +44,10 @@ public:
 
 	operator bool() const 
 	{
-		return handle != entt::null;
+		return IsValid();
 	}
 
-	bool IsValid()
+	bool IsValid() const
 	{
 		return scene != nullptr && scene->GetResgtry().valid(handle);
 	}

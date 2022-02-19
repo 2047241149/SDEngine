@@ -1,7 +1,2 @@
-﻿  imgui.cpp
-  imgui_demo.cpp
-  imgui_draw.cpp
-  imgui_tables.cpp
-  imgui_widgets.cpp
-  Generating Code...
+﻿  imgui_widgets.cpp
   imgui.vcxproj -> G:\SDEngine\SDEngine\ThirdParty\imgui\bin\Debug-x86_64\imgui\imgui.lib

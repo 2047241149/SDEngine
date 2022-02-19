@@ -29,7 +29,7 @@ cbuffer CBCommon:register(b0)
 {
 	float ScreenWidth;
 	float ScreenHeight;
-	float lightCount;
+	float LightCount;
 };
 
 cbuffer CBMatrix:register(b1)
@@ -116,7 +116,7 @@ void CS(
 		{
 			uint lightRealIndex = light + passIndex * threadCount;
 
-			if (lightRealIndex < lightCountInt && TestSphereAABB(light, clusterIndex))
+			if (lightRealIndex < lightCountInt && TestSphereAABB(lightRealIndex, clusterIndex))
 			{
 				visibleLightIndexs[visibleLightCount] = lightRealIndex;
 				visibleLightCount += 1;

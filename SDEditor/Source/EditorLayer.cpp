@@ -2,6 +2,7 @@
 #include "ImguiUtil.h"
 #include "TestScript.h"
 #include "EditorStyle/EditorStyle.h"
+#include "ImGuizmo.h"
 
 EditorLayer::EditorLayer():
 	Layer("ExmPlayer"),
@@ -51,14 +52,14 @@ void EditorLayer::OnTick(float deltaTime)
 
 void EditorLayer::OnImguiRender() 
 {
-	OnDockSpaceUI();
-	OnMenuUI();
-	OnRenderStatisticsUI();
-	OnGameWindowUI();
+	ShowDockSpaceUI();
+	ShowMenuUI();
+	ShowRenderStatisticsUI();
+	ShowGameWindowUI();
 	scenePanel.OnImguiRender();
 }
 
-void EditorLayer::OnDockSpaceUI()
+void EditorLayer::ShowDockSpaceUI()
 {
 	//dock space
 	static bool dockSpaceOpen = true;;
@@ -155,7 +156,7 @@ void EditorLayer::End()
 	GDirectxCore->End();
 }
 
-void EditorLayer::OnMenuUI()
+void EditorLayer::ShowMenuUI()
 {
 	if (ImGui::BeginMenuBar())
 	{
@@ -204,7 +205,7 @@ void EditorLayer::OnMenuUI()
 	ImGui::End();
 }
 
-void EditorLayer::OnRenderStatisticsUI()
+void EditorLayer::ShowRenderStatisticsUI()
 {
 	// Profile && render statistics
 	ImGui::Begin("Profile");
@@ -228,7 +229,7 @@ void EditorLayer::OnRenderStatisticsUI()
 	ImGui::End();
 }
 
-void EditorLayer::OnGameWindowUI()
+void EditorLayer::ShowGameWindowUI()
 {
 	ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 0));
 	ImGui::Begin("viewport");
@@ -246,6 +247,45 @@ void EditorLayer::OnGameWindowUI()
 	}
 
 	ImGui::Image(rt->GetSRV(), ImVec2((float)rtWidth, (float)rtHeight));
+	
+	guizmoOperateType = (int)ImGuizmo::OPERATION::ROTATE;
+	//Gizmo
+	Actor actor = scenePanel.GetSelectActor();
+	if (actor && guizmoOperateType != -1)
+	{
+		entt::entity selectEntity = actor.GetEntity();
+		ImGuizmo::SetOrthographic(false);
+		ImGuizmo::SetDrawlist();
+		float windowWidth = (float)ImGui::GetWindowWidth();
+		float windowHeight = (float)ImGui::GetWindowHeight();
+		ImVec2 windowPos = ImGui::GetWindowPos();
+		ImGuizmo::SetRect(windowPos.x, windowPos.y, windowWidth, windowHeight);
+		
+		//Camera 
+		XMMATRIX projMatrix = scene->GetMainProjectMatrix();
+		XMMATRIX viewMatrix = scene->GetMainViewMatrix();
+
+		//actor tranform 
+		auto& transformCpt = actor.GetComponent<TransformComponent>();
+		XMMATRIX worldMatrix = transformCpt.GetWorldMatrix();
+
+		ImGuizmo::Manipulate((float*)&viewMatrix, (float*)&projMatrix,
+			(ImGuizmo::OPERATION)guizmoOperateType, ImGuizmo::LOCAL, (float*)&worldMatrix);
+	
+		if (ImGuizmo::IsUsing())
+		{
+			XMVECTOR outScale;
+			XMVECTOR outQuat;
+			XMVECTOR outTrans;
+			XMFLOAT3 quetFloat3;
+			XMMatrixDecompose(&outScale, &outQuat, &outTrans, worldMatrix);
+			XMStoreFloat3(&transformCpt.rotation, outQuat);
+			XMStoreFloat3(&transformCpt.position, outTrans);
+			XMStoreFloat3(&transformCpt.scale, outScale);
+			//XMQuaternionRotationMatrix
+		}
+	}
+	
 	ImGui::End();
 	ImGui::PopStyleVar();
 }

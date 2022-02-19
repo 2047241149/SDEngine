@@ -216,3 +216,13 @@ void SceneHierarchyPanel::DrawActorDeail(Actor actor)
 		}
 	});
 }
+
+entt::entity SceneHierarchyPanel::GetSelectEntity()
+{
+	return selectActor.GetEntity();
+}
+
+Actor SceneHierarchyPanel::GetSelectActor()
+{
+	return selectActor;
+}

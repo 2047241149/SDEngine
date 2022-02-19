@@ -21,6 +21,7 @@ private:
 	Actor secondCameraActor;
 	EditorCamera editorCamera;
 	bool bUseEditorMode;
+	int guizmoOperateType = -1;
 
 private:
 	SceneHierarchyPanel scenePanel;
@@ -29,10 +30,10 @@ public:
 	EditorLayer();
 
 private:
-	void OnMenuUI();
-	void OnDockSpaceUI();
-	void OnRenderStatisticsUI();
-	void OnGameWindowUI();
+	void ShowMenuUI();
+	void ShowDockSpaceUI();
+	void ShowRenderStatisticsUI();
+	void ShowGameWindowUI();
 
 private:
 	bool bViewportFouces = true;

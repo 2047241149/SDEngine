@@ -1,7 +1,8 @@
 #pragma once
 #include "entt.hpp"
 #include <string>
-
+#include <DirectXMath.h>
+using namespace DirectX;
 using std::string;
 class CameraObject;
 class Actor;
@@ -17,6 +18,8 @@ public:
 	entt::registry& GetResgtry();
 	Actor CreateActor(const string& actorName = "");
 	void Destroy(Actor actor);
+	XMMATRIX GetMainViewMatrix();
+	XMMATRIX GetMainProjectMatrix();
 
 private:
 	void OnUpdateScript(float deltaTime);

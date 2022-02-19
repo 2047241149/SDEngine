@@ -11,6 +11,8 @@ public:
 	SceneHierarchyPanel(shared_ptr<Scene> inScene);
 	void SetScene(shared_ptr<Scene> inScene);
 	void OnImguiRender();
+	entt::entity GetSelectEntity();
+	Actor GetSelectActor();
 
 private:
 	void DrawActorNode(Actor actor);
